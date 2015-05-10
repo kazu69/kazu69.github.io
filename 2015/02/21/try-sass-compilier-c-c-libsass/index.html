@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>C/C++のSass Compilierのlibsassを試してみた | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="フロントエンド周りを触ることがあり、Sassのコンパイル速度改善をするために、libsassについて軽く調べてみた。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C/C++のSass Compilierのlibsassを試してみた">
+<meta property="og:url" content="http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="フロントエンド周りを触ることがあり、Sassのコンパイル速度改善をするために、libsassについて軽く調べてみた。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C/C++のSass Compilierのlibsassを試してみた">
+<meta name="twitter:description" content="フロントエンド周りを触ることがあり、Sassのコンパイル速度改善をするために、libsassについて軽く調べてみた。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-try-sass-compilier-c-c-libsass" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      C/C++のSass Compilierのlibsassを試してみた
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2015-02-21T14:51:55.000Z" itemprop="datePublished">2015-02-21</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/sass/">sass</a>
+  </div>
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>フロントエンド周りを触ることがあり、Sassのコンパイル速度改善をするために、<br><a href="http://libsass.org/" target="_blank" rel="external">libsass</a>について軽く調べてみた。</p>
+<a id="more"></a>
+<h2 id="libsassとは">libsassとは</h2><p>C/C++で書かれたSass Compiler。これ自体は単なるライブラリで、実際にこれを走らせるには<br><a href="https://github.com/sass/sassc" target="_blank" rel="external">SassC</a>や<a href="https://github.com/sass/ruby-libsass" target="_blank" rel="external">ruby-libsass</a>などを使う。</p>
+<p>コンパイラにGCC4.6+またはClang/LLVMが必要だとか。</p>
+<h2 id="libsass_のインストール">libsass のインストール</h2><p>libsassとSassCは共にbrewインストール可能だが、<br>マニュアルに沿ってインストールする場合は、</p>
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=manual-install.sh"></script>
+
+<h2 id="libsassとRuby_Sassとの互換性">libsassとRuby Sassとの互換性</h2><p>現状ではRuby Sassとの違いもあり、完全に互換性があるわけではない。<br>実際、Ruby Sassよりも実装が遅れているため、Ruby Sass3.4の機能は多くが利用できない状況らしい。<br><a href="https://github.com/sass/sass-spec/tree/master/spec/libsass-todo-issues" target="_blank" rel="external">SassSpec/libsass-todo-issues</a>を<br>みるとサポート状況わかる。</p>
+<p>ちなみにSass Specを使ってみると</p>
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=sass-spec.sh"></script>
+
+<p>libsassで sass spec実行</p>
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-spec.sh"></script>
+まだ対応できてないのか、スキップされてる項目が多い。
+
+## 多言語サポート
+
+libsassのラッパーも多く、おもだった言語で使えそう。
+
+*   [SassC](https://github.com/sass/sassc) command line driver
+*   [perl-libsass](https://github.com/sass/perl-libsass)
+*   [php-sass](https://github.com/guitarpoet/php-sass)
+*   [ruby-libsass](https://github.com/sass/ruby-libsass)
+*   [node-sass](https://github.com/andrew/node-sass)
+*   [sass.js](https://github.com/medialize/sass.js)
+*   [gosass](https://github.com/moovweb/gosass)
+*   [libsass-python](https://github.com/dahlia/libsass-python)
+*   [libsass-maven-plugin](https://github.com/warmuuh/libsass-maven-plugin)
+
+* * *
+
+libsassへ乗り換えるなら、互換性を考慮する必要があるので、まず調査のためlibsass-todo-issuesを確認するか、一通りまとめてある
+[Sass Compatibility](http://sass-compatibility.github.io/)などで確認することが必要そう。
+
+現在のlibsassのバージョンは3.1だが、
+リリース計画によると最終的に3.4でRuby Sassに追いつく予定らしいので、
+それまで待つでもしれない。
+
+しかし、最新のSassの機能に縛られなければ、十分に機能を享受できそうだし、やはりコンパイル時間の短縮は魅力的。
+コンパル結果が同じなら使わない理由がなさそうな気がする。
+
+ちなみに、Sassのライブラリである、
+compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com/Compass/compass/issues/1916)になる予定、[Burbon](http://bourbon.io/)はすでにサポートしている。
+
+以下のようにCompassを使っているscssファイルをsasscでコンパルすると
+
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=sample.scss"></script>
+
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-compass.sh"></script>
+
+<p>となってしまう。</p>
+<p>Compassのcore mixinを切り出した<a href="https://github.com/Igosuki/compass-mixins" target="_blank" rel="external">compass-mixins</a>を使えば、<br>Compassでもlibsassを利用可能っぽい。</p>
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-compass-mixin.sh"></script>
+
+<p><a href="https://github.com/sindresorhus/grunt-sass" target="_blank" rel="external">grunt-sass</a>を使用する場合は次のような感じになる。</p>
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=Gruntfile.js"></script>
+
+<p>RailsプロジェクトなどでSassコンパイルに時間かかってるとかだと、乗り換えてみるのもいのじゃないかな。</p>
+<p>参考にしたページ<br><a href="http://benfrain.com/lightning-fast-sass-compiling-with-libsass-node-sass-and-grunt-sass/" target="_blank" rel="external">Lightning fast Sass compiling with libsass, Node-sass and Grunt-sass</a><br><a href="http://www.sitepoint.com/switching-ruby-sass-libsass/" target="_blank" rel="external">Switching from Ruby Sass to LibSass</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+      <a data-url="http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/" data-id="ci8xm3thb0089r8p41tptpawi" class="article-share-link">Share</a>
+      
+        <a href="http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+      <a href="/2015/02/28/php-repl-psysh-was-so-convenient/" id="article-nav-newer" class="article-nav-link article-nav-link-newer">
+        <span class="article-nav-caption">Newer - </span>
+        <span class="article-nav-title">
+          
+            phpのREPL psysh が便利そうだった
+          
+        </span>
+      </a>
+    
+    
+      <a href="/2015/01/28/examined-how-to-share-values-with-sass-and-javascript-using-json/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            JSONを使ってSassとJavaScriptで設定値を共有する方法を調べてみた
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+  <aside>
+    
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+  </aside>
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2015 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</body>
+</html>

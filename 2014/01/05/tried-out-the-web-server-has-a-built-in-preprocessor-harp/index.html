@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>プリプロセッサー内蔵したウェブサーバー Harpを試してみた | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="HarpはMarkdown, Jade, EJS, LESS, Stylus, Sass, CoffeeScriptを内蔵したウェブサーバー。
+プリプロセッサー内蔵しているので、CoffeeScriptなどをコンパイルすることなく公開できる。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="プリプロセッサー内蔵したウェブサーバー Harpを試してみた">
+<meta property="og:url" content="http://blog.kazu69.net/2014/01/05/tried-out-the-web-server-has-a-built-in-preprocessor-harp/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="HarpはMarkdown, Jade, EJS, LESS, Stylus, Sass, CoffeeScriptを内蔵したウェブサーバー。
+プリプロセッサー内蔵しているので、CoffeeScriptなどをコンパイルすることなく公開できる。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="プリプロセッサー内蔵したウェブサーバー Harpを試してみた">
+<meta name="twitter:description" content="HarpはMarkdown, Jade, EJS, LESS, Stylus, Sass, CoffeeScriptを内蔵したウェブサーバー。
+プリプロセッサー内蔵しているので、CoffeeScriptなどをコンパイルすることなく公開できる。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-tried-out-the-web-server-has-a-built-in-preprocessor-harp" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      プリプロセッサー内蔵したウェブサーバー Harpを試してみた
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2014-01-04T16:10:50.000Z" itemprop="datePublished">2014-01-05</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/javascript/">javascript</a>
+  </div>
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p><a href="http://harpjs.com/" target="_blank" rel="external">Harp</a>はMarkdown, Jade, EJS, LESS, Stylus, Sass, CoffeeScriptを内蔵したウェブサーバー。</p>
+<p>プリプロセッサー内蔵しているので、CoffeeScriptなどをコンパイルすることなく公開できる。</p>
+<a id="more"></a>
+<p>Harpは、node.jsでのMiddlemanやJekyllのような静的なサイトのジェネレーターのような感じ。</p>
+<p>簡単なセットアップ</p>
+<p>npmでインストール</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=install.sh"></script>
+
+<p>initializeする</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=initializing.sh"></script>
+
+<p>次のようにファイルが生成される</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=initializing-tree.txt"></script>
+
+<p>サーバーを起動する</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=start.sh"></script>
+
+<p>ファイルをコンパイルすることも可能</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=compile.sh"></script>
+
+<p>指定したディレクトリに出力される。(特に指定しないときはpublic)</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=compile-tree.txt"></script>
+
+<p>ExpressのMiddlewareとして利用することも可能</p>
+<p>package.jsonを作成し</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=package.json"></script>
+
+<p>サーバーを作成</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=index.js"></script>
+
+<p>起動する</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=middlewear.sh"></script>
+
+<p>メタデータや変数などはjsonファイルから取得できる。</p>
+<p>以下のようなアプリケーション構造の場合</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=harp_application_tree.txt"></script>
+
+<p>_data.jsonに次のようにすることで</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=_data.json"></script>
+
+<p>hello-world.jade テンプレートで</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=hello-world.jade"></script>
+
+<p>とすることでjsonの値を取得できる。<br>また、ファイルの接頭辞に_(アンダースコア)がある場合はファイルは公開されない。</p>
+<p>_harp.jsonファイルにグローバル変数を定義することで使用できる。</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=_harp.json"></script>
+
+<p>例えばindex.jadeを以下のようにすると グローバル変数nameを参照できる。</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=index.jade"></script>
+
+<p>Harpは<a href="http://harpjs.com/docs/deployment/heroku" target="_blank" rel="external">Heroku</a>, <a href="http://harpjs.com/docs/deployment/github-pages" target="_blank" rel="external">Github Pages</a>で公開できるほかにDropboxを使い<a href="http://harpjs.com/docs/deployment/harp-platform" target="_blank" rel="external">Harp Platform</a>で公開もできる。</p>
+<p>Harpではそれほどコマンドがないので必要ないけど、Harp serverのGruntプラグイン<a href="https://github.com/shovon/grunt-harp" target="_blank" rel="external">grunt-harp</a>もあった。<br>Gruntプラグインではサーバーの起動、コンパイルをサポートしている。</p>
+<p>package.jsonに追記して、npmインストール。</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=add-grunt-package.json"></script>
+
+<p>Gruntfileは以下のようにした。</p>
+<script src="https://gist.github.com/kazu69/b30d01a3e2772b213bfd.js?file=Gruntfile.coffee"></script>
+
+<p>ということで、ざっくり試してみた。</p>
+<p>静的ファイルの生成はもちろん、html5アプリケーションなどの開発にも使用できそう。<br>プリプロセッサー内蔵ということでローカルの開発環境の構築が簡単なところも良さそう。</p>
+<p>ruby + nginx ではなく、サーバーとクライアントともにjsでの開発だと選択肢としてありそう。</p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+      <a data-url="http://blog.kazu69.net/2014/01/05/tried-out-the-web-server-has-a-built-in-preprocessor-harp/" data-id="ci8xm3ula008lr8p4ydf9znml" class="article-share-link">Share</a>
+      
+        <a href="http://blog.kazu69.net/2014/01/05/tried-out-the-web-server-has-a-built-in-preprocessor-harp/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li></ul>
+
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+      <a href="/2014/01/12/to-disable-ipv6-for-centos6/" id="article-nav-newer" class="article-nav-link article-nav-link-newer">
+        <span class="article-nav-caption">Newer - </span>
+        <span class="article-nav-title">
+          
+            CentOS6でIPv6を無効にする
+          
+        </span>
+      </a>
+    
+    
+      <a href="/2013/12/28/to-remove-all-gem-ruby2-0/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            Ruby2.0で全てのgemを削除する
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+  <aside>
+    
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+  </aside>
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2015 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2014/01/05/tried-out-the-web-server-has-a-built-in-preprocessor-harp/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</body>
+</html>

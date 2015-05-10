@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>rbenv + ruby-build + rbenv-gemset の環境構築をしてみた | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="いままでrvmを使っていたけど、rbenvに移行したのでそのときの環境設定のメモを残しておこうと思います。rbenv + ruby-build + rbenv-gemset 環境を構築したいと思います。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rbenv + ruby-build + rbenv-gemset の環境構築をしてみた">
+<meta property="og:url" content="http://blog.kazu69.net/2012/06/04/rbenv-with-ruby-buildrbenv-gemset-environment/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="いままでrvmを使っていたけど、rbenvに移行したのでそのときの環境設定のメモを残しておこうと思います。rbenv + ruby-build + rbenv-gemset 環境を構築したいと思います。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="rbenv + ruby-build + rbenv-gemset の環境構築をしてみた">
+<meta name="twitter:description" content="いままでrvmを使っていたけど、rbenvに移行したのでそのときの環境設定のメモを残しておこうと思います。rbenv + ruby-build + rbenv-gemset 環境を構築したいと思います。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-rbenv-with-ruby-buildrbenv-gemset-environment" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      rbenv + ruby-build + rbenv-gemset の環境構築をしてみた
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2012-06-04T14:37:27.000Z" itemprop="datePublished">2012-06-04</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>いままでrvmを使っていたけど、rbenvに移行したのでそのときの環境設定のメモを残しておこうと思います。<br><a href="https://github.com/sstephenson/rbenv" target="_blank" rel="external">rbenv</a> + <a href="https://github.com/sstephenson/ruby-build" target="_blank" rel="external">ruby-build</a> + <a href="https://github.com/jamis/rbenv-gemset" target="_blank" rel="external">rbenv-gemset</a> 環境を構築したいと思います。<br><a id="more"></a><br>まず、rubyのバージョン管理をrvmからrbenvに移行しました。<br>まずはrvmを削除。<br>[shell]<br>rvm implode<br>[/shell]</p>
+<p>.bash_profileとかにある設定も同じく削除しました。<br>でrbenvのインストール。<br>Homebrewをつかってるので、<br>[shell]<br>brew install rbenv<br>[/shell]<br>githubからcloneするなら<br>[shell]<br>git clone git://github.com/sstephenson/rbenv.git .rbenv<br>[/shell]</p>
+<p>つづいてパスを通します。<br>[shell]<br>echo ‘export PATH=&quot;$HOME/.rbenv/bin:$PATH&quot;’ &gt;&gt; ~/.bash_profile<br>echo ‘eval &quot;$(rbenv init -)&quot;’ &gt;&gt; ~/.bash_profile<br>[/shell]</p>
+<p>続いてRubyのビルドツールruby-buildをいれます。<br>brewを使ってるなら、<br>[shell]<br>brew install ruby-build<br>[/shell]</p>
+<p>githubからcloneするなら<br>[shell]<br>mkdir -p ~/.rbenv/plugins<br>cd ~/.rbenv/plugins<br>git clone git://github.com/sstephenson/ruby-build.git<br>[/shell]</p>
+<p>rbenvの使い方は<br>[shell]<br>rbenv install 1.9.3-p125<br>rbenv rehash<br>[/shell]</p>
+<p>rubyをインストールするたびに必ず rbenv rehash をするのを忘れないように。<br>またインストールできるRubyの一覧をrbenv installで見ることができます。<br>[shell]<br>rbenv install<br>usage: rbenv install VERSION<br>       rbenv install /path/to/definition</p>
+<p>Available versions:<br>  1.8.6-p383<br>  1.8.6-p420<br>  1.8.7-p249<br>  1.8.7-p302<br>  1.8.7-p334<br>  1.8.7-p352<br>  1.8.7-p357<br>  1.8.7-p358<br>  1.9.1-p378<br>  1.9.2-p180<br>  1.9.2-p290<br>  1.9.3-dev<br>  1.9.3-p0<br>  1.9.3-p125<br>  1.9.3-preview1<br>  1.9.3-rc1<br>  2.0.0-dev<br>  jruby-1.6.3<br>  jruby-1.6.4<br>  jruby-1.6.5<br>  jruby-1.6.5.1<br>  jruby-1.6.6<br>  jruby-1.7.0-dev<br>  maglev-1.0.0<br>  rbx-1.2.4<br>  rbx-2.0.0-dev<br>  ree-1.8.6-2009.06<br>  ree-1.8.7-2009.09<br>  ree-1.8.7-2010.01<br>  ree-1.8.7-2010.02<br>  ree-1.8.7-2011.03<br>  ree-1.8.7-2011.12<br>  ree-1.8.7-2012.01<br>[/shell]</p>
+<p>インストールされているバージョンは<br>[shell]<br>rbenv versions</p>
+<ul>
+<li>1.9.2-p290<br>1.9.3-p125<br>[/shell]<br>で確認できます。</li>
+</ul>
+<p>また、利用するシステム全体で使うバージョンを指定するときは<br>[shell]<br>rbenv global 1.9.3-p125<br>[/shell]</p>
+<p>特定のディレクトリで使うバージョンを指定する場合は<br>[shell]<br>rbenv local 1.9.3-p125<br>[/shell]</p>
+<p>システムのRubyに戻すには<br>[shell]<br>rbenv global system<br>[/shell]</p>
+<p>Rubyコマンドがどのバージョンの ruby にインストールされているか調べることもできます。<br>[shell]<br>rbenv whence rackup<br>[/shell]</p>
+<p>最後にgemsetsの管理のためにrbenv-gemsetをインストール。<br>brewなら、<br>[shell]<br>brew install rbenv-gemset<br>[/shell]</p>
+<p>githubからは<br>[shell]<br>mkdir -p ~/.rbenv/plugins<br>cd ~/.rbenv/plugins<br>git clone git://github.com/jamis/rbenv-gemset.git<br>[/shell]</p>
+<p>パスを通します<br>[shell]<br>export PATH=&quot;$HOME/.rbenv/bin:$PATH&quot;<br>[/shell]</p>
+<p>使い方は<br>[shell]<br>rbenv gemset &lt;&lt;tab&gt;&gt;<br>active   create   delete   file     list     version<br>[/shell]<br>で表示されます。</p>
+<p>gemsetを作るなら rbenv gemset create [version] [gemset] となります。<br>[shell]<br>rbenv gemset create 1.9.3-p125 my-set<br>[/shell]<br>.rbenv-gemsetファイルが作成されます。</p>
+<p>appディレクトリ以下で作成したgemsetを使う場合<br>[shell]<br>cd ~/app<br>echo &gt;.rbenv-gemsets my-set<br>[/shell]<br>で指定します。これでgem installでインストールしたgemは指定したgemは<br>$HOME/.rbenv/versions/rubyのバージョン/gemsets/gemset名/gems/ にインストールされます。</p>
+<p>gemsetの一覧を見るには<br>[shell]<br>rbenv gemset list<br>1.9.2-p290:<br>  my-app<br>[/shell]</p>
+<p>.rbenv-gemsetsの存在を確認するには<br>[shell]<br>rbenv gemset file<br>[/shell]</p>
+<p>gemsetを削除するには<br>[shell]<br>rbenv gemset delete 1.9.3-p125 my-set<br>[/shell]</p>
+<p>で一通り良さそうでした。</p>
+<p>これで複数バージョンのRubyでの開発環境ができました。<br>ちなみに自分は管理ができてなくてカオスな状況だったので、ワイルドにもインストールされているgemをすべてアンインストールして再構築しました。<br><a href="http://qiita.com/items/e135d3c88a5f86f08435" target="_blank" rel="external">gemをすべてアンインストールするワンライナー</a>を参考にして、<br>[shell]<br> for gem in <code>gem list | cut -d &amp;quot; &amp;quot; -f 1</code>; do yes | gem uninstall $gem -a; done<br>[/shell]</p>
+<p>以上、備忘録でした。</p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+      <a data-url="http://blog.kazu69.net/2012/06/04/rbenv-with-ruby-buildrbenv-gemset-environment/" data-id="ci8xm3goi006tr8p4efuhlq80" class="article-share-link">Share</a>
+      
+        <a href="http://blog.kazu69.net/2012/06/04/rbenv-with-ruby-buildrbenv-gemset-environment/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+      <a href="/2012/06/05/at-the-western-end-of-the-fukuoka-has-healed-umi-hotaru/" id="article-nav-newer" class="article-nav-link article-nav-link-newer">
+        <span class="article-nav-caption">Newer - </span>
+        <span class="article-nav-title">
+          
+            福岡の西端で海と蛍に癒されてきた
+          
+        </span>
+      </a>
+    
+    
+      <a href="/2012/06/04/how-to-enter-numeric-ios5-safari-without-commas-in-number-of-input-type/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            ios5のsafariでinput typeのnumberでカンマなしで数値を入力させる方法
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+  <aside>
+    
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+  </aside>
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2015 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2012/06/04/rbenv-with-ruby-buildrbenv-gemset-environment/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</body>
+</html>

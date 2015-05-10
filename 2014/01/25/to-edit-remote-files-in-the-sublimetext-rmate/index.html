@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>rmateを使ってリモートファイルをSublimeTextで編集する | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="開発用のVM環境を構築して、作業するときにこれまで通りにSublimeTextを使いたかったので、サーバーにrmateをインストールしてみた。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rmateを使ってリモートファイルをSublimeTextで編集する">
+<meta property="og:url" content="http://blog.kazu69.net/2014/01/25/to-edit-remote-files-in-the-sublimetext-rmate/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="開発用のVM環境を構築して、作業するときにこれまで通りにSublimeTextを使いたかったので、サーバーにrmateをインストールしてみた。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="rmateを使ってリモートファイルをSublimeTextで編集する">
+<meta name="twitter:description" content="開発用のVM環境を構築して、作業するときにこれまで通りにSublimeTextを使いたかったので、サーバーにrmateをインストールしてみた。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-to-edit-remote-files-in-the-sublimetext-rmate" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      rmateを使ってリモートファイルをSublimeTextで編集する
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2014-01-25T06:50:04.000Z" itemprop="datePublished">2014-01-25</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/editor/">editor</a>
+  </div>
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>開発用のVM環境を構築して、作業するときにこれまで通りにSublimeTextを使いたかったので、サーバーにrmateをインストールしてみた。<br><a id="more"></a><br>Eclipseならできるっぽいことまでは調べてたけど、TextMateにも<a href="https://github.com/textmate/rmate" target="_blank" rel="external">rmate</a>なるものがあった。SublimeTextはほぼTextmateなので同じことが既にできるようでした。</p>
+<p>SublimeText側では<a href="https://github.com/henrikpersson/rsub" target="_blank" rel="external">rsub</a>というパッケージを入れることで、SSHでリモートサーバーを編集できました。</p>
+<p>一応、導入手順。</p>
+<p>SublimeTextにPackegeInstallでrsubを導入。サーバー側ではrmateをインストール。<br>sshのconfigにremote forwardingの設定を追加</p>
+<p>[text]</p>
+<h1 id="~/-ssh/config">~/.ssh/config</h1><p>Host your_remote_server.com<br>    RemoteForward 52698 127.0.0.1:52698<br>[/text]</p>
+<p>ちなみにポート番号はrmateのデフォルトのものなので、変更も可能。<br>多分ないけど。複数人でrsubをつかうならもちろん変更する必要がある。</p>
+<p>自分はgemでいれたけど、standaloneなら<br>[shell]</p>
+<h1 id="rsubをインストール">rsubをインストール</h1><p>curl -Lo ~/bin/rsub <a href="https://raw.github.com/textmate/rmate/master/bin/rmate" target="_blank" rel="external">https://raw.github.com/textmate/rmate/master/bin/rmate</a><br>chmod a+x ~/bin/rsub</p>
+<h1 id="パスを通す">パスを通す</h1><p>export PATH=&quot;$PATH:$HOME/bin&quot;<br>[/shell]</p>
+<p>これで、SublimeTextを起動して、リモートサーバーから<br>[shell]<br>rsub YOUR_FILE<br>[/shell]</p>
+<p>でリモートファイルをSublimeTextで編集できる。<br>開発環境をVMで作ことがおおくなるとこれは便利。</p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+      <a data-url="http://blog.kazu69.net/2014/01/25/to-edit-remote-files-in-the-sublimetext-rmate/" data-id="ci8xm3gjy004kr8p43kzojxkh" class="article-share-link">Share</a>
+      
+        <a href="http://blog.kazu69.net/2014/01/25/to-edit-remote-files-in-the-sublimetext-rmate/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+      <a href="/2014/02/12/so-git-non-monotonic-index-has-been-modified/" id="article-nav-newer" class="article-nav-link article-nav-link-newer">
+        <span class="article-nav-caption">Newer - </span>
+        <span class="article-nav-title">
+          
+            gitのnon-monotonic indexがでてきたので修正した
+          
+        </span>
+      </a>
+    
+    
+      <a href="/2014/01/12/to-disable-ipv6-for-centos6/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            CentOS6でIPv6を無効にする
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+  <aside>
+    
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+  </aside>
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2015 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2014/01/25/to-edit-remote-files-in-the-sublimetext-rmate/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</body>
+</html>

@@ -1,0 +1,926 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[69log]]></title>
+  
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://blog.kazu69.net/"/>
+  <updated>2015-05-09T01:54:15.000Z</updated>
+  <id>http://blog.kazu69.net/</id>
+  
+  <author>
+    <name><![CDATA[kazu69]]></name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[ビルドツールとしてnpmを使う]]></title>
+    <link href="http://blog.kazu69.net/2015/04/19/use-the-npm-as-the-build-tool/"/>
+    <id>http://blog.kazu69.net/2015/04/19/use-the-npm-as-the-build-tool/</id>
+    <published>2015-04-19T04:10:28.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>、 <a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>などを使うのではなく、npmをビルドタスクを使うためにちょっとおさらいした。</p>
+<a id="more"></a>
+<h2 id="npmのpath">npmのpath</h2><p>npmでインストールすると、<br>モジュールは ./node_modules/にインストールされ、<br>node_modules/.bin配下に各パッケージのbinへのシンボリックリンクが作成される。</p>
+<p>これは実際にnpm binを実行するとパスがわかる。</p>
+<p>たとえば、node_modules/jshint/bin/jshint は$(npm bin)/jshintで実行できる。<br>実際にはnpm経由で実行すると、$(npm bin)はPATHは追加されている。</p>
+<p>package.jsonに以下を追加して</p>
+<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=path.json"></script>
+
+<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=path.sh"></script>
+
+<p>でパスが通っていることが確認できる。</p>
+<p>つまり、npm run TASKではモジュールのパスに$(npm bin)は必要無い。</p>
+<h2 id="pre、postフック">pre、postフック</h2><p>npmコマンドにpre、postというprefixをつけることでそのコマンドの前後にフックできる。<br>たとえば、npm testにpre postそれぞれのフックを追加すると、</p>
+<p>npm test を実行すると、 npm run pretest、 npm test, npm run posttest の順番に実行される。</p>
+<h2 id="カスタム引数">カスタム引数</h2><p>npm@2.0.0 以上では<a href="https://github.com/npm/npm/pull/5518" target="_blank" rel="external">実行スクリプトにカスタム引数を渡すことができるようになっている。</a></p>
+<p>「—」で 好きな引数を渡すことができる。<br>たとえば以下のうように</p>
+<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=option.json"></script>
+
+<p>例があまり良くないけど、開発環境やstaging環境などの実行環境でオプションの有無がある場合などに便利。</p>
+<h2 id="npm-config">npm-config</h2><p>package.jsonにあるconfigはスクリプトからnpm_package_config_NAMEとして参照できる</p>
+<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=package_config.json"></script>
+
+<p>とある場合、</p>
+<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=config_scriots.json"></script>
+
+<p>とすることで参照できる。</p>
+<p>各モジュールの設定はpackage.jsonにまとめておくことができる。<br>.configのようにconfig系のファイルがプロジェクトルートにたくさん作りたくないので、便利。</p>
+<p>また、設定したconfigの値はユーザーの$HOMEにある.npmrcの値によて実行時に上書きされる。</p>
+<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=npmrc.sh"></script>
+
+<p>これで</p>
+<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=npmrc_echo.sh"></script>
+
+<p>となる。各自の環境に合わせた状態などはここで上書きするなどができる感じ。</p>
+<h2 id="マルチタスク">マルチタスク</h2><p>マルチタスクはpre、postフックでタスクを実行するほかに&amp;&amp;演算子でつなげていけば可能。</p>
+<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=mutitask.json"></script>
+
+<p>また、標準出力、標準入力、リダレクトをつかって<a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>のようにシームレスに処理できる。</p>
+<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=stream.json"></script>
+
+<h2 id="ファイル監視">ファイル監視</h2><p>ファイル監視は<a href="https://www.npmjs.com/package/watch" target="_blank" rel="external">watch</a>や<a href="http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/" target="_blank" rel="external">nodemon</a>などを使う。</p>
+<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=watch.json"></script>
+
+<p>フロントエンドのビルドツールは<a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>や<a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>、<a href="http://webpack.github.io/" target="_blank" rel="external">webpack</a>を使う規模でなければnpmだけでもいけそう。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><a href="http://gruntjs.com/">Grunt</a>、 <a href="http://gulpjs.com/">gulp</a>などを使うのではなく、npmをビルドタスクを使うためにちょっとおさらいした。</p>]]>
+    
+    </summary>
+    
+      <category term="npm" scheme="http://blog.kazu69.net/tags/npm/"/>
+    
+      <category term="javascript" scheme="http://blog.kazu69.net/categories/javascript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[browserifyでjQuery(CDN)とjQueryプラグインを使う]]></title>
+    <link href="http://blog.kazu69.net/2015/04/18/browserify-uses-jquery-plugin-with-jquery-cdn/"/>
+    <id>http://blog.kazu69.net/2015/04/18/browserify-uses-jquery-plugin-with-jquery-cdn/</id>
+    <published>2015-04-18T03:39:36.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>jQueryをCDNから取得し、jQuery pluginが活躍している場合のbrowserify導入の備忘録</p>
+<a id="more"></a>
+<h2 id="CDNのjQueryをrequireする">CDNのjQueryをrequireする</h2><p>CDNを使うことで、browserifyでbundleするファイルサイズは小さくなり、ファイル生成までの時間も短くなるという恩恵がある。</p>
+<p>まず、CDNのjQueryを利用するのに<a href="https://github.com/thlorenz/browserify-shim" target="_blank" rel="external">browserify-shim</a>を使う。<br>globalのjQueryを「jquery」というモジュール名でrequireできるようにする。</p>
+<script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=browserify-shim.json"></script>
+
+<p>requireでincludeするjqueryはglobal(window)空間に存在しているので、<br>実際にはrequireなどせずとも使えるといえば使える。</p>
+<p>require をするには以下の理由があるらしい。</p>
+<ul>
+<li>require(‘jquery’)に統一することでwindow.jQueryというグローバルな名前空間へのアクセスを避け、依存解決方法を統一できる</li>
+<li>将来的にnpmパッケージとして運用する場合に、コードに変更がいらない</li>
+<li>require することでディレクトリ構造などが変わる変更が生じても、その影響を受けにくくなる。</li>
+</ul>
+<p>browserifyを実行すると</p>
+<script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=global-bundle.js"></script>
+
+<p>となり、globalのjQueryをrequireしているのがわかる。</p>
+<p>だが、node_modules配下にjQueryをrequireしているパッケージがある場合は、以下のようになる。</p>
+<script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=browserify.sh"></script>
+
+<p>解決するにはいずれか、</p>
+<ol>
+<li>素直にjQueryをnpm installしてdependenciesに追加する</li>
+<li>shim を作成して、jQueryをexportsする</li>
+</ol>
+<p>1 の場合は、結局CDNから取得するjQueryを使うわけではなく、npmでinstallしたjQueryを使うことになるため今回の目的に沿わない。</p>
+<p>2 で対応する。jquery_shim.jsを作りmodule.exportsにglobalのjQueryを渡すようにする。</p>
+<script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=jquery_shim.js"></script>
+
+<p>そして、 browserフィールド追加してにaliaseを作成</p>
+<script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=browserify-browser.json"></script>
+
+<p>これにより、以下のようなスクリプトを作成できるのでCDNの恩恵を受けることができる。<br>requireの引数にjqueryが追加されglobalのjQueryをexportしているのがわかる。</p>
+<script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=cdn-jquery.js"></script>
+
+<p>とこれでまずはjQueryはCDNの恩恵を受けることができる。</p>
+<h2 id="jQuery_pluginの対応">jQuery pluginの対応</h2><p>jquery pluginもnpmから取得できるので、bowerを使用することなくnpm経由で直接installからexportsできる。<br>(<a href="http://blog.npmjs.org/post/111385956875/welcome-jquery-developers" target="_blank" rel="external">Welcome, jQuery developers!</a>)</p>
+<p>任意のjquery.pluginと自作モジュールのmy_module.jsを利用するとした場合、</p>
+<script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=browserify-browser-modules.json"></script>
+
+<p>ここではjquery.pluginをjqueryPluginでexport、<br>my_module.jsをmyModuleとしてexportしている。</p>
+<p>それぞれ、require(‘jquery_plugin’)、require(‘myModule’)とすることで利用出来る。</p>
+<p>module 形式でない package の場合でも、<code>browserify -r jquery_plugin</code> で require オプションを使うことで requireできるようになるのでとりあえずなんとかなる。</p>
+<script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=browserify-require.js"></script>
+
+<p><a href="http://qiita.com/hitsujiwool/items/b013577d361bfdef18a6" target="_blank" rel="external">browserify (browser-pack) はどんなコードを出力するのか？</a>あたりが詳しい。</p>
+<script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file==my_module.js"></script>
+
+<p>サイトの規模によってはbrowserifyを利用して全てのファイルをまとめてしまうと、ファイルサイズが気になる。</p>
+<p>たとえば、サイト全体で使う共通のモジュールやユーティリティ的なものをbrowserifyでrequireできるようにしておく。</p>
+<p>各ページごとに必要な処理の多くはDOMをゴニョゴニョするものなどが多いと思うが、<br>こういったものは複数人で開発・運用などしているといろんな人が変更を行うので、<br>コアになる部分以外はあまりややこしなく扱えるようにしておきたい。</p>
+<p>意図しないグローバルを汚染をしない程度にとどめておく程度にしておくとかでもいいのではないだろうかと。</p>
+<script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=page-content.js"></script>
+
+<p>お手軽に <a href="https://github.com/jfhbrook/browserify-cdn" target="_blank" rel="external">browserify-cdn</a> もある。</p>
+<p>参考にしたページ</p>
+<ul>
+<li><a href="https://github.com/umdjs/umd" target="_blank" rel="external">https://github.com/umdjs/umd</a></li>
+<li><a href="http://blog.npmjs.org/post/112064849860/using-jquery-plugins-with-npm" target="_blank" rel="external">http://blog.npmjs.org/post/112064849860/using-jquery-plugins-with-npm</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>jQueryをCDNから取得し、jQuery pluginが活躍している場合のbrowserify導入の備忘録</p>]]>
+    
+    </summary>
+    
+      <category term="javascript" scheme="http://blog.kazu69.net/categories/javascript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[phpのREPL psysh が便利そうだった]]></title>
+    <link href="http://blog.kazu69.net/2015/02/28/php-repl-psysh-was-so-convenient/"/>
+    <id>http://blog.kazu69.net/2015/02/28/php-repl-psysh-was-so-convenient/</id>
+    <published>2015-02-28T04:56:01.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>phpのインタラクティブコンソール<a href="http://psysh.org/" target="_blank" rel="external">psysh</a>というものが便利そうだった。<br>phpの開発している人なら既に知ってるのかもしれないけど、<br>デバッグが非常に楽になりそうだった。</p>
+<a id="more"></a>
+<p>phpのREPLにはFacebookの<a href="https://github.com/facebookarchive/phpsh" target="_blank" rel="external">phpsh</a>、<a href="https://github.com/ieure/php_repl" target="_blank" rel="external">php_repl</a>、<a href="https://github.com/d11wtq/boris" target="_blank" rel="external">boris</a> などもあるそうだが、psyshはRubyの<a href="https://github.com/pry/pry" target="_blank" rel="external">pry</a>のような感覚で使えそうな感じだった。</p>
+<h2 id="インストールして試してみた">インストールして試してみた</h2><script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=install.sh"></script>
+
+<p>Readmeにしたがいcomposer経由でインストールした。</p>
+<script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=use-psysh.sh"></script>
+
+<p>ls, dump, trace, history などのほかに直近の例外を表示できるwtfとかコードを読めるshowなど、重宝しそう。</p>
+<h2 id="ブレイクポイントを設置する">ブレイクポイントを設置する</h2><p>Rubyでのbinding.pry感覚でブレイクポイントを設置できる。</p>
+<script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=debugger.php"></script>
+
+<p>psyshをrequireして、デバッグしたい箇所でeval(\Psy\sh());を実行するだけで、<br>該当箇所でプログラムが中断しpsyshが起動してデバッグできます。</p>
+<script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=debugger.sh"></script>
+
+<h2 id="phpの日本語ドキュメントを読めるようにする">phpの日本語ドキュメントを読めるようにする</h2><p>日本語ドキュメントを取得することで、docで日本語のphpドキュメントも読める</p>
+<script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=show_php_doc.sh"></script>
+
+<h2 id="psyshの設定">psyshの設定</h2><p>ここもpryのように、設定ファイルを追加してカスタマイズできる</p>
+<script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=add_psysh_config.sh"></script>
+
+<p>ということで、これはデバッグがはかどりそう。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>phpのインタラクティブコンソール<a href="http://psysh.org/">psysh</a>というものが便利そうだった。<br>phpの開発している人なら既に知ってるのかもしれないけど、<br>デバッグが非常に楽になりそうだった。</p>]]>
+    
+    </summary>
+    
+      <category term="php" scheme="http://blog.kazu69.net/categories/php/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[C/C++のSass Compilierのlibsassを試してみた]]></title>
+    <link href="http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/"/>
+    <id>http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/</id>
+    <published>2015-02-21T14:51:55.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>フロントエンド周りを触ることがあり、Sassのコンパイル速度改善をするために、<br><a href="http://libsass.org/" target="_blank" rel="external">libsass</a>について軽く調べてみた。</p>
+<a id="more"></a>
+<h2 id="libsassとは">libsassとは</h2><p>C/C++で書かれたSass Compiler。これ自体は単なるライブラリで、実際にこれを走らせるには<br><a href="https://github.com/sass/sassc" target="_blank" rel="external">SassC</a>や<a href="https://github.com/sass/ruby-libsass" target="_blank" rel="external">ruby-libsass</a>などを使う。</p>
+<p>コンパイラにGCC4.6+またはClang/LLVMが必要だとか。</p>
+<h2 id="libsass_のインストール">libsass のインストール</h2><p>libsassとSassCは共にbrewインストール可能だが、<br>マニュアルに沿ってインストールする場合は、</p>
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=manual-install.sh"></script>
+
+<h2 id="libsassとRuby_Sassとの互換性">libsassとRuby Sassとの互換性</h2><p>現状ではRuby Sassとの違いもあり、完全に互換性があるわけではない。<br>実際、Ruby Sassよりも実装が遅れているため、Ruby Sass3.4の機能は多くが利用できない状況らしい。<br><a href="https://github.com/sass/sass-spec/tree/master/spec/libsass-todo-issues" target="_blank" rel="external">SassSpec/libsass-todo-issues</a>を<br>みるとサポート状況わかる。</p>
+<p>ちなみにSass Specを使ってみると</p>
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=sass-spec.sh"></script>
+
+<p>libsassで sass spec実行</p>
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-spec.sh"></script>
+まだ対応できてないのか、スキップされてる項目が多い。
+
+## 多言語サポート
+
+libsassのラッパーも多く、おもだった言語で使えそう。
+
+*   [SassC](https://github.com/sass/sassc) command line driver
+*   [perl-libsass](https://github.com/sass/perl-libsass)
+*   [php-sass](https://github.com/guitarpoet/php-sass)
+*   [ruby-libsass](https://github.com/sass/ruby-libsass)
+*   [node-sass](https://github.com/andrew/node-sass)
+*   [sass.js](https://github.com/medialize/sass.js)
+*   [gosass](https://github.com/moovweb/gosass)
+*   [libsass-python](https://github.com/dahlia/libsass-python)
+*   [libsass-maven-plugin](https://github.com/warmuuh/libsass-maven-plugin)
+
+* * *
+
+libsassへ乗り換えるなら、互換性を考慮する必要があるので、まず調査のためlibsass-todo-issuesを確認するか、一通りまとめてある
+[Sass Compatibility](http://sass-compatibility.github.io/)などで確認することが必要そう。
+
+現在のlibsassのバージョンは3.1だが、
+リリース計画によると最終的に3.4でRuby Sassに追いつく予定らしいので、
+それまで待つでもしれない。
+
+しかし、最新のSassの機能に縛られなければ、十分に機能を享受できそうだし、やはりコンパイル時間の短縮は魅力的。
+コンパル結果が同じなら使わない理由がなさそうな気がする。
+
+ちなみに、Sassのライブラリである、
+compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com/Compass/compass/issues/1916)になる予定、[Burbon](http://bourbon.io/)はすでにサポートしている。
+
+以下のようにCompassを使っているscssファイルをsasscでコンパルすると
+
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=sample.scss"></script>
+
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-compass.sh"></script>
+
+<p>となってしまう。</p>
+<p>Compassのcore mixinを切り出した<a href="https://github.com/Igosuki/compass-mixins" target="_blank" rel="external">compass-mixins</a>を使えば、<br>Compassでもlibsassを利用可能っぽい。</p>
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-compass-mixin.sh"></script>
+
+<p><a href="https://github.com/sindresorhus/grunt-sass" target="_blank" rel="external">grunt-sass</a>を使用する場合は次のような感じになる。</p>
+<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=Gruntfile.js"></script>
+
+<p>RailsプロジェクトなどでSassコンパイルに時間かかってるとかだと、乗り換えてみるのもいのじゃないかな。</p>
+<p>参考にしたページ<br><a href="http://benfrain.com/lightning-fast-sass-compiling-with-libsass-node-sass-and-grunt-sass/" target="_blank" rel="external">Lightning fast Sass compiling with libsass, Node-sass and Grunt-sass</a><br><a href="http://www.sitepoint.com/switching-ruby-sass-libsass/" target="_blank" rel="external">Switching from Ruby Sass to LibSass</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>フロントエンド周りを触ることがあり、Sassのコンパイル速度改善をするために、<br><a href="http://libsass.org/">libsass</a>について軽く調べてみた。</p>]]>
+    
+    </summary>
+    
+      <category term="sass" scheme="http://blog.kazu69.net/categories/sass/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[JSONを使ってSassとJavaScriptで設定値を共有する方法を調べてみた]]></title>
+    <link href="http://blog.kazu69.net/2015/01/28/examined-how-to-share-values-with-sass-and-javascript-using-json/"/>
+    <id>http://blog.kazu69.net/2015/01/28/examined-how-to-share-values-with-sass-and-javascript-using-json/</id>
+    <published>2015-01-28T05:12:46.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>cssのプロパティをJavaScriptでも扱う必要があり、方法を検討してみた。</p>
+<a id="more"></a>
+<p>管理するデータを一つにして、JavaScriptからも参照できると、便利そう。<br>ということで、データをJSON形式でデータを持たせて、<br>データをSassのMap型にコンバートして扱うことができれば、実現可能そうなので、<br>変換するモジュールなどを調べてみた。</p>
+<p>例えば以下のようなjsonがあった場合でそれぞれのパターンを試してみた。</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=variables.json"></script>
+
+<hr>
+<h2 id="Compass_を使っているプロジェクトの場合">Compass を使っているプロジェクトの場合</h2><p>compass extentionとして提供されている、<a href="https://github.com/HugoGiraudel/SassyJSON/" target="_blank" rel="external">SassyJSON</a>を使う。<br>ちなみにrubygems.orgよりもGitHubから取得したほうが最新っぽいので、注意したほうが良さそう。</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=use-compass.sh"></script>
+
+<p>sassは以下のようになる。</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=use-compass.scss"></script>
+
+<p>これをコンパイルすると、</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=use-compass.css"></script>
+
+<p><strong>json_encode</strong>メソッドもあるので、contentプロパティ値にJSONの値を持たせることもで、<br>view側にもstyleとして出力もできそう。</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=use-compass-output.scss"></script>
+
+<hr>
+<h2 id="Ruby_プロジェクトの場合">Ruby プロジェクトの場合</h2><p><a href="https://github.com/vigetlabs/sass-json-vars" target="_blank" rel="external">sass-json-vars</a>が良さそう。<br>JSONのネスト構造もmapに変換してくれて、JSONをそのままsass変数に変換してくれるので、<br>直感的で使いやすそう。</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=use-ruby.sh"></script>
+
+<p>sassは以下のようになる。</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=use-ruby.scss"></script>
+
+<hr>
+<h2 id="そのほか">そのほか</h2><p>ビルドツールを使って、コンパイルする。<br>この場合は、gulp pluginの<a href="https://www.npmjs.com/package/gulp-json-sass" target="_blank" rel="external">gulp-json-sass</a>がある。</p>
+<p>JSONをsass変数に変換するだけなので、sassファイルの結合とコンパイルには別のプラグインが必要。<br>今回は次のような感じでつかってみた。</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=use-gulp.package.json"></script>
+
+<p>gulpfile.jsは</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=gulpfile.js"></script>
+
+<p>gulp-json-sassでJSONをsass変数にconvertできるが、<br>map形式にはならないのでJSONの構造を考慮しておく必要がありそう。</p>
+<p>デフォルトのままだと、次のようにconvertされる</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=use-gulp-variable.scss"></script>
+
+<p>ということなので、以下のsassファイルとgulp-concatで結合させて</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=use-gulp-scss.scss"></script>
+
+<p>gulp-sassでコンパイルする</p>
+<script src="https://gist.github.com/kazu69/18930760cb6c5af323be.js?file=use-gulp-css.css"></script>
+
+<p>他にもあるかもしれないけど、現状こんな感じでしょうか。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>cssのプロパティをJavaScriptでも扱う必要があり、方法を検討してみた。</p>]]>
+    
+    </summary>
+    
+      <category term="javascript" scheme="http://blog.kazu69.net/categories/javascript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Chef12でChef Serverを試してみた]]></title>
+    <link href="http://blog.kazu69.net/2015/01/27/tried-the-chef-server-at-chef12/"/>
+    <id>http://blog.kazu69.net/2015/01/27/tried-the-chef-server-at-chef12/</id>
+    <published>2015-01-27T10:26:12.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>普段はChef Soloしか使う機会がないので、Chef Serverを試してみた。<br>ちなみに、Chef12からはClientからServerへのリクエストにおいて、SSL証明書の検証が必要になり安全性がたかまったとか。</p>
+<a id="more"></a>
+<p>初めに一度それぞれの名称を整理しておく。</p>
+<ul>
+<li>Chef Server：Clientの管理を行う(host name: chef_server)</li>
+<li>Chef Node：Chefによって構築、管理される対象(host name: chef_client)</li>
+<li>Chef Workstation：Cookbookの作成、更新を行う端末</li>
+</ul>
+<h2 id="Vagrantfileを作成">Vagrantfileを作成</h2><p>chef-server、chef-clientの2台分VMを定義する</p>
+<p>Vagrantfileにプロビジョニングコード追加して、<br>とりあえず、Chef ServerとChefのインストール。<br>ntpで時刻も合わせておく。</p>
+<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=Vagrantfile"></script>
+
+<h2 id="Chef_Serverのセットアップ">Chef Serverのセットアップ</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=chef-server-setup.sh"></script>
+
+<p>Web UI をインストールしている場合、<a href="https://192.168.33.12/signupにアクセスできるようになる。" target="_blank" rel="external">https://192.168.33.12/signupにアクセスできるようになる。</a><br>workstation側でhostsの設定をしていると<a href="https://chef-server/でもアクセスできる。" target="_blank" rel="external">https://chef-server/でもアクセスできる。</a></p>
+<h2 id="ユーザー、Organization作成">ユーザー、Organization作成</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-user-organization.sh"></script>
+
+<p>またworkstationのhostsにchef-serverのipを追加しておく。</p>
+<h2 id="Workstationの-chef/knife-rbの設定">Workstationの.chef/knife.rbの設定</h2><p>knife configureで指示に従って進めると、knife.rbが生成される。</p>
+<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-knife.sh"></script>
+
+<h2 id="Workstationに鍵を転送">Workstationに鍵を転送</h2><p>knife ssl fetch を使うとChef Serverから鍵を取得できる。</p>
+<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=transfer-key.sh"></script>
+
+<h2 id="node、userの確認">node、userの確認</h2><p>knife client list、knife user listでnodeとuserを確認する。</p>
+<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=check-user-node.sh"></script>
+
+<h2 id="Chef_Clientの準備">Chef Clientの準備</h2><p>Chef Serverとの認証には鍵認証を使う。<br>Chef ServerはClientごとに秘密鍵を発行し、公開鍵を自身(Chef Server)に登録する。</p>
+<p>Clientごとに発行するのは手間なので、Chef Serverにあらかじめ用意されているvalidator keyを使う。<br>ClientはChef Serverとの通の際にこのvalidator keyを使うと、<br>Chef ServerにClientとして登録され、以降の認証に必要な鍵が発行される。</p>
+<p>これは最初の1回目にだけ利用される。<br>Chef Clientのhostsにchef-serverのipを追加して、名前解決できるようにしておく。</p>
+<h2 id="WorkstationからChef_Serverにnodeを登録する">WorkstationからChef Serverにnodeを登録する</h2><p>knife bootstrapでChef Serverに対してchef-clientを実行する。</p>
+<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-node.sh"></script>
+
+<p>ここで以下のように</p>
+<pre><code>INFO: HTTP Request Returned <span class="number">401</span> Unauthorized: Failed <span class="keyword">to</span> authenticate <span class="keyword">as</span> NODENAME. Ensure <span class="keyword">that</span> your node_name <span class="keyword">and</span> client key are correct.
+</code></pre><p>など401エラーが発生する場合、多くは証明書の問題っぽい。<br>エラーが出た際は<a href="https://docs.chef.io/errors.html" target="_blank" rel="external">https://docs.chef.io/errors.html</a>を一度参考すると良さそう。</p>
+<h2 id="Chef_Client_の情報を取得する">Chef Client の情報を取得する</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=check-chef-client.sh"></script>
+
+<h2 id="WorkstationからChef_ClientにRun_Listを適用">WorkstationからChef ClientにRun Listを適用</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=add-run-list.sh"></script>
+
+<h2 id="Chef_ClientからRecipeを実行する">Chef ClientからRecipeを実行する</h2><p>nodeでcookbookを適用するには以下の条件が必要</p>
+<ul>
+<li>Chef Serverにcookbookが登録されている</li>
+<li>Chef Serverにnodeの情報が登録されていてrun listに適用したいレシピが登録されている</li>
+<li>nodeにChef Serverと通信するためのclient keyもしくはvalidator keyが配置されている</li>
+</ul>
+<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=apply-recipe.sh"></script>
+
+<p>運用するサーバーの台数が多くなると同時に複数台に設定を適用するのが大変になるので、<br>以下の方法でclient側で処理を行う。</p>
+<ul>
+<li>Chef Clientをデーモンで起動して定期的にサーバーにアクセス</li>
+<li>knife ssh で指定するサーバーにコマンドを実行する</li>
+<li>Kickstartなどを使い、複数nodeでchef-clientコマンドを実行する</li>
+</ul>
+<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=running-chef-client.sh"></script>
+
+<h2 id="Chef12からcookbookにname_attributeが必要になった">Chef12からcookbookにname attributeが必要になった</h2><p>Chef Serverとは関係ないが、Chef12からcookbookのmetadata.rbにname attributeが必要になったぽい。<br>適当な古いcookbookを使うとエラーになる。</p>
+<p>そんなときは、</p>
+<ul>
+<li>cookbookを修正して、name attributeを追加するか、metadata.rbを削除する。</li>
+<li>古いバージョンのchef-clientを利用する</li>
+</ul>
+<p>という方法で解決できそうだった。</p>
+<p>参考にしたページ: <a href="http://www.creationline.com/lab/6644" target="_blank" rel="external">Chef 12の新機能: knife ssl check/fetch #opschef_ja #getchef_ja</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>普段はChef Soloしか使う機会がないので、Chef Serverを試してみた。<br>ちなみに、Chef12からはClientからServerへのリクエストにおいて、SSL証明書の検証が必要になり安全性がたかまったとか。</p>]]>
+    
+    </summary>
+    
+      <category term="chef" scheme="http://blog.kazu69.net/categories/chef/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Railsでマルチスレッド処理のテストを書く際の設定]]></title>
+    <link href="http://blog.kazu69.net/2015/01/14/set-of-writing-multi-threaded-tests-in-rails/"/>
+    <id>http://blog.kazu69.net/2015/01/14/set-of-writing-multi-threaded-tests-in-rails/</id>
+    <published>2015-01-14T13:37:21.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>Railsアプリケーションにおいて、マルチスレッド処理でレコード取得処理を行う処理を書くときに、Rspecの設定周りでいろいろと知ることができたのでメモ。</p>
+<p>テスト環境は Rspec + FactoryGirl + DatabaseCleaner という感じ。</p>
+<a id="more"></a>
+<p>まず、テストの流れとして、<br>FactoryGirlなどからデータベースにデータが挿入される。これは一般的にTransactionで行われる。</p>
+<p>そして、テストが終了するとTransactionはロールバックされてデータベースは元の状態に戻る。</p>
+<p>しかし、マルチスレッドでレコード取得を行っていると、<br>テスト開始時にTransaction内でデータは挿入されるが、それぞれ別のスレッドからはTransaction内のデータを参照できないため、レコードの取得ができずに、テストは落ちることになる。</p>
+<p>そこでrspecの設定でTransactionでのテストを無効にする。</p>
+<script src="https://gist.github.com/kazu69/ad229ae15cc1857280bb.js?file=transactional_fixtures.rb"></script>
+
+<p>これにより、挿入されたデータはトランザクションではなく、Truncationされる。<br>しかし、この処理はTransactionよりも重くテスト全体の実行時間に影響を与えることなった。<br>そこでdatabase_cleanerで、データ削除の設定を行う。</p>
+<script src="https://gist.github.com/kazu69/ad229ae15cc1857280bb.js?file=database_clenaer.rb"></script>
+
+<p>この設定では、マルチスレッドのテストにだけ、multithreadオプションをつけてテストを実行する。</p>
+<script src="https://gist.github.com/kazu69/ad229ae15cc1857280bb.js?file=test_spec.rb"></script>
+
+<p>このオプションのときはTransactionをおこなわないので、別のスレッドからでもデータを参照できる。</p>
+<p>database_cleanerの設定が若干ややこしい感じだが、これで問題なくテストがぱすできるようになった。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Railsアプリケーションにおいて、マルチスレッド処理でレコード取得処理を行う処理を書くときに、Rspecの設定周りでいろいろと知ることができたのでメモ。</p>
+<p>テスト環境は Rspec + FactoryGirl + DatabaseCleaner という感じ。</p>]]>
+    
+    </summary>
+    
+      <category term="rails" scheme="http://blog.kazu69.net/categories/rails/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[MacでSSHの鍵をECDSAにしてみる]]></title>
+    <link href="http://blog.kazu69.net/2014/12/22/the-ecdsa-ssh-keys-on-mac/"/>
+    <id>http://blog.kazu69.net/2014/12/22/the-ecdsa-ssh-keys-on-mac/</id>
+    <published>2014-12-22T05:20:49.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>Mac OS10.10(Yosemite)にして、sshのたびにpromptがでて<br>毎回パスフレーズを入力すれども、<strong>Saving password to keychain failed</strong> となりssh-agentが記憶してくれない状況になった。<br>そのときに修正したときのメモ。</p>
+<a id="more"></a>
+<p>ついでに、sshの鍵をRSA暗号より安全性の高いECDSA(楕円曲線DSA)にしてみた。<br><a href="http://cloud.watch.impress.co.jp/epw/docs/news/20100118_343044.html" target="_blank" rel="external">この記事</a>によると<br>楕円曲線暗号がRSA暗号より、数千倍程度相対的に高い強度であるとか。</p>
+<script src="https://gist.github.com/kazu69/8ff08940c74101194b54.js"></script>
+
+<p>ssh-keygen -t ecdsa -b 521 で、あれ512じゃないかなとおもったけど、<br><a href="http://blog.manabusakai.com/2013/08/ecdsa-no-exist-512bit/" target="_blank" rel="external">楕円曲線暗号に 512 bit は存在しない</a>をみるどうやら521bitでいいらしい。</p>
+<p>参考ページ <a href="http://www.dctrwatson.com/2013/07/how-to-update-openssh-on-mac-os-x/" target="_blank" rel="external">How to Update OpenSSH on Mac OS X</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Mac OS10.10(Yosemite)にして、sshのたびにpromptがでて<br>毎回パスフレーズを入力すれども、<strong>Saving password to keychain failed</strong> となりssh-agentが記憶してくれない状況になった。<br>そのときに修正したときのメモ。</p>]]>
+    
+    </summary>
+    
+      <category term="ssh" scheme="http://blog.kazu69.net/categories/ssh/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Rubyのベンチマークを計測するのにbenchmark-ipsが便利そうだった]]></title>
+    <link href="http://blog.kazu69.net/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/"/>
+    <id>http://blog.kazu69.net/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/</id>
+    <published>2014-11-29T02:23:20.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>Rubyのベンチマークを計測するのに<a href="https://github.com/evanphx/benchmark-ips" target="_blank" rel="external">benchmark-ips</a>を使うと簡単だし、便利そうだったのでメモ。<br><a id="more"></a></p>
+<p>Rubyでベンチマークを取る場合、<a href="http://docs.ruby-lang.org/ja/2.1.0/class/Benchmark.html" target="_blank" rel="external">Benchmark</a>を使うことが多い。<br>この場合、実行回数を勘所で決めないといけなかったりする。</p>
+<p>benchmark-ipsを使うと、1秒あたりに何回実行できたのかを評価するので、実行回数は気にしなくていい。<br>あと、標準偏差も出してくれるあたりもいい感じ。</p>
+<script src="https://gist.github.com/kazu69/dc52ab38e243c98b93c6.js?file=sample.rb"></script>
+
+<script src="https://gist.github.com/kazu69/dc52ab38e243c98b93c6.js?file=result.sh"></script>
+
+<p>ちなみに、デフォルトではリハーサル2回、本番は5回実行。</p>
+<p>参考にしたページ: <a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/" target="_blank" rel="external">Unraveling String Key Performance in Ruby 2.2</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Rubyのベンチマークを計測するのに<a href="https://github.com/evanphx/benchmark-ips">benchmark-ips</a>を使うと簡単だし、便利そうだったのでメモ。<br>]]>
+    
+    </summary>
+    
+      <category term="ruby" scheme="http://blog.kazu69.net/categories/ruby/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Rubyでメソッドを上書き(monkey patch)をする方法を調べてみた]]></title>
+    <link href="http://blog.kazu69.net/2014/11/23/examined-how-to-override-monkey-patch-methods-in-ruby/"/>
+    <id>http://blog.kazu69.net/2014/11/23/examined-how-to-override-monkey-patch-methods-in-ruby/</id>
+    <published>2014-11-23T05:50:29.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>Gemを作っていた時に、どうしても依存しているGemの挙動を変える必要があったので、どういう方法があるのか調べてみた。</p>
+<a id="more"></a>
+<h2 id="継承_+_Mixin">継承 + Mixin</h2><p>まず、普通にmoduleを作成して、classをオープンしてincludeする。もちろん</p>
+<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=include.rb"></script>
+
+<p>Rubyのクラス継承チェインの上位に上書きしたいmoduleが来てしまうため無理。</p>
+<h2 id="クラス継承">クラス継承</h2><p>普通にクラスを継承して、上書き。</p>
+<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=inheritance.rb"></script>
+
+<h2 id="オープンクラス_+_alias_method">オープンクラス + alias_method</h2><p>extendしていることを明確にするためにmoduleをincludeする形にしたが、classをopenして、alias_methodを使うのと同じで、想定通りの挙動になる。</p>
+<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=alias_method.rb"></script>
+
+<h2 id="delegation(委譲)">delegation(委譲)</h2><p>継承やオープンクラスをしないで、メソッドの実行を委譲することもできるっぽい。</p>
+<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=delegation.rb"></script>
+
+<p>DelegateClass(Country)でCountryオブジェクトにインスタンスメソッドを委譲するクラスが定義され、そのクラスを継承した DelegateCountry クラスを定義することでメソッド実行を委譲している。</p>
+<h2 id="レシーバーを動的に紐付ける">レシーバーを動的に紐付ける</h2><p>クラスのインスタンスメソッドを元にUnboundMethodオブジェクトを作成して、<br>bindをつかってレシーバーと紐づける。</p>
+<p>これも、継承やオープンクラスをしないでできそう。</p>
+<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=instance_method.rb"></script>
+
+<h2 id="クラス継承チェインの先頭に追加する">クラス継承チェインの先頭に追加する</h2><p>includeした場合は、継承チェインの上位に挿入されるので上書きできないけど、prependを使うと<br>継承チェインの先頭に追加されるので、上書きできる。</p>
+<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=prepend.rb"></script>
+
+<p>と、ほかにもいろいろとやり方はありそうだった。</p>
+<p>結局、今回はalias使う方法にした。。。</p>
+<p>参考にしたページ: <a href="http://stackoverflow.com/questions/4470108/when-monkey-patching-a-method-can-you-call-the-overridden-method-from-the-new-i?answertab=votes#tab-top" target="_blank" rel="external">When monkey patching a method, can you call the overridden method from the new implementation?</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Gemを作っていた時に、どうしても依存しているGemの挙動を変える必要があったので、どういう方法があるのか調べてみた。</p>]]>
+    
+    </summary>
+    
+      <category term="ruby" scheme="http://blog.kazu69.net/categories/ruby/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[HTML5のDialog要素を試してみた]]></title>
+    <link href="http://blog.kazu69.net/2014/11/17/tried-the-dialog-element-in-html5/"/>
+    <id>http://blog.kazu69.net/2014/11/17/tried-the-dialog-element-in-html5/</id>
+    <published>2014-11-17T12:40:31.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>ダイアログ要素やモーダルウィンドウを容易に使えるdialog要素を試してみた。<br>dialog要素を使うことで、ダイアログの要素をdom内に埋め込むので、cssなどで容易にスタイリング出来るという嬉しいもの。<br>ちなみに、dialog要素のサポート状況は<a href="http://caniuse.com/#search=dialog" target="_blank" rel="external">こちらの通り</a>。<br><a id="more"></a></p>
+<p>ごくごく単純に以下のようにdialog 要素のshow()、close() APIを使うだけで簡単にダイアログを表示をできる。<br>show()に対してhide()ではなく、close()を呼ぶあたりが面白い。</p>
+<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample1.slim"></script>
+<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample1.coffee"></script>
+
+<p>See the Pen <a href="http://codepen.io/kazu69/pen/gbbNqz/" target="_blank" rel="external">gbbNqz</a> by —- (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>モーダルウィンドウを表示する場合は、showModal() APIを使えば良い。<br>また、モーダルウィンドウの背景要素にスタイルを付ける場合は、::backdrop擬似要素を使うことで実現できる。<br>dialog要素にスタイルを付けることで、モーダルウィンドウにスタイルを付けることができる。</p>
+<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample2.slim"></script>
+<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample2.scss"></script>
+<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample2.coffee"></script>
+
+<p>See the Pen <a href="http://codepen.io/kazu69/pen/dPPBrz/" target="_blank" rel="external">dPPBrz</a> by —- (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>dialog要素でformのメソッドにdialogを指定することで、フォームとダイアログ、モーダルウィンドウを連携することができる。<br>モーダルウィンドウのボタンを押すとモーダルウィンドウが閉じられ、入力値またはボタンの値をdialog要素のreturnValueにセットすることができる。</p>
+<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=index.slim"></script>
+<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=script.coffee"></script>
+<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=tyle.scss"></script>
+
+<p>See the Pen <a href="http://codepen.io/kazu69/pen/qEBJVW/" target="_blank" rel="external">dialog tag sample</a> by —- (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>ちなみに、polyfillは<a href="https://github.com/GoogleChrome/dialog-polyfill" target="_blank" rel="external">chrome/dialog-polyfill</a>。</p>
+<p>参考にしたページ: <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog" target="_blank" rel="external">MDN</a>、<a href="http://updates.html5rocks.com/2013/09/dialog-element-Modals-made-easy" target="_blank" rel="external">dialog element: Modals made easy</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>ダイアログ要素やモーダルウィンドウを容易に使えるdialog要素を試してみた。<br>dialog要素を使うことで、ダイアログの要素をdom内に埋め込むので、cssなどで容易にスタイリング出来るという嬉しいもの。<br>ちなみに、dialog要素のサポート状況は<a href="http://caniuse.com/#search=dialog">こちらの通り</a>。<br>]]>
+    
+    </summary>
+    
+      <category term="html" scheme="http://blog.kazu69.net/categories/html/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[RailsでつくったAPIのエラー処理]]></title>
+    <link href="http://blog.kazu69.net/2014/11/13/made-in-the-rails-api-error-handling/"/>
+    <id>http://blog.kazu69.net/2014/11/13/made-in-the-rails-api-error-handling/</id>
+    <published>2014-11-13T11:23:08.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>RailsでAPIを作ったとき、StandardErrorをどのように処理するのがいいのかと考えた。<br>やりたいことは、エラーの内容をjsonで返し、なおかつエラーのstatus codeも返却したいという感じ。</p>
+<a id="more"></a>
+<p>エラー内容は普通にrescueしてexception.messageを返してあげるといいが、statusはどうするか。<br>そこでどこかでエラーのリストを保持しているのではないかとで調べると、<a href="https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/exception_wrapper.rb" target="_blank" rel="external">ActionDispatch::ExceptionWrapper</a>にあるっぽいことがわかった。</p>
+<p>これを上手こと利用して動的にエラーをレスポンスを生成したらどうだろうかということで、以下のようにしてみた。</p>
+<script src="https://gist.github.com/kazu69/6b6cb71ff77fbb1f40b4.js?file=api_base_controller.rb"></script>
+
+<p>とすると、standard errorの処理はできそう。<br>しかし、ExceptionNotifierなどをつかっていると、エラーを通知できないのでは？ということを<br>教えてもらったので、最終的に</p>
+<script src="https://gist.github.com/kazu69/6b6cb71ff77fbb1f40b4.js?file=api_upd_base_controller.rb"></script>
+
+<p>という形で、ExceptionNotifierでも拾えるようにした。</p>
+<p>この場合、全てのエラーを通知してしまうので、必要になエラーだけ拾うようにしたらいいのかも。</p>
+<script src="https://gist.github.com/kazu69/6b6cb71ff77fbb1f40b4.js?file=api_select_excetion_base_controller.rb"></script>
+
+<p>参考にしたページ: 2014-03-22: <a href="http://diary.sorah.jp/2014/03/22/20140322" target="_blank" rel="external">さんがつにじゅうににち: kosenconf-080tokyo</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>RailsでAPIを作ったとき、StandardErrorをどのように処理するのがいいのかと考えた。<br>やりたいことは、エラーの内容をjsonで返し、なおかつエラーのstatus codeも返却したいという感じ。</p>]]>
+    
+    </summary>
+    
+      <category term="rails" scheme="http://blog.kazu69.net/categories/rails/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[homebrewをupdateしたときにgitのエラーが出たときの対処]]></title>
+    <link href="http://blog.kazu69.net/2014/11/05/what-to-do-when-git-errors-when-you-update-a-homebrew/"/>
+    <id>http://blog.kazu69.net/2014/11/05/what-to-do-when-git-errors-when-you-update-a-homebrew/</id>
+    <published>2014-11-05T10:11:16.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>homebrewでupdateしたときに、gitのエラーが出たときの対応メモ。<br><a id="more"></a></p>
+<p>以下のようなエラーが発生した。</p>
+<script src="https://gist.github.com/kazu69/3022dcb8c9ca1d88a18b.js?file=error.sh"></script>
+
+<p>readline がなにやら上書きされてそうな。</p>
+<p>とりあえず、master branchと同期させて、resetしました。</p>
+<script src="https://gist.github.com/kazu69/3022dcb8c9ca1d88a18b.js?file=fix.sh"></script>
+
+<p>参考にしたページ: <a href="http://blog.f13.jp/post/20626146392/brew-brew-update" target="_blank" rel="external">brewのアップデート(brew update)に失敗してしまったので対処する</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>homebrewでupdateしたときに、gitのエラーが出たときの対応メモ。<br>]]>
+    
+    </summary>
+    
+      <category term="git" scheme="http://blog.kazu69.net/categories/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Sass3.4 変更点・追加点を眺めてみた]]></title>
+    <link href="http://blog.kazu69.net/2014/11/03/i-look-at-sass3-4-changes-and-additions/"/>
+    <id>http://blog.kazu69.net/2014/11/03/i-look-at-sass3-4-changes-and-additions/</id>
+    <published>2014-11-03T07:43:31.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>時間ができたので、<a href="https://github.com/sass/sass/blob/stable/doc-src/SASS_CHANGELOG.md#340-18-august-2014" target="_blank" rel="external">sass changelog</a>眺めて、あまり実例が思い浮かばないのもあるけど、一通り試してみたときの備忘録。<br><a id="more"></a></p>
+<h2 id="parent_selector(&amp;)_に関して">parent selector(&amp;) に関して</h2><script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=parent-selector.scss"></script>
+
+<h3 id="unquoteなリストを返却するようになった">unquoteなリストを返却するようになった</h3><p>3.3 ではエラーになっていたけど、</p>
+<p>bemっぽことを意識して、以下のようにもできる。</p>
+<script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=parent-selector2.scss"></script>
+
+<h3 id="該当の親セレクタがない場合_nullを返すようにもなった">該当の親セレクタがない場合 nullを返すようにもなった</h3><p>3.3ではエラーでしたが、可能になった。</p>
+<script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=parent-selector3.scss"></script>
+
+<h2 id="追加されたselector_function">追加されたselector function</h2><h3 id="selector-nest($selectors…)">selector-nest($selectors…)</h3><p>そのまんまselectorをネストさせる</p>
+<script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-nest.scss"></script>
+
+<h3 id="selector-append($selectors…)">selector-append($selectors…)</h3><p>$selecorsのリスト順に追加していく</p>
+<script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-append.scss"></script>
+
+<p>また単純に順番に追加するだけなので、いかのようにもなる</p>
+<script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-append2.scss"></script>
+
+<h3 id="selector-extend($selectors,_$extendee,_$extender)">selector-extend($selectors, $extendee, $extender)</h3><p>$selectorsはselectorリスト、<br>$extendeeはextendされるselector、<br>$extenderはextendするselector</p>
+<script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-extend.scss"></script>
+
+<p>.showを継承もととして、.edit .content-areaが追加されたセレクターが返却されるっぽい。</p>
+<h3 id="selector-replace($selector,_$original,_$replacement)">selector-replace($selector, $original, $replacement)</h3><p>これはそのまま、selectorの$originalを$replacementに置換</p>
+<script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-replace.scss"></script>
+
+<h3 id="selector-unify($selector1,_$selector2)">selector-unify($selector1, $selector2)</h3><p>二つのセレクターの組み合わせたセレクターを返す。<br>selctor1とselector2からできる組み合わせをすべて返すので例えば</p>
+<script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-unify.scss"></script>
+
+<p>全パターンを返してくれる。パターン生成が楽になりそう。</p>
+<h3 id="is-superselector($super,_$sub)">is-superselector($super, $sub)</h3><p>$super が $sub の親要素かどうかを返してくれる</p>
+<script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=is-superselector.scss"></script>
+
+<p>という具合にできるっぽい。これまでより柔軟に分岐できそう。</p>
+<h3 id="selector-parse($selector)">selector-parse($selector)</h3><p>string型の変数から簡単にcssを生成できる。</p>
+<script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-parse.scss"></script>
+
+<p>という感じ。実用例としていい感じのものが浮かばなかった。<br><a href="http://qiita.com/kazu69/items/45b707d5e05c6b6bd259" target="_blank" rel="external">qiita</a>に投稿した。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>時間ができたので、<a href="https://github.com/sass/sass/blob/stable/doc-src/SASS_CHANGELOG.md#340-18-august-2014">sass changelog</a>眺めて、あまり実例が思い浮かばないのもあるけど、一通り試してみたときの備忘録。<br>]]>
+    
+    </summary>
+    
+      <category term="sass" scheme="http://blog.kazu69.net/categories/sass/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[床拭きお掃除ロボット ブラーバ (Braava) を1週間使ってみた]]></title>
+    <link href="http://blog.kazu69.net/2014/08/03/floor-cleaning-cleaning-robot-bravo-braava-tried-one-week/"/>
+    <id>http://blog.kazu69.net/2014/08/03/floor-cleaning-cleaning-robot-bravo-braava-tried-one-week/</id>
+    <published>2014-08-03T08:24:30.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>iRobot社の床拭きロボット <a href="http://www.irobot-jp.com/braava/" target="_blank" rel="external">ブラーバ (Braava)</a>を、1週間ほど毎日使ってみた。</p>
+<a id="more"></a>
+<p>出勤前に乾拭き、帰宅後に水拭きを毎日行っている。</p>
+<h2 id="良かった点">良かった点</h2><p>まず、毎日掃除できずに週末にまとめて掃除していたこれまでに比べて、ホコリやチリを目にすることがなく、きれいな状態が保てている。<br>また、週末の掃除時間を別のことに充てられるという点でも非常にうれしい。</p>
+<p>ブラーバの稼働時には思ったより音もなく、家具にぶつかる際もさほど気になるほどの大きな音でもない。</p>
+<p>思った以上にNorthStarキューブの電波？が予想以上に届いたので、リビング以外に廊下や隣の部屋まで移動して掃除できた。</p>
+<p>ふすま溝やわずかな段差も認識してくれるので、フローリングの隣に和室がある場合や玄関と廊下の段差があまりない場でも気にしないで使えそう。</p>
+<p>専用の掃除クロスでなくても、<a href="http://www.amazon.co.jp/gp/product/B002TKLMOC/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B002TKLMOC&amp;linkCode=as2&amp;tag=kazu69-22" target="_blank" rel="external">市販のペーパーシート</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=kazu69-22&amp;l=as2&amp;o=9&amp;a=B002TKLMOC" alt="">や<a href="http://www.amazon.co.jp/gp/product/B002TKLMM4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B002TKLMM4&amp;linkCode=as2&amp;tag=kazu69-22" target="_blank" rel="external">マイクロシート</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=kazu69-22&amp;l=as2&amp;o=9&amp;a=B002TKLMM4" alt=""> でも使用できるのでランニングコストも抑えられそう。</p>
+<h2 id="気になった点">気になった点</h2><p>ゴシゴシ拭かないと取れないような汚れはとれない。これは自分で拭いた方が早い。</p>
+<p>本体部分は少し低くなる設計なので、本体の高さよりすこし低い隙間にも入ってくれる。しかし、たまに身動きとれなくなってることもある。ここは助けてあげる必要がありそう。</p>
+<p>という位。</p>
+<p>ブラーバに快適に掃除してもらうために床にものを置かなくなったので部屋自体が片付いた気もする。</p>
+<p>日本では並行輸入はサポートが受けられないっぽいので、<a href="http://store.irobot-jp.com/" target="_blank" rel="external">オンラインサイト</a>から買って正解だった。(購入して2日位で届いたのもよかった。)</p>
+<p>ルンバよりお値段はお手頃で、機能的には日本の家にむいているのかもしれない。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>iRobot社の床拭きロボット <a href="http://www.irobot-jp.com/braava/">ブラーバ (Braava)</a>を、1週間ほど毎日使ってみた。</p>]]>
+    
+    </summary>
+    
+      <category term="days" scheme="http://blog.kazu69.net/categories/days/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Rails pluginのテストでRspecを使う]]></title>
+    <link href="http://blog.kazu69.net/2014/07/31/use-rspec-on-rails-plugin-test/"/>
+    <id>http://blog.kazu69.net/2014/07/31/use-rspec-on-rails-plugin-test/</id>
+    <published>2014-07-31T10:36:14.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>Rails pluginを調べていて、思ったのだが普通にplugin作成した場合は<a href="http://docs.ruby-lang.org/ja/2.1.0/library/test=2funit.html" target="_blank" rel="external">Test::Unit</a>がテストフレームワークとして提供される、<br>ここで<a href="https://www.relishapp.com/rspec" target="_blank" rel="external">Rspec</a>を使用するようにしてみたときの個人的メモ。</p>
+<a id="more"></a>
+<p>Railsのバージョンは4.1.4。</p>
+<p>まずはpluginのひな形作成。testunitは使用しないのでslip。またdummyアプリのパスをspec/dummyにしておく。</p>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=creata-plugin.sh"></script>
+
+<p>rspec-rails をmy-gem.gemspecに追加</p>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=my-gem.gemspec"></script>
+
+<p>bundle installして、rspec-railsをinstallする。<br>dummy/spec へのシンボリックリンクを作成</p>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=create-symlink.sh"></script>
+
+<p>Rspecのインストールし、spec/rails_helper.rbのパスを変更</p>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=install-rspec.sh"></script>
+
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=rails_helper.rb"></script>
+
+<p>Rakeタスクも追加し、実行できることを確認</p>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=Rakefile"></script>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=rake_task.sh"></script>
+
+<p>以下のような構成で、簡単な文字列を出力するだけのプラグインを作成して</p>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=tree_mygem.sh"></script>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=version.rb"></script>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=my_gem.rb"></script>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=railtie.rb"></script>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=action_view.rb"></script>
+
+<p>テストを作成</p>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=action_view_spec.rb"></script>
+
+<p>ちなみに、RubyのStructを使うことで、コンパクトにまとめられそうとか。</p>
+<p>dummyアプリケーションにcontroller、routesとviewを追加する。</p>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=post_controller.rb"></script>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=routes.rb"></script>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=index.html.erb"></script>
+
+<p>テストを走らせてみる。</p>
+<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=exec_plugin_spec"></script>
+
+<p>シンボリックリンクを作成するのどうなのかなと思ったりもしたけど、一通り良さそうである。</p>
+<p>参考にしたページ<br><a href="http://stackoverflow.com/questions/16525222/how-to-test-a-concern-in-rails" target="_blank" rel="external">How to Test a Concern in Rails</a><br><a href="http://stackoverflow.com/questions/8507798/rails-3-1-plugin-gem-dummy-test-app-rspec" target="_blank" rel="external">Rails 3.1 plugin gem, dummy test app, rspec</a><br><a href="http://pothibo.com/2013/06/customize-rails-view-controller-with-railtie/" target="_blank" rel="external">Customize Rails view &amp; controller with Railtie</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Rails pluginを調べていて、思ったのだが普通にplugin作成した場合は<a href="http://docs.ruby-lang.org/ja/2.1.0/library/test=2funit.html">Test::Unit</a>がテストフレームワークとして提供される、<br>ここで<a href="https://www.relishapp.com/rspec">Rspec</a>を使用するようにしてみたときの個人的メモ。</p>]]>
+    
+    </summary>
+    
+      <category term="rails" scheme="http://blog.kazu69.net/categories/rails/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Chef Container 0.2.0 (beta)  を試してみた]]></title>
+    <link href="http://blog.kazu69.net/2014/07/18/try-chef-container-0-2-0-beta/"/>
+    <id>http://blog.kazu69.net/2014/07/18/try-chef-container-0-2-0-beta/</id>
+    <published>2014-07-18T04:12:41.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="http://www.getchef.com/blog/2014/07/15/release-chef-container-0-2-0-beta/" target="_blank" rel="external">Chef Container 0.2.0 (beta)</a> なるものがリリースされたので、ちょっと触ってみたのでメモ。</p>
+<a id="more"></a>
+<p>ブログにある通りに、apacheのimageを作成した。<br>ちなみにブログのままやるとdemo/apache2というimageなるものは存在しないので、ubuntuをつかった。</p>
+<p>まず、2つのGem、<a href="https://rubygems.org/gems/knife-container" target="_blank" rel="external">knife-container</a>、<a href="https://rubygems.org/gems/chef-container" target="_blank" rel="external">chef-container</a> と berkshelf をインストール。</p>
+<script src="https://gist.github.com/kazu69/285a4416cd7a2e0ee722.js?file=Gemfile"></script>
+
+<p>まずは初期化。initコマンドを実行することでdockerfilesというディレクトリ内に必要なファイル群が生成された。</p>
+<p>オプションの -z はローカルモード、-bは Berksfileの生成らしい。</p>
+<script src="https://gist.github.com/kazu69/285a4416cd7a2e0ee722.js?file=knife-command.sh"></script>
+
+<p>生成されたDcokerfile、first-boot.json,zero.rbは以下の通り</p>
+<script src="https://gist.github.com/kazu69/285a4416cd7a2e0ee722.js?file=Dockerfile"></script>
+
+<script src="https://gist.github.com/kazu69/285a4416cd7a2e0ee722.js?file=first-boot-origin.json"></script>
+
+<script src="https://gist.github.com/kazu69/285a4416cd7a2e0ee722.js?file=zero.rb"></script>
+
+<p>first-boot.jsonをchef-initが解釈するらしい。</p>
+<p>必要なcookbookを追加して、first-boot.jsonを編集。<br>(cookbookを追加したのはapt-get updateしないと後で失敗するから)</p>
+<script src="https://gist.github.com/kazu69/285a4416cd7a2e0ee722.js?file=Berksfile"></script>
+
+<script src="https://gist.github.com/kazu69/285a4416cd7a2e0ee722.js?file=first-boot.json"></script>
+
+<p>そして、 Docker imageをビルド。</p>
+<script src="https://gist.github.com/kazu69/285a4416cd7a2e0ee722.js?file=build-image.sh"></script>
+
+<p>コンテナを起動する</p>
+<script src="https://gist.github.com/kazu69/285a4416cd7a2e0ee722.js?file=run.sh"></script>
+
+<p>どうやら成功っぽい。</p>
+<p>事前にコンテナを作成して、chefを実行するのはコンテナ同士の通信が必要な際にipが必要だからとか。</p>
+<p>これでより容易に既存のChefの資産を使えるのかな。</p>
+<p>参考にしたページ:<br><a href="http://www.creationline.com/lab/5432" target="_blank" rel="external">Chef Container 0.2.0 (beta) で Docker コンテナを作成する #opschef_ja #getchef_ja #dockerjp</a><br><a href="http://www.creationline.com/lab/5346" target="_blank" rel="external">[和訳] Release: Chef Container 0.2.0 (beta) #opschef_ja #getchef_ja #dockerjp</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><a href="http://www.getchef.com/blog/2014/07/15/release-chef-container-0-2-0-beta/">Chef Container 0.2.0 (beta)</a> なるものがリリースされたので、ちょっと触ってみたのでメモ。</p>]]>
+    
+    </summary>
+    
+      <category term="chef" scheme="http://blog.kazu69.net/categories/chef/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[VagrantのNFS設定でexportsのエラーが発生した]]></title>
+    <link href="http://blog.kazu69.net/2014/07/16/by-vagrant-nfs-exports-error-has-occurred/"/>
+    <id>http://blog.kazu69.net/2014/07/16/by-vagrant-nfs-exports-error-has-occurred/</id>
+    <published>2014-07-16T04:42:55.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>Vagrantでプロビジョニングしているときに、<strong>exports:2: path contains non-directory or non-existent components:</strong> 見たいなエラーが出てきて困った。</p>
+<a id="more"></a>
+<p>nfsの設定は /etc/exports ファイルに書き込まれているのですが、どうやらそこに存在しないパスの設定が残ったままでエラーになっていたっぽい。</p>
+<p>とりあえず、</p>
+<script src="https://gist.github.com/kazu69/59c95f60f2f8355faf45.js?file=vagrant_nfs_exports_error.sh"></script>
+
+<p>として、解決した。</p>
+<p>毎回、vagrantをhaltやdestroyの度に消してるわけではなさそう。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Vagrantでプロビジョニングしているときに、<strong>exports:2: path contains non-directory or non-existent components:</strong> 見たいなエラーが出てきて困った。</p>]]>
+    
+    </summary>
+    
+      <category term="vagrant" scheme="http://blog.kazu69.net/categories/vagrant/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[gitの最初のコミット(initial commit)をrevertしたい]]></title>
+    <link href="http://blog.kazu69.net/2014/06/24/like-rvrt-git-commit-initial-commit/"/>
+    <id>http://blog.kazu69.net/2014/06/24/like-rvrt-git-commit-initial-commit/</id>
+    <published>2014-06-24T09:10:40.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>gitで最初のコミットをrevertしようと、</p>
+<script src="https://gist.github.com/kazu69/ab91d0bd5a4eb54716f1.js?file=unable.sh"></script>
+としてもだめでした。
+まさか、.gitファイルを削除してもう一度最初からかな？などと思いもしたのですが、違いました。
+<a id="more"></a>
+
+ここで少しgitの参照に関して調べた。
+参照自体はhash値で管理されていて、
+<script src="https://gist.github.com/kazu69/ab91d0bd5a4eb54716f1.js?file=find_git_refs.sh"></script>
+
+<p>に存在している。<br>それぞれにsha1 ハッシュ値があり、この値を更新することで参照先を切替えてるっぽい。<br>ただこの値を直接編集するのは推奨されていないので、 update-refコマンドで更新する。</p>
+<script src="https://gist.github.com/kazu69/ab91d0bd5a4eb54716f1.js?file=update-ref.sh"></script>
+
+<p>とupdate時にコメントも残せるとかいろいろある。</p>
+<p>ということなのでこの場合、</p>
+<script src="https://gist.github.com/kazu69/ab91d0bd5a4eb54716f1.js?file=revert.sh"></script>
+
+<p>として、現在の参照を更新(Headを削除)して、一つ前の状態にしてやる必要がありました。<br>以前にも似たようなエントリを書いていた気がする。。。</p>
+<p>参考にしたページ: <a href="http://git-scm.com/book/ja/Git%E3%81%AE%E5%86%85%E5%81%B4-Git%E3%81%AE%E5%8F%82%E7%85%A7" target="_blank" rel="external">http://git-scm.com/book/ja/Git%E3%81%AE%E5%86%85%E5%81%B4-Git%E3%81%AE%E5%8F%82%E7%85%A7</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>gitで最初のコミットをrevertしようと、</p>
+<script src="https://gist.github.com/kazu69/ab91d0bd5a4eb54716f1.js?file=unable.sh"></script>
+としてもだめでした。
+まさか、.gitファイルを削除してもう一度最初からかな？などと思いもしたのですが、違いました。]]>
+    
+    </summary>
+    
+      <category term="git" scheme="http://blog.kazu69.net/categories/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[middlemanアプリケーションをwerckerを使ってGithub Pageに継続的デプロイする]]></title>
+    <link href="http://blog.kazu69.net/2014/05/03/middleman-applications-using-wercker-on-github-page-continued-to-deploy/"/>
+    <id>http://blog.kazu69.net/2014/05/03/middleman-applications-using-wercker-on-github-page-continued-to-deploy/</id>
+    <published>2014-05-03T05:46:05.000Z</published>
+    <updated>2015-05-09T01:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="http://middlemanapp.com/&quot;" target="_blank" rel="external">middleman</a>アプリケーションをgithubのmasterブランチにpushするだけでgithub pageを更新できるようにした。</p>
+<a id="more"></a>
+<p>middlemanは静的サイトジェネレーターで、ビルドすることで静的サイトを生成できる。<br>生成した静的ページをgithubのgh-pagesブランチにpushすることでwebページとして公開する。</p>
+<p>今回はmasterにプッシュしたあとのビルドからデプロイまでの過程を<a href="https://app.wercker.com/" target="_blank" rel="external">wercker</a>を使ってCIした。<br>同様のことは<a href="https://travis-ci.org/" target="_blank" rel="external">Travis CI</a>や<a href="https://drone.io/" target="_blank" rel="external">drone.io</a>などを使ってもできる。<br>werckerは<a href="https://bitbucket.org/" target="_blank" rel="external">Bitbacket</a>や<a href="https://github.com/" target="_blank" rel="external">github</a>のプライベートリポジトリでも利用できて、<br>サービスがβ版の間は無料(ただしビルドは25分以内でないといけない)ということで選択した。</p>
+<p>werckerアカウントを作成し、middlemanをgithubリポジトリを同期したら、<br>デプロイターゲットとしてgh_pageを登録していく。</p>
+<p>まず、githubのアカウント設定のapplicationからtokenを作成する。</p>
+<p>つづいて、werckerのmiddlemanアプリケーションのsetting内にある<br>「Deploy targets」で「Add deploy targe」で「Custom deploy」を選択する。</p>
+<ul>
+<li>Deploy target name には任意の名前(例えばgh_pages)</li>
+<li>Auto deployにチェック。これはビルドが完了したらデプロイステップを自動実行する設定</li>
+<li>branchesにはmasterを入力(master以外にpushした際にCIする場合はそのブランチ名)</li>
+<li>Protectedにチェックをいれる。これにチェックすると環境変数がログに表示されない</li>
+</ul>
+<p>これでmasterブランチにpushするとwercker.ymlの指定通りにビルドステップを実行し、<br>自動でデプロイステップも実行するようになる。</p>
+<p>続いて環境変数を設定する。</p>
+<p>Add new variableから<br>Environment variableにGH_REMOTE。テキストエリアに<br><a href="https://{GITHUB-TOKEN}@github.com/{GITHUB-ACCOUNT}/{リポジトリ名}" target="_blank" rel="external">https://{GITHUB-TOKEN}@github.com/{GITHUB-ACCOUNT}/{リポジトリ名}</a> を入力。</p>
+<p><img src="http://cl.ly/image/271h0q1J2m0T/img.jpg" alt=""></p>
+<p>これで、wercker側の設定は完了。</p>
+<p>あとはwercker.ymlにビルドステップとデプロイステップを記述する。</p>
+<script src="http://gist-it.appspot.com/github/kazu69/middleman-blog/blob/master/wercker.yml"></script>
+
+<p>今回は、middlemanのビルド以外にjsのパッケージ管理にbowerも使ってたので<br>nodejs v0.8.9以上が必要だったので、boxをubuntu12.04-nodejs0.10にした。</p>
+<script src="http://gist-it.appspot.com/github/kazu69/middleman-blog/blob/master/wercker.yml?slice=0"></script>
+
+<p>特に指定してないとバージョンが低くできなかったため、bower installでエラーになってしまった。<br>middlemanのビルドだけであれば特にboxを指定しないでも大丈夫かも。</p>
+<p>Travis CIでの手順より若干簡単かな。</p>
+<p>参考ページ: <a href="http://blog.wercker.com/2013/07/25/Using-wercker-to-publish-to-GitHub-pages.html" target="_blank" rel="external">http://blog.wercker.com/2013/07/25/Using-wercker-to-publish-to-GitHub-pages.html</a><br>Github Repository: <a href="https://github.com/kazu69/middleman-blog" target="_blank" rel="external">kazu69/middleman-blog</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><a href="http://middlemanapp.com/&quot;">middleman</a>アプリケーションをgithubのmasterブランチにpushするだけでgithub pageを更新できるようにした。</p>]]>
+    
+    </summary>
+    
+      <category term="ruby" scheme="http://blog.kazu69.net/categories/ruby/"/>
+    
+  </entry>
+  
+</feed>

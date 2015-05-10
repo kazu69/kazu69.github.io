@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>スマートフォン対応でよく使うhtml、css、javascriptのまとめ | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="スマートフォン(ios、android)向けのウェブサイト・ウェブアプリを作る際に個人的によく使うhtml、css、javascriptの備忘録。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="スマートフォン対応でよく使うhtml、css、javascriptのまとめ">
+<meta property="og:url" content="http://blog.kazu69.net/2011/12/28/summary-of-commonly-used-smartphones-in-html-css-javascript/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="スマートフォン(ios、android)向けのウェブサイト・ウェブアプリを作る際に個人的によく使うhtml、css、javascriptの備忘録。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="スマートフォン対応でよく使うhtml、css、javascriptのまとめ">
+<meta name="twitter:description" content="スマートフォン(ios、android)向けのウェブサイト・ウェブアプリを作る際に個人的によく使うhtml、css、javascriptの備忘録。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-summary-of-commonly-used-smartphones-in-html-css-javascript" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      スマートフォン対応でよく使うhtml、css、javascriptのまとめ
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2011-12-28T08:42:51.000Z" itemprop="datePublished">2011-12-28</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/html/">html</a>
+  </div>
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>スマートフォン(ios、android)向けのウェブサイト・ウェブアプリを作る際に個人的によく使うhtml、css、javascriptの備忘録。<br><a id="more"></a></p>
+<h2 id="html関連">html関連</h2><hr>
+<h3 id="■headタグ内での設定">■headタグ内での設定</h3><p>[html]<br>&lt;!— //デバイスサイズにあわせて表示領域を変更する —&gt;<br>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</p>
+<p>&lt;!— //電話番号のリンクを無効化 —&gt;<br>&lt;meta name=&quot;format-detection&quot; content=&quot;telephone=no&quot;&gt;</p>
+<p>&lt;!— //ホーム画面用アイコン —&gt;<br>&lt;link rel=&quot;apple-touch-icon&quot; href=&quot;icon.png&quot;&gt;</p>
+<p>&lt;!— //ホーム画面用アイコンの光沢を無効化する —&gt;<br>&lt;link rel=&quot;apple-touch-icon-precomposed&quot; href=&quot;icon.png&quot;&gt;</p>
+<p>&lt;!— //iPadホーム画面用アイコン —&gt;<br>&lt;link rel=&quot;apple-touch-icon&quot; sizes=&quot;72x72&quot; href=&quot;touch-icon-ipad.png&quot;&gt;</p>
+<p>&lt;!— //iPhone4ホーム画面用アイコン —&gt;<br>&lt;link rel=&quot;apple-touch-icon&quot; sizes=&quot;114x114&quot; href=&quot;touch-icon-iphone4.png&quot;&gt;</p>
+<p>&lt;!— //splash画像の設定 —&gt;<br>&lt;link rel=&quot;apple-touch-startup-image&quot; href=&quot;startup.png&quot;&gt;</p>
+<p>&lt;!— //homeボタンから起動時にfull screen modeで起動 —&gt;<br>&lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;</p>
+<p>&lt;!— //full screen mode起動時のステータスバーの色の変更 —&gt;<br>&lt;meta name=&quot;apple-mobile-web-app-status-bar-style&quot; content=&quot;black&quot;&gt;<br>[/html]</p>
+<hr>
+<h3 id="■viewportについて">■viewportについて</h3><ul>
+<li>width:ビューポート（可視領域）の幅(初期値980px)</li>
+<li>initial-scale:倍率の初期値、minimum-scale:倍率の最小値、maximum-scale:倍率の最大値</li>
+<li>user-scalable:拡大縮小の可否</li>
+<li>コンテンツより小さいviewport widthやheightを設定しても設定値は適用されない<br>例えば、device-width=320pxでinitial-scale=0.5の場合は、表示領域 320px/0.5px = 640pxで算出、<br>device-width=320px、width=400px、コンテンツ450pxであれば、initial-scale = 320/450で横幅450pxのドキュメントを描写される。</li>
+</ul>
+<hr>
+<h3 id="■Tel_URI、Sms_URIの設定">■Tel URI、Sms URIの設定</h3><p>[html]<br>&lt;!— //リンクをクリックで電話をかける —&gt;<br>&lt;a href=&quot;tel:00000000000&quot;&gt;00000000000&lt;/a&gt;</p>
+<p>&lt;!— //リンククリックでsms —&gt;<br>&lt;a href=&quot;sms:00000000000&quot;&gt;sms&lt;/a&gt;</p>
+<p>&lt;!— //smsの送信秋複数 —&gt;<br>&lt;a href=&quot;sms:00000000000,1111111111&quot;&gt;sms複数&lt;/a&gt;</p>
+<p>&lt;!— //smsの本文追加 —&gt;<br>&lt;a href=&quot;sms:00000000000,1111111111?body=%83e%83X%83g%83%81%83b%83Z%81%5b%83W&quot;&gt;smsメッセージ&lt;/a&gt;<br>[/html]</p>
+<hr>
+<h3 id="■inputタグ関連">■inputタグ関連</h3><p>[html]<br>&lt;input autocorrect=&quot;off&quot; autocomplete=&quot;off&quot; autocapitalize=&quot;off&quot;&gt;<br>[/html]</p>
+<ul>
+<li>autocorrect:スペルチェック機能</li>
+<li>autocomplete:自動補完</li>
+<li><p>autocapitalize:先頭文字を大文字にする<br>[html]<br>&lt;input type=&quot;number&quot; value=&quot;001&quot;&gt;<br>[/html]</p>
+</li>
+<li><p>iOS5以上の場合、inputのnumber属性値の場合、「００１」は「１」の数値形式に変換される。</p>
+</li>
+<li>同様に「1000」は「1,000」の数値形式に変換される</li>
+<li>ソフトウェアキーボードを数値入力形式で表示させたいならばtel属性値を付与するかJavaScriptで回避<br>pattern属性を使って正規表現で回避するのがいいのではないかと思ってる。<br>[html]<br>&lt;input type=&quot;text&quot; pattern=&quot;[0-9]<em>&quot;/&gt;<br>[/html]<br>[html]<br>&lt;input type=&quot;text&quot; pattern=&quot;\d</em>&quot;/&gt;<br>[/html]</li>
+</ul>
+<h2 id="css関連">css関連</h2><hr>
+<h3 id="■position:fixed関連">■position:fixed関連</h3><p>position:fixed はiOS5、Android2.2以降が対応。<br>ただし</p>
+<ul>
+<li>Androidではviewportにuser-scalable=noの指定がないとposition:fixedが動かない</li>
+<li>iOS5ではURLに#がついた状態だと挙動が不安定</li>
+<li>iOS5で他ページに遷移した後に、戻るボタンでページにもどると表示位置がずれる</li>
+<li>Androidではuser-scalable=noとposition: fixedを使用すると、-webkit-transformが動かなくなる</li>
+</ul>
+<p>ちなみに、iOSがposition:fixをサポートしているかの判定は、<a href="https://gist.github.com/1221602" target="_blank" rel="external">Modernizr position fixed checkのコード</a>から<br>[javascript]<br>var isSupported;</p>
+<pre><code><span class="keyword">if</span> ( <span class="keyword">typeof</span> <span class="built_in">document</span>.body.scrollIntoViewIfNeeded === <span class="string">'function'</span>) {
+
+    (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">var</span> container     = <span class="built_in">document</span>.body,
+            elem          = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>),
+            orgHeight     = container.style.height,
+            orgScrollTop  = <span class="built_in">window</span>.pageYOffset,
+            testScrollTop = <span class="number">20</span>;
+
+        elem.style.cssText = <span class="string">'position:fixed;top:0px;height:10px;'</span>;
+
+        container.appendChild(elem);
+        container.style.height = <span class="string">'2048px'</span>;
+
+        <span class="built_in">window</span>.setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+            elem.scrollIntoViewIfNeeded();
+            isSupported = !(<span class="built_in">window</span>.pageYOffset === testScrollTop) || !(<span class="built_in">window</span>.pageYOffset === testScrollTop+<span class="number">1</span>);
+            alert(isSupported);
+            container.removeChild(elem);
+            container.style.height = orgHeight;
+
+            <span class="built_in">window</span>.scrollTo(<span class="number">0</span>, orgScrollTop);
+        }, <span class="number">1000</span>);
+
+        <span class="built_in">window</span>.scrollTo(<span class="number">0</span>, testScrollTop);
+    }());
+
+}
+</code></pre><p>   return isSupported;<br>[/javascript]</p>
+<p>という感じで判定できそうです。</p>
+<hr>
+<h3 id="■overflow:scroll関連">■overflow:scroll関連</h3><p>overflow:scrollはiOSは<strong>２本指スクロール</strong>(わかりにくい)、Androidはoverflow:hiddenとして扱われます。iOS5の場合は、<br>[css]<br>-webkit-overflow-scrolling: touch;<br>[/css]<br>で1本指スクロールが可能です。Androidの場合は現状、JavaScriptなどで回避するか別のアプローチが必要の様子。<br>overflow-scrollingは将来的にAndroidでもサポートされるかもしれないので、個人的には、<br>[javascript]<br>if(&quot;overflowScrolling&quot; in document.body.style || &quot;webkitOverflowScrolling&quot; in document.body.style || &quot;MozOverflowScrolling&quot; in document.body.style) {<br>  //対応しているときの処理<br>}<br>else {<br>  //対応してないときの処理<br>}<br>;<br>[/javascript]<br>という感じで分岐したりしてます。</p>
+<hr>
+<h3 id="■Media_Queries">■Media Queries</h3><p>デバイスの向きによって、スタイルを変更する場合、インラインなら<br>[css]<br>/<em>縦向き</em>/<br>@media all and (orientation: portrait) {<br>    body {<br>       /<em> your styles </em>/<br>    }<br>}</p>
+<p>/<em>横向き</em>/<br>@media all and (orientation: landscape) {<br>    body {<br>       /<em> your setting here </em>/<br>    }<br>}  </p>
+<p>[/css]<br>読込むcssファイルを変更する場合は<br>[html]<br>/<em>縦向き</em>/<br>&lt;link rel=&quot;stylesheet&quot; media=&quot;all and (orientation: portrait)&quot; href=&quot;portrait.css&quot;&gt;</p>
+<p>/<em>横向き</em>/<br>&lt;link rel=&quot;stylesheet&quot; media=&quot;all and (orientation: landscape)&quot; href=&quot;landscape.css&quot;&gt;<br>[/html]</p>
+<p>デバイスの画面サイズや解像度によってもスタイルを変更できます。<br>[css]<br>/<em> 画面サイズ〜480pxの端末のときに </em>/<br>@media only screen and (max-width: 481px) {<br>  /<em> CSS goes here </em>/<br>}</p>
+<p>/<em> 画面サイズ481px〜1024pxの端末が縦（portrait）のときに </em>/<br>@media only screen and (max-width: 480px) and (max-device-width: 1024px) and (orientation:portrait) {<br>  /<em> CSS goes here </em>/<br>}</p>
+<p>/<em> 画面サイズ481px〜1024pxの端末が横（landscape）のときに </em>/<br>@media only screen and (max-width: 480px) and (max-device-width: 1024px) and (orientation:landscape) {<br>  /<em> CSS goes here </em>/<br>}</p>
+<p>/<em> 画面サイズ1025〜の端末が横（landscape）のときに </em>/<br>@media only screen and (max-width: 480px) and (max-device-width: 1024px) and (orientation:landscape) {<br>  /<em> CSS goes here </em>/<br>}</p>
+<p>width: 1025px〜の端末のときに <em>/<br>@media only screen and (max-width: 1025px) {<br>  /</em> CSS goes here */<br>}</p>
+<p>/<em> iphone4 iphone4s </em>/<br>@media (-webkit-min-device-pixel-ratio: 2),<br>             (min—moz-device-pixel-ratio: 2),<br>             (min-resolution: 300dpi) {<br>  body{ your styles here }<br>}  </p>
+<p>/<em> andoroid </em>/<br>@media (-webkit-max-device-pixel-ratio: 1.5),<br>             (max—moz-device-pixel-ratio: 1.5),<br>             (max-resolution: 299dpi) {<br>  body{ your styles here }<br>}<br>[/css]</p>
+<hr>
+<h3 id="■そのほかの設定">■そのほかの設定</h3><p>そのほか、細かい設定などなど。</p>
+<p>[css]<br>/<em> タップ時のハイライトカラー</em>/<br>-webkit-tap-highlight-color:#f00;</p>
+<p>/<em>テキストの選択をキャンセルする場合</em>/<br>-webkit-user-select:none;</p>
+<p>/<em>リンクの長時間タップでリンク内容をポップアップで表示させない場合</em>/<br>-webkit-touch-callout: none;<br>[/css]</p>
+<p>などが主なものになります。</p>
+<h2 id="JavaScript関連">JavaScript関連</h2><hr>
+<h3 id="■URLバーを隠す">■URLバーを隠す</h3><p>ウェブページを表示した際にURLバーを隠すことができます。(厳密には1pxだけwindowをスクロールさせる)<br>[javascript]<br>//1000ミリ秒の遅延を設定しているのはページの読込が完了するまでの十分な時間として設定してます。<br>setTimeout(function(){  window.scrollTo(0,1);},1000);</p>
+<p>//jQueryなどだとページ読込み完了時に呼んでやるのもありです。<br>$(function(){<br>window.scrollTo(0,1);<br>});<br>[/javascript]</p>
+<hr>
+<h3 id="■メディアクエリ・解像度関連">■メディアクエリ・解像度関連</h3><p>cssのメディアクエリのjavascript版のような感じで、window.matchMediaを使うとデバイス画面サイズごとに処理を分岐できます。<br>[javascript]<br>if ( window.matchMedia(&quot;only screen and (max-width: 480px&quot;)).matches ) {<br>     // For Mobile<br>} else if (window.matchMedia(&quot;only screen and (min-width: 481px) and (max-width: 1024px)&quot;).matches ) {<br>     // For Tablet<br>} else {<br>     // For PC<br>}<br>[/javascript]</p>
+<p>同じように、デバイスの解像度も取得できます。<br>[javascript]<br>if( window.devicePixelRatio == 2 )<br>{<br>  //iphone4,iphone4s<br>}<br>else if( window.devicePixelRatio == 1.5 )<br>{<br>  //Android<br>}<br>else<br>{<br>  //others<br>}<br>[/javascript]</p>
+<p>また、フルスクリーンモードで起動しているかも検出できます。<br>[javascript]<br>if(!window.navigator.standalone)<br>{<br>    //your method<br>}<br>[/javascript]</p>
+<hr>
+<h3 id="■通信状態の取得">■通信状態の取得</h3><p>Android2.2以降からは接続状態も検出できます。<br>[javascript]<br>/*<br>Browser Object Model</p>
+<p>navigator = {<br>  connection: {<br>    &quot;type&quot;: &quot;4&quot;,<br>    &quot;UNKNOWN&quot;: &quot;0&quot;,<br>    &quot;ETHERNET&quot;: &quot;1&quot;,<br>    &quot;WIFI&quot;: &quot;2&quot;,<br>    &quot;CELL_2G&quot;: &quot;3&quot;,<br>    &quot;CELL_3G&quot;: &quot;4&quot;<br>  }<br>};<br>*/</p>
+<p>switch (navigator.connection.type ) {<br>case 0:<br>//unknown<br>case 1:<br>//ETHERNET<br>break;</p>
+<p>case 2:<br>//WIFI<br>break;</p>
+<p>case 3:<br>//CELL_2G<br>break;</p>
+<p>case 4:<br>//CELL_3G<br>break;</p>
+<p>}<br>[/javascript]</p>
+<p>オンラインかどうかの検出もできて、以下のようになります。<br>[javascript]<br>if (window.navigator.onLine)<br>{<br>    //online<br>}<br>else<br>{<br>    //offline<br>}<br>[/javascript]</p>
+<hr>
+<h3 id="■touchイベント関連">■touchイベント関連</h3><p>touch、gestureイベントは次のようになります。<br>[javascript]<br>//スクリーンにタッチ<br>document.addEventListener(&quot;touchstart&quot;, touchHandler, false);</p>
+<p>//タッチ後、指を動かす<br>document.addEventListener(&quot;touchmove&quot;, touchHandler, false);</p>
+<p>//タッチ後、指を離す<br>document.addEventListener(&quot;touchend&quot;, touchHandler, false);</p>
+<p>//タッチ後、指をスライドさせた(タッチをキャンセルした)<br>document.addEventListener(&quot;touchcancel&quot;, touchHandler, false);</p>
+<p>//2本以上の指を使ってスクリーンにタッチ<br>document.addEventListener(&quot;gesturestart&quot;, gestureHandler, false);</p>
+<p>//指が動く<br>document.addEventListener(&quot;gesturechange&quot;, gestureHandler, false);</p>
+<p>//どちらかの指がスクリーンから離れる<br>//ちなみにこの後、残りの指を離すとtouchendが発生<br>document.addEventListener(&quot;gestureend&quot;, gestureHandler, false);</p>
+<p>[/javascript]</p>
+<hr>
+<h3 id="■デバイスの向き関連">■デバイスの向き関連</h3><p>デバイスの向きも検出できます。<br>[javascript]<br>//90度ごとに向きが変更された場合に発生<br>window.addEventListener(&quot;orientationchange &quot;, orientationEvent, true);</p>
+<p>//細かい回転量の取得<br>//返される値は<br>//alpha:0～360(degrees)<br>//beta:-180～180(degrees)<br>//gamma:-90～90(degrees)<br>window.addEventListener(&quot;deviceorientation&quot;, orientationEvent, true);</p>
+<p>//デバイスの加速度と回転データを取得<br>window.addEventListener(‘devicemotion’, deviceMotionHandler, false);<br>[/javascript]<br>このあたりは<a href="http://www.html5rocks.com/en/tutorials/device/orientation/" target="_blank" rel="external">html5rocks</a>が詳しくです。</p>
+<hr>
+<h3 id="■Media_capture_API">■Media capture API</h3><p>Andoroidはhtmlからユーザーがアップロードできるコンテンツを細かく制御できます。<br>[html]<br>&lt;!— regular file upload (Android 2.2+) —&gt;<br>&lt;input type=&quot;file&quot;&gt;&lt;/input&gt;</p>
+<p>&lt;!— opens directly to the camera (Android 3.0+) —&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;image/*;capture=camera&quot;&gt;&lt;/input&gt;  </p>
+<p>&lt;!— opens directly to the camera in video mode (Android 3.0+) —&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;video/*;capture=camcorder&quot;&gt;&lt;/input&gt;  </p>
+<p>&lt;!— opens directly to the audio recorder (Android 3.0+) —&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;audio/*;capture=microphone&quot;&gt;&lt;/input&gt;  </p>
+<p>[/html]</p>
+<hr>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+      <a data-url="http://blog.kazu69.net/2011/12/28/summary-of-commonly-used-smartphones-in-html-css-javascript/" data-id="ci8xm3gku0056r8p4g80cfi4e" class="article-share-link">Share</a>
+      
+        <a href="http://blog.kazu69.net/2011/12/28/summary-of-commonly-used-smartphones-in-html-css-javascript/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+      <a href="/2012/03/12/at-sinatra-with-oauth-authenticate/" id="article-nav-newer" class="article-nav-link article-nav-link-newer">
+        <span class="article-nav-caption">Newer - </span>
+        <span class="article-nav-title">
+          
+            sinatraでoauth(authenticate)してみた
+          
+        </span>
+      </a>
+    
+    
+      <a href="/2011/12/06/rpg-style-battle-scene-with-css-animation/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            CSS animationでRPG風戦闘シーン
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+  <aside>
+    
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+  </aside>
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2015 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2011/12/28/summary-of-commonly-used-smartphones-in-html-css-javascript/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</body>
+</html>
