@@ -36,6 +36,10 @@ Grunt 0.4 変更点ドキュメントまんまなんですが、grunt 0.4で変�
         <a href="/">69log</a>
       </h1>
       
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
     </div>
 
     <div class="nav-content cf">
@@ -73,7 +77,7 @@ Grunt 0.4 変更点ドキュメントまんまなんですが、grunt 0.4で変�
 
       
   <div class="article-category">
-    <a class="article-category-link" href="/categories/javascript/">javascript</a>
+    <a class="article-category-link" href="/categories/memo/">memo</a>
   </div>
 
     </div>
@@ -94,31 +98,21 @@ Grunt 0.4 変更点ドキュメントまんまなんですが、grunt 0.4で変�
 <li>grunt-cliのみをグローバルにインストールすればいい。grunt-cliインストールしてgruntコマンドが使用できる。</li>
 <li><p>いままで最初から準備されていたコアタスク(init,lint,minなど)はすべてmoduleとなった。</p>
 <blockquote>
-<p>concat → <a href="https://github.com/gruntjs/grunt-contrib-concat" target="_blank" rel="external">grunt-contrib-concat plugin</a></p>
-<p>init → stand-alone <a href="https://github.com/gruntjs/grunt-init" target="_blank" rel="external">grunt-init</a> utility</p>
-<p>lint → <a href="https://github.com/gruntjs/grunt-contrib-jshint" target="_blank" rel="external">grunt-contrib-jshint</a> plugin</p>
-<p>min → <a href="https://github.com/gruntjs/grunt-contrib-uglify" target="_blank" rel="external">grunt-contrib-uglify</a> plugin</p>
-<p>qunit → <a href="https://github.com/gruntjs/grunt-contrib-qunit" target="_blank" rel="external">grunt-contrib-qunit</a> plugin</p>
-<p>server → <a href="https://github.com/gruntjs/grunt-contrib-connect" target="_blank" rel="external">grunt-contrib-connect</a> plugin</p>
-<p>test → <a href="https://github.com/gruntjs/grunt-contrib-nodeunit" target="_blank" rel="external">grunt-contrib-nodeunit</a> plugin</p>
-<p>watch → <a href="https://github.com/gruntjs/grunt-contrib-watch" target="_blank" rel="external">grunt-contrib-watch</a> plugin<br>また、moduleとなったので、loadNpmTasksで読込む必要がある。</p>
+<p>concat → <a href="https://github.com/gruntjs/grunt-contrib-concat" target="_blank" rel="external">grunt-contrib-concat plugin</a><br>init → stand-alone <a href="https://github.com/gruntjs/grunt-init" target="_blank" rel="external">grunt-init</a> utility<br>lint → <a href="https://github.com/gruntjs/grunt-contrib-jshint" target="_blank" rel="external">grunt-contrib-jshint</a> plugin<br>min → <a href="https://github.com/gruntjs/grunt-contrib-uglify" target="_blank" rel="external">grunt-contrib-uglify</a> plugin<br>qunit → <a href="https://github.com/gruntjs/grunt-contrib-qunit" target="_blank" rel="external">grunt-contrib-qunit</a> plugin<br>server → <a href="https://github.com/gruntjs/grunt-contrib-connect" target="_blank" rel="external">grunt-contrib-connect</a> plugin<br>test → <a href="https://github.com/gruntjs/grunt-contrib-nodeunit" target="_blank" rel="external">grunt-contrib-nodeunit</a> plugin<br>watch → <a href="https://github.com/gruntjs/grunt-contrib-watch" target="_blank" rel="external">grunt-contrib-watch</a> plugin<br>また、moduleとなったので、loadNpmTasksで読込む必要がある。</p>
 </blockquote>
 </li>
 <li><p>これまでgrunt.jsだったファイルがGrunt.jsまたはGrunt.coffeeになる。タスクがcoffeeの場合は自動でコンパイルされる</p>
 </li>
 <li><p>Gruntテンプレートが変更されてconfigタスクの記法がかわった。templateは<a href="http://lodash.com/docs/#template" target="_blank" rel="external">Lo-Dash template</a>で処理されるっぽい。<br>ということで、&lt;% %&gt;形式がつかえるようになる。</p>
 <blockquote>
-<p>&lt;config:prop.subprop&gt; → &lt;%= prop.subprop %&gt;</p>
-<p>&lt;json:file.json&gt; → grunt.file.readJSON(‘file.json’)</p>
-<p>&lt;file_template:file.js&gt; → grunt.template.process(grunt.file.read(‘file.js’))</p>
+<p>&lt;config:prop.subprop&gt; → &lt;%= prop.subprop %&gt;<br>&lt;json:file.json&gt; → grunt.file.readJSON(‘file.json’)<br>&lt;file_template:file.js&gt; → grunt.template.process(grunt.file.read(‘file.js’))</p>
 </blockquote>
 </li>
 <li><p>alias taskがArray形式に変更</p>
 <blockquote>
-<p>// v0.3.x (old format)</p>
-<p>grunt.registerTask(‘default’, ‘jshint nodeunit concat’);</p>
-<p>// v0.4.x (new format)</p>
-<p>grunt.registerTask(‘default’, [‘jshint’, ‘nodeunit’, ‘concat’]);</p>
+<p>// v0.3.x (old format)<br>grunt.registerTask(‘default’, ‘jshint nodeunit concat’);</p>
+<pre><code>// v0.4.x (<span class="built_in">new</span> <span class="built_in">format</span>)
+</code></pre><p>grunt.registerTask(‘default’, [‘jshint’, ‘nodeunit’, ‘concat’]);</p>
 </blockquote>
 </li>
 <li><p><a href="http://gruntjs.com/upgrading-from-0.3-to-0.4#api" target="_blank" rel="external">APIも数多く変更</a>された。</p>
@@ -180,13 +174,11 @@ Grunt 0.4 変更点ドキュメントまんまなんですが、grunt 0.4で変�
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/03/06/upgrade-to-0-4-grunt-a-useful-client-side-development/" data-id="ci8xm3vyb00asr8p4y0ir84ct" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/03/06/upgrade-to-0-4-grunt-a-useful-client-side-development/" data-id="ci9i25k3e0029qep4bjpgd8dk" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/03/06/upgrade-to-0-4-grunt-a-useful-client-side-development/#disqus_thread" class="article-comment-link">Comments</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/grunt/">grunt</a></li></ul>
-
     </footer>
   
 

@@ -33,6 +33,10 @@
         <a href="/">69log</a>
       </h1>
       
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
     </div>
 
     <div class="nav-content cf">
@@ -70,7 +74,7 @@
 
       
   <div class="article-category">
-    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+    <a class="article-category-link" href="/categories/memo/">memo</a>
   </div>
 
     </div>
@@ -90,11 +94,9 @@
 <li><p><strong>Sassの@importの見直し</strong><br>SassやScssを使っている場合、<a href="http://compass-style.org/" target="_blank" rel="external">Compass</a>を利用すると思うのですが、Compassのmixinのimportはできるだけ細かく制御する。<br>とくに @import “compass”; のように記述してしまうと、Compass全体を読込むため、@import “compass/css3/transition” の様に必要なmixinのみを読込むのに比べて約9倍遅くなるそうです。</p>
 </li>
 <li><p><strong>partialを使用しない</strong><br>変数や依存ファイルを読込む場合も @import ではなく require で読込む方がより早いそうです。<br>[ruby]<br>@import &quot;reset&quot;;<br>@import &quot;base&quot;;<br>@import &quot;product&quot;;<br>[/ruby]</p>
-</li>
-</ul>
 <p>よりも</p>
 <p>[ruby]<br>//= require &quot;reset&quot;<br>//= require &quot;base&quot;<br>//= require &quot;product&quot;<br>[/ruby]</p>
-<ul>
+</li>
 <li><p><strong>require_tree は使わない</strong><br>例えば、それぞれが空のファイルのmain.js.cofee、signup.js.coffee、login.js.coffeeがあったとき<br>application.jsに require_tree の記述があると、プリコンパイルには最低でも約750msかかります。<br>.coffeeファイルが空であっても、application.jsにrequire_treeが記述されている場合、<br>プリコンパイルには1ファイルあたり約250msをかかるっぽい。ファイル数が増えるだけ、比例的にプリコンパイルの時間がかかります。</p>
 </li>
 <li><p><strong>必要がない場合は.scssや.coffeeファイルにしない</strong><br>sassやcoffeeで記述されてないファイルを.scssや.coffeeとしてしまうと、その分だけプリコンパイル時間を要します。<br>.cssや.jsファイルの場合は、プリコンパイル不要なので処理されないのに対し、.scssや.coffeeファイルは必ずプリコンパイルに時間を要します。<br>ファイル数が多いほどその時間は増えます。<br>という感じだったので、実際に修正したところ10倍くらい早くなった。<br>とくにCompassのmixinのimportは細かく制御した方がいいですね。</p>
@@ -106,13 +108,11 @@
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2012/11/06/to-speed-up-optimize-assets-precompile-rails3-2-x/" data-id="ci8xm3un8009lr8p4dvlnzgjy" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2012/11/06/to-speed-up-optimize-assets-precompile-rails3-2-x/" data-id="ci9i25k5z004cqep49ks8hay5" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2012/11/06/to-speed-up-optimize-assets-precompile-rails3-2-x/#disqus_thread" class="article-comment-link">Comments</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rails/">rails</a></li></ul>
-
     </footer>
   
 
