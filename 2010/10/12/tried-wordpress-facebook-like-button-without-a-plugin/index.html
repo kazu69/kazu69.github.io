@@ -15,9 +15,9 @@ WordPressだと該当のプラグインがたくさんあるので、簡単に�
 <meta property="og:description" content="Facebookの”like”ボタン（「いいね」ってやつ）をつけてみました。
 WordPressだと該当のプラグインがたくさんあるので、簡単につけれるみたいですが、
 今回はカスタムとかしやすいように、プラグインなしでつけてみることにしました。">
-<meta property="og:image" content="http://kazu69.net/blog/wp-content/uploads/2010/10/2010101201.png">
-<meta property="og:image" content="http://kazu69.net/blog/wp-content/uploads/2010/10/2010101202.png">
-<meta property="og:image" content="http://kazu69.net/blog/wp-content/uploads/2010/10/2010100203.png">
+<meta property="og:image" content="/images/2010/10/2010101201.png">
+<meta property="og:image" content="/images/2010/10/2010101202.png">
+<meta property="og:image" content="/images/2010/10/2010100203.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="FacebookのlikeボタンをプラグインなしでWordpressにつけてみた">
 <meta name="twitter:description" content="Facebookの”like”ボタン（「いいね」ってやつ）をつけてみました。
@@ -102,11 +102,11 @@ WordPressだと該当のプラグインがたくさんあるので、簡単に�
 <li><p><strong>まずはアプリケーションの登録</strong></p>
 <p><a href="http://developers.facebook.com/setup/" target="_blank" rel="external">アプリケーションを作成</a>よりアプリケーションを作成します。</p>
 <p>サイト名、サイトURLをいれて、地域は「日本」を選択して、アプリケーションを作成。</p>
-<p><img src="http://kazu69.net/blog/wp-content/uploads/2010/10/2010101201.png" alt="アプリケーションの登録"></p>
+<p><img src="/images/2010/10/2010101201.png" alt="アプリケーションの登録"></p>
 </li>
 <li><p><strong>JavaScriptの追加</strong></p>
 <p>登録されると、アプリケーションに関する情報とサンプルコードが表示されます。</p>
-<p><img src="http://kazu69.net/blog/wp-content/uploads/2010/10/2010101202.png" alt="アプリケーションの登録完了"></p>
+<p><img src="/images/2010/10/2010101202.png" alt="アプリケーションの登録完了"></p>
 <p>ページにjsを追加。読み込み速度とか考慮するとfooter.phpの&lt;/body&gt;直前とかがいいのかも。</p>
 <p>追加するjsは登録完了ページに表示されるコードの以下の部分。</p>
 <p><code>&amp;lt;div id=&quot;fb-root&quot;&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;script&gt;
@@ -129,7 +129,7 @@ document.getElementById(&#39;fb-root&#39;).appendChild(e);
 </ol>
 <p>以上で、設置完了です。</p>
 <p><a href="http://www.facebook.com/developers/apps.php" target="_blank" rel="external">アプリケーションページ</a>で設定の変更などができます。</p>
-<p><img src="http://kazu69.net/blog/wp-content/uploads/2010/10/2010100203.png" alt="アプリケーションページ"></p>
+<p><img src="/images/2010/10/2010100203.png" alt="アプリケーションページ"></p>
 <p>ここまでしたので、つぎに<a href="http://opengraphprotocol.org/" target="_blank" rel="external">Open Graph Protocol</a>に対応させます。</p>
 <p>Open Graph Protocolとは、Facebook以外のwebコンテンツ（webサイトやブログなど）をFacebookと統合するための仕様。みたいなものらしい。</p>
 <p>詳しくは<a href="http://developers.facebook.com/docs/opengraph" target="_blank" rel="external">Facebookのページ</a>をみてください。</p>
@@ -177,7 +177,7 @@ document.getElementById(&#39;fb-root&#39;).appendChild(e);
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2010/10/12/tried-wordpress-facebook-like-button-without-a-plugin/" data-id="ci9i25k4s003jqep4o3qwyw9y" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2010/10/12/tried-wordpress-facebook-like-button-without-a-plugin/" data-id="ci9m9zex8003jxaw1vgi7wguz" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2010/10/12/tried-wordpress-facebook-like-button-without-a-plugin/#disqus_thread" class="article-comment-link">Comments</a>
       
