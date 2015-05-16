@@ -4,7 +4,7 @@
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.kazu69.net/"/>
-  <updated>2015-05-13T00:58:47.000Z</updated>
+  <updated>2015-05-16T07:53:29.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -15,11 +15,83 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[WordpressからHexoに移行してGitHub Pageで公開した]]></title>
+    <link href="http://blog.kazu69.net/2015/05/16/moved-hexo/"/>
+    <id>http://blog.kazu69.net/2015/05/16/moved-hexo/</id>
+    <published>2015-05-16T00:36:08.000Z</published>
+    <updated>2015-05-16T07:53:29.000Z</updated>
+    <content type="html"><![CDATA[<p>ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。<br>移行にあたり、やったことをメモにしておく。</p>
+<a id="more"></a>
+<p><a href="https://www.staticgen.com/" target="_blank" rel="external">staticgen.com</a> を見ながら<a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>か<a href="http://gohugo.io/" target="_blank" rel="external">Hugo</a>か悩んだが、比較的にwordpressから移行した情報が多いのでHexoにした。</p>
+<p>特にnodeかGoかという理由ではなく、一度Static Generatorに移行できれば、あとは大きく変わらずに渡り歩けるだろうという軽い気持ち。</p>
+<p>Hexoに移行するにあたり行った手順は大きく分けて</p>
+<ol>
+<li>wordpress記事のslugを英語化</li>
+<li>wordpressのデータexport</li>
+<li>Hexoデータをmigrate</li>
+<li>wordpressの投稿からredirectできるようにalias作成</li>
+<li>画像パスの変換</li>
+<li>ブログのリダイレクト</li>
+<li>Hexo運用でやったこと</li>
+</ol>
+<p>となった。</p>
+<h2 id="wordpressの記事のslugを英語化">wordpressの記事のslugを英語化</h2><p>Hexoに移行するにあたり、wordpressからexportした記事をmigrationするツールを使うが、<br>このツールだとwordpressでexportしたxmlの各投稿情報の <strong>wp:post_name</strong> の値をHexoのmarkdownファイルのファイル名として使ってしまう。</p>
+<p>したがって、日本語などの場合URLエンコードされてしまい、どうやらうまくいかない。<br>ということでまずこの値を英語に翻訳する必要があった。</p>
+<p><strong>wp:post_name</strong>はwordpressのslugということなので、全投稿のslugを自動翻訳する <a href="https://wordpress.org/plu   gins/wp-slug-translate/" target="_blank" rel="external">wp-slug-translate</a> を使った。</p>
+<p><strong>wp-slug-translate</strong>は内部でMicrosoft Translator APIを使っているらしく、<a href="http://azure.microsoft.com/ja-jp/marketplace/" target="_blank" rel="external">Microsoft Azure Marketplace</a> にアカウント作成が必要だ。</p>
+<p>詳しい手順は <a href="http://shumaiblog.com/wordpress-plugin-wp-slug-translate/" target="_blank" rel="external">WordPressのスラッグを日本語から英訳してくれるプラグイン「WP Slug Translate」</a> を参考にすすめた。</p>
+<p>プラグインを有効化したのちに、管理画面から記事を数十件ごとに更新することで翻訳される。<br>この状態で、wordpressのデータをexportする準備が整った。</p>
+<h2 id="wordpressのデータをexport">wordpressのデータをexport</h2><p>WordPress管理画面 ＞ ツール ＞ エクスポート から全てのコンテンツをexportする。<br>これだけ。</p>
+<h2 id="Hexoデータへのコンバート">Hexoデータへのコンバート</h2><p><a href="http://hexo.io/docs/migration.html#WordPress" target="_blank" rel="external">hexoのドキュメント</a> にあるように、<a href="https://github.com/hexojs/hexo-migrator-wordpress" target="_blank" rel="external">hexo-migrator-wordpress</a> を使ってmigrationを行う。<br>これで投稿記事がhexoの記事形式のmarkdownファイルにmigrateできる。</p>
+<h2 id="wordpressの投稿からredirectできるようにalias作成">wordpressの投稿からredirectできるようにalias作成</h2><p>wordpressの記事のURL形式にもよるが、これまでwordpressの記事を <strong>category/記事ID/</strong> という形式で運用していたが、Hexoでは <strong>YYYY/MM/dd/ファイル名/</strong> で運用することになるので、リダイレクトする必要がある。</p>
+<p>Static Generatorを使っている場合、リダイレクトするには移行前のURL直下にindex.htmlを置き、metaタグで refresしてリダイレクトすることで可能っぽい。</p>
+<p><a href="https://github.com/hexojs/hexo-generator-alias" target="_blank" rel="external">hexo-generator-alias</a> を使うことでHexoのgenarate時にalias用のindex.htmlを作ることが可能。<br>あとは、各記事にalias用の設定を追加する。</p>
+<p>wordpressの投稿URLはexportしたxmlに<strong>link</strong>タグの値となるので、簡単なスクリプトで<strong>hexo-generator-alias</strong>の設定を追加した。</p>
+<p>xmlのパーサーには<a href="https://github.com/YorickPeterse/oga" target="_blank" rel="external">oga</a>を使ってみた。</p>
+<script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=alias.rb"></script>
+<p>これで <strong>/blog/CATEGORY/POST_ID/</strong> アクセスで該当の記事にリダイレクトされるようになった。<br>今回は運用をサブドメインにもいこうしたので、URIにblogが重複しているのは気にしない。</p>
+<p>ここまでで、ほぼ完了した感じ。</p>
+<h2 id="画像パスの変換">画像パスの変換</h2><p>残りは画像のパスを修正する。画像ファイルを全てダウンロードし、<code>public/images/</code>へそのまま放り込んだ。<br>あとはパスを以下のスクリプトで変換した。</p>
+<script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=image_replace.rb"></script>
+<p><strong>/wp-contentt/uploads/</strong> を <strong>/images/</strong> に変換しているだけ。</p>
+<h2 id="ブログのリダイレクト">ブログのリダイレクト</h2><p>今回はドメインもサブドメインでの運用にかえるので、.htaccessで記事を301リダイレクトする。</p>
+<p>結果としてこのやり方で移行できていないものは、</p>
+<ul>
+<li>ソーシャルなどのURLは引き継げない</li>
+<li>RSSなどフィード情報はリダイレクトにいたっていない</li>
+<li><a href="http://disqus.com" target="_blank" rel="external">Disqus</a> 使うことにしたのでworpressのコメントを引き継げない</li>
+</ul>
+<p>ということに至った。</p>
+<p>ちなみにHexoではRSS feedを使うために別途 <a href="https://github.com/hexojs/hexo-generator-feed" target="_blank" rel="external">hexo-generator-feed</a> をインストール必要があった。</p>
+<p>あと、テーマはとりあえず最低限必要なものを自作した。</p>
+<p>package.jsonは以下のようになった。npm scriptsでHexoコマンドを叩いている。</p>
+<script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=package.json"></script>
+<h2 id="Hexoで運用するためにやったこと">Hexoで運用するためにやったこと</h2><p>wordpressから移行して、Hexoで運用するにあたり<a href="https://pages.github.com/" target="_blank" rel="external">GitHub Pages</a>を利用することにした。</p>
+<p>使っていたドメインプロバイダーではGitHub Pagesでの独自ドメインを使えなかった。そこで、CloudFlareだと無料プランでも <a href="https://blog.cloudflare.com/introducing-universal-ssl/" target="_blank" rel="external">Universal SSL</a> でも使えるということを見つけたので、ネームサーバーを <a href="https://www.cloudflare.com/" target="_blank" rel="external">CloudFlare</a> に移行した。</p>
+<p>CloudFlareに申し込むと、ネームサーバーを指定されるので、ドメインプロバイダーの管理ページでDNSサーバーをCloudFlareに向ける。<br>あとは、ホスト名を書いたCNAMEファイルをドキュメントルートに配置するだけで、独自ドメインでの運用がすんなりとできた。</p>
+<p>当初はBitbucketでも同じことができるので、そちらを使うか迷っていたが <a href="https://confluence.atlassian.com/display/BITBUCKET/Associate+an+existing+domain+with+an+account" target="_blank" rel="external">Associate an existing domain with an account</a> を見る限り、CNAMEでの運用はできなくなったぽい。</p>
+<p>Hexo使ってわかったことは作者が台湾の方ということもあり、英語記事と同じくらい中国語の記事も出てくる。</p>
+<h3 id="参考にしたページ">参考にしたページ</h3><ul>
+<li><a href="http://hexo.io/docs/migration.html#WordPress" target="_blank" rel="external">Migration | Hexo</a></li>
+<li><a href="http://shumaiblog.com/wordpress-plugin-wp-slug-translate/" target="_blank" rel="external">WordPressのスラッグを日本語から英訳してくれるプラグイン「WP Slug Translate」</a></li>
+<li><a href="http://pagent.github.io/2015/02/17/github-pages-redirect/" target="_blank" rel="external">GitHub Pagesのブログでリダイレクト「hexo-generator-alias」</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。<br>移行にあたり、やったことをメモにしておく。</p>]]>
+    
+    </summary>
+    
+      <category term="web" scheme="http://blog.kazu69.net/tags/web/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[ビルドツールとしてnpmを使う]]></title>
     <link href="http://blog.kazu69.net/2015/04/19/use-the-npm-as-the-build-tool/"/>
     <id>http://blog.kazu69.net/2015/04/19/use-the-npm-as-the-build-tool/</id>
     <published>2015-04-19T04:10:28.000Z</published>
-    <updated>2015-05-13T00:58:47.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p><a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>、 <a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>などを使うのではなく、npmをビルドタスクを使うためにちょっとおさらいした。</p>
 <a id="more"></a>
 <h2 id="npmのpath">npmのpath</h2><p>npmでインストールすると、<br>モジュールは ./node_modules/にインストールされ、<br>node_modules/.bin配下に各パッケージのbinへのシンボリックリンクが作成される。</p>
@@ -81,7 +153,7 @@
     <link href="http://blog.kazu69.net/2015/04/18/browserify-uses-jquery-plugin-with-jquery-cdn/"/>
     <id>http://blog.kazu69.net/2015/04/18/browserify-uses-jquery-plugin-with-jquery-cdn/</id>
     <published>2015-04-18T03:39:36.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>jQueryをCDNから取得し、jQuery pluginが活躍している場合のbrowserify導入の備忘録</p>
 <a id="more"></a>
 <h2 id="CDNのjQueryをrequireする">CDNのjQueryをrequireする</h2><p>CDNを使うことで、browserifyでbundleするファイルサイズは小さくなり、ファイル生成までの時間も短くなるという恩恵がある。</p>
@@ -159,7 +231,7 @@
     <link href="http://blog.kazu69.net/2015/02/28/php-repl-psysh-was-so-convenient/"/>
     <id>http://blog.kazu69.net/2015/02/28/php-repl-psysh-was-so-convenient/</id>
     <published>2015-02-28T04:56:01.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>phpのインタラクティブコンソール<a href="http://psysh.org/" target="_blank" rel="external">psysh</a>というものが便利そうだった。<br>phpの開発している人なら既に知ってるのかもしれないけど、<br>デバッグが非常に楽になりそうだった。</p>
 <a id="more"></a>
 <p>phpのREPLにはFacebookの<a href="https://github.com/facebookarchive/phpsh" target="_blank" rel="external">phpsh</a>、<a href="https://github.com/ieure/php_repl" target="_blank" rel="external">php_repl</a>、<a href="https://github.com/d11wtq/boris" target="_blank" rel="external">boris</a> などもあるそうだが、psyshはRubyの<a href="https://github.com/pry/pry" target="_blank" rel="external">pry</a>のような感覚で使えそうな感じだった。</p>
@@ -197,7 +269,7 @@
     <link href="http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/"/>
     <id>http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/</id>
     <published>2015-02-21T14:51:55.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>フロントエンド周りを触ることがあり、Sassのコンパイル速度改善をするために、<br><a href="http://libsass.org/" target="_blank" rel="external">libsass</a>について軽く調べてみた。</p>
 <a id="more"></a>
 <h2 id="libsassとは">libsassとは</h2><p>C/C++で書かれたSass Compiler。これ自体は単なるライブラリで、実際にこれを走らせるには<br><a href="https://github.com/sass/sassc" target="_blank" rel="external">SassC</a>や<a href="https://github.com/sass/ruby-libsass" target="_blank" rel="external">ruby-libsass</a>などを使う。</p>
@@ -272,7 +344,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2015/01/28/examined-how-to-share-values-with-sass-and-javascript-using-json/"/>
     <id>http://blog.kazu69.net/2015/01/28/examined-how-to-share-values-with-sass-and-javascript-using-json/</id>
     <published>2015-01-28T05:12:46.000Z</published>
-    <updated>2015-05-13T00:59:15.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>cssのプロパティをJavaScriptでも扱う必要があり、方法を検討してみた。</p>
 <a id="more"></a>
 <p>管理するデータを一つにして、JavaScriptからも参照できると、便利そう。<br>ということで、データをJSON形式でデータを持たせて、<br>データをSassのMap型にコンバートして扱うことができれば、実現可能そうなので、<br>変換するモジュールなどを調べてみた。</p>
@@ -333,7 +405,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2015/01/27/tried-the-chef-server-at-chef12/"/>
     <id>http://blog.kazu69.net/2015/01/27/tried-the-chef-server-at-chef12/</id>
     <published>2015-01-27T10:26:12.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>普段はChef Soloしか使う機会がないので、Chef Serverを試してみた。<br>ちなみに、Chef12からはClientからServerへのリクエストにおいて、SSL証明書の検証が必要になり安全性がたかまったとか。</p>
 <a id="more"></a>
 <p>初めに一度それぞれの名称を整理しておく。</p>
@@ -413,7 +485,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2015/01/14/set-of-writing-multi-threaded-tests-in-rails/"/>
     <id>http://blog.kazu69.net/2015/01/14/set-of-writing-multi-threaded-tests-in-rails/</id>
     <published>2015-01-14T13:37:21.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>Railsアプリケーションにおいて、マルチスレッド処理でレコード取得処理を行う処理を書くときに、Rspecの設定周りでいろいろと知ることができたのでメモ。</p>
 <p>テスト環境は Rspec + FactoryGirl + DatabaseCleaner という感じ。</p>
 <a id="more"></a>
@@ -449,7 +521,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/12/22/the-ecdsa-ssh-keys-on-mac/"/>
     <id>http://blog.kazu69.net/2014/12/22/the-ecdsa-ssh-keys-on-mac/</id>
     <published>2014-12-22T05:20:49.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>Mac OS10.10(Yosemite)にして、sshのたびにpromptがでて<br>毎回パスフレーズを入力すれども、<strong>Saving password to keychain failed</strong> となりssh-agentが記憶してくれない状況になった。<br>そのときに修正したときのメモ。</p>
 <a id="more"></a>
 <p>ついでに、sshの鍵をRSA暗号より安全性の高いECDSA(楕円曲線DSA)にしてみた。<br><a href="http://cloud.watch.impress.co.jp/epw/docs/news/20100118_343044.html" target="_blank" rel="external">この記事</a>によると<br>楕円曲線暗号がRSA暗号より、数千倍程度相対的に高い強度であるとか。</p>
@@ -472,7 +544,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/"/>
     <id>http://blog.kazu69.net/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/</id>
     <published>2014-11-29T02:23:20.000Z</published>
-    <updated>2015-05-13T00:59:15.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>Rubyのベンチマークを計測するのに<a href="https://github.com/evanphx/benchmark-ips" target="_blank" rel="external">benchmark-ips</a>を使うと簡単だし、便利そうだったのでメモ。<br><a id="more"></a></p>
 <p>Rubyでベンチマークを取る場合、<a href="http://docs.ruby-lang.org/ja/2.1.0/class/Benchmark.html" target="_blank" rel="external">Benchmark</a>を使うことが多い。<br>この場合、実行回数を勘所で決めないといけなかったりする。</p>
 <p>benchmark-ipsを使うと、1秒あたりに何回実行できたのかを評価するので、実行回数は気にしなくていい。<br>あと、標準偏差も出してくれるあたりもいい感じ。</p>
@@ -499,7 +571,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/11/23/examined-how-to-override-monkey-patch-methods-in-ruby/"/>
     <id>http://blog.kazu69.net/2014/11/23/examined-how-to-override-monkey-patch-methods-in-ruby/</id>
     <published>2014-11-23T05:50:29.000Z</published>
-    <updated>2015-05-13T00:59:15.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>Gemを作っていた時に、どうしても依存しているGemの挙動を変える必要があったので、どういう方法があるのか調べてみた。</p>
 <a id="more"></a>
 <h2 id="継承_+_Mixin">継承 + Mixin</h2><p>まず、普通にmoduleを作成して、classをオープンしてincludeする。もちろん</p>
@@ -541,7 +613,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/11/17/tried-the-dialog-element-in-html5/"/>
     <id>http://blog.kazu69.net/2014/11/17/tried-the-dialog-element-in-html5/</id>
     <published>2014-11-17T12:40:31.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>ダイアログ要素やモーダルウィンドウを容易に使えるdialog要素を試してみた。<br>dialog要素を使うことで、ダイアログの要素をdom内に埋め込むので、cssなどで容易にスタイリング出来るという嬉しいもの。<br>ちなみに、dialog要素のサポート状況は<a href="http://caniuse.com/#search=dialog" target="_blank" rel="external">こちらの通り</a>。<br><a id="more"></a></p>
 <p>ごくごく単純に以下のようにdialog 要素のshow()、close() APIを使うだけで簡単にダイアログを表示をできる。<br>show()に対してhide()ではなく、close()を呼ぶあたりが面白い。</p>
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample1.slim"></script>
@@ -583,7 +655,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/11/13/made-in-the-rails-api-error-handling/"/>
     <id>http://blog.kazu69.net/2014/11/13/made-in-the-rails-api-error-handling/</id>
     <published>2014-11-13T11:23:08.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>RailsでAPIを作ったとき、StandardErrorをどのように処理するのがいいのかと考えた。<br>やりたいことは、エラーの内容をjsonで返し、なおかつエラーのstatus codeも返却したいという感じ。</p>
 <a id="more"></a>
 <p>エラー内容は普通にrescueしてexception.messageを返してあげるといいが、statusはどうするか。<br>そこでどこかでエラーのリストを保持しているのではないかとで調べると、<a href="https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/exception_wrapper.rb" target="_blank" rel="external">ActionDispatch::ExceptionWrapper</a>にあるっぽいことがわかった。</p>
@@ -613,7 +685,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/11/05/what-to-do-when-git-errors-when-you-update-a-homebrew/"/>
     <id>http://blog.kazu69.net/2014/11/05/what-to-do-when-git-errors-when-you-update-a-homebrew/</id>
     <published>2014-11-05T10:11:16.000Z</published>
-    <updated>2015-05-13T00:58:47.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>homebrewでupdateしたときに、gitのエラーが出たときの対応メモ。<br><a id="more"></a></p>
 <p>以下のようなエラーが発生した。</p>
 <script src="https://gist.github.com/kazu69/3022dcb8c9ca1d88a18b.js?file=error.sh"></script>
@@ -638,7 +710,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/11/03/i-look-at-sass3-4-changes-and-additions/"/>
     <id>http://blog.kazu69.net/2014/11/03/i-look-at-sass3-4-changes-and-additions/</id>
     <published>2014-11-03T07:43:31.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>時間ができたので、<a href="https://github.com/sass/sass/blob/stable/doc-src/SASS_CHANGELOG.md#340-18-august-2014" target="_blank" rel="external">sass changelog</a>眺めて、あまり実例が思い浮かばないのもあるけど、一通り試してみたときの備忘録。<br><a id="more"></a></p>
 <h2 id="parent_selector(&amp;)_に関して">parent selector(&amp;) に関して</h2><script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=parent-selector.scss"></script>
 
@@ -694,7 +766,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/08/03/floor-cleaning-cleaning-robot-bravo-braava-tried-one-week/"/>
     <id>http://blog.kazu69.net/2014/08/03/floor-cleaning-cleaning-robot-bravo-braava-tried-one-week/</id>
     <published>2014-08-03T08:24:30.000Z</published>
-    <updated>2015-05-13T00:59:15.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>iRobot社の床拭きロボット <a href="http://www.irobot-jp.com/braava/" target="_blank" rel="external">ブラーバ (Braava)</a>を、1週間ほど毎日使ってみた。</p>
 <a id="more"></a>
 <p>出勤前に乾拭き、帰宅後に水拭きを毎日行っている。</p>
@@ -724,7 +796,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/07/31/use-rspec-on-rails-plugin-test/"/>
     <id>http://blog.kazu69.net/2014/07/31/use-rspec-on-rails-plugin-test/</id>
     <published>2014-07-31T10:36:14.000Z</published>
-    <updated>2015-05-13T00:58:47.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>Rails pluginを調べていて、思ったのだが普通にplugin作成した場合は<a href="http://docs.ruby-lang.org/ja/2.1.0/library/test=2funit.html" target="_blank" rel="external">Test::Unit</a>がテストフレームワークとして提供される、<br>ここで<a href="https://www.relishapp.com/rspec" target="_blank" rel="external">Rspec</a>を使用するようにしてみたときの個人的メモ。</p>
 <a id="more"></a>
 <p>Railsのバージョンは4.1.4。</p>
@@ -786,7 +858,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/07/18/try-chef-container-0-2-0-beta/"/>
     <id>http://blog.kazu69.net/2014/07/18/try-chef-container-0-2-0-beta/</id>
     <published>2014-07-18T04:12:41.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p><a href="http://www.getchef.com/blog/2014/07/15/release-chef-container-0-2-0-beta/" target="_blank" rel="external">Chef Container 0.2.0 (beta)</a> なるものがリリースされたので、ちょっと触ってみたのでメモ。</p>
 <a id="more"></a>
 <p>ブログにある通りに、apacheのimageを作成した。<br>ちなみにブログのままやるとdemo/apache2というimageなるものは存在しないので、ubuntuをつかった。</p>
@@ -837,7 +909,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/07/16/by-vagrant-nfs-exports-error-has-occurred/"/>
     <id>http://blog.kazu69.net/2014/07/16/by-vagrant-nfs-exports-error-has-occurred/</id>
     <published>2014-07-16T04:42:55.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>Vagrantでプロビジョニングしているときに、<strong>exports:2: path contains non-directory or non-existent components:</strong> 見たいなエラーが出てきて困った。</p>
 <a id="more"></a>
 <p>nfsの設定は /etc/exports ファイルに書き込まれているのですが、どうやらそこに存在しないパスの設定が残ったままでエラーになっていたっぽい。</p>
@@ -861,7 +933,7 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     <link href="http://blog.kazu69.net/2014/06/24/like-rvrt-git-commit-initial-commit/"/>
     <id>http://blog.kazu69.net/2014/06/24/like-rvrt-git-commit-initial-commit/</id>
     <published>2014-06-24T09:10:40.000Z</published>
-    <updated>2015-05-13T00:58:46.000Z</updated>
+    <updated>2015-05-10T16:21:06.000Z</updated>
     <content type="html"><![CDATA[<p>gitで最初のコミットをrevertしようと、</p>
 <script src="https://gist.github.com/kazu69/ab91d0bd5a4eb54716f1.js?file=unable.sh"></script>
 としてもだめでした。
@@ -891,51 +963,6 @@ compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com
     </summary>
     
       <category term="git" scheme="http://blog.kazu69.net/categories/git/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[middlemanアプリケーションをwerckerを使ってGithub Pageに継続的デプロイする]]></title>
-    <link href="http://blog.kazu69.net/2014/05/03/middleman-applications-using-wercker-on-github-page-continued-to-deploy/"/>
-    <id>http://blog.kazu69.net/2014/05/03/middleman-applications-using-wercker-on-github-page-continued-to-deploy/</id>
-    <published>2014-05-03T05:46:05.000Z</published>
-    <updated>2015-05-13T00:59:15.000Z</updated>
-    <content type="html"><![CDATA[<p>&lt;a href=<a href="http://middlemanapp.com/&quot;&gt;middleman" target="_blank" rel="external">http://middlemanapp.com/&quot;&gt;middleman</a>アプリケーションをgithubのmasterブランチにpushするだけでgithub pageを更新できるようにした。</p>
-<a id="more"></a>
-<p>middlemanは静的サイトジェネレーターで、ビルドすることで静的サイトを生成できる。<br>生成した静的ページをgithubのgh-pagesブランチにpushすることでwebページとして公開する。</p>
-<p>今回はmasterにプッシュしたあとのビルドからデプロイまでの過程を<a href="https://app.wercker.com/" target="_blank" rel="external">wercker</a>を使ってCIした。<br>同様のことは<a href="https://travis-ci.org/" target="_blank" rel="external">Travis CI</a>や<a href="https://drone.io/" target="_blank" rel="external">drone.io</a>などを使ってもできる。<br>werckerは<a href="https://bitbucket.org/" target="_blank" rel="external">Bitbacket</a>や<a href="https://github.com/" target="_blank" rel="external">github</a>のプライベートリポジトリでも利用できて、<br>サービスがβ版の間は無料(ただしビルドは25分以内でないといけない)ということで選択した。</p>
-<p>werckerアカウントを作成し、middlemanをgithubリポジトリを同期したら、<br>デプロイターゲットとしてgh_pageを登録していく。</p>
-<p>まず、githubのアカウント設定のapplicationからtokenを作成する。</p>
-<p>つづいて、werckerのmiddlemanアプリケーションのsetting内にある<br>「Deploy targets」で「Add deploy targe」で「Custom deploy」を選択する。</p>
-<ul>
-<li>Deploy target name には任意の名前(例えばgh_pages)</li>
-<li>Auto deployにチェック。これはビルドが完了したらデプロイステップを自動実行する設定</li>
-<li>branchesにはmasterを入力(master以外にpushした際にCIする場合はそのブランチ名)</li>
-<li>Protectedにチェックをいれる。これにチェックすると環境変数がログに表示されない</li>
-</ul>
-<p>これでmasterブランチにpushするとwercker.ymlの指定通りにビルドステップを実行し、<br>自動でデプロイステップも実行するようになる。</p>
-<p>続いて環境変数を設定する。</p>
-<p>Add new variableから<br>Environment variableにGH_REMOTE。テキストエリアに<br><a href="https://{GITHUB-TOKEN}@github.com/{GITHUB-ACCOUNT}/{リポジトリ名}" target="_blank" rel="external">https://{GITHUB-TOKEN}@github.com/{GITHUB-ACCOUNT}/{リポジトリ名}</a> を入力。</p>
-<p><img src="http://cl.ly/image/271h0q1J2m0T/img.jpg" alt=""></p>
-<p>これで、wercker側の設定は完了。</p>
-<p>あとはwercker.ymlにビルドステップとデプロイステップを記述する。</p>
-<script src="http://gist-it.appspot.com/github/kazu69/middleman-blog/blob/master/wercker.yml"></script>
-
-<p>今回は、middlemanのビルド以外にjsのパッケージ管理にbowerも使ってたので<br>nodejs v0.8.9以上が必要だったので、boxをubuntu12.04-nodejs0.10にした。</p>
-<script src="http://gist-it.appspot.com/github/kazu69/middleman-blog/blob/master/wercker.yml?slice=0"></script>
-
-<p>特に指定してないとバージョンが低くできなかったため、bower installでエラーになってしまった。<br>middlemanのビルドだけであれば特にboxを指定しないでも大丈夫かも。</p>
-<p>Travis CIでの手順より若干簡単かな。</p>
-<p>参考ページ: <a href="http://blog.wercker.com/2013/07/25/Using-wercker-to-publish-to-GitHub-pages.html" target="_blank" rel="external">http://blog.wercker.com/2013/07/25/Using-wercker-to-publish-to-GitHub-pages.html</a><br>Github Repository: <a href="https://github.com/kazu69/middleman-blog" target="_blank" rel="external">kazu69/middleman-blog</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>&lt;a href=<a href="http://middlemanapp.com/&quot;&gt;middleman">http://middlemanapp.com/&quot;&gt;middleman</a></a>アプリケーションをgithubのmasterブランチにpushするだけでgithub pageを更新できるようにした。</p>]]>
-    
-    </summary>
-    
-      <category term="memo" scheme="http://blog.kazu69.net/categories/memo/"/>
-    
-      <category term="ruby" scheme="http://blog.kazu69.net/categories/memo/ruby/"/>
     
   </entry>
   

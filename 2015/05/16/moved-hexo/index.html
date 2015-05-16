@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>WordpressからHexoに移行してGitHub Pageで公開した | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。移行にあたり、やったことをメモにしておく。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WordpressからHexoに移行してGitHub Pageで公開した">
+<meta property="og:url" content="http://blog.kazu69.net/2015/05/16/moved-hexo/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。移行にあたり、やったことをメモにしておく。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WordpressからHexoに移行してGitHub Pageで公開した">
+<meta name="twitter:description" content="ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。移行にあたり、やったことをメモにしておく。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-moved-hexo" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      WordpressからHexoに移行してGitHub Pageで公開した
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2015-05-16T00:36:08.000Z" itemprop="datePublished">2015-05-16</time>
+
+      
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。<br>移行にあたり、やったことをメモにしておく。</p>
+<a id="more"></a>
+<p><a href="https://www.staticgen.com/" target="_blank" rel="external">staticgen.com</a> を見ながら<a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>か<a href="http://gohugo.io/" target="_blank" rel="external">Hugo</a>か悩んだが、比較的にwordpressから移行した情報が多いのでHexoにした。</p>
+<p>特にnodeかGoかという理由ではなく、一度Static Generatorに移行できれば、あとは大きく変わらずに渡り歩けるだろうという軽い気持ち。</p>
+<p>Hexoに移行するにあたり行った手順は大きく分けて</p>
+<ol>
+<li>wordpress記事のslugを英語化</li>
+<li>wordpressのデータexport</li>
+<li>Hexoデータをmigrate</li>
+<li>wordpressの投稿からredirectできるようにalias作成</li>
+<li>画像パスの変換</li>
+<li>ブログのリダイレクト</li>
+<li>Hexo運用でやったこと</li>
+</ol>
+<p>となった。</p>
+<h2 id="wordpressの記事のslugを英語化">wordpressの記事のslugを英語化</h2><p>Hexoに移行するにあたり、wordpressからexportした記事をmigrationするツールを使うが、<br>このツールだとwordpressでexportしたxmlの各投稿情報の <strong>wp:post_name</strong> の値をHexoのmarkdownファイルのファイル名として使ってしまう。</p>
+<p>したがって、日本語などの場合URLエンコードされてしまい、どうやらうまくいかない。<br>ということでまずこの値を英語に翻訳する必要があった。</p>
+<p><strong>wp:post_name</strong>はwordpressのslugということなので、全投稿のslugを自動翻訳する <a href="https://wordpress.org/plu   gins/wp-slug-translate/" target="_blank" rel="external">wp-slug-translate</a> を使った。</p>
+<p><strong>wp-slug-translate</strong>は内部でMicrosoft Translator APIを使っているらしく、<a href="http://azure.microsoft.com/ja-jp/marketplace/" target="_blank" rel="external">Microsoft Azure Marketplace</a> にアカウント作成が必要だ。</p>
+<p>詳しい手順は <a href="http://shumaiblog.com/wordpress-plugin-wp-slug-translate/" target="_blank" rel="external">WordPressのスラッグを日本語から英訳してくれるプラグイン「WP Slug Translate」</a> を参考にすすめた。</p>
+<p>プラグインを有効化したのちに、管理画面から記事を数十件ごとに更新することで翻訳される。<br>この状態で、wordpressのデータをexportする準備が整った。</p>
+<h2 id="wordpressのデータをexport">wordpressのデータをexport</h2><p>WordPress管理画面 ＞ ツール ＞ エクスポート から全てのコンテンツをexportする。<br>これだけ。</p>
+<h2 id="Hexoデータへのコンバート">Hexoデータへのコンバート</h2><p><a href="http://hexo.io/docs/migration.html#WordPress" target="_blank" rel="external">hexoのドキュメント</a> にあるように、<a href="https://github.com/hexojs/hexo-migrator-wordpress" target="_blank" rel="external">hexo-migrator-wordpress</a> を使ってmigrationを行う。<br>これで投稿記事がhexoの記事形式のmarkdownファイルにmigrateできる。</p>
+<h2 id="wordpressの投稿からredirectできるようにalias作成">wordpressの投稿からredirectできるようにalias作成</h2><p>wordpressの記事のURL形式にもよるが、これまでwordpressの記事を <strong>category/記事ID/</strong> という形式で運用していたが、Hexoでは <strong>YYYY/MM/dd/ファイル名/</strong> で運用することになるので、リダイレクトする必要がある。</p>
+<p>Static Generatorを使っている場合、リダイレクトするには移行前のURL直下にindex.htmlを置き、metaタグで refresしてリダイレクトすることで可能っぽい。</p>
+<p><a href="https://github.com/hexojs/hexo-generator-alias" target="_blank" rel="external">hexo-generator-alias</a> を使うことでHexoのgenarate時にalias用のindex.htmlを作ることが可能。<br>あとは、各記事にalias用の設定を追加する。</p>
+<p>wordpressの投稿URLはexportしたxmlに<strong>link</strong>タグの値となるので、簡単なスクリプトで<strong>hexo-generator-alias</strong>の設定を追加した。</p>
+<p>xmlのパーサーには<a href="https://github.com/YorickPeterse/oga" target="_blank" rel="external">oga</a>を使ってみた。</p>
+<script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=alias.rb"></script>
+<p>これで <strong>/blog/CATEGORY/POST_ID/</strong> アクセスで該当の記事にリダイレクトされるようになった。<br>今回は運用をサブドメインにもいこうしたので、URIにblogが重複しているのは気にしない。</p>
+<p>ここまでで、ほぼ完了した感じ。</p>
+<h2 id="画像パスの変換">画像パスの変換</h2><p>残りは画像のパスを修正する。画像ファイルを全てダウンロードし、<code>public/images/</code>へそのまま放り込んだ。<br>あとはパスを以下のスクリプトで変換した。</p>
+<script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=image_replace.rb"></script>
+<p><strong>/wp-contentt/uploads/</strong> を <strong>/images/</strong> に変換しているだけ。</p>
+<h2 id="ブログのリダイレクト">ブログのリダイレクト</h2><p>今回はドメインもサブドメインでの運用にかえるので、.htaccessで記事を301リダイレクトする。</p>
+<p>結果としてこのやり方で移行できていないものは、</p>
+<ul>
+<li>ソーシャルなどのURLは引き継げない</li>
+<li>RSSなどフィード情報はリダイレクトにいたっていない</li>
+<li><a href="http://disqus.com" target="_blank" rel="external">Disqus</a> 使うことにしたのでworpressのコメントを引き継げない</li>
+</ul>
+<p>ということに至った。</p>
+<p>ちなみにHexoではRSS feedを使うために別途 <a href="https://github.com/hexojs/hexo-generator-feed" target="_blank" rel="external">hexo-generator-feed</a> をインストール必要があった。</p>
+<p>あと、テーマはとりあえず最低限必要なものを自作した。</p>
+<p>package.jsonは以下のようになった。npm scriptsでHexoコマンドを叩いている。</p>
+<script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=package.json"></script>
+<h2 id="Hexoで運用するためにやったこと">Hexoで運用するためにやったこと</h2><p>wordpressから移行して、Hexoで運用するにあたり<a href="https://pages.github.com/" target="_blank" rel="external">GitHub Pages</a>を利用することにした。</p>
+<p>使っていたドメインプロバイダーではGitHub Pagesでの独自ドメインを使えなかった。そこで、CloudFlareだと無料プランでも <a href="https://blog.cloudflare.com/introducing-universal-ssl/" target="_blank" rel="external">Universal SSL</a> でも使えるということを見つけたので、ネームサーバーを <a href="https://www.cloudflare.com/" target="_blank" rel="external">CloudFlare</a> に移行した。</p>
+<p>CloudFlareに申し込むと、ネームサーバーを指定されるので、ドメインプロバイダーの管理ページでDNSサーバーをCloudFlareに向ける。<br>あとは、ホスト名を書いたCNAMEファイルをドキュメントルートに配置するだけで、独自ドメインでの運用がすんなりとできた。</p>
+<p>当初はBitbucketでも同じことができるので、そちらを使うか迷っていたが <a href="https://confluence.atlassian.com/display/BITBUCKET/Associate+an+existing+domain+with+an+account" target="_blank" rel="external">Associate an existing domain with an account</a> を見る限り、CNAMEでの運用はできなくなったぽい。</p>
+<p>Hexo使ってわかったことは作者が台湾の方ということもあり、英語記事と同じくらい中国語の記事も出てくる。</p>
+<h3 id="参考にしたページ">参考にしたページ</h3><ul>
+<li><a href="http://hexo.io/docs/migration.html#WordPress" target="_blank" rel="external">Migration | Hexo</a></li>
+<li><a href="http://shumaiblog.com/wordpress-plugin-wp-slug-translate/" target="_blank" rel="external">WordPressのスラッグを日本語から英訳してくれるプラグイン「WP Slug Translate」</a></li>
+<li><a href="http://pagent.github.io/2015/02/17/github-pages-redirect/" target="_blank" rel="external">GitHub Pagesのブログでリダイレクト「hexo-generator-alias」</a></li>
+</ul>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+      <a data-url="http://blog.kazu69.net/2015/05/16/moved-hexo/" data-id="ci9qjapez009lo4p4qjc7w7j6" class="article-share-link">Share</a>
+      
+        <a href="http://blog.kazu69.net/2015/05/16/moved-hexo/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2015/04/19/use-the-npm-as-the-build-tool/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            ビルドツールとしてnpmを使う
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+  <aside>
+    
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+  </aside>
+
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2015 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2015/05/16/moved-hexo/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</body>
+</html>
