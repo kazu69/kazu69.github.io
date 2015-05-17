@@ -99,33 +99,10 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>javascriptのロード中は基本的にほかのファイルのロードが行われないのは、一般的なお話ですが(最新のブラウザはパラレルでロードできるからこの範疇ではない)、少しでもサイトの最適化を行うならばパラッルダウンロードはしておきたいところ。<br><a id="more"></a><br>ということで、ほかのファイルのロードを邪魔せずに、ロード完了時にスクリプトが動作する方法がありました。<br><code>domscript.onload = function() { 
-    domscript.onloadDone = true; 
-    init(); 
-};
-domscript.onreadystatechange = function() { 
-    if ( &quot;loaded&quot; === domscript.readyState &amp;&amp; ! domscript.onloadDone ) {
-        domscript.onloadDone = true; 
-        init();
-    }
-}</code><br>onreadystatechangeやonloadイベントを使って、ロードを状態をみてロード完了時にinit関数を実行ですかね。へー、これでパラレルロードができるのかという感じです。<del datetime="2009-09-29T14:44:22+00:00">実証してないのです。</del>ちなみに、single scriptの場合です。</p>
-<p>実証してみました。<br>`<br>function init(){<br>        alert(“init”);<br>    }</p>
-<pre><code><span class="keyword">var</span> domscript = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);
-domscript.src =<span class="string">"script.js"</span>;
-
-domscript.onload = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{ 
-    domscript.onloadDone = <span class="literal">true</span>; 
-    init(); 
-};
-
-domscript.onreadystatechange = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{ 
-    <span class="keyword">if</span> ( <span class="string">"loaded"</span> === domscript.readyState &amp;&amp; ! domscript.onloadDone ) {
-        domscript.onloadDone = <span class="literal">true</span>; 
-        init();
-    }
-}
-<span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>].appendChild(domscript);
-</code></pre><p>`<br>という感じで実行すると、</p>
+      <p>javascriptのロード中は基本的にほかのファイルのロードが行われないのは、一般的なお話ですが(最新のブラウザはパラレルでロードできるからこの範疇ではない)、少しでもサイトの最適化を行うならばパラッルダウンロードはしておきたいところ。<br><a id="more"></a><br>ということで、ほかのファイルのロードを邪魔せずに、ロード完了時にスクリプトが動作する方法がありました。<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">domscript.onload = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123; </span><br><span class="line">    domscript.onloadDone = <span class="literal">true</span>; </span><br><span class="line">    init(); </span><br><span class="line">&#125;;</span><br><span class="line">domscript.onreadystatechange = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123; </span><br><span class="line">    <span class="keyword">if</span> ( <span class="string">"loaded"</span> === domscript.readyState &amp;&amp; ! domscript.onloadDone ) &#123;</span><br><span class="line">        domscript.onloadDone = <span class="literal">true</span>; </span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>onreadystatechangeやonloadイベントを使って、ロードを状態をみてロード完了時にinit関数を実行ですかね。へー、これでパラレルロードができるのかという感じです。<del datetime="2009-09-29T14:44:22+00:00">実証してないのです。</del>ちなみに、single scriptの場合です。</p>
+<p>実証してみました。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">		alert(<span class="string">"init"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> domscript = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">	domscript.src =<span class="string">"script.js"</span>;</span><br><span class="line"></span><br><span class="line">	domscript.onload = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		domscript.onloadDone = <span class="literal">true</span>; </span><br><span class="line">		init(); </span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	domscript.onreadystatechange = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123; </span><br><span class="line">		<span class="keyword">if</span> ( <span class="string">"loaded"</span> === domscript.readyState &amp;&amp; ! domscript.onloadDone ) &#123;</span><br><span class="line">			domscript.onloadDone = <span class="literal">true</span>; </span><br><span class="line">			init();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>].appendChild(domscript);</span><br></pre></td></tr></table></figure></p>
+<p>という感じで実行すると、</p>
 <p><img src="/images/090929.png" alt=""><br>という具合にjsとimgがパラレルでダウンロードされました。</p>
 <p><a href="http://stevesouders.com/efws/script-onload.php" target="_blank" rel="external"><br>stevesouders.com</a>より</p>
 
@@ -134,7 +111,7 @@ domscript.onreadystatechange = <span class="function"><span class="keyword">func
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2009/09/10/not-to-disturb-other-files-load-in-the-javascript-loading/" data-id="ci9qjapea0097o4p4yy02ax2u" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2009/09/10/not-to-disturb-other-files-load-in-the-javascript-loading/" data-id="ci9qqpn4u00978bp42fd5si0g" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2009/09/10/not-to-disturb-other-files-load-in-the-javascript-loading/#disqus_thread" class="article-comment-link">Comments</a>
       

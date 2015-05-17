@@ -98,15 +98,16 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Sassのことばっかりかいてるんですけど、<a href="https://html5fukuoka.wiki.zoho.com/%E7%AC%AC16%E5%9B%9E-%E5%8B%89%E5%BC%B7%E4%BC%9A.html" target="_blank" rel="external">html5+α@福岡 勉強会</a>で珍しく発表したり、仕事で久々にsassばっかり触ってるのもあるんだと思います。<br>そんなSassをお勧めする理由の一つが<a href="http://compass-style.org/" target="_blank" rel="external">Compass</a>というCSS Frameworkなんです。<br>便利なMixinやらFunctionやらあるんですけど、一番うれしいのが面倒な<a href="http://compass-style.org/reference/compass/helpers/sprites/" target="_blank" rel="external">CSS Sprite</a>を自動化できることでしょうか。<br><a id="more"></a><br>例えばhogeというディレクトリにSpriteしたい画像を格納しておけば、<br>[code]<br>$sprite: sprite-map(&quot;hoge/*.png&quot;);<br>[/code]</p>
+      <p>Sassのことばっかりかいてるんですけど、<a href="https://html5fukuoka.wiki.zoho.com/%E7%AC%AC16%E5%9B%9E-%E5%8B%89%E5%BC%B7%E4%BC%9A.html" target="_blank" rel="external">html5+α@福岡 勉強会</a>で珍しく発表したり、仕事で久々にsassばっかり触ってるのもあるんだと思います。<br>そんなSassをお勧めする理由の一つが<a href="http://compass-style.org/" target="_blank" rel="external">Compass</a>というCSS Frameworkなんです。<br>便利なMixinやらFunctionやらあるんですけど、一番うれしいのが面倒な<a href="http://compass-style.org/reference/compass/helpers/sprites/" target="_blank" rel="external">CSS Sprite</a>を自動化できることでしょうか。<br><a id="more"></a><br>例えばhogeというディレクトリにSpriteしたい画像を格納しておけば、<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$<span class="rule"><span class="attribute">sprite</span>:<span class="value"> <span class="function">sprite-map</span>(<span class="string">"hoge/*.png"</span>)</span></span>;</span><br></pre></td></tr></table></figure></p>
 <p>で画像を結合してくれます。</p>
-<p>ファイルの結合にはオプションをつけることで色々とできて、<br>例えば、各画像ファイルの間隔をあけて結合させたいときは、<br>[code]<br>$sprite: sprite-map(&quot;hoge/*.png&quot;, $spacing: 20px);<br>[/code]</p>
+<p>ファイルの結合にはオプションをつけることで色々とできて、<br>例えば、各画像ファイルの間隔をあけて結合させたいときは、<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$<span class="rule"><span class="attribute">sprite</span>:<span class="value"> <span class="function">sprite-map</span>(<span class="string">"hoge/*.png"</span>, $spacing: <span class="number">20px</span>)</span></span>;</span><br></pre></td></tr></table></figure></p>
 <p>で20pxの間隔をあけてファイルを結合できます。</p>
-<p>水平に結合したときは<br>[code]<br>$sprite: sprite-map(&quot;hoge/*.png&quot;, $layout:horizontal);<br>[/code]</p>
+<p>水平に結合したときは<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$<span class="rule"><span class="attribute">sprite</span>:<span class="value"> <span class="function">sprite-map</span>(<span class="string">"hoge/*.png"</span>, $layout:horizontal)</span></span>;</span><br></pre></td></tr></table></figure></p>
 <p>とかでいいし、便利で楽。</p>
-<p>実際に画像を表示したいところで<br>[code]<br>background-image: $sprite; </p>
-<h1 id="第二引数はファイル名">第二引数はファイル名</h1><p>background-position: sprite-position($sprite, file-name);<br>[/code]<br>とかでpositionを自動で算出してくれます。</p>
-<p>下記のようすると、ファイルの縦幅と横幅を取得してwidthとheightに設定できます。<br>[code]<br>width: image-width(&quot;hoge/file-name.png&quot;);<br>height: image-height(&quot;hoge/file-name.png&quot;);<br>background-image: $sprite;<br>background-position: sprite-position($sprite, file-name);<br>[/code]<br>これだと、画像の変更がありファイルの縦幅や横幅が変わっても、特に修正の必要がないのでかなり楽です。</p>
+<p>実際に画像を表示したいところで<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="rule"><span class="attribute">background-image</span>:<span class="value"> $sprite</span></span>; </span><br><span class="line"># 第二引数はファイル名</span><br><span class="line"><span class="rule"><span class="attribute">background-position</span>:<span class="value"> <span class="function">sprite-position</span>($sprite, file-name)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>とかでpositionを自動で算出してくれます。</p>
+<p>下記のようすると、ファイルの縦幅と横幅を取得してwidthとheightに設定できます。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="function">image-width</span>(<span class="string">"hoge/file-name.png"</span>)</span></span>;</span><br><span class="line"><span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="function">image-height</span>(<span class="string">"hoge/file-name.png"</span>)</span></span>;</span><br><span class="line"><span class="rule"><span class="attribute">background-image</span>:<span class="value"> $sprite</span></span>; </span><br><span class="line"><span class="rule"><span class="attribute">background-position</span>:<span class="value"> <span class="function">sprite-position</span>($sprite, file-name)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>これだと、画像の変更がありファイルの縦幅や横幅が変わっても、特に修正の必要がないのでかなり楽です。</p>
 <p>そのほかにも色々できるんですけど、気がついたら追記します。<br>でも、詳しくは一回<a href="http://compass-style.org/help/tutorials/spriting/" target="_blank" rel="external">チュートリアル</a>やればいいんじゃないかな。</p>
 
     
@@ -114,7 +115,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2012/06/20/in-the-compass-of-the-sass-framework-css-sprite-can-easily/" data-id="ci9qjapha00bgo4p4otw0ig6o" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2012/06/20/in-the-compass-of-the-sass-framework-css-sprite-can-easily/" data-id="ci9qqpn9900bg8bp4rnow0ccc" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2012/06/20/in-the-compass-of-the-sass-framework-css-sprite-can-easily/#disqus_thread" class="article-comment-link">Comments</a>
       

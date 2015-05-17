@@ -11,8 +11,6 @@
 <meta property="og:url" content="http://blog.kazu69.net/2010/04/26/twitter-anywhere/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="簡単設置できて、その場でつぶやけるらしい@Anywhereを埋め込んでみた。">
-<meta property="og:image" content="/images/2010/04/20100426-01.png">
-<meta property="og:image" content="/images/2010/04/20100426-02-300x210.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Twitter @Anywhere">
 <meta name="twitter:description" content="簡単設置できて、その場でつぶやけるらしい@Anywhereを埋め込んでみた。">
@@ -100,8 +98,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><img src="/images/2010/04/20100426-01.png" alt="@anywhere"><br><img src="/images/2010/04/20100426-02-300x210.png" alt=""></p>
-<p>簡単設置できて、その場でつぶやけるらしい<a href="http://dev.twitter.com/anywhere" target="_blank" rel="external">@Anywhere</a>を埋め込んでみた。<br><a id="more"></a></p>
+      <p>簡単設置できて、その場でつぶやけるらしい<a href="http://dev.twitter.com/anywhere" target="_blank" rel="external">@Anywhere</a>を埋め込んでみた。<br><a id="more"></a></p>
 <p>設置方法には、アプリケーションの登録が必要です。</p>
 <ol>
 <li><a href="http://dev.twitter.com/anywhere" target="_blank" rel="external">@Anywhere</a>のサイトのページ下部にある「Start it using now」をクリック。</li>
@@ -110,11 +107,10 @@ ga('send', 'pageview');
 <li><p>スクリプトが提示されるので、それをコピー。</p>
 </li>
 </ol>
-<p>実際にWordPressに設置してみる。まず、<br>&lt;head&gt;に<code>&amp;lt;script src=&quot;http://platform.twitter.com/anywhere.js?id=*************&amp;amp;v=1&quot;&amp;gt;
-  &lt;/script&gt;</code>を追加します。</p>
-<p>マウスオーバーでtwitter idのツールチップが表示される「Hovercards」はjavascript<br><code>twttr.anywhere(function (twitter) {
-        twitter(&quot;#hovercards&quot;).hovercards();
-    });</code></p>
+<p>実際にWordPressに設置してみる。まず、<code>head</code>タグに</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://platform.twitter.com/anywhere.js?id=*************&amp;amp;v=1"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>を追加します。</p>
+<p>マウスオーバーでtwitter idのツールチップが表示される「Hovercards」はjavascript<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">twttr.anywhere(<span class="function"><span class="keyword">function</span> <span class="params">(twitter)</span> </span>&#123;</span><br><span class="line">        twitter(<span class="string">"#hovercards"</span>).hovercards();</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
 <script type="text/javascript">
 twttr.anywhere(function (twitter) {
         twitter("#sample").hovercards();
@@ -124,11 +120,8 @@ twttr.anywhere(function (twitter) {
 こんなかんじ <span id="sample">@kazu69</span>。
 
 Follow me ボタンも簡単につけることができます。
-`
-twttr.anywhere(function(twitter) {
-    twitter("#followButton").followButton("kazu69");
-});
-`
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">twttr.anywhere(<span class="function"><span class="keyword">function</span><span class="params">(twitter)</span> </span>&#123;</span><br><span class="line">	twitter(<span class="string">"#followButton"</span>).followButton(<span class="string">"kazu69"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
 <script type="text/javascript">
 twttr.anywhere(function(twitter) {
     twitter("#sampleBtn").followButton("kazu69");
@@ -138,11 +131,8 @@ twttr.anywhere(function(twitter) {
 こんな感じ <span id="sampleBtn"></span>
 
 Tweet Boxも簡単に設置できます。
-`
- twttr.anywhere(function (T) {
-    T("#tbox").tweetBox();
-  });
-`
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">twttr.anywhere(<span class="function"><span class="keyword">function</span> <span class="params">(T)</span> </span>&#123;</span><br><span class="line">   T(<span class="string">"#tbox"</span>).tweetBox();</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+
 こんな感じで、同じくd="tbox"を付与した場所にTweet Boxが設置できます。
 <div id="sampleBox"></div>
 <script type="text/javascript">
@@ -158,7 +148,7 @@ Tweet Boxも簡単に設置できます。
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2010/04/26/twitter-anywhere/" data-id="ci9qjap78002xo4p4pwzuo92l" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2010/04/26/twitter-anywhere/" data-id="ci9qqpmt6002x8bp448l2dilj" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2010/04/26/twitter-anywhere/#disqus_thread" class="article-comment-link">Comments</a>
       

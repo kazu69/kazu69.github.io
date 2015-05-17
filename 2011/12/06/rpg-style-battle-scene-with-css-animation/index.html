@@ -98,16 +98,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>cssのアニメーションにfirefox5から対応したということで、復習してみた。<br><a id="more"></a><br>cssアニメーションプロパティ<br>`<br>アニメーションのキーフレームを示す名前<br>animation-name : name;</p>
-<p>1 回のアニメーションの長さ(秒,ミリ秒)<br>animation-duration :.10s;</p>
-<p>アニメーションの進め方を設定します。これは加速曲線を定義。アニメーションのイージング機能を定義する感じ(ease,linear,ease-in,ease-out,ease-in-out)<br>animation-timing-function: ease-in-out;</p>
-<p>要素が読み込まれてからアニメーション開始までの遅延時間(秒,ミリ秒)<br>animation-delay : 10s;<br>アニメーション完了後に、逆方向のアニメーションを行い、交互にくり返すかの設定<br>animation-direction: normal;</p>
-<p>アニメーション完了後に、実行前や実行後、その両方のスタイルを適用するかを設定<br>animation-fill-mode: forwards;</p>
-<p>アニメーションを一時停止したり、再開したりすることができる。アニメーションの状態を判定できるプロパティ<br>animation-play-state: running;</p>
-<p>アニメーションの繰り返し回数を設定(無限に繰り返す場合はinfinite )<br>animation-iteration-count: 1;*/<br>`</p>
-<p>実際には各プロパティにはvendor prefixが必要。<br>アニメーションは状態毎にイベントを発火するので、<br>`<br>//アニメーション開始イベント<br>e.addEventListener(“animationstart”, listener, false);</p>
-<p>//アニメーション終了イベント<br>e.addEventListener(“animationend”, listener, false);</p>
-<p>//アニメーションが1周するごとに発生<br>e.addEventListener(“animationiteration”, listener, false);<br>`<br>のように取得可能。<br>こちらもvendor prefixが必要でwebkitAnimationEnd,mozAnimationStartなどとしないといけない。</p>
+      <p>cssのアニメーションにfirefox5から対応したということで、復習してみた。<br><a id="more"></a><br>cssアニメーションプロパティ<br><figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">アニメーションのキーフレームを示す名前</span><br><span class="line">animation-<span class="keyword">name</span> : <span class="keyword">name</span>;</span><br><span class="line"></span><br><span class="line"><span class="number">1</span> 回のアニメーションの長さ(秒,ミリ秒)</span><br><span class="line">animation-duration :.0s;</span><br><span class="line"></span><br><span class="line">アニメーションの進め方を設定します。これは加速曲線を定義。アニメーションのイージング機能を定義する感じ(ease,linear,ease-<span class="type">in</span>,ease-<span class="type">out</span>,ease-<span class="type">in</span>-<span class="type">out</span>)</span><br><span class="line">animation-timing-<span class="function"><span class="keyword">function</span></span>: ease-<span class="type">in</span>-<span class="type">out</span>;</span><br><span class="line"></span><br><span class="line">要素が読み込まれてからアニメーション開始までの遅延時間(秒,ミリ秒)</span><br><span class="line">animation-delay : 0s;</span><br><span class="line">アニメーション完了後に、逆方向のアニメーションを行い、交互にくり返すかの設定</span><br><span class="line">animation-direction: normal;</span><br><span class="line"></span><br><span class="line">アニメーション完了後に、実行前や実行後、その両方のスタイルを適用するかを設定</span><br><span class="line">animation-fill-mode: forwards;</span><br><span class="line"></span><br><span class="line">アニメーションを一時停止したり、再開したりすることができる。アニメーションの状態を判定できるプロパティ</span><br><span class="line">animation-play-state: running;</span><br><span class="line"></span><br><span class="line">アニメーションの繰り返し回数を設定(無限に繰り返す場合はinfinite )</span><br><span class="line">animation-iteration-<span class="built_in">count</span>: <span class="number">1</span>;*/</span><br></pre></td></tr></table></figure></p>
+<p>実際には各プロパティにはvendor prefixが必要。<br>アニメーションは状態毎にイベントを発火するので、<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//アニメーション開始イベント</span></span><br><span class="line">e.addEventListener(<span class="string">"animationstart"</span>, listener, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//アニメーション終了イベント</span></span><br><span class="line">e.addEventListener(<span class="string">"animationend"</span>, listener, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//アニメーションが1周するごとに発生</span></span><br><span class="line">e.addEventListener(<span class="string">"animationiteration"</span>, listener, <span class="literal">false</span>);</span><br></pre></td></tr></table></figure></p>
+<p>のように取得可能。<br>こちらもvendor prefixが必要でwebkitAnimationEnd,mozAnimationStartなどとしないといけない。</p>
 <p>で、簡単に作ったのが以下。ゲーム風の表現も全然可能ですね。</p>
 <iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/NT3v9/8/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
@@ -119,7 +112,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2011/12/06/rpg-style-battle-scene-with-css-animation/" data-id="ci9qjapci007io4p41zc6ze1x" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2011/12/06/rpg-style-battle-scene-with-css-animation/" data-id="ci9qqpn2k007i8bp4qug2j7sn" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2011/12/06/rpg-style-battle-scene-with-css-animation/#disqus_thread" class="article-comment-link">Comments</a>
       

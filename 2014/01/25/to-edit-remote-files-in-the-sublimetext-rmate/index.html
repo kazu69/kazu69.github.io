@@ -102,13 +102,10 @@ ga('send', 'pageview');
 <p>SublimeText側では<a href="https://github.com/henrikpersson/rsub" target="_blank" rel="external">rsub</a>というパッケージを入れることで、SSHでリモートサーバーを編集できました。</p>
 <p>一応、導入手順。</p>
 <p>SublimeTextにPackegeInstallでrsubを導入。サーバー側ではrmateをインストール。<br>sshのconfigにremote forwardingの設定を追加</p>
-<p>[text]</p>
-<h1 id="~/-ssh/config">~/.ssh/config</h1><p>Host your_remote_server.com<br>    RemoteForward 52698 127.0.0.1:52698<br>[/text]</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ~/.ssh/config</span></span><br><span class="line"><span class="title">Host</span> your_remote_server.com</span><br><span class="line">    RemoteForward <span class="number">52698</span> <span class="number">127.0.0.1:52698</span></span><br></pre></td></tr></table></figure>
 <p>ちなみにポート番号はrmateのデフォルトのものなので、変更も可能。<br>多分ないけど。複数人でrsubをつかうならもちろん変更する必要がある。</p>
-<p>自分はgemでいれたけど、standaloneなら<br>[shell]</p>
-<h1 id="rsubをインストール">rsubをインストール</h1><p>curl -Lo ~/bin/rsub <a href="https://raw.github.com/textmate/rmate/master/bin/rmate" target="_blank" rel="external">https://raw.github.com/textmate/rmate/master/bin/rmate</a><br>chmod a+x ~/bin/rsub</p>
-<h1 id="パスを通す">パスを通す</h1><p>export PATH=&quot;$PATH:$HOME/bin&quot;<br>[/shell]</p>
-<p>これで、SublimeTextを起動して、リモートサーバーから<br>[shell]<br>rsub YOUR_FILE<br>[/shell]</p>
+<p>自分はgemでいれたけど、standaloneなら<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># rsubをインストール</span></span><br><span class="line">curl -Lo ~/bin/rsub https://raw.github.com/textmate/rmate/master/bin/rmate</span><br><span class="line">chmod a+x ~/bin/rsub</span><br><span class="line"><span class="comment"># パスを通す</span></span><br><span class="line"><span class="built_in">export</span> PATH=&amp;quot;<span class="variable">$PATH</span>:<span class="variable">$HOME</span>/bin&amp;quot;</span><br></pre></td></tr></table></figure></p>
+<p>これで、SublimeTextを起動して、リモートサーバーから<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rsub YOUR_FILE</span><br></pre></td></tr></table></figure></p>
 <p>でリモートファイルをSublimeTextで編集できる。<br>開発環境をVMで作ことがおおくなるとこれは便利。</p>
 
     
@@ -116,7 +113,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2014/01/25/to-edit-remote-files-in-the-sublimetext-rmate/" data-id="ci9qjap9m0054o4p4y5tjxnjy" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2014/01/25/to-edit-remote-files-in-the-sublimetext-rmate/" data-id="ci9qqpmwg00548bp4z9ige5m8" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2014/01/25/to-edit-remote-files-in-the-sublimetext-rmate/#disqus_thread" class="article-comment-link">Comments</a>
       

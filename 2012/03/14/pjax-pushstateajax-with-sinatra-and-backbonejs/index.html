@@ -99,51 +99,24 @@ ga('send', 'pageview');
     </div>
     
       <p>rubyの軽量フレームワーク<a href="http://www.sinatrarb.com/" target="_blank" rel="external">sinatra</a>と<a href="http://documentcloud.github.com/backbone/" target="_blank" rel="external">Backbonejs</a>でpjaxをやってみたので備忘録。<br><a id="more"></a><br>HTML5からはhistoryオブジェクトにpushStateやreplaceStateメソッドが追加され、履歴のスタックを操作できるようになりました。pjaxは、そのpushStateとAjaxを利用したブラウザの戻る・進む機能が使える技術。<br>通常のリクエストと異なり、必要な箇所だけをAjaxで取得するためデータの転送量を削減できる。<br>具体例でいうと、あの<a href="https://github.com/" target="_blank" rel="external">GitHub</a>で使われてるやつ。</p>
-<script src="https://gist.github.com/2029789.js"> </script>
-
-<p>以下は個人的なメモ。<br>ヘッダー情報にHTTP_X_PJAXが付与されている場合はpjaxの処理をさせる<br><code>[sourcecode language=&quot;ruby&quot;]
-class Sinatra::Request
-    def pjax?
-        env[&#39;HTTP_X_PJAX&#39;] || self[&#39;_pjax&#39;]
-    end
-end
-[/sourcecode]</code></p>
+<script src="//gist.github.com/kazu69/2029789.js?file=pjax.rb"></script>
+<p>以下は個人的なメモ。<br>ヘッダー情報にHTTP_X_PJAXが付与されている場合はpjaxの処理をさせる</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sinatra::Request</span></span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> </span>pjax?</span><br><span class="line">        env[<span class="string">'HTTP_X_PJAX'</span>] || <span class="keyword">self</span>[<span class="string">'_pjax'</span>]</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 <p>これでrequest.pjaxでアクセスがpjaxか判別。ページ全体ではなく、必要なコンテンツだけを返してあげればいいので、<br>sinatraの場合はlayoutをfalseにしてやる。</p>
-<p><code>[sourcecode language=&quot;ruby&quot;]
-get &#39;/pjax1&#39; do
-    erb :pjax1, :layout =&amp;gt; !request.pjax?
-end
-[/sourcecode]</code></p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">get <span class="string">'/pjax1'</span> <span class="keyword">do</span></span><br><span class="line">    erb <span class="symbol">:pjax1</span>, <span class="symbol">:layout</span> =&gt; !request.pjax?</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 <p>backbornjsの方は、ajaxのリクエスト前にヘッダーにX-PJAXを付与する。</p>
-<p><code>[sourcecode language=&quot;javascript&quot;]
-$.ajaxSetup({
-    beforeSend: function(xhr) {
-        xhr.setRequestHeader(&#39;X-PJAX&#39;, true);
-    }
-});
-[/sourcecode]</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$.ajaxSetup(&#123;</span><br><span class="line">    beforeSend: <span class="function"><span class="keyword">function</span><span class="params">(xhr)</span> </span>&#123;</span><br><span class="line">        xhr.setRequestHeader(<span class="string">'X-PJAX'</span>, <span class="literal">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <p>これで、pjaxでリクエストできます。<br>ブラウザの戻る・進むボタンを押したときに発生するpopStateイベントを使って<br>コンテンツの内容をpjaxで変更してます。</p>
-<p><code>[sourcecode language=&quot;javascript&quot;]
-$(window).bind(&amp;quot;popstate&amp;quot;, function(e){
-    var id = location.pathname;
-        $(&#39;#content&#39;).text(&#39;&#39;);
-        if(&#39;/&#39; !== id) $(&#39;#content&#39;).load(id);
-});
-[/sourcecode]</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="built_in">window</span>).bind(<span class="string">"popstate"</span>, <span class="function"><span class="keyword">function</span><span class="params">(e)</span></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> id = location.pathname;</span><br><span class="line">        $(<span class="string">'#content'</span>).text(<span class="string">''</span>);</span><br><span class="line">        <span class="keyword">if</span>(<span class="string">'/'</span> !== id) $(<span class="string">'#content'</span>).load(id);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <p>backbornjsはURLのhash値を監視してルーティングしてるので、<a href="#hoge/moge">pjax</a>の用にしないといけないのですが、URLを奇麗にしたかったので以下のように<br>URLを分解してます。</p>
-<p><code>[sourcecode language=&quot;javascript&quot;]
-$(&#39;a&#39;).bind(&#39;click&#39;, function (e) {
-     e.preventDefault();
-     router.navigate($(this).attr(&amp;quot;href&amp;quot;).substr(1), true);
-});
-[/sourcecode]</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'a'</span>).bind(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(e)</span> </span>&#123;</span><br><span class="line">     e.preventDefault();</span><br><span class="line">     router.navigate($(<span class="keyword">this</span>).attr(<span class="string">"href"</span>).substr(<span class="number">1</span>), <span class="literal">true</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
     
   </div>
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2012/03/14/pjax-pushstateajax-with-sinatra-and-backbonejs/" data-id="ci9qjapd50083o4p4c5o2pk9o" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2012/03/14/pjax-pushstateajax-with-sinatra-and-backbonejs/" data-id="ci9qqpn3i00838bp4pqpn76qb" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2012/03/14/pjax-pushstateajax-with-sinatra-and-backbonejs/#disqus_thread" class="article-comment-link">Comments</a>
       

@@ -99,10 +99,10 @@ ga('send', 'pageview');
     </div>
     
       <p>Sublime Text 3に乗り換えたけど、Pacakge Controlが使えなかったので、調べてみた。<br><a id="more"></a><br>どうも、Sublime Text 3では Pacakge ControlにはSSL認証が必要になったらしく、そのままでは.sublime-packageを展開できないらしい。<br>そこでgitリポジトリから直接cloneして<a href="https://github.com/wbond/sublime_package_control/tree/python3" target="_blank" rel="external">python3ブランチ</a>を使用するみたい。</p>
-<p>[shell]<br>cd Packages/<br>git clone <a href="https://github.com/wbond/sublime_package_control.git" target="_blank" rel="external">https://github.com/wbond/sublime_package_control.git</a> &quot;Package Control&quot;<br>cd &quot;Package Control&quot;<br>git checkout python3<br>[/shell]</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> Packages/</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/wbond/sublime_package_control.git &amp;quot;Package Control&amp;quot;</span><br><span class="line"><span class="built_in">cd</span> &amp;quot;Package Control&amp;quot;</span><br><span class="line">git checkout python3</span><br></pre></td></tr></table></figure>
 <p>とりあえず、これでPackage Controlが使えました。</p>
 <p>ちなみに自分はDropbox経由でPackageなど管理しているので、関連ディレクトリびシンボリックリンクを作成しました。<br>その辺りもまとめて</p>
-<p>[shell]<br>ln -s ~/Dropbox/Sublime\ Text\ 3/Cache ~/Library/Application\ Support/Sublime\ Text\ 3/Cache<br>ln -s ~/Dropbox/Sublime\ Text\ 3/Installed\ Packages ~/Library/Application\ Support/Sublime\ Text\ 3/Installed\ Packages<br>ln -s ~/Dropbox/Sublime\ Text\ 3/Packages ~/Library/Application\ Support/Sublime\ Text\ 3/Packages<br>[/shell]</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ln <span class="operator">-s</span> ~/Dropbox/Sublime\ Text\ <span class="number">3</span>/Cache ~/Library/Application\ Support/Sublime\ Text\ <span class="number">3</span>/Cache</span><br><span class="line">ln <span class="operator">-s</span> ~/Dropbox/Sublime\ Text\ <span class="number">3</span>/Installed\ Packages ~/Library/Application\ Support/Sublime\ Text\ <span class="number">3</span>/Installed\ Packages</span><br><span class="line">ln <span class="operator">-s</span> ~/Dropbox/Sublime\ Text\ <span class="number">3</span>/Packages ~/Library/Application\ Support/Sublime\ Text\ <span class="number">3</span>/Packages</span><br></pre></td></tr></table></figure>
 <p>参考にしたサイト<br><a href="http://wbond.net/sublime_packages/package_control/installation#ST3" target="_blank" rel="external">http://wbond.net/sublime_packages/package_control/installation#ST3</a></p>
 <p><a href="https://gist.github.com/moomerman/4674060" target="_blank" rel="external">https://gist.github.com/moomerman/4674060</a></p>
 
@@ -111,7 +111,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/07/29/you-can-use-the-package-control-with-sublime-text-3/" data-id="ci9qjap26000ao4p47zdxy0h7" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/07/29/you-can-use-the-package-control-with-sublime-text-3/" data-id="ci9qqpmju000a8bp4zbfpfp3i" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/07/29/you-can-use-the-package-control-with-sublime-text-3/#disqus_thread" class="article-comment-link">Comments</a>
       

@@ -98,7 +98,8 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://kazu69.net/blog/tec/925/" target="_blank" rel="external">以前、仕様がかわっていたので、解決するには・・・</a>とかで回避していたのですが、やっぱり number属性であるべきところをtel属性にするのがおかしいというこころ残りがあったのです。<br>今回、新たな解決方法が紹介されていました。<br><a id="more"></a><br>この問題は<br>[html]<br>&lt;input type=’number’ value=’’&gt;<br>[/html]<br>とかで「011」や「1001」とか入力すると「11」、「1,000」などで自動変換されるという問題。</p>
+      <p><a href="http://kazu69.net/blog/tec/925/" target="_blank" rel="external">以前、仕様がかわっていたので、解決するには・・・</a>とかで回避していたのですが、やっぱり number属性であるべきところをtel属性にするのがおかしいというこころ残りがあったのです。<br>今回、新たな解決方法が紹介されていました。<br><a id="more"></a><br>この問題は<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">'number'</span> <span class="attribute">value</span>=<span class="value">''</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>とかで「011」や「1001」とか入力すると「11」、「1,000」などで自動変換されるという問題。</p>
 <p>number属性を使うと、ソフトウェアキーボードが数字キーボードを表示してくれるということもあり、text属性などを指定してテキストキーボードで入力するよりユーザーにとって操作しやすいという利点もあります。</p>
 <p>ということで、</p>
 <ul>
@@ -107,7 +108,8 @@ ga('send', 'pageview');
 </ul>
 <p>の2点を解決したいわけですが、今回の方法は上記をすべて満たしてました。</p>
 <p>それが以下</p>
-<p>[html]<br>&lt;input type=&quot;text&quot; pattern=&quot;[0-9]<em>&quot;/&gt;<br>[/html]<br>または<br>[html]<br>&lt;input type=&quot;text&quot; pattern=&quot;\d</em>&quot;/&gt;​<br>[/html]</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">pattern</span>=<span class="value">"[0-9]*"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>または<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">pattern</span>=<span class="value">"\d*"</span>/&gt;</span>​</span><br></pre></td></tr></table></figure></p>
 <p>正規表現で制御してやると、ソフトウェアキーボードも入力できる形式にあわせて表示されるんですね。</p>
 <p><a href="http://d.hatena.ne.jp/takaxi/20111211/1323575933" target="_blank" rel="external">iOS 5(iPhone等)の数字入力用inputフィールドでカンマを表示させない方法</a>に紹介されていました。</p>
 
@@ -116,7 +118,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2012/06/04/how-to-enter-numeric-ios5-safari-without-commas-in-number-of-input-type/" data-id="ci9qjapig00cpo4p47sbvdjqu" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2012/06/04/how-to-enter-numeric-ios5-safari-without-commas-in-number-of-input-type/" data-id="ci9qqpnaz00cp8bp4u7azix6h" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2012/06/04/how-to-enter-numeric-ios5-safari-without-commas-in-number-of-input-type/#disqus_thread" class="article-comment-link">Comments</a>
       

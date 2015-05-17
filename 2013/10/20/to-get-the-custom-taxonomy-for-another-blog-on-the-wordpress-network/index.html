@@ -103,7 +103,7 @@ ga('send', 'pageview');
 <p>はじめに switch_to_blog でブログを切り替えて get_taxonomies をで取得するつもりだった。<br>しかし、取得できない上にエラーも発生しないという状況になりました。</p>
 <p>勘違いしていたのが switch_to_blog では自動でロードされるオプションやオブジェクトなどは切り替えることができない。そのため別のブログのカスタムタクソノミーへのアクセスができない状況でした。</p>
 <p>素直にsqlを使って以下のように取得しました。</p>
-<p>[php]<br>// get custom taxonomy from another blog on the same network<br>function get_taxonomies_from_blog($blog_id) {<br>  switch_to_blog($blog_id);<br>  global $wpdb;<br>  $query = &quot;<br>    SELECT *<br>    FROM $wpdb-&gt;terms<br>    JOIN $wpdb-&gt;term_taxonomy<br>    USING(term_id)<br>  &quot;;<br>  $taxonomies = $wpdb-&gt;get_results($wpdb-&gt;prepare($query));<br>  restore_current_blog();<br>  return $taxonomies;<br>}<br>[/php]</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// get custom taxonomy from another blog on the same network</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_taxonomies_from_blog</span><span class="params">(<span class="variable">$blog_id</span>)</span> </span>&#123;</span><br><span class="line">  switch_to_blog(<span class="variable">$blog_id</span>);</span><br><span class="line">  <span class="keyword">global</span> <span class="variable">$wpdb</span>;</span><br><span class="line">  <span class="variable">$query</span> = &amp;quot;</span><br><span class="line">    SELECT * </span><br><span class="line">    FROM <span class="variable">$wpdb</span>-&amp;gt;terms </span><br><span class="line">    JOIN <span class="variable">$wpdb</span>-&amp;gt;term_taxonomy </span><br><span class="line">    USING(term_id)</span><br><span class="line">  &amp;quot;;</span><br><span class="line">  <span class="variable">$taxonomies</span> = <span class="variable">$wpdb</span>-&amp;gt;get_results(<span class="variable">$wpdb</span>-&amp;gt;prepare(<span class="variable">$query</span>));</span><br><span class="line">  restore_current_blog();</span><br><span class="line">  <span class="keyword">return</span> <span class="variable">$taxonomies</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>という感じです。<br>勘違いしてた。</p>
 
     
@@ -111,7 +111,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/10/20/to-get-the-custom-taxonomy-for-another-blog-on-the-wordpress-network/" data-id="ci9qjap9d004to4p4gcece6or" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/10/20/to-get-the-custom-taxonomy-for-another-blog-on-the-wordpress-network/" data-id="ci9qqpmw1004t8bp4ihavg4k3" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/10/20/to-get-the-custom-taxonomy-for-another-blog-on-the-wordpress-network/#disqus_thread" class="article-comment-link">Comments</a>
       

@@ -100,17 +100,10 @@ ga('send', 'pageview');
     
       <p>ハマッた。<br>IE6のボタンタグの挙動。<br>フォームのボタンにCSSでデザイン実装していたのですが、IEのボタンタグって他のボタンタグも一緒に送信するらしい。</p>
 <a id="more"></a>
-<blockquote>
-<p>&lt;button&gt;〜&lt;/button&gt;ってあったらそのvalu値をすべて送りつける</p>
-</blockquote>
-<p>致命的・・・。<br>ということで、</p>
-<blockquote>
-<p>&lt;input type=”submit”〜　で対応</p>
-</blockquote>
-<p>あとはCSSで実装</p>
-<blockquote>
-<h1 id="SubmitBtn_{">SubmitBtn {</h1><p>width:100px;<br>height:30px;<br>background:url(<strong><strong><em>**</em></strong></strong>) no-repeat 0 0;<br>border:none;<br>cursor:pointer;<br>/<em> for IE </em>/<br>text-indent:-9999em;<br>/<em> for opera </em>/<br>padding-bottm:50px;<br>}<br>ちなみに、IE6(win)ではtext-indent:-9999em;でボタンごと画面外へいっっちゃうみたい。<br>inputタグの前に半角スペース(<pre>&nbsp;</pre>)で解決しました。</p>
-</blockquote>
+<p><code>&lt;button&gt;〜&lt;/button&gt;</code>ってあったらそのvalu値をすべて送りつける</p>
+<p>致命的・・・。<br>ということで、<br><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input <span class="class"><span class="keyword">type</span></span>=<span class="string">"submit"</span>〜　で対応</span><br></pre></td></tr></table></figure></p>
+<p>あとはCSSで実装<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="id">#SubmitBtn</span> <span class="rules">&#123;</span><br><span class="line"><span class="rule"><span class="attribute">width</span>:<span class="value"><span class="number">100px</span></span></span>;</span><br><span class="line"><span class="rule"><span class="attribute">height</span>:<span class="value"><span class="number">30px</span></span></span>;</span><br><span class="line"><span class="rule"><span class="attribute">background</span>:<span class="value"><span class="function">url</span>(************) no-repeat <span class="number">0</span> <span class="number">0</span></span></span>;</span><br><span class="line"><span class="rule"><span class="attribute">border</span>:<span class="value">none</span></span>;</span><br><span class="line"><span class="rule"><span class="attribute">cursor</span>:<span class="value">pointer</span></span>;</span><br><span class="line"><span class="comment">/* for IE */</span></span><br><span class="line"><span class="rule"><span class="attribute">text-indent</span>:<span class="value">-<span class="number">9999em</span></span></span>;</span><br><span class="line"><span class="comment">/* for opera */</span></span><br><span class="line"><span class="rule"><span class="attribute">padding-bottm</span>:<span class="value"><span class="number">50px</span></span></span>;</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>ちなみに、IE6(win)ではtext-indent:-9999em;でボタンごと画面外へいっっちゃうみたい。<br>inputタグの前に半角スペースで解決しました。</p>
 <p>Operaはtext-indentが無効らしいので、paddingで文字を非表示。</p>
 <p>といった具合にしました。</p>
 
@@ -119,7 +112,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2007/09/22/now-ie6-the-button-tag/" data-id="ci9qjapdw008to4p4iipy9mkt" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2007/09/22/now-ie6-the-button-tag/" data-id="ci9qqpn4c008t8bp4l6cax223" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2007/09/22/now-ie6-the-button-tag/#disqus_thread" class="article-comment-link">Comments</a>
       

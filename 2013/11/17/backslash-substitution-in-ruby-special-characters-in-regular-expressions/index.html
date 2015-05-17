@@ -99,13 +99,9 @@ ga('send', 'pageview');
     </div>
     
       <p>rubyで特殊文字列\, (, ), [, ], {, }, ., ?, +, *, . を正規表現でバックスラッシュ置換をするメモ。<br><a id="more"></a></p>
-<p>たとえば、特殊文字を正規表現マッチさせる場合<br>[ruby]<br>str = ‘?’<br>‘hogemoge?’ =~ /#{str}/</p>
-<h1 id="RegexpError:_target_of_repeat_operator_is_not_specified:_/?/">RegexpError: target of repeat operator is not specified: /?/</h1><p>str = ‘)’<br>‘hogemoge)’ =~ /#{str}/</p>
-<h1 id="RegexpError:_unmatched_close_parenthesis:_/)/">RegexpError: unmatched close parenthesis: /)/</h1><p>[/ruby]</p>
+<p>たとえば、特殊文字を正規表現マッチさせる場合<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">str = <span class="string">'?'</span></span><br><span class="line"><span class="string">'hogemoge?'</span> =~ <span class="regexp">/<span class="subst">#&#123;str&#125;</span>/</span></span><br><span class="line"><span class="comment"># RegexpError: target of repeat operator is not specified: /?/</span></span><br><span class="line"></span><br><span class="line">str = <span class="string">')'</span></span><br><span class="line"><span class="string">'hogemoge)'</span> =~ <span class="regexp">/<span class="subst">#&#123;str&#125;</span>/</span></span><br><span class="line"><span class="comment"># RegexpError: unmatched close parenthesis: /)/</span></span><br></pre></td></tr></table></figure></p>
 <p>という具合にエラーになる。</p>
-<p>[ruby]<br>str = ‘?’<br>str = str.gsub(/\|\?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge?’ =~ /#{str}/</p>
-<h1 id="=&gt;_8">=&gt; 8</h1><p>str = ‘)’<br>str = str.gsub(/\|\?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge)’ =~ /#{str}/</p>
-<h1 id="=&gt;_8-1">=&gt; 8</h1><p>[/ruby]</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">str = <span class="string">'?'</span></span><br><span class="line">str = str.gsub(<span class="regexp">/\\|\?|\*|\(|\)|\&#123;|\&#125;|\[|\]|\+|\./</span>) &#123; |word| &amp;quot;\\<span class="comment">#&#123;word&#125;&amp;quot; &#125;</span></span><br><span class="line"><span class="string">'hogemoge?'</span> =~ <span class="regexp">/<span class="subst">#&#123;str&#125;</span>/</span></span><br><span class="line"><span class="comment"># =&amp;gt; 8</span></span><br><span class="line"></span><br><span class="line">str = <span class="string">')'</span></span><br><span class="line">str = str.gsub(<span class="regexp">/\\|\?|\*|\(|\)|\&#123;|\&#125;|\[|\]|\+|\./</span>) &#123; |word| &amp;quot;\\<span class="comment">#&#123;word&#125;&amp;quot; &#125;</span></span><br><span class="line"><span class="string">'hogemoge)'</span> =~ <span class="regexp">/<span class="subst">#&#123;str&#125;</span>/</span></span><br><span class="line"><span class="comment"># =&amp;gt; 8</span></span><br></pre></td></tr></table></figure>
 <p>で解決した。</p>
 
     
@@ -113,7 +109,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/11/17/backslash-substitution-in-ruby-special-characters-in-regular-expressions/" data-id="ci9qjaplz00fvo4p4mjnwb57r" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/11/17/backslash-substitution-in-ruby-special-characters-in-regular-expressions/" data-id="ci9qqpnfg00fv8bp48zk3vyo3" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/11/17/backslash-substitution-in-ruby-special-characters-in-regular-expressions/#disqus_thread" class="article-comment-link">Comments</a>
       

@@ -103,7 +103,7 @@ ga('send', 'pageview');
 <li>ライブラリ本体が実行時に特定のAssetsファイルをincludeするとき</li>
 <li>ライブラリ本体が相対パスで特定のAssetsファイルをincludeするとき<br>上記の場合、Precompileされたファイルにはanyload-avnov92ns2fd5db7e7290baa07400kcinqhb.cssのようにasset digest値が付与されるため、anyload.cssを読込むと確実に404が返されます。</li>
 </ul>
-<p>[shell]<br>├── app(precompiled)<br>│   ├── assets<br>│        ├── javascrips<br>│        ├── stylesheets<br>├──lib(precompiled)<br>│   ├── assets<br>│        ├── javascrips<br>│        ├── stylesheets<br>│<br>├── vendor(not precompiled)<br>│   ├── components<br>│<br>├── public<br>[/shell]</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">├── app(precompiled)</span><br><span class="line">│   ├── assets</span><br><span class="line">│        ├── javascrips</span><br><span class="line">│        ├── stylesheets</span><br><span class="line">├──lib(precompiled)</span><br><span class="line">│   ├── assets</span><br><span class="line">│        ├── javascrips</span><br><span class="line">│        ├── stylesheets</span><br><span class="line">│</span><br><span class="line">├── vendor(not precompiled)</span><br><span class="line">│   ├── components</span><br><span class="line">│</span><br><span class="line">├── public</span><br></pre></td></tr></table></figure>
 <p>例えばvendor配下のJavaScriptのライブラリはPrecompile対象ではなく、ライブラリが動的に読込むファイルはAssets Precompileの対象(appまたはlib配下)となる状況でした。</p>
 <p>おそらくRailsのAssets Precompileを想定してないJavaScriptライブラリやgemで提供されているJavaScriptライブラリにはありこういう状況があり得そう。</p>
 <p>読込まれるJavaScript,cssをPrecompileしなけりゃいいけど、ライブラリによっては回避できないこともありそうなのでその場合の考えられるの回避方法が</p>
@@ -126,7 +126,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/10/22/files-compiled-with-the-rails-assets-precompile-want-to-read-dynamically-on-the-client-side-when-the-response/" data-id="ci9qjapk400e4o4p4pz62jwso" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/10/22/files-compiled-with-the-rails-assets-precompile-want-to-read-dynamically-on-the-client-side-when-the-response/" data-id="ci9qqpncy00e48bp4dhj8vxod" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/10/22/files-compiled-with-the-rails-assets-precompile-want-to-read-dynamically-on-the-client-side-when-the-response/#disqus_thread" class="article-comment-link">Comments</a>
       

@@ -108,27 +108,17 @@ ga('send', 'pageview');
 <p>CSSのルールは必要最小限であればあるほどいいので、不要なスタイルはファイルサイズ、転送時間の肥大化につながります。とりあえず、見直しましょう。</p>
 <p><strong>２．ユニバーサルセレクタでのKey・タグセレクタでのKeyは使わない</strong></p>
 <p>まず、ユニバーサルセレクタではブラウザはすべてのDOMを走査してしまうため、非効率です。</p>
-<p>`</p>
-<p>body * {…}</p>
-<h1 id="navi_*_{…}">navi * {…}</h1><p>`</p>
+<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">body * <span class="decorator">&#123;...&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#navi * &#123;...&#125;</span></span><br></pre></td></tr></table></figure>
 <p>次に非効率なのはタグセレクタでこれも余計にdomを走査してしまうことが考えられます。</p>
-<p>`</p>
-<h1 id="footer_div_{…}">footer div {…}</h1><h1 id="side_p_{…}">side p {…}</h1><p>`</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="id">#footer</span> <span class="tag">div</span> &#123;...&#125;</span><br><span class="line"></span><br><span class="line"><span class="id">#side</span> <span class="tag">p</span> &#123;...&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>３．IDを過度に修飾しない</strong></p>
 <p>ＩＤは一意的なものであるため、過度に就職をする必要がありません。</p>
 <p>無駄に冗長的な表現をすることは避けるほうがいいと思います。</p>
-<p>`</p>
-<p>div#navi{…}・・・Not Good</p>
-<p>form#order{…}・・・Not Good</p>
-<h1 id="navi{…}・・・Good">navi{…}・・・Good</h1><h1 id="order{…}・・・Good">order{…}・・・Good</h1><p>`</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">div</span><span class="id">#navi</span>&#123;...&#125;・・・<span class="tag">Not</span> <span class="tag">Good</span></span><br><span class="line"></span><br><span class="line"><span class="tag">form</span><span class="id">#order</span>&#123;...&#125;・・・<span class="tag">Not</span> <span class="tag">Good</span></span><br><span class="line"></span><br><span class="line"><span class="id">#navi</span>&#123;...&#125;・・・<span class="tag">Good</span></span><br><span class="line"></span><br><span class="line"><span class="id">#order</span>&#123;...&#125;・・・<span class="attribute">Good</span></span><br></pre></td></tr></table></figure>
 <p><strong>４．子セレクターの使用はできれば避ける</strong></p>
 <p>それほどパフォーマンスに影響はしませんが、頻繁に辿るようなルールは非効率です。無駄なコストを避けるべきです。</p>
 <p>できるならクラスやIDで直接指定する方がコストは削減されます。</p>
-<p>`</p>
-<p>ul &gt; li &gt; a {…}</p>
-<p>dl &gt; dt { … }</p>
-<p>`</p>
-<p></p><p></p>
+<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ul &gt; li &gt; a <span class="decorator">&#123;...&#125;</span></span><br><span class="line"></span><br><span class="line">dl &gt; dt &#123; ... &#125;</span><br></pre></td></tr></table></figure>
 <p><strong> ５．:hover擬似セレクタを使わない</strong></p>
 <p>:hoverはとにかくパフォーマンスに悪影響を及ぼし、aタグ以外の場合はややこしいことにもなりかねません。</p>
 <p>マウスオーバーの表示の切り替えはjavascriptで処理する方が効率的です。</p>
@@ -143,7 +133,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2009/08/31/that-way-of-writing-css-site-displaying-more-quickly/" data-id="ci9qjapag005ro4p402s685ou" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2009/08/31/that-way-of-writing-css-site-displaying-more-quickly/" data-id="ci9qqpmxk005r8bp4frvtuk9a" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2009/08/31/that-way-of-writing-css-site-displaying-more-quickly/#disqus_thread" class="article-comment-link">Comments</a>
       

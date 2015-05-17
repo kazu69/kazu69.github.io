@@ -101,18 +101,12 @@ ga('send', 'pageview');
       <p>なんとなく、こんなkんじなのかな。。。<br>rootの概念に関して、メモ。</p>
 <a id="more"></a>
 <p>AS3において、表示リストに追加したとき、親はどこ？<br>ということで、調べてみた。</p>
-<blockquote>
-<p>var MC:MovieClip = new MovieClip();<br>MC.graphics.beginFill(0xff0000);<br>MC.graphics.drawRect(0,0,100,50);<br>addChild(MC);<br>trace(MC.root)</p>
-</blockquote>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">var</span> <span class="rule"><span class="attribute">MC</span>:<span class="value">MovieClip = new <span class="function">MovieClip</span>()</span></span>;</span><br><span class="line"><span class="tag">MC</span><span class="class">.graphics</span><span class="class">.beginFill</span>(0<span class="tag">xff0000</span>);</span><br><span class="line"><span class="tag">MC</span><span class="class">.graphics</span><span class="class">.drawRect</span>(0,0,100,50);</span><br><span class="line"><span class="tag">addChild</span>(<span class="tag">MC</span>);</span><br><span class="line"><span class="tag">trace</span>(<span class="tag">MC</span><span class="class">.root</span>)</span><br></pre></td></tr></table></figure>
 <p>このとき出力結果は<br>「object MainTimeline」です。<br>MainTimeline&gt;MovieClipオブジェクト(MC)　ってことかな？？？<br>ちなみにtrace(MC.parent)でも同じ。</p>
-<blockquote>
-<p>var MC:MovieClip = new MovieClip();<br>MC.graphics.beginFill(0xff0000);<br>MC.graphics.drawRect(0,0,100,50);<br>addChild(MC);<br>trace(MC.parent.parent)</p>
-</blockquote>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">var</span> <span class="rule"><span class="attribute">MC</span>:<span class="value">MovieClip = new <span class="function">MovieClip</span>()</span></span>;</span><br><span class="line"><span class="tag">MC</span><span class="class">.graphics</span><span class="class">.beginFill</span>(0<span class="tag">xff0000</span>);</span><br><span class="line"><span class="tag">MC</span><span class="class">.graphics</span><span class="class">.drawRect</span>(0,0,100,50);</span><br><span class="line"><span class="tag">addChild</span>(<span class="tag">MC</span>);</span><br><span class="line"><span class="tag">trace</span>(<span class="tag">MC</span><span class="class">.parent</span><span class="class">.parent</span>)</span><br></pre></td></tr></table></figure>
 <p>ならば「object Stage」<br>つまり、Stage&gt;MainTimeline&gt;MovieClipオブジェクト(MC)かな？<br>StageとMainTimelineは自動的に表示リストに追加？されると考えよう。</p>
 <p>ただ、ドキュメントクラスを使うとコレが違うんだ。</p>
-<blockquote>
-<p>public function Test() {<br>var MC:MovieClip = new MovieClip();<br>MC.graphics.beginFill(0xff0000);<br>MC.graphics.drawRect(0,0,100,50);<br>addChild(MC);<br>trace(MC.root)<br>}</p>
-</blockquote>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">Test</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">var</span> MC:MovieClip = <span class="keyword">new</span> MovieClip();</span><br><span class="line">MC.graphics.beginFill(<span class="number">0xff0000</span>);</span><br><span class="line">MC.graphics.drawRect(<span class="number">0</span>,<span class="number">0</span>,<span class="number">100</span>,<span class="number">50</span>);</span><br><span class="line">addChild(MC);</span><br><span class="line"><span class="keyword">trace</span>(MC.root)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>を、Test.asとして、任意のflaファイルからドキュメントクラスに入力して、コンパイルすると<br>「object Test」</p>
 <p>trace(MC.parent.parent)ならば「object Stage」となる。<br>MainTimelineが存在しない。<br>ということは、ドキュメントクラスはMainTimelinegの代りに、外部のクラスをインスタンス化してくれるものということかな。</p>
 <p>※ちなみに、スクリプトは一部はしょってるので、あしからず。</p>
@@ -122,7 +116,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2008/01/17/root-in-as3/" data-id="ci9qjapcn007mo4p4a1tvhjos" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2008/01/17/root-in-as3/" data-id="ci9qqpn2p007m8bp4iifkm2f7" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2008/01/17/root-in-as3/#disqus_thread" class="article-comment-link">Comments</a>
       

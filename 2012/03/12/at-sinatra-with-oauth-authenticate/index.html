@@ -98,38 +98,16 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Rubyの勉強の一環として、軽量Webフレームワーク<a href="http://www.sinatrarb.com/" target="_blank" rel="external">sinatra</a>で、oauth(authenticate)してみた。<br>sinatraを選んだ理由は、とにかくシンプルで軽い。ちょっとしたものしか作らないような自分にはマッチしたフレームワークなきがします。<br><a id="more"></a><br>まずは、sinatraのサイトにある通り<br>`<br>[sourcecode language=”ruby”]</p>
-<h1 id="app-rb">app.rb</h1><p>require ‘sinatra’<br>get ‘/‘ do<br>  ‘Hello world!’<br>end<br>[/sourcecode]<br><code>gemをインストールして動かします。</code><br>[sourcecode language=”ruby”]<br>gem install sinatra<br>ruby -rubygems myapp.rb<br>[/sourcecode]<br>`</p>
+      <p>Rubyの勉強の一環として、軽量Webフレームワーク<a href="http://www.sinatrarb.com/" target="_blank" rel="external">sinatra</a>で、oauth(authenticate)してみた。<br>sinatraを選んだ理由は、とにかくシンプルで軽い。ちょっとしたものしか作らないような自分にはマッチしたフレームワークなきがします。<br><a id="more"></a><br>まずは、sinatraのサイトにある通り<br>`<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># app.rb</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">require</span> <span class="string">'sinatra'</span></span><br><span class="line">get <span class="string">'/'</span> <span class="keyword">do</span></span><br><span class="line">  <span class="string">'Hello world!'</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
+<p><code>gemをインストールして動かします。</code><br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gem install sinatra</span><br><span class="line">ruby -rubygems myapp.rb</span><br></pre></td></tr></table></figure></p>
+<p>`</p>
 <p>という具合に簡単です。</p>
-<p>ルートハンドラやテンプレートにヘルパメソッドを定義できます。<br>`<br>[sourcecode language=”ruby”]<br>helpers do<br>    include Rack::Utils<br>    use Rack::Csrf, :raise =&amp;gt; true</p>
-<pre><code>def csrf_token
-    Rack::Csrf.csrf_token(env)
-end
-`</code></pre>
-
-<p>end<br>[/sourcecode]<br></p>
-<p>リクエストの実行前後に評価の行えるフィルタというものがあります。<br>フィルタ内でセットした変数はルーティング、テンプレートで使用できました。<br><code>[sourcecode language=&quot;ruby&quot;]
-before do
-    @twitter = TwitterOAuth::Client.new(
-        :consumer_key =&amp;amp;gt; KEY,
-        :consumer_secret =&amp;amp;gt; SECRET,
-        :token =&amp;amp;gt; session[:access_token],
-        :secret =&amp;amp;gt; session[:secret_token]
-    )
-end
-get &#39;/&#39; do
-    if session[:login]
-        @screen_name = @twitter.info[&#39;screen_name&#39;]
-        @image_url = @twitter.info[&#39;profile_image_url_https&#39;]
-        erb :login, :layout =&amp;amp;gt; false
-    else
-        erb :notlogin, :layout =&amp;amp;gt; false
-    end
-end
-[/sourcecode]</code></p>
+<p>ルートハンドラやテンプレートにヘルパメソッドを定義できます。<br>`<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">helpers <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">include</span> <span class="constant">Rack::Utils</span> </span><br><span class="line">    use <span class="constant">Rack::Csrf</span>, <span class="symbol">:raise</span> =&amp;amp;gt; <span class="keyword">true</span></span><br><span class="line"></span><br><span class="line">&lt;pre&gt;&lt;code&gt;<span class="function"><span class="keyword">def</span> </span>csrf_token</span><br><span class="line">    <span class="constant">Rack::Csrf</span>.csrf_token(env)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="string">`&lt;/pre&gt;</span><br><span class="line"></span><br><span class="line">end</span></span><br></pre></td></tr></table></figure></p>
+<p></p>
+<p>リクエストの実行前後に評価の行えるフィルタというものがあります。<br>フィルタ内でセットした変数はルーティング、テンプレートで使用できました。<br>`<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">before <span class="keyword">do</span></span><br><span class="line">    <span class="variable">@twitter</span> = <span class="constant">TwitterOAuth::Client</span>.new(</span><br><span class="line">        <span class="symbol">:consumer_key</span> =&amp;amp;gt; <span class="constant">KEY</span>,</span><br><span class="line">        <span class="symbol">:consumer_secret</span> =&amp;amp;gt; <span class="constant">SECRET</span>,</span><br><span class="line">        <span class="symbol">:token</span> =&amp;amp;gt; session[<span class="symbol">:access_token</span>],</span><br><span class="line">        <span class="symbol">:secret</span> =&amp;amp;gt; session[<span class="symbol">:secret_token</span>]</span><br><span class="line">    )</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">get <span class="string">'/'</span> <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">if</span> session[<span class="symbol">:login</span>]</span><br><span class="line">        <span class="variable">@screen_name</span> = <span class="variable">@twitter</span>.info[<span class="string">'screen_name'</span>]</span><br><span class="line">        <span class="variable">@image_url</span> = <span class="variable">@twitter</span>.info[<span class="string">'profile_image_url_https'</span>]</span><br><span class="line">        erb <span class="symbol">:login</span>, <span class="symbol">:layout</span> =&amp;amp;gt; <span class="keyword">false</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        erb <span class="symbol">:notlogin</span>, <span class="symbol">:layout</span> =&amp;amp;gt; <span class="keyword">false</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
+<p>`</p>
 <p>で、早速oauthするサンプルを作ってみました。</p>
-<script src="https://gist.github.com/2026809.js"> </script>
-
+<script src="//gist.github.com/kazu69/2026809.js?file=sinatra_oauth.rb"></script>
 <p>そもそもrubyを正しく学んでないので、おかしなところあるかもしれないけど。<br>以下個人的なメモ。</p>
 <ul>
 <li>SinatraのsessionはRackのCookieSessionを利用してるけど、暗号化があまりよろしくないっぽい。利用の際はRackのSessionをsecretキーを指定して使うべきではないだろうか。<br><a href="http://d.hatena.ne.jp/gioext/20090528/1243483873" target="_blank" rel="external">SinatraのSessionには注意</a></li>
@@ -142,7 +120,7 @@ end
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2012/03/12/at-sinatra-with-oauth-authenticate/" data-id="ci9qjapmb00g9o4p4tvkk84ws" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2012/03/12/at-sinatra-with-oauth-authenticate/" data-id="ci9qqpnfz00g98bp46p7xxxpp" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2012/03/12/at-sinatra-with-oauth-authenticate/#disqus_thread" class="article-comment-link">Comments</a>
       

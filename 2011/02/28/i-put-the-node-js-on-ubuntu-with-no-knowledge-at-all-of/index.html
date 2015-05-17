@@ -98,69 +98,38 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>何ができるか詳しく知らないけど、<a href="http://nodejs.org/" target="_blank" rel="external">node.js</a>っていうのが流行ってるらしいのでVMにUbuntuいれて、node.jsをインストールしてみた。あくまで、個人的な備忘録です。<br><a id="more"></a><br>まずはgitをインストールしたいので、Ubuntuの『アプリケーション』の『端末』を起動。<br>[code]</p>
-<p>git —version</p>
-<p>[/code]</p>
-<p>でgitが入っていないことを確認。<br>インストールの方法がひょうじされるので、指示に従って、インストールします。<br>[code]</p>
-<p>sudo apt-get install git-core</p>
-<p>[/code]</p>
+      <p>何ができるか詳しく知らないけど、<a href="http://nodejs.org/" target="_blank" rel="external">node.js</a>っていうのが流行ってるらしいのでVMにUbuntuいれて、node.jsをインストールしてみた。あくまで、個人的な備忘録です。<br><a id="more"></a><br>まずはgitをインストールしたいので、Ubuntuの『アプリケーション』の『端末』を起動。<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git <span class="comment">--version</span></span><br></pre></td></tr></table></figure></p>
+<p>でgitが入っていないことを確認。<br>インストールの方法がひょうじされるので、指示に従って、インストールします。<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo apt-<span class="keyword">get</span> install git-core</span><br></pre></td></tr></table></figure></p>
 <p>でインストール。</p>
-<p>[code]</p>
-<p>git —version</p>
-<p>[/code]</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git <span class="comment">--version</span></span><br></pre></td></tr></table></figure>
 <p>でインストールされていることを確認。<br>つづけて、gitのリポジトリのからnode.jsをダウンロードする。</p>
-<p>[code]</p>
-<p>git clone git://github.com/joyent/node.git</p>
-<p>[/code]</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git clone <span class="string">git:</span><span class="comment">//github.com/joyent/node.git</span></span><br></pre></td></tr></table></figure>
 <p>ダウンロードが終わると node というディレクトリができるので</p>
-<p>[code]</p>
-<p>cd node</p>
-<p>[/code]</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">cd</span> node</span><br></pre></td></tr></table></figure>
 <p>でnodeディレクトリ移動。<br>とりあえず、</p>
-<p>[code]</p>
-<p>./configure</p>
-<p>[/code]</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">./configure</span><br></pre></td></tr></table></figure>
 <p>とすると、やっぱりエラーが出た。<br>could not configure a cxx compiler! 　と怒られる。<br>おそらくgcc++がインストールされていないじゃないかなぁ。</p>
-<p>[code]</p>
-<p>sudo apt-get install build-essential</p>
-<p>[/code]</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo apt-<span class="keyword">get</span> install build-essential</span><br></pre></td></tr></table></figure>
 <p>でパッケージリストをインストール。<br>確認のために</p>
-<p>[code]</p>
-<p>gcc —version</p>
-<p>[/code]</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">gcc <span class="comment">--version</span></span><br></pre></td></tr></table></figure>
 <p>でバージョンの確認しておく。<br>ふたたび</p>
-<p>[code]</p>
-<p>./configure</p>
-<p>[/code]</p>
-<p>[code]</p>
-<p>Checking for openssl                     : not found<br>Checking for function SSL_library_init   : not found</p>
-<p>[/code]</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">./configure</span><br></pre></td></tr></table></figure>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Checking <span class="keyword">for</span> openssl                     : not found</span><br><span class="line">Checking <span class="keyword">for</span> <span class="function"><span class="keyword">function</span> <span class="title">SSL_library_init</span>   <span class="type">: not</span> <span class="title">found</span></span></span><br></pre></td></tr></table></figure>
 <p>とかの<a href="http://www.openssl.org/" target="_blank" rel="external">OpenSSL</a>のエラーがでた。<br>OpenSSLを入れる必要がありそう。<br>全然わからないので、しらべてみると、<br><a href="http://d.hatena.ne.jp/tricknotes/20100523/p1" target="_blank" rel="external">libssl-dev(0.98) をインストールするといいとかいう記事</a>があったので、</p>
-<p>[code]</p>
-<p>sudo apt-get install libssl-dev</p>
-<p>[/code]</p>
+<figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo apt-<span class="built_in">get</span> install libssl-<span class="built_in">dev</span></span><br></pre></td></tr></table></figure>
 <p>もう一回</p>
-<p>[code]</p>
-<p>./configure</p>
-<p>[/code]</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">./configure</span><br></pre></td></tr></table></figure>
 <p>とりあえず、主だったエラーはなくなったっぽいのでいけそうね。</p>
-<p>[code]</p>
-<p>make<br>sudo make install</p>
-<p>[/code]</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">make</span></span><br><span class="line">sudo <span class="built_in">make</span> install</span><br></pre></td></tr></table></figure>
 <p>でインストール。</p>
-<p>[code]</p>
-<p>node -v</p>
-<p>[/code]</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="title">node</span> -v</span><br></pre></td></tr></table></figure>
 <p>で確認すると</p>
-<p>[code]</p>
-<p>ｖ0.5.0-pre</p>
-<p>[/code]</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ｖ<span class="number">0.5</span>.<span class="number">0</span>-<span class="keyword">pre</span></span><br></pre></td></tr></table></figure>
 <p>とりあえず入ったぽい。</p>
 <p>まったくの知識ゼロからでしたが、なんとか行けた気がする。</p>
 <p>ubuntuに関してもまったくの知識なしなので、作業中に、<br>root権限がないからごにょごにょというエラーが途中で何回か出たので調べたら、</p>
 <p><a href="https://forums.ubuntulinux.jp/viewtopic.php?pid=1330" target="_blank" rel="external">Ubuntu日本語フォーラム</a>にそれっぽいことが書いてあった。</p>
-<blockquote>
-<p>ubuntuでは原則としてrootでのログインはしないという形が取られています。<br>root権限が必要なコマンドを使うときは<br>$ sudo hogehoge<br>という方法を用います。</p>
+<blockquote><p>ubuntuでは原則としてrootでのログインはしないという形が取られています。<br>root権限が必要なコマンドを使うときは<br>$ sudo hogehoge<br>という方法を用います。</p>
 </blockquote>
 <p>ということらしい。またひとつ賢くなりました。<br>たぶん、インストールできたと思うので、まずは「Hellow World」からですね。</p>
 <p>それは、また今度<a href="http://nodejs.org/#introduction" target="_blank" rel="external">node.jsのintroduction</a>でもみながら。</p>
@@ -170,7 +139,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2011/02/28/i-put-the-node-js-on-ubuntu-with-no-knowledge-at-all-of/" data-id="ci9qjapi200c8o4p4wiz00epf" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2011/02/28/i-put-the-node-js-on-ubuntu-with-no-knowledge-at-all-of/" data-id="ci9qqpnag00c88bp47rz9jf8x" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2011/02/28/i-put-the-node-js-on-ubuntu-with-no-knowledge-at-all-of/#disqus_thread" class="article-comment-link">Comments</a>
       
