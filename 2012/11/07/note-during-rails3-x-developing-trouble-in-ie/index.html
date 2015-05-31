@@ -111,16 +111,16 @@ ga('send', 'pageview');
 <li>@importの入れ子は4095階層まで<br>に変更されてる。<br>詳しくしらべると、asset pipelineがdebug modeのままだとSprocketsがファイルを連結しないため、大量のファイルを読込むことでIEの仕様に引っかかってました。</li>
 </ul>
 <p>回避策として、</p>
-<p><yourappdir>/config/environments/development.rb の設定を変更<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">config.assets.debug = <span class="keyword">true</span></span><br></pre></td></tr></table></figure></yourappdir></p>
-<p>してやることで、Sprocketsがファイルを連結するので回避できるかもしれない。</p>
+<p><yourappdir>/config/environments/development.rb の設定を変更<br>[ruby]<br>config.assets.debug = true<br>[/ruby]<br>してやることで、Sprocketsがファイルを連結するので回避できるかもしれない。</yourappdir></p>
+<hr>
 <h4 id="IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。"><strong>IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。</strong></h4><p>ファイル数の上限にあたらなくても、上記の通り１ファイルあたりのセレクターの限界値を超えるとCSSが無視されます。<br>4095ルールが原因の場合は、cssのリファクタリングを行うことや、<br>Asset Pipelineでファイルを別々にプリコンパイルする必要があります。</p>
 <p>別々にプリコンパイルするには</p>
-<p><yourappdir>/config/environments/production.rb の設定を<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">config.assets.precompile += <span class="string">%w( hoge.css fuga.css )</span></span><br></pre></td></tr></table></figure></yourappdir></p>
-<p>としてやることで、application.cssのほかにhoge.cssやhuga.cssで指定したファイルをプリコンパイルできます。<br>(hoge.cssやfuga.cssは CSS manifest file です)</p>
+<p><yourappdir>/config/environments/production.rb の設定を<br>[ruby]<br>config.assets.precompile += %w( hoge.css fuga.css )<br>[/ruby]<br>としてやることで、application.cssのほかにhoge.cssやhuga.cssで指定したファイルをプリコンパイルできます。<br>(hoge.cssやfuga.cssは CSS manifest file です)</yourappdir></p>
 <p>あとは、viewファイルで</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&amp;lt;%= stylesheet_link_tag  &amp;quot;application&amp;quot; %&amp;gt;</span><br><span class="line">&amp;lt;%= stylesheet_link_tag  &amp;quot;hoge&amp;quot; %&amp;gt;</span><br><span class="line">&amp;lt;%= stylesheet_link_tag  &amp;quot;fuga&amp;quot; %&amp;gt;</span><br></pre></td></tr></table></figure>
+<p>[ruby]<br>&lt;%= stylesheet_link_tag  &quot;application&quot; %&gt;<br>&lt;%= stylesheet_link_tag  &quot;hoge&quot; %&gt;<br>&lt;%= stylesheet_link_tag  &quot;fuga&quot; %&gt;<br>[/ruby]</p>
 <p>として、読込みます。</p>
 <p>このほかにも、<a href="http://blesscss.com/" target="_blank" rel="external">Bless</a>を使うことで、CSSを分割できます。<br>この場合は@importでcssファイルを読込むようになります。</p>
+<hr>
 <h4 id="CSS3を使いたいときはCompassのCSS3_Pieを使うと便利"><strong>CSS3を使いたいときはCompassのCSS3 Pieを使うと便利</strong></h4><p>CSS3を使うことが多いのですが、IE9以下だとつかえなことも多い。そんなときに<a href="http://compass-style.org/reference/compass/css3/pie/" target="_blank" rel="external">Comass CSS3 Pie</a>を使って回避すると便利。<br>Comass CSS3 Pieを使うとIEでも</p>
 <ul>
 <li>border-radius</li>
@@ -138,7 +138,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2012/11/07/note-during-rails3-x-developing-trouble-in-ie/" data-id="ci9rvdh8v0092swp4trquvus4" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2012/11/07/note-during-rails3-x-developing-trouble-in-ie/" data-id="ciabtgjs50092r7p4is1htz0a" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2012/11/07/note-during-rails3-x-developing-trouble-in-ie/#disqus_thread" class="article-comment-link">Comments</a>
       

@@ -109,14 +109,14 @@ ga('send', 'pageview');
 
 <p>consoleパネルにhash keyとvalueがテーブル形式で表示される。</p>
 <p><img src="http://gyazo.com/69c03696503d8d9114d36e3e2a1b3916.png" alt=""></p>
-<p>第二引数にhash keyを渡してやることで、出力をフィルタリングできる。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.table(family, [<span class="string">'firstName'</span>, <span class="string">'age'</span>]);</span><br></pre></td></tr></table></figure></p>
+<p>第二引数にhash keyを渡してやることで、出力をフィルタリングできる。<br>[javascript]<br>console.table(family, [‘firstName’, ‘age’]);<br>[/javascript]</p>
 <p><img src="http://gyazo.com/983f77b9ada674323633a57a759d084d.png" alt=""></p>
 <p>配列もcosnole.tableでDebugすると展開される。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.table([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br></pre></td></tr></table></figure>
+<p>[javascript]<br>console.table([1, 2, 3]);<br>[/javascript]</p>
 <p><img src="http://gyazo.com/bdd17051c30f32ea0883ecfca884b363.png" alt=""></p>
 <p>console.logでは下記のような感じで出力されるため、プロパティを見たいときはいちいちクリックして展開してやる必要があった。<br><img src="http://gyazo.com/0971d895ae73685829f6763c3af714ca.png" alt=""></p>
 <p>ちなみにDeepな配列やオブジェクトだと</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.table([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]]);</span><br><span class="line"><span class="built_in">console</span>.table(&#123;dog:&#123;age:<span class="number">1</span>&#125;,cat:&#123;age:<span class="number">2</span>&#125;&#125;);</span><br></pre></td></tr></table></figure>
+<p>[javascript]<br>console.table([[1, 2], [3, 4]]);<br>console.table({dog:{age:1},cat:{age:2}});<br>[/javascript]</p>
 <p><img src="http://gyazo.com/71ca38afaab2c500920ac3c9b4340a89.png" alt=""></p>
 <p>という具合にテーブルが表示される。</p>
 <p>console.tableを使用することで、一目で俯瞰できるので、これまでより少し便利にDebugできそう。</p>
@@ -127,7 +127,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/11/26/using-console-table-kinda-convenient-to-debug-javascript/" data-id="ci9rvdgy2001oswp44g5xedgn" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/11/26/using-console-table-kinda-convenient-to-debug-javascript/" data-id="ciabtgjjm001or7p4065fvn0k" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/11/26/using-console-table-kinda-convenient-to-debug-javascript/#disqus_thread" class="article-comment-link">Comments</a>
       

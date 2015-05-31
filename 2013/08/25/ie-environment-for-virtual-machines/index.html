@@ -101,16 +101,18 @@ ga('send', 'pageview');
       <p>相変わらず面倒なie確認用環境。最近は<a href="https://www.virtualbox.org/" target="_blank" rel="external">virtualbox</a>で準備されてるから便利だ。<br>セットアップ関連の備忘録。</p>
 <a id="more"></a>
 <h3 id="ievms">ievms</h3><p>まず、IE6, IE7, IE8, IE9, IE10, IE11 をXPと7でvmで作成できる<a href="https://github.com/xdissent/ievms" target="_blank" rel="external">ievms</a>。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># full install</span></span><br><span class="line">curl <span class="operator">-s</span> https://raw.github.com/xdissent/ievms/master/ievms.sh | bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># specific version install</span></span><br><span class="line">curl <span class="operator">-s</span> https://raw.github.com/xdissent/ievms/master/ievms.sh | env IEVMS_VERSIONS=&amp;quot;<span class="number">7</span> <span class="number">9</span>&amp;quot; bash</span><br></pre></td></tr></table></figure>
+<p>[shell]</p>
+<h1 id="full_install">full install</h1><p>curl -s <a href="https://raw.github.com/xdissent/ievms/master/ievms.sh" target="_blank" rel="external">https://raw.github.com/xdissent/ievms/master/ievms.sh</a> | bash</p>
+<h1 id="specific_version_install">specific version install</h1><p>curl -s <a href="https://raw.github.com/xdissent/ievms/master/ievms.sh" target="_blank" rel="external">https://raw.github.com/xdissent/ievms/master/ievms.sh</a> | env IEVMS_VERSIONS=&quot;7 9&quot; bash<br>[/shell]</p>
 <p>でインストール完了。ただし、72GBあるんで寝る前に実行するといいかも。<br>あとはvirtualboxで必要なIEを起動するだけ。</p>
 <h3 id="modern-IE">modern.IE</h3><p>次に、ms社のプロジェクト<a href="http://www.modern.ie/ja" target="_blank" rel="external">modern.IE</a>。<br>こちはOSがwin、mac、linux。vm環境がHyper-V、Virtual PC、VMWare Fusion、parallelsとそろってる。</p>
 <p>インストールは、SFXまたはRARをダウンロードしてファイルを実行。<br>SFXの場合は</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x filename.sfx</span><br></pre></td></tr></table></figure>
+<p>[shell]<br>chmod +x filename.sfx<br>[/shell]</p>
 <p>で実行権限付与しないといけないっぽい。</p>
 <p>どちらにしても、こちらもファイルの取得は時間かかるので寝る前に手等にwgetしておく方が良さそう。</p>
 <h3 id="文字化け">文字化け</h3><p>で、仮想環境のIE起動したら、文字化けした。<br>どうやらフォントがないっぽいので、適当にMSゴシックあたりをフォント環境にインストールしてあげると良さそう。</p>
 <h3 id="localhost">localhost</h3><p>ローカル環境の表示確認する場合は、mac、virtualboxなら<br>Settings &gt; Network から Enable Network Adapter にチェック<br>Attached to を NATに設定。<br>VMのwindowsの、hostsに</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10.0.2.2        localhost</span><br></pre></td></tr></table></figure>
+<p>[text]<br>10.0.2.2        localhost<br>[/text]</p>
 <p>みたいな感じで<a href="http://10.0.2.2" target="_blank" rel="external">http://10.0.2.2</a> にアクセス。<br>とりあえず表示確認できそう。</p>
 
     
@@ -118,7 +120,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/08/25/ie-environment-for-virtual-machines/" data-id="ci9rvdhcj00bqswp413k5okdu" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/08/25/ie-environment-for-virtual-machines/" data-id="ciabtgjva00bqr7p4xltn18od" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/08/25/ie-environment-for-virtual-machines/#disqus_thread" class="article-comment-link">Comments</a>
       

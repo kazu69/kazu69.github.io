@@ -117,9 +117,8 @@ ga('send', 'pageview');
 
 </li>
 </ul>
-<p>全然関係ないけど、scssでcss-filter書いてると、grayscaleとopacityが</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* -webkit-filter: grayscale(100%);で定義 */</span></span><br><span class="line"><span class="class">.grayscale</span><span class="rules">&#123;<span class="rule"><span class="attribute">-webkit-filter</span>:<span class="value"><span class="hexcolor">#010101</span>&#125;</span></span></span></span><br></pre></td></tr></table></figure>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* -webkit-filter:opacity(0.2);で定義 */</span></span><br><span class="line"><span class="class">.opacity</span><span class="rules">&#123;<span class="rule"><span class="attribute">-webkit-filter</span>:<span class="value"><span class="number">1</span></span></span>;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>全然関係ないけど、scssでcss-filter書いてると、grayscaleとopacityが<br>[css]<br>/<em> -webkit-filter: grayscale(100%);で定義 </em>/<br>.grayscale{-webkit-filter:#010101}<br>[/css]</p>
+<p>[css]<br>/<em> -webkit-filter:opacity(0.2);で定義 </em>/<br>.opacity{-webkit-filter:1;}<br>[/css]</p>
 <p>けど、この辺りは<a href="https://github.com/nex3/sass/issues/239" target="_blank" rel="external">githubで修正されてる</a>っぽい。js-fiddleのsassのバージョンの問題なのか、次のバージョンで修正されるのかな。</p>
 <p>とはいえ、これが各ブラウザで提供されれば、組み合わせて使うことで<a href="http://instagr.am/" target="_blank" rel="external">instagram</a>みたいな画像処理をお手軽に作れるのでいいですね。</p>
 <p>いろいろ詳しくは<a href="http://www.html5rocks.com/en/tutorials/filters/understanding-css/" target="_blank" rel="external">HTML5 ROCKS TUTORIALS</a> にありました。</p>
@@ -129,7 +128,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2012/06/17/css-filter-is-implemented-in-the-chromium19-so-i-tried/" data-id="ci9rvdhgw00ewswp4it8yz3g4" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2012/06/17/css-filter-is-implemented-in-the-chromium19-so-i-tried/" data-id="ciabtgjyg00ezr7p40i4eo2ug" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2012/06/17/css-filter-is-implemented-in-the-chromium19-so-i-tried/#disqus_thread" class="article-comment-link">Comments</a>
       

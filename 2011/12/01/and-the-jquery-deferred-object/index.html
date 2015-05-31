@@ -98,16 +98,35 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>jQuery1.5から導入されていた<a href="http://api.jquery.com/category/deferred-object/" target="_blank" rel="external">Deferred Object</a>について、詳しく理解していなかったので調べてみたところ、すてきな機能っぽいのでまとめてみた。<br><a id="more"></a><br>そもそもDeferred Objectとはなにか？<br><blockquote><p>jQuery.Deferred(), introduced in version 1.5, is a chainable utility object that can register multiple callbacks into callback queues, invoke callback queues, and relay the success or failure state of any synchronous or asynchronous function.<br>callback queuesに複数のcallbackを登録できてるオブジェクトで、同期・非同期の処理の成功と失敗を中継する。と言った感じ。</p>
-</blockquote></p>
+      <p>jQuery1.5から導入されていた<a href="http://api.jquery.com/category/deferred-object/" target="_blank" rel="external">Deferred Object</a>について、詳しく理解していなかったので調べてみたところ、すてきな機能っぽいのでまとめてみた。<br><a id="more"></a><br>そもそもDeferred Objectとはなにか？</p>
+<blockquote>
+<p>jQuery.Deferred(), introduced in version 1.5, is a chainable utility object that can register multiple callbacks into callback queues, invoke callback queues, and relay the success or failure state of any synchronous or asynchronous function.<br>callback queuesに複数のcallbackを登録できてるオブジェクトで、同期・非同期の処理の成功と失敗を中継する。と言った感じ。</p>
+</blockquote>
 <p>Deferredオブジェクトは<a href="http://wiki.commonjs.org/wiki/Promises/A" target="_blank" rel="external">CommonJSのPromises/A</a>をもとに設計されていて、生成されてからunresolved -&gt; pending -&gt; resolved or rejected という具合に状態をたどります。<br>それぞれの状態を監視して、pending、resolveもしくはreject時に登録した関数を実行します。</p>
 <p>ajaxの処理やウィジェット同士の通信などオブジェクトの状態に応じて、レスポンス精度の高いアプリケーションを作る際にDeferredオブジェクトを利用するといいらしい。<br>実際にアニメーション系のメソッドやajax系のメソッドなどのオブジェクトもDeferredオブジェクトを返してくれるようになってるので、これまでと違い</p>
 <iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/6rx9F/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
 <p>となります。いままでよりすっきりして見通しがいい気がします。また、メソッドチェーンで書けるというところもいい感じです。<br>というわけで、Deferredオブジェクト簡単に使ってみる。</p>
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/TjpvN/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Deferred object</span></span><br><span class="line"><span class="keyword">var</span> df = $.Deferred();</span><br><span class="line"></span><br><span class="line"><span class="comment">//resolve、rejectにかかわらずに実行</span></span><br><span class="line">df.always(func)</span><br><span class="line"></span><br><span class="line"><span class="comment">//resolve時に実行されるメソッド指定</span></span><br><span class="line">.done(func)</span><br><span class="line"></span><br><span class="line"><span class="comment">//reject時に実行されるメソッド指定</span></span><br><span class="line">.fail(func)</span><br><span class="line"></span><br><span class="line"><span class="comment">//経過中に実行されるメソッド指定</span></span><br><span class="line">.progress(func);</span><br></pre></td></tr></table></figure><br><br>細かく制御できるのがいい感じです。<br>また処理が完了するまでqueueにしておき、完了時に処理を進める(遅延処理)できるということも特徴です。<br><br><iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/RySM2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/TjpvN/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe><br><code>//Deferred object
+var df = $.Deferred();
 
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Deferred object</span></span><br><span class="line"><span class="keyword">var</span> df = $.Deferred();</span><br><span class="line"></span><br><span class="line"><span class="comment">//resolve/reject時の前に実行されるメソッド指定</span></span><br><span class="line">.pipe(func)</span><br><span class="line"></span><br><span class="line"><span class="comment">//Deferred Promise object</span></span><br><span class="line"><span class="comment">//将来的にresolve, reject, progressなどのstateに</span></span><br><span class="line"><span class="comment">//変更されるDeferred object</span></span><br><span class="line">.promise()</span><br><span class="line"></span><br><span class="line"><span class="comment">//resolve,reject,progress時の処理を登録</span></span><br><span class="line">.then(resolve func, reject func, progress func)</span><br><span class="line"></span><br><span class="line"><span class="comment">//複数のDeferred objectが処理されるまで遅延する</span></span><br><span class="line">$.when(Deferred objects)</span><br></pre></td></tr></table></figure>
+//resolve、rejectにかかわらずに実行
+df.always(func)
+
+//resolve時に実行されるメソッド指定
+.done(func)
+
+//reject時に実行されるメソッド指定
+.fail(func)
+
+//経過中に実行されるメソッド指定
+.progress(func);</code><br><br>細かく制御できるのがいい感じです。<br>また処理が完了するまでqueueにしておき、完了時に処理を進める(遅延処理)できるということも特徴です。<br><br><iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/RySM2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<p>`<br>//Deferred object<br>var df = $.Deferred();</p>
+<p>//resolve/reject時の前に実行されるメソッド指定<br>.pipe(func)</p>
+<p>//Deferred Promise object<br>//将来的にresolve, reject, progressなどのstateに<br>//変更されるDeferred object<br>.promise()</p>
+<p>//resolve,reject,progress時の処理を登録<br>.then(resolve func, reject func, progress func)</p>
+<p>//複数のDeferred objectが処理されるまで遅延する<br>$.when(Deferred objects)<br>`</p>
 <p>ざっくりまとめてみたけど、便利だな。</p>
 
     
@@ -115,7 +134,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2011/12/01/and-the-jquery-deferred-object/" data-id="ci9rvdhjf00gmswp4h3e6z4go" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2011/12/01/and-the-jquery-deferred-object/" data-id="ciabtgk0400gpr7p4nllsxel7" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2011/12/01/and-the-jquery-deferred-object/#disqus_thread" class="article-comment-link">Comments</a>
       

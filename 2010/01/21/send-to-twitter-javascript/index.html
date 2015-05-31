@@ -98,16 +98,28 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>たいしたことないけど、わすれないために。<br>Twitterに送るボタン作るときのJavaScript。<br><a id="more"></a><br>Twitterに送るなら<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sendTwitter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> title = <span class="string">"RT @yourname："</span> + <span class="built_in">document</span>.title;</span><br><span class="line">         title = <span class="built_in">encodeURIComponent</span>(title);</span><br><span class="line">    <span class="keyword">var</span> url = location.href;</span><br><span class="line">    <span class="keyword">var</span> tg_url     = <span class="string">"http://twitter.com/home/?status="</span>;</span><br><span class="line">    <span class="keyword">var</span> twurl = tg_url + title + <span class="string">' '</span> + url;</span><br><span class="line">    <span class="built_in">window</span>.open(twurl);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>ちなみに、<a href="http://logpi.jp/" target="_blank" rel="external">Logpi</a>に送るなら<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sendLogpi</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> title = <span class="built_in">document</span>.title;</span><br><span class="line">        title = <span class="built_in">encodeURIComponent</span>(title);</span><br><span class="line">    <span class="keyword">var</span> url = location.href;</span><br><span class="line">    <span class="keyword">var</span> tg_url     = <span class="string">"http://logpi.jp/home/?status="</span>;</span><br><span class="line">    <span class="keyword">var</span> logpiurl = tg_url + title + <span class="string">' '</span> + url;</span><br><span class="line">    <span class="built_in">window</span>.open(logpiurl);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>でしょうか。</p>
+      <p>たいしたことないけど、わすれないために。<br>Twitterに送るボタン作るときのJavaScript。<br><a id="more"></a><br>Twitterに送るなら<br><code>function sendTwitter() {
+    var title = &quot;RT @yourname：&quot; + document.title;
+         title = encodeURIComponent(title);
+    var url = location.href;
+    var tg_url     = &quot;http://twitter.com/home/?status=&quot;;
+    var twurl = tg_url + title + &#39; &#39; + url;
+    window.open(twurl);
+}</code><br>ちなみに、<a href="http://logpi.jp/" target="_blank" rel="external">Logpi</a>に送るなら<br><code>function sendLogpi() {
+    var title = document.title;
+        title = encodeURIComponent(title);
+    var url = location.href;
+    var tg_url     = &quot;http://logpi.jp/home/?status=&quot;;
+    var logpiurl = tg_url + title + &#39; &#39; + url;
+    window.open(logpiurl);
+}</code><br>でしょうか。</p>
 
     
   </div>
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2010/01/21/send-to-twitter-javascript/" data-id="ci9rvdh5c006yswp4kunerzaa" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2010/01/21/send-to-twitter-javascript/" data-id="ciabtgjqb006yr7p4rnpdwtze" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2010/01/21/send-to-twitter-javascript/#disqus_thread" class="article-comment-link">Comments</a>
       

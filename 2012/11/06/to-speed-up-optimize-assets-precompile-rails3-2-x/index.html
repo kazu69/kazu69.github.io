@@ -100,10 +100,15 @@ ga('send', 'pageview');
     
       <p>Rails3.2.x で開発時にassets precompileに時間を要していたので、なんとか早くすべく調べていたら、<a href="http://stackoverflow.com/questions/11390447/speedup-rails-asset-pipeline-precompile-process/11390454" target="_blank" rel="external">stackoverflow</a>に以下の記述があったので実際に試してみたらスピードアップしたので忘れないうちまとめてみた。<br><a id="more"></a></p>
 <ul>
-<li><p><strong>Capistranoを利用している場合は、Capistranoのビルトインタスクである ‘deploy/assets’ を使用する。</strong><br>Capistranoのビルトインタスクを利用することで、assetsのみをプリコンパイルするためアプリ全体を対象にプリコンパイルするよりも早くなります。</p>
-<figure class="highlight"><figcaption><span>bundle exec rake RAILS_ENV=production RAILS_GROUPS=assets assets:precompile ```</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">*   **変更のあったファイルだけをプリコンパイルする。**</span><br><span class="line">変更のあったファイルだけをプリコンパイルし、それ以外のファイルはスキップするたプリコンパイルにかかる時間が短くなります。</span><br><span class="line">今回、私は [Turbo Sprockets for Rails 3.2.x](https://github.com/ndbroadbent/turbo-sprockets-rails3) を使いました。</span><br><span class="line"></span><br><span class="line">*   **Sassの@importの見直し**</span><br><span class="line">SassやScssを使っている場合、[Compass](http://compass-style.org/)を利用すると思うのですが、Compassのmixinのimportはできるだけ細かく制御する。</span><br><span class="line">とくに @import "compass"; のように記述してしまうと、Compass全体を読込むため、@import "compass/css3/transition" の様に必要なmixinのみを読込むのに比べて約9倍遅くなるそうです。</span><br><span class="line"></span><br><span class="line">*   **partialを使用しない**</span><br><span class="line">変数や依存ファイルを読込む場合も @import ではなく require で読込む方がより早いそうです。</span><br><span class="line">```ruby</span><br><span class="line">@import &amp;quot;reset&amp;quot;;</span><br><span class="line">@import &amp;quot;base&amp;quot;;</span><br><span class="line">@import &amp;quot;product&amp;quot;;</span><br></pre></td></tr></table></figure>
+<li><p><strong>Capistranoを利用している場合は、Capistranoのビルトインタスクである ‘deploy/assets’ を使用する。</strong><br>Capistranoのビルトインタスクを利用することで、assetsのみをプリコンパイルするためアプリ全体を対象にプリコンパイルするよりも早くなります。<br>[ruby] bundle exec rake RAILS_ENV=production RAILS_GROUPS=assets assets:precompile [/ruby]</p>
+</li>
+<li><p><strong>変更のあったファイルだけをプリコンパイルする。</strong><br>変更のあったファイルだけをプリコンパイルし、それ以外のファイルはスキップするたプリコンパイルにかかる時間が短くなります。<br>今回、私は <a href="https://github.com/ndbroadbent/turbo-sprockets-rails3" target="_blank" rel="external">Turbo Sprockets for Rails 3.2.x</a> を使いました。</p>
+</li>
+<li><p><strong>Sassの@importの見直し</strong><br>SassやScssを使っている場合、<a href="http://compass-style.org/" target="_blank" rel="external">Compass</a>を利用すると思うのですが、Compassのmixinのimportはできるだけ細かく制御する。<br>とくに @import “compass”; のように記述してしまうと、Compass全体を読込むため、@import “compass/css3/transition” の様に必要なmixinのみを読込むのに比べて約9倍遅くなるそうです。</p>
+</li>
+<li><p><strong>partialを使用しない</strong><br>変数や依存ファイルを読込む場合も @import ではなく require で読込む方がより早いそうです。<br>[ruby]<br>@import &quot;reset&quot;;<br>@import &quot;base&quot;;<br>@import &quot;product&quot;;<br>[/ruby]</p>
 <p>よりも</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//= require &amp;quot;reset&amp;quot;</span><br><span class="line">//= require &amp;quot;base&amp;quot;</span><br><span class="line">//= require &amp;quot;product&amp;quot;</span><br></pre></td></tr></table></figure>
+<p>[ruby]<br>//= require &quot;reset&quot;<br>//= require &quot;base&quot;<br>//= require &quot;product&quot;<br>[/ruby]</p>
 </li>
 <li><p><strong>require_tree は使わない</strong><br>例えば、それぞれが空のファイルのmain.js.cofee、signup.js.coffee、login.js.coffeeがあったとき<br>application.jsに require_tree の記述があると、プリコンパイルには最低でも約750msかかります。<br>.coffeeファイルが空であっても、application.jsにrequire_treeが記述されている場合、<br>プリコンパイルには1ファイルあたり約250msをかかるっぽい。ファイル数が増えるだけ、比例的にプリコンパイルの時間がかかります。</p>
 </li>
@@ -116,7 +121,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2012/11/06/to-speed-up-optimize-assets-precompile-rails3-2-x/" data-id="ci9rvdh1w004cswp41tdtzu7c" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2012/11/06/to-speed-up-optimize-assets-precompile-rails3-2-x/" data-id="ciabtgjng004cr7p4r72vs37d" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2012/11/06/to-speed-up-optimize-assets-precompile-rails3-2-x/#disqus_thread" class="article-comment-link">Comments</a>
       

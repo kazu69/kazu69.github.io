@@ -101,7 +101,8 @@ ga('send', 'pageview');
       <p><a href="https://github.com/gruntjs/grunt-contrib-watch" target="_blank" rel="external">grunt-contrib-watch</a>で監視しているファイルのなかで変更があったファイルのみを取得して、別の処理を行いたかったのでgrunt-contrib-watchをちょっと参考にしてやってみたときのメモ。</p>
 <a id="more"></a>
 <p>CoffeeScriptsを監視して、変更されたファイルをgrunt.logに吐いてみた。</p>
-<script src="//gist.github.com/kazu69/7077338.js?file=Gruntfile.coffee"></script>
+<script src="https://gist.github.com/kazu69/7077338.js"></script>
+
 <p>grunt.event.on(‘watch’, callback) でイベントにbindして処理を実行するだけでした。<br>処理後に Object.create(null) でオブジェクトをリセットすることを忘れないように。</p>
 
     
@@ -109,7 +110,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/10/21/to-get-the-files-in-the-monitored-file-changed-in-grunt-watch/" data-id="ci9rvdh2b004pswp4g2xmtz6n" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/10/21/to-get-the-files-in-the-monitored-file-changed-in-grunt-watch/" data-id="ciabtgjnr004pr7p4pone25i4" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/10/21/to-get-the-files-in-the-monitored-file-changed-in-grunt-watch/#disqus_thread" class="article-comment-link">Comments</a>
       

@@ -109,9 +109,67 @@ ga('send', 'pageview');
 <p>つまり、DOM操作の際に、HTMLソースにガシガシイベントハンドら書いて制御したり、JavaScript内でCSSを変更したりしない。<br>といった感じだろうか。メリットとしては、JavaScriptが動作するブラウザに対しては、もちろん動的に処理をさせ、<br>JavaScriptが動作しない場合は非動的な処理を提供できるもしくは提供しないという処理系とが確立できる点、JavaScriptのメンテナンスや再利用が<br>非常に容易になるので、いい感じ。</p>
 <a id="more"></a>
 <p>実際は、イベントリスナーでイベントを取得して処理をしていくのですが、こんな感じかな。</p>
-<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">///</span><br><span class="line">//</span>共通利用イベントハンドラの追加(外部ファイル化可能)</span><br><span class="line"><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">///</span><br><span class="line"></span><br><span class="line">var addListener = function(tagID,eventName,funcName) &#123;</span><br><span class="line"></span><br><span class="line">if(! tagID) &#123; return false; &#125;</span><br><span class="line"></span><br><span class="line">if(tagID.addEventListener) &#123;</span><br><span class="line"></span><br><span class="line">/* W3C準拠ブラウザ用 */</span><br><span class="line">tagID.addEventListener(eventName, funcName, false);</span><br><span class="line"></span><br><span class="line">/* Internet Explorer用 */</span><br><span class="line">&#125; else if(tagID.attachEvent) &#123;</span><br><span class="line">tagID.attachEvent('on'+eventName, funcName);</span><br><span class="line">&#125;</span><br><span class="line">else &#123;</span><br><span class="line">return false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">return true;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">//</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span>/</span><br><span class="line"><span class="pi">//実行する関数</span><br><span class="line">//</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span>/</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> init = <span class="keyword">function</span>()&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*ノードの取得*/</span></span><br><span class="line"><span class="keyword">var</span> clickevent = <span class="built_in">document</span>.getElementById(<span class="string">"clickevent"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/*実行関数*/</span></span><br><span class="line"><span class="keyword">var</span> Func = <span class="keyword">function</span>()&#123;</span><br><span class="line">alert(<span class="string">'CLICK!!!!!!!!!!!!!!!!'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*イベント*/</span></span><br><span class="line">addListener(clickevent,<span class="string">"click"</span>,Func);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">///</span><br><span class="line">//i</span>nit</span><br><span class="line"><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">////</span><span class="pi">///</span><br><span class="line"></span><br><span class="line">addListener(window,"load",init);</span></span><br></pre></td></tr></table></figure>
+<p>[ JavaScript ]</p>
+<pre>
+///////////////////////////////////////////////////////
+//共通利用イベントハンドラの追加(外部ファイル化可能)
+///////////////////////////////////////////////////////
+
+var addListener = function(tagID,eventName,funcName) {
+
+if(! tagID) { return false; }
+
+if(tagID.addEventListener) {
+
+/* W3C準拠ブラウザ用 */
+tagID.addEventListener(eventName, funcName, false);
+
+/* Internet Explorer用 */
+} else if(tagID.attachEvent) {
+tagID.attachEvent('on'+eventName, funcName);
+}
+else {
+return false;
+}
+
+return true;
+};
+
+///////////////////////////////////////////////////////
+//実行する関数
+///////////////////////////////////////////////////////
+
+var init = function(){
+
+/*ノードの取得*/
+var clickevent = document.getElementById("clickevent");
+
+/*実行関数*/
+var Func = function(){
+alert('CLICK!!!!!!!!!!!!!!!!');
+}
+
+/*イベント*/
+addListener(clickevent,"click",Func);
+};
+
+///////////////////////////////////////////////////////
+//init
+///////////////////////////////////////////////////////
+
+addListener(window,"load",init);
+
+</pre>
+
 <p>[ HTML ]</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="keyword">div</span> <span class="property">id</span>=<span class="string">"clickevent"</span> style=<span class="string">"border:3px solid #CCCCCC;</span><br><span class="line">　　　　　　　　padding:5px; background:#FEFEFE; text-align:center;</span><br><span class="line">　　　　　　　　 width:200px; cursor:pointer;"</span>&gt;</span><br><span class="line">Please On Click !!!!</span><br><span class="line">&lt;/<span class="keyword">div</span>&gt;</span><br></pre></td></tr></table></figure>
+<pre>
+&lt;div id="clickevent" style="border:3px solid #CCCCCC;
+　　　　　　　　padding:5px; background:#FEFEFE; text-align:center;
+　　　　　　　　 width:200px; cursor:pointer;"&gt;
+Please On Click !!!!
+&lt;/div&gt;
+</pre>
+
 <p>ＩＥだけはイベントリスナーを設定するにはattachEvent関数を利用する点がポイントらしい。</p>
 <p>このあたりは羽田野さんの<a href="http://itpro.nikkeibp.co.jp/article/COLUMN/20071105/286432/" target="_blank" rel="external">『JavaScriptは控えめに 〜クロスブラウザ対策地獄からの脱出〜』</a>という記事が<br>非常に勉強になりました。</p>
 
@@ -120,7 +178,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2008/06/08/unobtrusive-scripting/" data-id="ci9rvdgyy002eswp4i19jc82o" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2008/06/08/unobtrusive-scripting/" data-id="ciabtgjl0002er7p4979du93r" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2008/06/08/unobtrusive-scripting/#disqus_thread" class="article-comment-link">Comments</a>
       

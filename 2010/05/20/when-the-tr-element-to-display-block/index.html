@@ -100,7 +100,7 @@ ga('send', 'pageview');
     
       <p>たまにtr要素のdisplay要素で困るので、メモ。<br><a id="more"></a><br>javascriptでtr要素のdisplayの「block」と「none」で表示切替できるのはIEの間違った解釈で、普通(firefoxやsafari)は「block」と「table-row」。</p>
 <p>でも、ブラウザで条件分岐するのは面倒なので、まとめて</p>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(dom.style.display == <span class="string">'none'</span>)  ? <span class="string">''</span> : <span class="string">'none'</span>;</span><br></pre></td></tr></table></figure>
+<p><code>(dom.style.display == &#39;none&#39;)  ? &#39;&#39; : &#39;none&#39;;</code></p>
 <p>でいいじゃないか。<br>つまり、空(値なし)と「none」で切り替えれば条件分岐いらない。</p>
 
     
@@ -108,7 +108,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2010/05/20/when-the-tr-element-to-display-block/" data-id="ci9rvdgvx000nswp4p4fq1t06" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2010/05/20/when-the-tr-element-to-display-block/" data-id="ciabtgji9000nr7p4hkinbg44" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2010/05/20/when-the-tr-element-to-display-block/#disqus_thread" class="article-comment-link">Comments</a>
       

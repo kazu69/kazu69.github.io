@@ -103,17 +103,26 @@ ga('send', 'pageview');
     
       <p>忘れないために。<br>何かで作ったんだけど、ソースがなくなった気がしたのでここに書いておく。</p>
 <p>twitterでつぶやくボタンとかに指定したURLを<a href="http://bit.ly/" target="_blank" rel="external">bit.ly</a>で短縮してつぶやくやつ。<br><a id="more"></a><br>まじめに<a href="http://bit.ly/" target="_blank" rel="external">bit.ly</a>に登録して、APIキーを取得。<br>それを使ってjsで実装。<br>Javascriptは<a href="http://kazu69.net/blog/sample/tweet/tweet.js.txt" target="_blank" rel="external">http://kazu69.net/blog/sample/tweet/tweet.js.txt</a>。</p>
-<p>指定したURLを短縮するなら、<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"http://yahoo.co.jp"</span> <span class="attribute">class</span>=<span class="value">"retweet"</span>&gt;</span>ヤフー<span class="tag">&lt;<span class="title">a</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>のように a タグのclass属性にretweet ってのを記述。<br>スクリプトを読み込ませて、<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">/*先にスクリプトをロード*/</span><br><span class="line"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>  <span class="attribute">charset</span>=<span class="value">"utf-8"</span> <span class="attribute">src</span>=<span class="value">"****"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="dart"></span><br><span class="line"><span class="built_in">window</span>.rt.userID = <span class="string">"bit.lyのid"</span></span><br><span class="line"><span class="built_in">window</span>.rt.userKey = <span class="string">"bit.lyのapiキー"</span></span><br><span class="line"><span class="built_in">window</span>.rt.sid = <span class="string">"twitter"</span></span><br><span class="line"><span class="comment">/*</span><br><span class="line">true なら a タグの href属性の値を短縮</span><br><span class="line">falseなら 該当ページの URLを短縮</span><br><span class="line">*/</span></span><br><span class="line"><span class="built_in">window</span>.rt.f = <span class="keyword">true</span></span><br><span class="line">rt.f1();</span><br><span class="line"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>とする。デザインとかはCSSで。<br>ちなみに、<a href="http://logpi.jp/" target="_blank" rel="external">ログピ</a>におくるなら<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">window<span class="class">.rt</span><span class="class">.sid</span> = <span class="string">"logpi"</span></span><br></pre></td></tr></table></figure></p>
-<p>とするとできるけど、ログピはURL貼ると「click here」ってでてるのであまり意味ないかも・・・。<br>ソースがあれなのはあれなので、あしからず。</p>
+<p>指定したURLを短縮するなら、<br><code>&amp;lt;a href=&quot;http://yahoo.co.jp&quot; class=&quot;retweet&quot;&amp;gt;ヤフー&amp;lt;a&amp;gt;</code><br>のように a タグのclass属性にretweet ってのを記述。<br>スクリプトを読み込ませて、<br><code>/*先にスクリプトをロード*/
+&amp;lt;script type=&quot;text/javascript&quot;  charset=&quot;utf-8&quot; src=&quot;****&quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+window.rt.userID = &quot;bit.lyのid&quot;
+window.rt.userKey = &quot;bit.lyのapiキー&quot;
+window.rt.sid = &quot;twitter&quot;
+/*
+true なら a タグの href属性の値を短縮
+falseなら 該当ページの URLを短縮
+*/
+window.rt.f = true
+rt.f1();
+&amp;lt;/script&amp;gt;</code><br>とする。デザインとかはCSSで。<br>ちなみに、<a href="http://logpi.jp/" target="_blank" rel="external">ログピ</a>におくるなら<br><code>window.rt.sid = &quot;logpi&quot;</code><br>とするとできるけど、ログピはURL貼ると「click here」ってでてるのであまり意味ないかも・・・。<br>ソースがあれなのはあれなので、あしからず。</p>
 
     
   </div>
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2010/02/11/send-to-twitter-javascript-part-2/" data-id="ci9rvdh5g0071swp42ljnvmvj" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2010/02/11/send-to-twitter-javascript-part-2/" data-id="ciabtgjqd0071r7p45db2kosi" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2010/02/11/send-to-twitter-javascript-part-2/#disqus_thread" class="article-comment-link">Comments</a>
       

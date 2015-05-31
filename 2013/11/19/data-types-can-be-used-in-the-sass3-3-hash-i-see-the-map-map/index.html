@@ -100,7 +100,7 @@ ga('send', 'pageview');
     
       <p><a href="https://github.com/nex3/sass/blob/master/doc-src/SASS_CHANGELOG.md#sassscript-maps" target="_blank" rel="external">Sass3.3 changelog #SassScript Maps</a> にあるようにすでに追加されている。<br><a id="more"></a></p>
 <p>Mapsという新しいデータ型は、Hashや連想配列のようにデータを扱えます。これまでは<a href="http://sass-lang.com/documentation/file.SASS_REFERENCE.html#lists" target="_blank" rel="external">list</a>形式でなんとか対応することなどもしていたので、便利になりました。</p>
-<p>Mapのデータは<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$map</span><span class="symbol">:</span> (</span><br><span class="line">  <span class="symbol">key1:</span> value1,</span><br><span class="line">  <span class="symbol">key2:</span> value2,</span><br><span class="line">  <span class="symbol">key3:</span> value3,</span><br><span class="line">  <span class="symbol">child:</span> (</span><br><span class="line">    <span class="symbol">key4:</span> value4,</span><br><span class="line">    <span class="symbol">key5:</span> value5</span><br><span class="line">  )</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
+<p>Mapのデータは<br>[ruby]<br>$map: (<br>  key1: value1,<br>  key2: value2,<br>  key3: value3,<br>  child: (<br>    key4: value4,<br>    key5: value5<br>  )<br>);<br>[/ruby]</p>
 <p>のように : (コロン) でセパレートしたkey-valueのペアを ( ) で囲む必要がある。<br>利用したいデータの形式によってはネストさせることもできる。</p>
 <p>mapデータを操作する関数には、</p>
 <ul>
@@ -134,7 +134,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/11/19/data-types-can-be-used-in-the-sass3-3-hash-i-see-the-map-map/" data-id="ci9rvdhgo00epswp405mvgpva" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/11/19/data-types-can-be-used-in-the-sass3-3-hash-i-see-the-map-map/" data-id="ciabtgjya00esr7p472r2ugeb" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/11/19/data-types-can-be-used-in-the-sass3-3-hash-i-see-the-map-map/#disqus_thread" class="article-comment-link">Comments</a>
       

@@ -115,31 +115,45 @@ ga('send', 'pageview');
 <li><p><strong>まずはアプリケーションの登録</strong></p>
 <p><a href="http://developers.facebook.com/setup/" target="_blank" rel="external">アプリケーションを作成</a>よりアプリケーションを作成します。</p>
 <p>サイト名、サイトURLをいれて、地域は「日本」を選択して、アプリケーションを作成。</p>
-<p><img src="/images/2010/10/2010101201.png" alt=""></p>
+<p><img src="/images/2010/10/2010101201.png" alt="アプリケーションの登録"></p>
 </li>
 <li><p><strong>JavaScriptの追加</strong></p>
 <p>登録されると、アプリケーションに関する情報とサンプルコードが表示されます。</p>
-<p><img src="/images/2010/10/2010101202.png" alt=""></p>
-<p>ページにjsを追加。読み込み速度とか考慮するとfooter.phpの直前とかがいいのかも。</p>
+<p><img src="/images/2010/10/2010101202.png" alt="アプリケーションの登録完了"></p>
+<p>ページにjsを追加。読み込み速度とか考慮するとfooter.phpの&lt;/body&gt;直前とかがいいのかも。</p>
 <p>追加するjsは登録完了ページに表示されるコードの以下の部分。</p>
+<p><code>&amp;lt;div id=&quot;fb-root&quot;&amp;gt;&amp;lt;/div&amp;gt;&amp;lt;script&gt;
+window.fbAsyncInit = function() {
+FB.init({appId: &#39;アプリケーションID&#39;, status: true, cookie: true,xfbml: true});
+};
+(function() {
+var e = document.createElement(&#39;script&#39;);
+e.type = &#39;text/javascript&#39;;
+e.src = document.location.protocol +&#39;//connect.facebook.net/ja_JP/all.js&#39;;
+e.async = true;
+document.getElementById(&#39;fb-root&#39;).appendChild(e);
+}());
+&amp;lt;/script&amp;gt;</code></p>
 </li>
-</ol>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"fb-root"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span><br><span class="line"><span class="built_in">window</span>.fbAsyncInit = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">FB.init(&#123;appId: <span class="string">'アプリケーションID'</span>, status: <span class="literal">true</span>, cookie: <span class="literal">true</span>,xfbml: <span class="literal">true</span>&#125;);</span><br><span class="line"> &#125;;</span><br><span class="line">(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">var</span> e = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">e.type = <span class="string">'text/javascript'</span>;</span><br><span class="line">e.src = <span class="built_in">document</span>.location.protocol +<span class="string">'//connect.facebook.net/ja_JP/all.js'</span>;</span><br><span class="line">e.async = <span class="literal">true</span>;</span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">'fb-root'</span>).appendChild(e);</span><br><span class="line"> &#125;());</span><br><span class="line"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<ol>
 <li><p><strong>likeボタン表示コードの追加</strong></p>
 <p>likeボタンを表示するコードを追加します。</p>
+<p><code>&amp;lt;fb:like&amp;gt;&amp;lt;/fb:like&amp;gt;</code><br>各記事ごとに追加するので、Wordpress3.0以上の場合はsingle.phpに追加します。</p>
 </li>
 </ol>
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;fb:like&gt;</span><span class="tag">&lt;/fb:like&gt;</span></span><br></pre></td></tr></table></figure>
-<p>各記事ごとに追加するので、Wordpress3.0以上の場合はsingle.phpに追加します。</p>
 <p>以上で、設置完了です。</p>
 <p><a href="http://www.facebook.com/developers/apps.php" target="_blank" rel="external">アプリケーションページ</a>で設定の変更などができます。</p>
-<p><img src="/images/2010/10/2010100203.png" alt=""></p>
+<p><img src="/images/2010/10/2010100203.png" alt="アプリケーションページ"></p>
 <p>ここまでしたので、つぎに<a href="http://opengraphprotocol.org/" target="_blank" rel="external">Open Graph Protocol</a>に対応させます。</p>
 <p>Open Graph Protocolとは、Facebook以外のwebコンテンツ（webサイトやブログなど）をFacebookと統合するための仕様。みたいなものらしい。</p>
 <p>詳しくは<a href="http://developers.facebook.com/docs/opengraph" target="_blank" rel="external">Facebookのページ</a>をみてください。</p>
 <p>とりあえず、仕様に沿ってmetaタグのあるheader.phpに追加。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">meta</span> <span class="attribute">property</span>=<span class="value">"og:title"</span> <span class="attribute">content</span>=<span class="value">"<span class="php"><span class="preprocessor">&lt;?php</span> bloginfo(<span class="string">'name'</span>); <span class="preprocessor">?&gt;</span></span> | <span class="php"><span class="preprocessor">&lt;?php</span> the_title_attribute(); <span class="preprocessor">?&gt;</span></span>"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">meta</span> <span class="attribute">property</span>=<span class="value">"og:type"</span> <span class="attribute">content</span>=<span class="value">"blog"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">meta</span> <span class="attribute">property</span>=<span class="value">"og:url"</span> <span class="attribute">content</span>=<span class="value">"<span class="php"><span class="preprocessor">&lt;?php</span> the_permalink(); <span class="preprocessor">?&gt;</span></span>"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">meta</span> <span class="attribute">property</span>=<span class="value">"og:site_name"</span> <span class="attribute">content</span>=<span class="value">"<span class="php"><span class="preprocessor">&lt;?php</span> bloginfo(<span class="string">'name'</span>); <span class="preprocessor">?&gt;</span></span>"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">meta</span> <span class="attribute">property</span>=<span class="value">"og:image"</span> <span class="attribute">content</span>=<span class="value">"画像ファイルのURL"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">meta</span> <span class="attribute">property</span>=<span class="value">"og:description"</span> <span class="attribute">content</span>=<span class="value">"<span class="php"><span class="preprocessor">&lt;?php</span> bloginfo(<span class="string">'description'</span>); <span class="preprocessor">?&gt;</span></span> /"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">meta</span> <span class="attribute">property</span>=<span class="value">"fb:app_id"</span> <span class="attribute">content</span>=<span class="value">"アプリケーションID"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>&amp;lt;meta property=&quot;og:title&quot; content=&quot;&amp;lt;?php bloginfo(&#39;name&#39;); ?&amp;gt; | &amp;lt;?php the_title_attribute(); ?&amp;gt;&quot;/&amp;gt;
+&amp;lt;meta property=&quot;og:type&quot; content=&quot;blog&quot;/&amp;gt;
+&amp;lt;meta property=&quot;og:url&quot; content=&quot;&amp;lt;?php the_permalink(); ?&amp;gt;&quot;/&amp;gt;
+&amp;lt;meta property=&quot;og:site_name&quot; content=&quot;&amp;lt;?php bloginfo(&#39;name&#39;); ?&amp;gt;&quot;/&amp;gt;
+&amp;lt;meta property=&quot;og:image&quot; content=&quot;画像ファイルのURL&quot;/&amp;gt;
+&amp;lt;meta property=&quot;og:description&quot; content=&quot;&amp;lt;?php bloginfo(&#39;description&#39;); ?&amp;gt; /&quot;&amp;gt;
+&amp;lt;meta property=&quot;fb:app_id&quot; content=&quot;アプリケーションID&quot;/&amp;gt;</code></p>
 <ul>
 <li><strong>og:title</strong></li>
 </ul>
@@ -176,7 +190,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2010/10/12/tried-wordpress-facebook-like-button-without-a-plugin/" data-id="ci9rvdh0q003jswp4366v1z3x" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2010/10/12/tried-wordpress-facebook-like-button-without-a-plugin/" data-id="ciabtgjmh003jr7p46qnl88o4" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2010/10/12/tried-wordpress-facebook-like-button-without-a-plugin/#disqus_thread" class="article-comment-link">Comments</a>
       

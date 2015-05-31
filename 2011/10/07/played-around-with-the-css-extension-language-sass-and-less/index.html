@@ -99,21 +99,36 @@ ga('send', 'pageview');
     </div>
     
       <p>大規模なwebアプリケーションを構築する際にCSS自体の管理も煩雑になりがち。ベンダープレフィックスなどの記述自体も面倒になってきたので、それらを解決する一つの方法として『<a href="http://sass-lang.com/" target="_blank" rel="external">SASS</a>』と『<a href="http://lesscss.org/" target="_blank" rel="external">LESS</a>』を検討してみました。<br><a id="more"></a><br>両者の違いは<a href="http://dxd8.com/archives/217/" target="_blank" rel="external">CSS拡張メタ言語「SCSS(Sass)」と「LESS」の比較</a>に細かくまとめたれています。</p>
-<p><strong>LESSを使ってみた</strong><br>LESSはJavaScriptでコンパイルするので、LESSファイルとコンパイラーのJSを読み込めば使用できる。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">"stylesheet/less"</span> <span class="attribute">type</span>=<span class="value">"text/css"</span> <span class="attribute">href</span>=<span class="value">"style.less"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"less-1.1.3.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>style.lessに<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@color:</span> <span class="hexcolor">#4D926F</span>;</span><br><span class="line"><span class="id">#header</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="variable">@color</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">h2</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="variable">@color</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>としてやると</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="id">#header</span> <span class="rules">&#123;</span><br><span class="line">  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#4D926F</span></span></span>;</span><br><span class="line">&#125;</span></span><br><span class="line"><span class="tag">h2</span> <span class="rules">&#123;</span><br><span class="line">  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#4D926F</span></span></span>;</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>とコンパイルされる感じ。<br>Mixinやネストのほか演算、関数も少し使える。</p>
+<p><strong>LESSを使ってみた</strong><br>LESSはJavaScriptでコンパイルするので、LESSファイルとコンパイラーのJSを読み込めば使用できる。<br>`</p>
+<p><link rel="stylesheet/less" type="text/css" href="style.less"></p>
+<p><script type="text/javascript" src="less-1.1.3.min.js"></script><br>`</p>
+<p>style.lessに<br>`<br>@color: #4D926F;</p>
+<h1 id="header_{">header {</h1><p>  color: @color;<br>}<br>h2 {<br>  color: @color;<br>}<br>`<br>としてやると</p>
+<p>`</p>
+<h1 id="header_{-1">header {</h1><p>  color: #4D926F;<br>}<br>h2 {<br>  color: #4D926F;<br>}<br>`<br>とコンパイルされる感じ。<br>Mixinやネストのほか演算、関数も少し使える。</p>
 <p><strong>SASSを使ってみた</strong></p>
-<p>とりあえず、rubyがインストールしてる条件で<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gem install sass</span><br></pre></td></tr></table></figure></p>
-<p>でSASSをインストール。<br>style.scssファイルに<br><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$blue</span><span class="value">: <span class="hexcolor">#3bbfce</span>;</span></span><br><span class="line"><span class="variable">$margin</span><span class="value">: <span class="number">16px</span>;</span></span><br><span class="line"><span class="class">.content-navigation</span> &#123;</span><br><span class="line">  <span class="attribute">border-color</span><span class="value">: <span class="variable">$blue</span>;</span></span><br><span class="line">  <span class="attribute">color</span><span class="value">:</span><br><span class="line">    <span class="function">darken</span>(<span class="variable">$blue</span>, <span class="number">9%</span>);</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class">.border</span> &#123;</span><br><span class="line">  <span class="attribute">padding</span><span class="value">: <span class="variable">$margin</span> / <span class="number">2</span>;</span></span><br><span class="line">  <span class="attribute">margin</span><span class="value">: <span class="variable">$margin</span> / <span class="number">2</span>;</span></span><br><span class="line">  <span class="attribute">border-color</span><span class="value">: <span class="variable">$blue</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>として、<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sass style.scss style.css</span><br></pre></td></tr></table></figure></p>
-<p>でコンパイルすると<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class">.content-navigation</span> <span class="rules">&#123;</span><br><span class="line">  <span class="rule"><span class="attribute">border-color</span>:<span class="value"> <span class="hexcolor">#3bbfce</span></span></span>;</span><br><span class="line">  <span class="rule"><span class="attribute">color</span>:<span class="value"> <span class="hexcolor">#2b9eab</span></span></span>;</span><br><span class="line">&#125;</span></span><br><span class="line"><span class="class">.border</span> <span class="rules">&#123;</span><br><span class="line">  <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">8px</span></span></span>;</span><br><span class="line">  <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">8px</span></span></span>;</span><br><span class="line">  <span class="rule"><span class="attribute">border-color</span>:<span class="value"> <span class="hexcolor">#3bbfce</span></span></span>;</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure></p>
-<p>でコンパイルされます。<br>SassでHTML記号や日本語を使う場合は、@charset “UTF-8” を文頭につけておくとコンパイル後のcssも文字コードが予期しないものにならないっぽい。</p>
-<p>毎回、コンパイルすのも面倒なので<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sass --watch style.scss:style.css</span><br></pre></td></tr></table></figure></p>
-<p>watch オプションをつけておけばscssファイル編集とともにcssも変更されます。終了する時は Ctrl+c。これは便利です。<br>ディレクトリを指定すれば、ディレクトリ単位で監視もできます。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sass --style compressed --watch style.scss:style.css</span><br></pre></td></tr></table></figure>
-<p>style compressedオプションをつけてやればminifyもしてくれます。これも便利。<br>SASSの場合、関数で定数の演算を扱える、条件分岐や繰り返しも使えるのでLESSより柔軟です。</p>
+<p>とりあえず、rubyがインストールしてる条件で<br><code>gem install sass</code><br>でSASSをインストール。<br>style.scssファイルに<br><code>$blue: #3bbfce;
+$margin: 16px;
+.content-navigation {
+  border-color: $blue;
+  color:
+    darken($blue, 9%);
+}
+.border {
+  padding: $margin / 2;
+  margin: $margin / 2;
+  border-color: $blue;
+}</code><br>として、<br><code>sass style.scss style.css</code><br>でコンパイルすると<br><code>.content-navigation {
+  border-color: #3bbfce;
+  color: #2b9eab;
+}
+.border {
+  padding: 8px;
+  margin: 8px;
+  border-color: #3bbfce;
+}</code><br>でコンパイルされます。<br>SassでHTML記号や日本語を使う場合は、@charset “UTF-8” を文頭につけておくとコンパイル後のcssも文字コードが予期しないものにならないっぽい。</p>
+<p>毎回、コンパイルすのも面倒なので<br><code>sass --watch style.scss:style.css</code><br>watch オプションをつけておけばscssファイル編集とともにcssも変更されます。終了する時は Ctrl+c。これは便利です。<br>ディレクトリを指定すれば、ディレクトリ単位で監視もできます。</p>
+<p><code>sass --style compressed --watch style.scss:style.css</code><br>style compressedオプションをつけてやればminifyもしてくれます。これも便利。<br>SASSの場合、関数で定数の演算を扱える、条件分岐や繰り返しも使えるのでLESSより柔軟です。</p>
 <p>あと、<a href="http://haml-lang.com/" target="_blank" rel="external">Haml</a>をインストールしておけば<br><code>css2sass style.css</code><br>とすることで既存のCSSをSASSに変換できるっぽいので、既存環境をSASS化することもできそう。</p>
 <p>最近railsを触ってることもあってSASSのほうが気になりました。</p>
 <p>個人的な感想では、SASSはrubykのコンパイルが必要だけど、機能が豊富で柔軟に使用できる。環境構築さえしてしまえば、後は非常にやりやすかった。<br><a href="http://compass-style.org/" target="_blank" rel="external">Compass</a>というSASSフレームワークが便利そう。</p>
@@ -124,7 +139,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2011/10/07/played-around-with-the-css-extension-language-sass-and-less/" data-id="ci9rvdh7f0080swp4e0g1enoc" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2011/10/07/played-around-with-the-css-extension-language-sass-and-less/" data-id="ciabtgjr90080r7p4mq1mzg72" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2011/10/07/played-around-with-the-css-extension-language-sass-and-less/#disqus_thread" class="article-comment-link">Comments</a>
       

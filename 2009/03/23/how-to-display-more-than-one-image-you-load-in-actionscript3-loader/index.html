@@ -103,9 +103,17 @@ ga('send', 'pageview');
 <p>そもそも、ロードしたビットマップ画像を複数のmcなどに渡して、なにかしらの操作しても最終的に渡されたmcの操作しか有効にならない。</p>
 <p>それもそのはずで、おそらく実体が足りないんだ。</p>
 <p>だから、bitmapdataをコピー(clone())して、渡してやればいいのでした。</p>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> bmp:Bitmap = <span class="keyword">new</span> Bitmap();</span><br><span class="line"></span><br><span class="line">bmp = Bitmap(loader.content);</span><br></pre></td></tr></table></figure>
+<p>`</p>
+<p>var bmp:Bitmap = new Bitmap();</p>
+<p>bmp = Bitmap(loader.content);</p>
+<p>`</p>
 <p>で、bmpに読み込み画像を渡して</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">var</span> <span class="rule"><span class="attribute">bmpCopy</span>:<span class="value">Bitmap = new <span class="function">Bitmap</span>(bmp.bitmapData.<span class="function">clone</span>())</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="tag">var</span> <span class="rule"><span class="attribute">obj</span>:<span class="value">Sprite = new <span class="function">Sprite</span>()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="tag">obj</span><span class="class">.addChild</span>(<span class="tag">bmpCopy</span>);</span><br><span class="line"></span><br><span class="line"><span class="tag">addChild</span>(<span class="tag">obj</span>);</span><br></pre></td></tr></table></figure>
+<p>`</p>
+<p>var bmpCopy:Bitmap = new Bitmap(bmp.bitmapData.clone());</p>
+<p>var obj:Sprite = new Sprite();</p>
+<p>obj.addChild(bmpCopy);</p>
+<p>addChild(obj);</p>
+<p>`</p>
 <p>bmpCopyにbmpをコピー。</p>
 <p>あとはspriteなりMovieClipなりにわたしてaddChildしてしまえばいい。</p>
 <p>おそらく定石なんだろうけど、知らなかったす。</p>
@@ -115,7 +123,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2009/03/23/how-to-display-more-than-one-image-you-load-in-actionscript3-loader/" data-id="ci9rvdhdt00csswp4v5fqo6vz" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2009/03/23/how-to-display-more-than-one-image-you-load-in-actionscript3-loader/" data-id="ciabtgjw900csr7p41zdobsq5" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2009/03/23/how-to-display-more-than-one-image-you-load-in-actionscript3-loader/#disqus_thread" class="article-comment-link">Comments</a>
       

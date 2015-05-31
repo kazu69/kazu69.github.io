@@ -100,28 +100,41 @@ ga('send', 'pageview');
     
       <p>個人的メモ。エディターの設定ファイルを誤操作してしまって。<br>再度構築していたんですが、どうやるんだっけってのをメモしておく。<br><a id="more"></a><br>Sublime Text2でcoffeeスクリプトとかをコンパイルできるんですが、パッケージインストーラーで入れただけだとエラーになっていたので調べてみた。</p>
 <p>ちなみに今回は<a href="https://github.com/surjikal/sublime-coffee-compile" target="_blank" rel="external">sublime-coffee-compile</a>を使いたかったんです。</p>
-<p>たとえばcoffee scriptの設定ファイル(CoffeeScript.sublime-build)をみてみると<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&amp;quot;cmd&amp;quot;: [&amp;quot;coffee&amp;quot;,&amp;quot;-c&amp;quot;,&amp;quot;$file&amp;quot;]</span><br><span class="line">,	&amp;quot;path&amp;quot;: &amp;quot;<span class="regexp">/usr/</span>local/bin:$PATH&amp;quot;</span><br><span class="line">,	&amp;quot;selector&amp;quot;: &amp;quot;source.coffee&amp;quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>たとえばcoffee scriptの設定ファイル(CoffeeScript.sublime-build)をみてみると<br>[javascript]<br>{<br>    &quot;cmd&quot;: [&quot;coffee&quot;,&quot;-c&quot;,&quot;$file&quot;]<br>,    &quot;path&quot;: &quot;/usr/local/bin:$PATH&quot;<br>,    &quot;selector&quot;: &quot;source.coffee&quot;<br>}<br>[/javascript]</p>
 <p>こんな感じのjson形式。コマンドとパス、セレクターが指定されてるだけ。<br>では早速ビルド(cmd+B)すると</p>
 <p> [Errno 2] No such file or directory</p>
-<p>どうやらcoffeeコマンドが見当たらないとかっぽい。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">which</span> coffee   </span><br><span class="line">/Users/hoge/YOUR/PATH/bin/coffee</span><br></pre></td></tr></table></figure></p>
+<p>どうやらcoffeeコマンドが見当たらないとかっぽい。<br>[shell]<br>$ which coffee<br>/Users/hoge/YOUR/PATH/bin/coffee<br>[/shell]</p>
 <p>これをパスに突っ込めば行けそう。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&amp;quot;cmd&amp;quot;: [&amp;quot;coffee&amp;quot;,&amp;quot;-c&amp;quot;,&amp;quot;$file&amp;quot;]</span><br><span class="line">,	&amp;quot;path&amp;quot;: &amp;quot;$HOME/YOUR/PATH/bin/coffee:<span class="regexp">/usr/</span>local/bin:$PATH&amp;quot;</span><br><span class="line">,	&amp;quot;selector&amp;quot;: &amp;quot;source.coffee&amp;quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>[javascript]<br>{<br>    &quot;cmd&quot;: [&quot;coffee&quot;,&quot;-c&quot;,&quot;$file&quot;]<br>,    &quot;path&quot;: &quot;$HOME/YOUR/PATH/bin/coffee:/usr/local/bin:$PATH&quot;<br>,    &quot;selector&quot;: &quot;source.coffee&quot;<br>}<br>[/javascript]</p>
 <p>再びビルド(cmd+B)</p>
 <p>で行けました。</p>
 <p>ここでエラーになる場合はnodeのパスが通っていない可能性があるので、</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">which</span> node   </span><br><span class="line">/Users/hoge/YOUR/PATH/bin/node</span><br></pre></td></tr></table></figure>
+<p>[shell]<br>$ which node<br>/Users/hoge/YOUR/PATH/bin/node<br>[/shell]</p>
 <p>のパスを追加しておけば良さそう。</p>
-<p>ただ、開発環境ごとにパスを通すのが面倒なので、ユーザーの環境設定にパスを通しておく。<br>設定ファイル(cmd+,)でひらいて<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">...</span><br><span class="line">&amp;quot;build_env&amp;quot;:&#123;</span><br><span class="line">		&amp;quot;PATH&amp;quot;: &amp;quot;<span class="regexp">/usr/</span>local/bin:<span class="regexp">/usr/</span>local/sbin:<span class="regexp">/usr/</span>local/share/python:$HOME/.nodebrew/current/bin:$HOME/.phpenv/bin:$HOME/.nodebrew/current/bin&amp;quot;</span><br><span class="line">	&#125;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ただ、開発環境ごとにパスを通すのが面倒なので、ユーザーの環境設定にパスを通しておく。<br>設定ファイル(cmd+,)でひらいて<br>[javascript]<br>{<br>…<br>&quot;build_env&quot;:{<br>        &quot;PATH&quot;: &quot;/usr/local/bin:/usr/local/sbin:/usr/local/share/python:$HOME/.nodebrew/current/bin:$HOME/.phpenv/bin:$HOME/.nodebrew/current/bin&quot;<br>    }<br>…<br>}<br>[/javascript]</p>
 <p>でいいかな。</p>
 <p>OSごとにかえるなら<a href="http://docs.sublimetext.info/en/latest/reference/build_systems.html#platform-specific-options" target="_blank" rel="external">Platform option</a>とかですかね。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &amp;quot;cmd&amp;quot;: [&amp;quot;ant&amp;quot;],</span><br><span class="line">    &amp;quot;file_regex&amp;quot;: &amp;quot;^ *\\[javac\\] (.+):([<span class="number">0</span>-<span class="number">9</span>]+):() (.*)$&amp;quot;,</span><br><span class="line">    &amp;quot;working_dir&amp;quot;: &amp;quot;$&#123;project_path:$&#123;folder&#125;&#125;&amp;quot;,</span><br><span class="line">    &amp;quot;selector&amp;quot;: &amp;quot;source.java&amp;quot;,</span><br><span class="line"></span><br><span class="line">    &amp;quot;windows&amp;quot;:</span><br><span class="line">    &#123;</span><br><span class="line">        &amp;quot;cmd&amp;quot;: [&amp;quot;ant.bat&amp;quot;]</span><br><span class="line">    &#125;,</span><br><span class="line">    &amp;quot;mac&amp;quot;:</span><br><span class="line">    &#123;</span><br><span class="line">      &amp;quot;cmd&amp;quot;: [&amp;quot;ant&amp;quot;]</span><br><span class="line">    &#125;,</span><br><span class="line">    &amp;quot;mac&amp;quot;:</span><br><span class="line">    &#123;</span><br><span class="line">      &amp;quot;linux&amp;quot;: [&amp;quot;ant&amp;quot;]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>[javascript]<br>{<br>    &quot;cmd&quot;: [&quot;ant&quot;],<br>    &quot;file_regex&quot;: &quot;^ <em>\[javac\] (.+):([0-9]+):() (.</em>)$&quot;,<br>    &quot;working_dir&quot;: &quot;${project_path:${folder}}&quot;,<br>    &quot;selector&quot;: &quot;source.java&quot;,</p>
+<pre><code>&amp;quot;windows&amp;quot;<span class="value">:
+{
+    &amp;quot;</span>cmd&amp;quot;<span class="value">: [&amp;quot;</span>ant<span class="class">.bat</span>&amp;quot;]
+},
+&amp;quot;mac&amp;quot;<span class="value">:
+{
+  &amp;quot;</span>cmd&amp;quot;<span class="value">: [&amp;quot;</span>ant&amp;quot;]
+},
+&amp;quot;mac&amp;quot;<span class="value">:
+{
+  &amp;quot;</span>linux&amp;quot;<span class="value">: [&amp;quot;</span>ant&amp;quot;]
+}
+</code></pre><p>}<br>[/javascript]</p>
 
     
   </div>
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/03/03/in-the-sublime-text2-on-the-build-compile-environmental-note/" data-id="ci9rvdhbx00b4swp45tv155cw" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/03/03/in-the-sublime-text2-on-the-build-compile-environmental-note/" data-id="ciabtgjuf00b4r7p4txp68bg2" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/03/03/in-the-sublime-text2-on-the-build-compile-environmental-note/#disqus_thread" class="article-comment-link">Comments</a>
       
