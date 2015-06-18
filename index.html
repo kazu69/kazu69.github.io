@@ -139,21 +139,7 @@ ga('send', 'pageview');
     </div>
     
       <p>軽量Chef的なプロビジョニングツールitamaeを使って、<br>VagrantとDcokerにNodeJS環境を作ってみたときの備忘録。</p>
-<!-- mode -->
-<p>Centosにndenvを使い、nodejs(ver0.12.0)とio.js(ver1.2.0)をインストールする。</p>
-<h2 id="事前準備">事前準備</h2><p>ディレクトリ構造は<a href="https://github.com/itamae-kitchen/itamae/wiki/Best-Practice" target="_blank" rel="external">Best Practice</a>を元に、以下のようにした。</p>
-<script src="//gist.github.com/kazu69/8b824595016ba612ff53.js?file=tree.sh"></script>
-<p>レシピは以下のとおり、普通にndenvを設定しているだけ。</p>
-<script src="//gist.github.com/kazu69/8b824595016ba612ff53.js?file=ruby_build.rb"></script>
-<h2 id="Vagrant_+_ssh">Vagrant + ssh</h2><p>Vagrantにsshでレシピを実行する、その際に—vagrantオプションを付ける。</p>
-<script src="//gist.github.com/kazu69/8b824595016ba612ff53.js?file=vagrant_ssh.sh"></script>
-<h2 id="Vagrant_+_vagrant-itamae">Vagrant + vagrant-itamae</h2><p>vagrantプラグインの<a href="https://github.com/chiastolite/vagrant-itamae" target="_blank" rel="external">vagrant-itamae</a>を使うとsshより簡単にできそう。<br>これでvagrant provisionerにiamaeを指定するだけで済む。</p>
-<script src="//gist.github.com/kazu69/8b824595016ba612ff53.js?file=Vagrantfile"></script>
-<h2 id="Docker_+_ssh">Docker + ssh</h2><p>Dockerの場合も。sshでrecipeを実行する。<br>—no-tls-verify-peerはsslのエラー(Excon::Errors::SocketError)でこけたので、オプションをつけた。</p>
-<script src="//gist.github.com/kazu69/8b824595016ba612ff53.js?file=docker_ssh.sh"></script>
-<p>ちょっとした開発環境構築にchefだと学習コストも全体のファイルサイズの規模感も大きくなりがちなに対して、itamaeだと、手元の環境構築はシンプルで、簡潔なサイズでちょうどでいい感じだった。</p>
-<h2 id="今回作ったレシピ">今回作ったレシピ</h2><p><a href="https://github.com/kazu69/nodejs-develop-environment-with-itamae" target="_blank" rel="external">nodejs-develop-environment-with-itamae</a></p>
-
+      
     
   </div>
 
