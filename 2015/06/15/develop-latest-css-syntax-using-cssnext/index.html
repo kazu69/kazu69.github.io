@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>cssnextを使って最新のcss syntaxで開発するのが良さそう | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cssnextを使って最新のcss syntaxで開発するのが良さそう">
+<meta property="og:url" content="http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cssnextを使って最新のcss syntaxで開発するのが良さそう">
+<meta name="twitter:description" content="ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-develop-latest-css-syntax-using-cssnext" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      cssnextを使って最新のcss syntaxで開発するのが良さそう
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2015-06-14T15:00:32.000Z" itemprop="datePublished">2015-06-15</time>
+
+      
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。</p>
+<a id="more"></a>
+<h2 id="JavaScriptの最近の事情">JavaScriptの最近の事情</h2><p>javascriptではES6でコードを書き、BabelでTransplieするという流れが定着しつつある。<br>これは、これまで必要だったライブラリが不要になり、コードが依存するライブラリを減らすことができ、altJSに頼らないで開発できるという利点からである。</p>
+<p>同じことがCSSでも起きている。まずこれまでCSSを牽引してきた<a href="http://sass-lang.com/" target="_blank" rel="external">Sass</a>について。</p>
+<h2 id="Sassの問題点">Sassの問題点</h2><p>最近のCSSの開発にはaltCSSとしてSass,Less,StylusなどのPreprocessorが使用されている。<br>特にSassはJavaScriptで言う所のjQueryに近い存在になり、APIもやや複雑になっている感じがある。</p>
+<p>Sassを使っていても実際はそのほんの一部の機能だけで開発していることが多い。<br>実際、Sassを使うにあたり必要な機能はほんの一握りなのでその機能だけ切り取り使えると、もっと軽く使える気もする。</p>
+<p>また、仮に他のaltCSSへの乗り換えの際にはSassの資産をそのまま使えるとは限らない。<br>などという懸念点を回避する手法として、CSSの先行実装を取り入れるという考え方でcssnextが選択肢に上がる。</p>
+<h2 id="cssnextとは">cssnextとは</h2><p><a href="http://cssnext.io/" target="_blank" rel="external">cssnext</a>はcssの先行実装をサポートしていないブラウザも使えるようにするPostprocessorである。<br>あくまでcssのsyntaxのみで構成されているので、利用している機能を将来的にブラウザがサポートさえしてくれれば<br>cssnextでTransplileする必要すらなくなる。</p>
+<p>cssnext自体はpostcssを使っているので、必要なpluginを選択的に使える。これにより変換に時間がかかるという問題も解消できそう。</p>
+<p>メジャーなcss frameworkの<a href="https://twitter.com/mdo/status/591364406816079873" target="_blank" rel="external">Bootstrapはver5からpostcss</a>に、<a href="https://github.com/zurb/foundation/issues/6533" target="_blank" rel="external">Foundationもcssnext</a>を検討している。</p>
+<p>ということで、実際にどのようなことができるのか機能を一通り触ってみた。</p>
+<h2 id="cssnext_features">cssnext features</h2><h3 id="設定(config)">設定(config)</h3><p>configオプションまたは設定ファイルで、使う機能を選択できる。<br>また、各種の変換はpostcssのpluginなので、そのオプションも設定できる。<br>ちなみに、設定ファイルを使う場合は<a href="https://github.com/cssnext/cssnext/issues/73" target="_blank" rel="external">.cssnextrcという名前でjsonかyaml形式になりそう</a>。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=.cssnextrc"></script>
+<h3 id="Custom_Properties">Custom Properties</h3><p>カスタムプロパティ。cssnextでは現状はrootで定義しないといけない</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_properties.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_properties.dest.css"></script>
+<h3 id="Calc_Function">Calc Function</h3><p>calc function。様々な単位で複雑な計算ができて便利。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=calc.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=calc.dest.css"></script>
+<h3 id="Custom_Media_Queries">Custom Media Queries</h3><p>media queryにタイプにユーザー定義のプロパティを使えるようになる。<br>これまでは同じ設定を必要に応じていくつも書くことがあったが、とりあえず、プロパティで一元管理できるようになる。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_media_query.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_media_query.dest.css"></script>
+<h3 id="Custom_Selectors">Custom Selectors</h3><p>@custome-selectorルールが使えるようになり、冗長な記述をしなくて済むようになる。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_selectors.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_selectors.dest.css"></script>
+<h3 id="Color_Function">Color Function</h3><p>SassなどのColor Functionのように色を関数で扱うことができるようになる。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=color.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=color.dest.css"></script>
+<h3 id="hwd(Hue-Whiteness-Blackness)_Function">hwd(Hue-Whiteness-Blackness) Function</h3><p>色相の関数で扱う。色合いと白色度、黒色度から色相を変換できる。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=hwb.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=hwb.dest.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=hwb.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=hwb.dest.css"></script>
+<h3 id="Gray_Function">Gray Function</h3><p>グレースケールな色をのみを生成する関数。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=gray.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=gray.dest.css"></script>
+<h3 id="Hex_Color">Hex Color</h3><p>アルファチャンネンルを追加した、RRGGBBAA形式でのhex colorが使える。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rrggbbaa.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rrggbbaa.dest.css"></script>
+<h3 id="Rebeccapurple">Rebeccapurple</h3><p><a href="http://lists.w3.org/Archives/Public/www-style/2014Jun/0312.html" target="_blank" rel="external">6歳にして亡くなった、Eric Meyer氏の娘の名前</a>らしい。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rebeccapurple.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rebeccapurple.dest.css"></script>
+<h3 id="font-variant_プロパティ">font-variant プロパティ</h3><p>フォントをsmall capsにする際に使う。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=font_variant.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=font_variant.dest.css"></script>
+<h3 id="filter_プロパティ">filter プロパティ</h3><p>svgのフィルタエフェクトを適用する。これは結構嬉しい。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=filter.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=filter.dest.css"></script>
+<h3 id="Rem_unit">Rem unit</h3><p>rem(root em)をサポートする。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rem.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rem.dest.css"></script>
+<h3 id="Pseudo_Elements">Pseudo Elements</h3><p>擬似要素のサポート。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=pseudo_elements.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=pseudo_elements.dest.css"></script>
+<h3 id="Matches">Matches</h3><p>matches 擬似クラス。冗長になりがちなセレクターを簡潔に表現できるようになる。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=matches.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=matches.dest.css"></script>
+<h3 id="Not">Not</h3><p>否定擬似クラス。Matchesと同じく、セレクターを簡潔にできるようになる。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=not.src.css"></script>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=not.dest.css"></script>
+<h3 id="@import">@import</h3><p>Sassなどと同じように特定のstylesheetをimportする。<br>相対パス、node_modules, web_modulesから読み込みをこなう。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=import.src.css"></script>
+<h3 id="with_Gulp">with Gulp</h3><p>gulpでは<a href="https://www.npmjs.com/package/gulp-cssnext" target="_blank" rel="external">gulp-cssnext</a>や<a href="https://www.npmjs.com/package/gulp-postcss" target="_blank" rel="external">gulp-postcss</a>を使う感じになる。</p>
+<script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=gulpfile.js"></script>
+<h2 id="まとめ">まとめ</h2><p>ということで、今回挙げたようなcssの新しいモジュールはaltCSSで提供されているAPIに影響を受けた感じであるので、記法はともかく機能は大体予想がつく。そのため、学習コストはあまり高くない気がする。</p>
+<p>postcssということでautoprefixerなどがdefaultで機能するので、fallbackなどもあまり意識しないで済みそう。</p>
+<p>CSS標準のマークアップで開発をすることでいいということが大きな利点と思う。</p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+      <a data-url="http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/" data-id="ciax3l39w00euvzp4ck3ylhfs" class="article-share-link">Share</a>
+      
+        <a href="http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/css/">css</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tec/">tec</a></li></ul>
+
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2015/06/13/make-nodejs-development-environment-vagrant-and-docker-with-itamae/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            itamaeでVagrantとDockerにNodeJS環境を作ってみた
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+  <aside>
+    
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+  </aside>
+
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2015 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</body>
+</html>
