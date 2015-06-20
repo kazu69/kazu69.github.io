@@ -4,7 +4,7 @@
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.kazu69.net/"/>
-  <updated>2015-06-18T01:16:22.000Z</updated>
+  <updated>2015-06-20T00:46:18.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/"/>
     <id>http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/</id>
     <published>2015-06-14T15:00:32.000Z</published>
-    <updated>2015-06-18T01:16:22.000Z</updated>
+    <updated>2015-06-20T00:46:18.000Z</updated>
     <content type="html"><![CDATA[<p>ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。</p>
 <a id="more"></a>
 <h2 id="JavaScriptの最近の事情">JavaScriptの最近の事情</h2><p>javascriptではES6でコードを書き、BabelでTransplieするという流れが定着しつつある。<br>これは、これまで必要だったライブラリが不要になり、コードが依存するライブラリを減らすことができ、altJSに頼らないで開発できるという利点からである。</p>
@@ -31,7 +31,9 @@
 <p>cssnext自体はpostcssを使っているので、必要なpluginを選択的に使える。これにより変換に時間がかかるという問題も解消できそう。</p>
 <p>メジャーなcss frameworkの<a href="https://twitter.com/mdo/status/591364406816079873" target="_blank" rel="external">Bootstrapはver5からpostcss</a>に、<a href="https://github.com/zurb/foundation/issues/6533" target="_blank" rel="external">Foundationもcssnext</a>を検討している。</p>
 <p>ということで、実際にどのようなことができるのか機能を一通り触ってみた。</p>
-<h2 id="cssnext_features">cssnext features</h2><h3 id="設定(config)">設定(config)</h3><p>configオプションまたは設定ファイルで、使う機能を選択できる。<br>また、各種の変換はpostcssのpluginなので、そのオプションも設定できる。<br>ちなみに、設定ファイルを使う場合は<a href="https://github.com/cssnext/cssnext/issues/73" target="_blank" rel="external">.cssnextrcという名前でjsonかyaml形式になりそう</a>。</p>
+<h2 id="cssnext_features">cssnext features</h2><h3 id="設定(config)">設定(config)</h3><p>configオプションまたは設定ファイルで、使う機能を選択できる。</p>
+<p>基本的にbrowsersオプションを指定しておけば、autoprefixerが<a href="http://caniuse.com/" target="_blank" rel="external">caniuse</a>のdatabaseを参照して、個別にfeaturesをenabled、disabledを判断します。(MoOxのアドバイスで追記)</p>
+<p>もし、個別に機能を制御するならば、各種の変換はpostcssのpluginなので、そのオプションも設定できる。<br>ちなみに、設定ファイルを使う場合は<a href="https://github.com/cssnext/cssnext/issues/73" target="_blank" rel="external">.cssnextrcという名前でjsonかyaml形式になりそう</a>。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=.cssnextrc"></script>
 <h3 id="Custom_Properties">Custom Properties</h3><p>カスタムプロパティ。cssnextでは現状はrootで定義しないといけない</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_properties.src.css"></script>
@@ -104,7 +106,7 @@
     <link href="http://blog.kazu69.net/2015/06/13/make-nodejs-development-environment-vagrant-and-docker-with-itamae/"/>
     <id>http://blog.kazu69.net/2015/06/13/make-nodejs-development-environment-vagrant-and-docker-with-itamae/</id>
     <published>2015-06-13T02:41:14.000Z</published>
-    <updated>2015-06-18T09:42:50.000Z</updated>
+    <updated>2015-06-18T09:46:34.000Z</updated>
     <content type="html"><![CDATA[<p>軽量Chef的なプロビジョニングツールitamaeを使って、<br>VagrantとDcokerにNodeJS環境を作ってみたときの備忘録。</p>
 <a id="more"></a>
 <p>Centosにndenvを使い、nodejs(ver0.12.0)とio.js(ver1.2.0)をインストールする。</p>
