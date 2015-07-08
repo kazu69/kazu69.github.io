@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
+  
   <title><![CDATA[69log]]></title>
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
-  <link href="http://blog.kazu69.net/"/>
-  <updated>2015-06-20T00:46:18.000Z</updated>
-  <id>http://blog.kazu69.net/</id>
+  <link href="http://blog.kazu69.net//"/>
+  <updated>2015-06-20T01:07:29.000Z</updated>
+  <id>http://blog.kazu69.net//</id>
   
   <author>
     <name><![CDATA[kazu69]]></name>
@@ -19,7 +20,7 @@
     <link href="http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/"/>
     <id>http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/</id>
     <published>2015-06-14T15:00:32.000Z</published>
-    <updated>2015-06-20T00:46:18.000Z</updated>
+    <updated>2015-06-20T01:07:29.000Z</updated>
     <content type="html"><![CDATA[<p>ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。</p>
 <a id="more"></a>
 <h2 id="JavaScriptの最近の事情">JavaScriptの最近の事情</h2><p>javascriptではES6でコードを書き、BabelでTransplieするという流れが定着しつつある。<br>これは、これまで必要だったライブラリが不要になり、コードが依存するライブラリを減らすことができ、altJSに頼らないで開発できるという利点からである。</p>
@@ -32,7 +33,7 @@
 <p>メジャーなcss frameworkの<a href="https://twitter.com/mdo/status/591364406816079873" target="_blank" rel="external">Bootstrapはver5からpostcss</a>に、<a href="https://github.com/zurb/foundation/issues/6533" target="_blank" rel="external">Foundationもcssnext</a>を検討している。</p>
 <p>ということで、実際にどのようなことができるのか機能を一通り触ってみた。</p>
 <h2 id="cssnext_features">cssnext features</h2><h3 id="設定(config)">設定(config)</h3><p>configオプションまたは設定ファイルで、使う機能を選択できる。</p>
-<p>基本的にbrowsersオプションを指定しておけば、autoprefixerが<a href="http://caniuse.com/" target="_blank" rel="external">caniuse</a>のdatabaseを参照して、個別にfeaturesをenabled、disabledを判断します。(MoOxのアドバイスで追記)</p>
+<p>基本的にbrowsersオプションを指定しておけば、autoprefixerが<a href="http://caniuse.com/" target="_blank" rel="external">caniuse</a>のdatabaseを参照して、個別にfeaturesをenabled、disabledを判断します。(@MoOxのアドバイスをもとに追記)</p>
 <p>もし、個別に機能を制御するならば、各種の変換はpostcssのpluginなので、そのオプションも設定できる。<br>ちなみに、設定ファイルを使う場合は<a href="https://github.com/cssnext/cssnext/issues/73" target="_blank" rel="external">.cssnextrcという名前でjsonかyaml形式になりそう</a>。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=.cssnextrc"></script>
 <h3 id="Custom_Properties">Custom Properties</h3><p>カスタムプロパティ。cssnextでは現状はrootで定義しないといけない</p>
@@ -481,64 +482,42 @@
     <link href="http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/"/>
     <id>http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/</id>
     <published>2015-02-21T14:51:55.000Z</published>
-    <updated>2015-05-10T16:21:06.000Z</updated>
+    <updated>2015-07-07T06:13:59.000Z</updated>
     <content type="html"><![CDATA[<p>フロントエンド周りを触ることがあり、Sassのコンパイル速度改善をするために、<br><a href="http://libsass.org/" target="_blank" rel="external">libsass</a>について軽く調べてみた。</p>
 <a id="more"></a>
 <h2 id="libsassとは">libsassとは</h2><p>C/C++で書かれたSass Compiler。これ自体は単なるライブラリで、実際にこれを走らせるには<br><a href="https://github.com/sass/sassc" target="_blank" rel="external">SassC</a>や<a href="https://github.com/sass/ruby-libsass" target="_blank" rel="external">ruby-libsass</a>などを使う。</p>
 <p>コンパイラにGCC4.6+またはClang/LLVMが必要だとか。</p>
-<h2 id="libsass_のインストール">libsass のインストール</h2><p>libsassとSassCは共にbrewインストール可能だが、<br>マニュアルに沿ってインストールする場合は、</p>
-<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=manual-install.sh"></script>
-
+<h2 id="libsass_のインストール">libsass のインストール</h2><p>libsassとSassCは共にbrewインストール可能だが、<br>マニュアルに沿ってインストールする場合は、<br><script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=manual-install.sh"></script></p>
 <h2 id="libsassとRuby_Sassとの互換性">libsassとRuby Sassとの互換性</h2><p>現状ではRuby Sassとの違いもあり、完全に互換性があるわけではない。<br>実際、Ruby Sassよりも実装が遅れているため、Ruby Sass3.4の機能は多くが利用できない状況らしい。<br><a href="https://github.com/sass/sass-spec/tree/master/spec/libsass-todo-issues" target="_blank" rel="external">SassSpec/libsass-todo-issues</a>を<br>みるとサポート状況わかる。</p>
 <p>ちなみにSass Specを使ってみると</p>
-<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=sass-spec.sh"></script>
-
+<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=sass-spec.sh"></script>
 <p>libsassで sass spec実行</p>
-<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-spec.sh"></script>
-まだ対応できてないのか、スキップされてる項目が多い。
-
-## 多言語サポート
-
-libsassのラッパーも多く、おもだった言語で使えそう。
-
-*   [SassC](https://github.com/sass/sassc) command line driver
-*   [perl-libsass](https://github.com/sass/perl-libsass)
-*   [php-sass](https://github.com/guitarpoet/php-sass)
-*   [ruby-libsass](https://github.com/sass/ruby-libsass)
-*   [node-sass](https://github.com/andrew/node-sass)
-*   [sass.js](https://github.com/medialize/sass.js)
-*   [gosass](https://github.com/moovweb/gosass)
-*   [libsass-python](https://github.com/dahlia/libsass-python)
-*   [libsass-maven-plugin](https://github.com/warmuuh/libsass-maven-plugin)
-
-* * *
-
-libsassへ乗り換えるなら、互換性を考慮する必要があるので、まず調査のためlibsass-todo-issuesを確認するか、一通りまとめてある
-[Sass Compatibility](http://sass-compatibility.github.io/)などで確認することが必要そう。
-
-現在のlibsassのバージョンは3.1だが、
-リリース計画によると最終的に3.4でRuby Sassに追いつく予定らしいので、
-それまで待つでもしれない。
-
-しかし、最新のSassの機能に縛られなければ、十分に機能を享受できそうだし、やはりコンパイル時間の短縮は魅力的。
-コンパル結果が同じなら使わない理由がなさそうな気がする。
-
-ちなみに、Sassのライブラリである、
-compassは2.0で[デフォルトのコンパイルはlibsass](https://github.com/Compass/compass/issues/1916)になる予定、[Burbon](http://bourbon.io/)はすでにサポートしている。
-
-以下のようにCompassを使っているscssファイルをsasscでコンパルすると
-
-<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=sample.scss"></script>
-
-<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-compass.sh"></script>
-
+<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-spec.sh"></script>
+<p>まだ対応できてないのか、スキップされてる項目が多い。</p>
+<h2 id="多言語サポート">多言語サポート</h2><p>libsassのラッパーも多く、主だった言語で使えそう。</p>
+<ul>
+<li><a href="https://github.com/sass/sassc" target="_blank" rel="external">SassC</a></li>
+<li><a href="https://github.com/sass/perl-libsass" target="_blank" rel="external">perl-libsass</a></li>
+<li><a href="https://github.com/guitarpoet/php-sass" target="_blank" rel="external">php-sass</a></li>
+<li><a href="https://github.com/sass/ruby-libsass" target="_blank" rel="external">ruby-libsass</a></li>
+<li><a href="https://github.com/andrew/node-sass" target="_blank" rel="external">node-sass</a></li>
+<li><a href="https://github.com/medialize/sass.js" target="_blank" rel="external">sass.js</a></li>
+<li><a href="https://github.com/moovweb/gosass" target="_blank" rel="external">gosass</a></li>
+<li><a href="https://github.com/dahlia/libsass-python" target="_blank" rel="external">libsass-python</a></li>
+<li><a href="https://github.com/warmuuh/libsass-maven-plugin" target="_blank" rel="external">libsass-maven-plugin</a></li>
+</ul>
+<p>libsassへ乗り換えるなら、互換性を考慮する必要があるので、まず調査のためlibsass-todo-issuesを確認するか、一通りまとめてある<br><a href="http://sass-compatibility.github.io/" target="_blank" rel="external">Sass Compatibility</a>などで確認することが必要そう。</p>
+<p>現在のlibsassのバージョンは3.1だが、<br>リリース計画によると最終的に3.4でRuby Sassに追いつく予定らしいので、<br>それまで待つでもしれない。</p>
+<p>しかし、最新のSassの機能に縛られなければ、十分に機能を享受できそうだし、やはりコンパイル時間の短縮は魅力的。<br>コンパル結果が同じなら使わない理由がなさそうな気がする。</p>
+<p>ちなみに、Sassのライブラリである、<br>compassは2.0で<a href="https://github.com/Compass/compass/issues/1916" target="_blank" rel="external">デフォルトのコンパイルはlibsass</a>になる予定、<a href="http://bourbon.io/" target="_blank" rel="external">Burbon</a>はすでにサポートしている。</p>
+<p>以下のようにCompassを使っているscssファイルをsasscでコンパルすると</p>
+<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=sample.scss"></script>
+<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-compass.sh"></script>
 <p>となってしまう。</p>
 <p>Compassのcore mixinを切り出した<a href="https://github.com/Igosuki/compass-mixins" target="_blank" rel="external">compass-mixins</a>を使えば、<br>Compassでもlibsassを利用可能っぽい。</p>
-<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-compass-mixin.sh"></script>
-
+<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-compass-mixin.sh"></script>
 <p><a href="https://github.com/sindresorhus/grunt-sass" target="_blank" rel="external">grunt-sass</a>を使用する場合は次のような感じになる。</p>
-<script src="https://gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=Gruntfile.js"></script>
-
+<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=Gruntfile.js"></script>
 <p>RailsプロジェクトなどでSassコンパイルに時間かかってるとかだと、乗り換えてみるのもいのじゃないかな。</p>
 <p>参考にしたページ<br><a href="http://benfrain.com/lightning-fast-sass-compiling-with-libsass-node-sass-and-grunt-sass/" target="_blank" rel="external">Lightning fast Sass compiling with libsass, Node-sass and Grunt-sass</a><br><a href="http://www.sitepoint.com/switching-ruby-sass-libsass/" target="_blank" rel="external">Switching from Ruby Sass to LibSass</a></p>
 ]]></content>

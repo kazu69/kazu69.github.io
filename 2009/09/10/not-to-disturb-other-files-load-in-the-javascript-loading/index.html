@@ -11,7 +11,8 @@
 <meta property="og:url" content="http://blog.kazu69.net/2009/09/10/not-to-disturb-other-files-load-in-the-javascript-loading/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="javascriptのロード中は基本的にほかのファイルのロードが行われないのは、一般的なお話ですが(最新のブラウザはパラレルでロードできるからこの範疇ではない)、少しでもサイトの最適化を行うならばパラッルダウンロードはしておきたいところ。">
-<meta property="og:image" content="/images/090929.png">
+<meta property="og:image" content="http://blog.kazu69.net/images/090929.png">
+<meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="javascriptのロード中でもほかのファイルのロードを邪魔しない">
 <meta name="twitter:description" content="javascriptのロード中は基本的にほかのファイルのロードが行われないのは、一般的なお話ですが(最新のブラウザはパラレルでロードできるからこの範疇ではない)、少しでもサイトの最適化を行うならばパラッルダウンロードはしておきたいところ。">
@@ -65,7 +66,7 @@ ga('send', 'pageview');
         
       </nav>
       <div class="header-search">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
       </div>
     </div>
   </div>
@@ -110,21 +111,21 @@ domscript.onreadystatechange = function() {
     }
 }</code><br>onreadystatechangeやonloadイベントを使って、ロードを状態をみてロード完了時にinit関数を実行ですかね。へー、これでパラレルロードができるのかという感じです。<del datetime="2009-09-29T14:44:22+00:00">実証してないのです。</del>ちなみに、single scriptの場合です。</p>
 <p>実証してみました。<br>`<br>function init(){<br>        alert(“init”);<br>    }</p>
-<pre><code><span class="keyword">var</span> domscript = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);
+<pre><code>var domscript = document.createElement<span class="params">('script')</span>;
 domscript.src =<span class="string">"script.js"</span>;
 
-domscript.onload = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{ 
+domscript.onload = <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span> 
     domscript.onloadDone = <span class="literal">true</span>; 
-    init(); 
+    init<span class="params">()</span>; 
 };
 
-domscript.onreadystatechange = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{ 
-    <span class="keyword">if</span> ( <span class="string">"loaded"</span> === domscript.readyState &amp;&amp; ! domscript.onloadDone ) {
+domscript.onreadystatechange = <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span> 
+    <span class="keyword">if</span> <span class="params">( <span class="string">"loaded"</span> === domscript.readyState &amp;&amp; ! domscript.onloadDone )</span> {
         domscript.onloadDone = <span class="literal">true</span>; 
-        init();
+        init<span class="params">()</span>;
     }
 }
-<span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>].appendChild(domscript);
+document.getElementsByTagName<span class="params">('head')</span>[<span class="number">0</span>].appendChild<span class="params">(domscript)</span>;
 </code></pre><p>`<br>という感じで実行すると、</p>
 <p><img src="/images/090929.png" alt=""><br>という具合にjsとimgがパラレルでダウンロードされました。</p>
 <p><a href="http://stevesouders.com/efws/script-onload.php" target="_blank" rel="external"><br>stevesouders.com</a>より</p>
@@ -134,7 +135,7 @@ domscript.onreadystatechange = <span class="function"><span class="keyword">func
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2009/09/10/not-to-disturb-other-files-load-in-the-javascript-loading/" data-id="cib3kzrxn00994mp478mfpvpm" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2009/09/10/not-to-disturb-other-files-load-in-the-javascript-loading/" data-id="cibu01qn70099b2w1ppa45fbc" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2009/09/10/not-to-disturb-other-files-load-in-the-javascript-loading/#disqus_thread" class="article-comment-link">Comments</a>
       

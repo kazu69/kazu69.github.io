@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2013/07/28/a-note-about-changes-in-the-sass-v3-3-v4-0/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Sass3.3 がそろそろリリースっぽいので、追加機能・変更点についてうまくまとまった記事があったので、学んでみた。ちなみに、変更点はこちら">
+<meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sass v3.3, v4.0 での変更点についてメモ">
 <meta name="twitter:description" content="Sass3.3 がそろそろリリースっぽいので、追加機能・変更点についてうまくまとまった記事があったので、学んでみた。ちなみに、変更点はこちら">
@@ -64,7 +65,7 @@ ga('send', 'pageview');
         
       </nav>
       <div class="header-search">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
       </div>
     </div>
   </div>
@@ -104,17 +105,17 @@ ga('send', 'pageview');
 <p>で確認できます。</p>
 <h2 id="＆セレクタに関連する構文の改善">＆セレクタに関連する構文の改善</h2><p>たとえば、以下のようにした場合</p>
 <p>[ruby]<br>$module: &quot;.module&quot;;</p>
-<h1 id="{$module}—element_{">{$module}—element {</h1><pre><code>#{<span class="variable">$module</span>}__child { <span class="comment">//valid</span>
-    <span class="attribute">color</span><span class="value">:orange;</span>
+<h1 id="{$module}—element_{">{$module}—element {</h1><pre><code><span class="built_in">#</span>{$<span class="function"><span class="keyword">module</span>}<span class="title">__child</span> {</span> <span class="comment">//valid</span>
+    <span class="built_in">color</span>:orange;
 }
-&amp;amp; #{<span class="variable">$module</span>}__child { <span class="comment">// valid</span>
-    <span class="attribute">color</span><span class="value">:orange;</span> 
+&amp;amp; <span class="built_in">#</span>{$<span class="function"><span class="keyword">module</span>}<span class="title">__child</span> {</span> <span class="comment">// valid</span>
+    <span class="built_in">color</span>:orange; 
 }
-#{<span class="variable">$module</span>}__parent &amp;amp; { <span class="comment">// valid</span>
-    <span class="attribute">color</span><span class="value">:yellow;</span>
+<span class="built_in">#</span>{$<span class="function"><span class="keyword">module</span>}<span class="title">__parent</span> &amp;<span class="title">amp</span>; {</span> <span class="comment">// valid</span>
+    <span class="built_in">color</span>:yellow;
 }
-&amp;amp;#{<span class="variable">$module</span>}--brother { <span class="comment">// invalid in v3.2.x</span>
-    <span class="attribute">color</span><span class="value">:green;</span>
+&amp;amp;<span class="built_in">#</span>{$<span class="function"><span class="keyword">module</span>}--<span class="title">brother</span> {</span> <span class="comment">// invalid in v3.2.x</span>
+    <span class="built_in">color</span>:green;
 }
 </code></pre><p>}<br>[/ruby]</p>
 <p>最後のブロックは欲しい結果が得られずにエラーになっていた。</p>
@@ -195,7 +196,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/07/28/a-note-about-changes-in-the-sass-v3-3-v4-0/" data-id="cib3kzsae00hd4mp4edx0cfhi" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/07/28/a-note-about-changes-in-the-sass-v3-3-v4-0/" data-id="cibu01qtf00hdb2w15zj9xncc" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/07/28/a-note-about-changes-in-the-sass-v3-3-v4-0/#disqus_thread" class="article-comment-link">Comments</a>
       

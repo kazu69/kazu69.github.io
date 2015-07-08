@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2010/04/29/svg-and-he-touched/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="SVG(Scalable Vector Graphics)のサポートをするらしいIE9。ということでブラウザ上でのベクター画像の表示はSVGが本命になるとかならないとか。">
+<meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SVGとやらを触ってみた">
 <meta name="twitter:description" content="SVG(Scalable Vector Graphics)のサポートをするらしいIE9。ということでブラウザ上でのベクター画像の表示はSVGが本命になるとかならないとか。">
@@ -64,7 +65,7 @@ ga('send', 'pageview');
         
       </nav>
       <div class="header-search">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
       </div>
     </div>
   </div>
@@ -99,21 +100,21 @@ ga('send', 'pageview');
     </div>
     
       <p>SVG(Scalable Vector Graphics)のサポートをするらしいIE9。ということでブラウザ上でのベクター画像の表示は<a href="http://itpro.nikkeibp.co.jp/article/Watcher/20100401/346524/" target="_blank" rel="external">SVGが本命になる</a>とかならないとか。<br><a id="more"></a><br>SVGはグラフィックだけでなく、アニメーションもできるらしいので少し触ってみた。<br>ただ、<a href="http://www.hcn.zaq.ne.jp/___/REC-SVG11-20030114/index.html" target="_blank" rel="external">SVGの仕様(日本語訳)</a>を見てもよくわからなかったので、今回はライブラリとして有名な<a href="http://raphaeljs.com/" target="_blank" rel="external">Raphaël</a>を使いました。<br> RaphaëlはFirefox 3.0+、Safari 3.0+、Opera 9.5+、Internet Explorer 6.0+ と各ブラウザでの動作環境。<br>簡単なベクターデータを作成して、アニメーションさせてみる。<br>`<br>           var canvas = Raphael(document.getElementById(“canvas”), 500, 500);<br>            var p = canvas.path(“M200,200a100,100,0,1,0,0,0.01”).attr({stroke:”#FFFFFF”});<br>            var c = canvas.circle(200, 200, 30).attr({fill:”#333”,stroke:”#FFFFFF”});<br>            var ccfill = c.attrs.fill;</p>
-<pre><code>c.animateAlong(p,<span class="number">2000</span>,<span class="literal">false</span>,<span class="keyword">callback</span>);
+<pre><code>c.animateAlong<span class="params">(p,<span class="number">2000</span>,<span class="literal">false</span>,callback)</span>;
 
-<span class="function"><span class="keyword">function</span> <span class="title">callback</span><span class="params">()</span></span>{
+<span class="function"><span class="keyword">function</span> <span class="title">callback</span><span class="params">()</span>{</span>
     ccfill = c.attrs.fill;
 
-    <span class="keyword">if</span>(<span class="string">"#ff3399"</span> != ccfill){
+    <span class="keyword">if</span><span class="params">(<span class="string">"#ff3399"</span> != ccfill)</span>{
         ccfill = <span class="string">"#ff3399"</span>;
     }<span class="keyword">else</span>{
         ccfill = <span class="string">"#333"</span>;
     }
-    c.animate({fill:ccfill},<span class="number">1000</span>,<span class="string">"backOut"</span>,func);
+    c.animate<span class="params">({fill:ccfill},<span class="number">1000</span>,<span class="string">"backOut"</span>,func)</span>;
 }
 
-<span class="function"><span class="keyword">function</span> <span class="title">func</span><span class="params">()</span></span>{
-    c.animateAlong(p,<span class="number">2000</span>,<span class="literal">false</span>,<span class="keyword">callback</span>);
+<span class="function"><span class="keyword">function</span> <span class="title">func</span><span class="params">()</span>{</span>
+    c.animateAlong<span class="params">(p,<span class="number">2000</span>,<span class="literal">false</span>,callback)</span>;
 }
 </code></pre><p>`<br>としてみると</p>
 <p><div id="canvas"></div></p>
@@ -125,7 +126,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2010/04/29/svg-and-he-touched/" data-id="cib3kzrsp00604mp4vul4d9z4" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2010/04/29/svg-and-he-touched/" data-id="cibu01qkd0060b2w10i5l0w5y" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2010/04/29/svg-and-he-touched/#disqus_thread" class="article-comment-link">Comments</a>
       

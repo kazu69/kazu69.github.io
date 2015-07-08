@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2013/03/03/in-the-sublime-text2-on-the-build-compile-environmental-note/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="個人的メモ。エディターの設定ファイルを誤操作してしまって。再度構築していたんですが、どうやるんだっけってのをメモしておく。">
+<meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="sublime text2 でBuild(コンパイル)環境に関するメモ">
 <meta name="twitter:description" content="個人的メモ。エディターの設定ファイルを誤操作してしまって。再度構築していたんですが、どうやるんだっけってのをメモしておく。">
@@ -64,7 +65,7 @@ ga('send', 'pageview');
         
       </nav>
       <div class="header-search">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
       </div>
     </div>
   </div>
@@ -115,17 +116,17 @@ ga('send', 'pageview');
 <p>でいいかな。</p>
 <p>OSごとにかえるなら<a href="http://docs.sublimetext.info/en/latest/reference/build_systems.html#platform-specific-options" target="_blank" rel="external">Platform option</a>とかですかね。</p>
 <p>[javascript]<br>{<br>    &quot;cmd&quot;: [&quot;ant&quot;],<br>    &quot;file_regex&quot;: &quot;^ <em>\[javac\] (.+):([0-9]+):() (.</em>)$&quot;,<br>    &quot;working_dir&quot;: &quot;${project_path:${folder}}&quot;,<br>    &quot;selector&quot;: &quot;source.java&quot;,</p>
-<pre><code>&amp;quot;windows&amp;quot;<span class="value">:
+<pre><code>&amp;quot<span class="comment">;windows&amp;quot;:</span>
 {
-    &amp;quot;</span>cmd&amp;quot;<span class="value">: [&amp;quot;</span>ant<span class="class">.bat</span>&amp;quot;]
+    &amp;quot<span class="comment">;cmd&amp;quot;: [&amp;quot;ant.bat&amp;quot;]</span>
 },
-&amp;quot;mac&amp;quot;<span class="value">:
+&amp;quot<span class="comment">;mac&amp;quot;:</span>
 {
-  &amp;quot;</span>cmd&amp;quot;<span class="value">: [&amp;quot;</span>ant&amp;quot;]
+  &amp;quot<span class="comment">;cmd&amp;quot;: [&amp;quot;ant&amp;quot;]</span>
 },
-&amp;quot;mac&amp;quot;<span class="value">:
+&amp;quot<span class="comment">;mac&amp;quot;:</span>
 {
-  &amp;quot;</span>linux&amp;quot;<span class="value">: [&amp;quot;</span>ant&amp;quot;]
+  &amp;quot<span class="comment">;linux&amp;quot;: [&amp;quot;ant&amp;quot;]</span>
 }
 </code></pre><p>}<br>[/javascript]</p>
 
@@ -134,7 +135,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2013/03/03/in-the-sublime-text2-on-the-build-compile-environmental-note/" data-id="cib3kzs1l00ba4mp4d6tglz31" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2013/03/03/in-the-sublime-text2-on-the-build-compile-environmental-note/" data-id="cibu01qoz00bab2w12drb4064" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2013/03/03/in-the-sublime-text2-on-the-build-compile-environmental-note/#disqus_thread" class="article-comment-link">Comments</a>
       

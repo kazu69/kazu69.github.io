@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2011/12/28/summary-of-commonly-used-smartphones-in-html-css-javascript/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="スマートフォン(ios、android)向けのウェブサイト・ウェブアプリを作る際に個人的によく使うhtml、css、javascriptの備忘録。">
+<meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="スマートフォン対応でよく使うhtml、css、javascriptのまとめ">
 <meta name="twitter:description" content="スマートフォン(ios、android)向けのウェブサイト・ウェブアプリを作る際に個人的によく使うhtml、css、javascriptの備忘録。">
@@ -64,7 +65,7 @@ ga('send', 'pageview');
         
       </nav>
       <div class="header-search">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="q" value="site:http://blog.kazu69.net"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
       </div>
     </div>
   </div>
@@ -144,7 +145,7 @@ ga('send', 'pageview');
 <p>ちなみに、iOSがposition:fixをサポートしているかの判定は、<a href="https://gist.github.com/1221602" target="_blank" rel="external">Modernizr position fixed checkのコード</a>から<br>[javascript]<br>var isSupported;</p>
 <pre><code><span class="keyword">if</span> ( <span class="keyword">typeof</span> <span class="built_in">document</span>.body.scrollIntoViewIfNeeded === <span class="string">'function'</span>) {
 
-    (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{
         <span class="keyword">var</span> container     = <span class="built_in">document</span>.body,
             elem          = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>),
             orgHeight     = container.style.height,
@@ -156,7 +157,7 @@ ga('send', 'pageview');
         container.appendChild(elem);
         container.style.height = <span class="string">'2048px'</span>;
 
-        <span class="built_in">window</span>.setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+        <span class="built_in">window</span>.setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
             elem.scrollIntoViewIfNeeded();
             isSupported = !(<span class="built_in">window</span>.pageYOffset === testScrollTop) || !(<span class="built_in">window</span>.pageYOffset === testScrollTop+<span class="number">1</span>);
             alert(isSupported);
@@ -234,7 +235,7 @@ ga('send', 'pageview');
 
   
     <footer class="article-footer">
-      <a data-url="http://blog.kazu69.net/2011/12/28/summary-of-commonly-used-smartphones-in-html-css-javascript/" data-id="cib3kzrss00644mp4rbns292z" class="article-share-link">Share</a>
+      <a data-url="http://blog.kazu69.net/2011/12/28/summary-of-commonly-used-smartphones-in-html-css-javascript/" data-id="cibu01qkf0064b2w193kyqsql" class="article-share-link">Share</a>
       
         <a href="http://blog.kazu69.net/2011/12/28/summary-of-commonly-used-smartphones-in-html-css-javascript/#disqus_thread" class="article-comment-link">Comments</a>
       
