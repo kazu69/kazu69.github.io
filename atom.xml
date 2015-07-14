@@ -5,7 +5,7 @@
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.kazu69.net//"/>
-  <updated>2015-06-20T01:07:29.000Z</updated>
+  <updated>2015-07-13T11:16:24.000Z</updated>
   <id>http://blog.kazu69.net//</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/"/>
     <id>http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/</id>
     <published>2015-06-14T15:00:32.000Z</published>
-    <updated>2015-06-20T01:07:29.000Z</updated>
+    <updated>2015-07-13T11:16:24.000Z</updated>
     <content type="html"><![CDATA[<p>ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。</p>
 <a id="more"></a>
 <h2 id="JavaScriptの最近の事情">JavaScriptの最近の事情</h2><p>javascriptではES6でコードを書き、BabelでTransplieするという流れが定着しつつある。<br>これは、これまで必要だったライブラリが不要になり、コードが依存するライブラリを減らすことができ、altJSに頼らないで開発できるという利点からである。</p>
@@ -96,9 +96,9 @@
     
     </summary>
     
-      <category term="css" scheme="http://blog.kazu69.net/tags/css/"/>
+      <category term="css" scheme="http://blog.kazu69.net/categories/css/"/>
     
-      <category term="tec" scheme="http://blog.kazu69.net/tags/tec/"/>
+      <category term="tec" scheme="http://blog.kazu69.net/categories/css/tec/"/>
     
   </entry>
   
@@ -140,7 +140,7 @@
     <link href="http://blog.kazu69.net/2015/05/30/flux-architecture-todomvc-with-immutablejs/"/>
     <id>http://blog.kazu69.net/2015/05/30/flux-architecture-todomvc-with-immutablejs/</id>
     <published>2015-05-30T01:54:41.000Z</published>
-    <updated>2015-05-31T03:44:50.000Z</updated>
+    <updated>2015-07-14T13:44:10.000Z</updated>
     <content type="html"><![CDATA[<p>Fluxアーキテクチャにふれてみようということで、TodoMVCを試してみた。</p>
 <a id="more"></a>
 <h2 id="Fluxアーキテクチャと特徴">Fluxアーキテクチャと特徴</h2><p>Fluxのページにあるので最近よくみる図だけど、Fluxのアーキテクチャは以下のとおり</p>
@@ -223,7 +223,7 @@
     
     </summary>
     
-      <category term="javascript" scheme="http://blog.kazu69.net/tags/javascript/"/>
+      <category term="javascript" scheme="http://blog.kazu69.net/categories/javascript/"/>
     
   </entry>
   
@@ -232,7 +232,7 @@
     <link href="http://blog.kazu69.net/2015/05/16/moved-hexo/"/>
     <id>http://blog.kazu69.net/2015/05/16/moved-hexo/</id>
     <published>2015-05-16T00:36:08.000Z</published>
-    <updated>2015-05-16T07:53:29.000Z</updated>
+    <updated>2015-07-14T13:43:37.000Z</updated>
     <content type="html"><![CDATA[<p>ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。<br>移行にあたり、やったことをメモにしておく。</p>
 <a id="more"></a>
 <p><a href="https://www.staticgen.com/" target="_blank" rel="external">staticgen.com</a> を見ながら<a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>か<a href="http://gohugo.io/" target="_blank" rel="external">Hugo</a>か悩んだが、比較的にwordpressから移行した情報が多いのでHexoにした。</p>
@@ -295,7 +295,7 @@
     
     </summary>
     
-      <category term="web" scheme="http://blog.kazu69.net/tags/web/"/>
+      <category term="web" scheme="http://blog.kazu69.net/categories/web/"/>
     
   </entry>
   
