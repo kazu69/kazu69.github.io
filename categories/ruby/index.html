@@ -73,227 +73,441 @@ ga('send', 'pageview');
     <main role="main" id="main">
       <section>
   
-  
+    <article id="post-set-of-writing-multi-threaded-tests-in-rails" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2015" class="archive-year">2015</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2015-01-14T13:37:21.000Z" itemprop="datePublished">01 / 14</time>
-
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2015/01/14/set-of-writing-multi-threaded-tests-in-rails/">Railsでマルチスレッド処理のテストを書く際の設定</a>
+      <a class="article-title" href="/2015/01/14/set-of-writing-multi-threaded-tests-in-rails/">Railsでマルチスレッド処理のテストを書く際の設定</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2014" class="archive-year">2014</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-11-23T05:50:29.000Z" itemprop="datePublished">11 / 23</time>
+    <div class="article-meta clr">
+      <time datetime="2015-01-14T13:37:21.000Z" itemprop="datePublished">2015-01-14</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Railsアプリケーションにおいて、マルチスレッド処理でレコード取得処理を行う処理を書くときに、Rspecの設定周りでいろいろと知ることができたのでメモ。</p>
+<p>テスト環境は Rspec + FactoryGirl + DatabaseCleaner という感じ。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-examined-how-to-override-monkey-patch-methods-in-ruby" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/11/23/examined-how-to-override-monkey-patch-methods-in-ruby/">Rubyでメソッドを上書き(monkey patch)をする方法を調べてみた</a>
+      <a class="article-title" href="/2014/11/23/examined-how-to-override-monkey-patch-methods-in-ruby/">Rubyでメソッドを上書き(monkey patch)をする方法を調べてみた</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-11-13T11:23:08.000Z" itemprop="datePublished">11 / 13</time>
+    <div class="article-meta clr">
+      <time datetime="2014-11-23T05:50:29.000Z" itemprop="datePublished">2014-11-23</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Gemを作っていた時に、どうしても依存しているGemの挙動を変える必要があったので、どういう方法があるのか調べてみた。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-made-in-the-rails-api-error-handling" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/11/13/made-in-the-rails-api-error-handling/">RailsでつくったAPIのエラー処理</a>
+      <a class="article-title" href="/2014/11/13/made-in-the-rails-api-error-handling/">RailsでつくったAPIのエラー処理</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-03-10T04:26:47.000Z" itemprop="datePublished">03 / 10</time>
+    <div class="article-meta clr">
+      <time datetime="2014-11-13T11:23:08.000Z" itemprop="datePublished">2014-11-13</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>RailsでAPIを作ったとき、StandardErrorをどのように処理するのがいいのかと考えた。<br>やりたいことは、エラーの内容をjsonで返し、なおかつエラーのstatus codeも返却したいという感じ。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-javascript-ajax-a-capybara-use-until-testing-was" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/03/10/javascript-ajax-a-capybara-use-until-testing-was/">Capybaraでjavascriptのajaxなテストにuntilを使うと便利だった</a>
+      <a class="article-title" href="/2014/03/10/javascript-ajax-a-capybara-use-until-testing-was/">Capybaraでjavascriptのajaxなテストにuntilを使うと便利だった</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2013" class="archive-year">2013</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2013-10-19T12:45:32.000Z" itemprop="datePublished">10 / 19</time>
+    <div class="article-meta clr">
+      <time datetime="2014-03-10T04:26:47.000Z" itemprop="datePublished">2014-03-10</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Capybaraのテストでajaxな処理の部分のテストを wait などで適当な秒数だけ遅延させていたけど、<br><a href="http://docs.ruby-lang.org/ja/2.1.0/doc/spec=2fcontrol.html#until">until</a>というのを使うと便利ということを教えていただいた。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-teaspoon-tried-to-test-for-javascript-in-rails" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2013/10/19/teaspoon-tried-to-test-for-javascript-in-rails/">RailsでのJavaScriptのテストにteaspoonを使ってみた</a>
+      <a class="article-title" href="/2013/10/19/teaspoon-tried-to-test-for-javascript-in-rails/">RailsでのJavaScriptのテストにteaspoonを使ってみた</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2012" class="archive-year">2012</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2012-12-26T13:34:54.000Z" itemprop="datePublished">12 / 26</time>
+    <div class="article-meta clr">
+      <time datetime="2013-10-19T12:45:32.000Z" itemprop="datePublished">2013-10-19</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Rails + BackboneのプロジェクトでのJavaScriptのテストに、今までは<a href="https://github.com/bradphelan/jasminerice">jasminerice</a>などを試したことはあるけど、もっと便利なツールがないか探してみた。<br>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-kssknyle-style-sheets-styleguide" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2012/12/26/kssknyle-style-sheets-styleguide/">KSS(Knyle Style Sheets)でstyleguideを作成</a>
+      <a class="article-title" href="/2012/12/26/kssknyle-style-sheets-styleguide/">KSS(Knyle Style Sheets)でstyleguideを作成</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2012-12-15T02:34:04.000Z" itemprop="datePublished">12 / 15</time>
+    <div class="article-meta clr">
+      <time datetime="2012-12-26T13:34:54.000Z" itemprop="datePublished">2012-12-26</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p><a href="http://kazu69.net/blog/tec/1411/">前回はStyleDoccoを試した</a>ので、もう一つの<a href="http://warpspire.com/kss/">KSS(Knyle Style Sheets)</a>も試してみた。<br>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-fontcustom-icon-font" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2012/12/15/fontcustom-icon-font/">fontcustomで、アイコンフォントを作ってみる</a>
+      <a class="article-title" href="/2012/12/15/fontcustom-icon-font/">fontcustomで、アイコンフォントを作ってみる</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2012-06-04T14:37:27.000Z" itemprop="datePublished">06 / 04</time>
+    <div class="article-meta clr">
+      <time datetime="2012-12-15T02:34:04.000Z" itemprop="datePublished">2012-12-15</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p><a href="http://fontcustom.com/">fontcustom</a>を使って、サクッとアイコンフォントができました。<br>これは簡単でいいですね、サービス開発するときにどうしてもアイコンフォンとがしっくりないときにカスタムで作成できますね。<br>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-rbenv-with-ruby-buildrbenv-gemset-environment" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2012/06/04/rbenv-with-ruby-buildrbenv-gemset-environment/">rbenv + ruby-build + rbenv-gemset の環境構築をしてみた</a>
+      <a class="article-title" href="/2012/06/04/rbenv-with-ruby-buildrbenv-gemset-environment/">rbenv + ruby-build + rbenv-gemset の環境構築をしてみた</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2012-05-31T03:44:41.000Z" itemprop="datePublished">05 / 31</time>
+    <div class="article-meta clr">
+      <time datetime="2012-06-04T14:37:27.000Z" itemprop="datePublished">2012-06-04</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>いままでrvmを使っていたけど、rbenvに移行したのでそのときの環境設定のメモを残しておこうと思います。<br><a href="https://github.com/sstephenson/rbenv">rbenv</a> + <a href="https://github.com/sstephenson/ruby-build">ruby-build</a> + <a href="https://github.com/jamis/rbenv-gemset">rbenv-gemset</a> 環境を構築したいと思います。<br>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-twitterbootstrap-grid-system-made-simple-grid-scss-help" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2012/05/31/twitterbootstrap-grid-system-made-simple-grid-scss-help/">TwitterBootstrapのgridシステムを参考にシンプルなgrid.scssを作った</a>
+      <a class="article-title" href="/2012/05/31/twitterbootstrap-grid-system-made-simple-grid-scss-help/">TwitterBootstrapのgridシステムを参考にシンプルなgrid.scssを作った</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2012-03-14T04:03:56.000Z" itemprop="datePublished">03 / 14</time>
+    <div class="article-meta clr">
+      <time datetime="2012-05-31T03:44:41.000Z" itemprop="datePublished">2012-05-31</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>scssでgridレイアウトをしたかったけど、 <a href="http://1kbgrid.com/">1KB CSS Grid</a>が惜しい感じだったのと、<a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a>がLessだったのと、ピンポイントでシンプルに使いたかったので参考にして同じ処理を作ってみた。(<a href="https://github.com/jlong/sass-twitter-bootstrap">sassバージョン</a>もあったけど)<br>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-pjax-pushstateajax-with-sinatra-and-backbonejs" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2012/03/14/pjax-pushstateajax-with-sinatra-and-backbonejs/">sinatraとbackbonejsでpjax(pushState + Ajax)してみた</a>
+      <a class="article-title" href="/2012/03/14/pjax-pushstateajax-with-sinatra-and-backbonejs/">sinatraとbackbonejsでpjax(pushState + Ajax)してみた</a>
     </h1>
   
 
-    </header>
+    
+    <div class="article-meta clr">
+      <time datetime="2012-03-14T04:03:56.000Z" itemprop="datePublished">2012-03-14</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
   </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>rubyの軽量フレームワーク<a href="http://www.sinatrarb.com/">sinatra</a>と<a href="http://documentcloud.github.com/backbone/">Backbonejs</a>でpjaxをやってみたので備忘録。<br>
+      
+    
+  </div>
+
+  
+
+  
 </article>
+
+
+
+
+
   
   
-    </div></section>
+    <nav class="pager" id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/categories/ruby/page/2/">2</a><a class="extend next" rel="next" href="/categories/ruby/page/2/">Next &raquo;</a>
+    </nav>
   
 </section>
       

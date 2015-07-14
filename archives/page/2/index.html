@@ -73,207 +73,441 @@ ga('send', 'pageview');
     <main role="main" id="main">
       <section>
   
-  
+    <article id="post-set-of-writing-multi-threaded-tests-in-rails" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2015" class="archive-year">2015</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2015-01-14T13:37:21.000Z" itemprop="datePublished">01 / 14</time>
-
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2015/01/14/set-of-writing-multi-threaded-tests-in-rails/">Railsでマルチスレッド処理のテストを書く際の設定</a>
+      <a class="article-title" href="/2015/01/14/set-of-writing-multi-threaded-tests-in-rails/">Railsでマルチスレッド処理のテストを書く際の設定</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2014" class="archive-year">2014</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-12-22T05:20:49.000Z" itemprop="datePublished">12 / 22</time>
+    <div class="article-meta clr">
+      <time datetime="2015-01-14T13:37:21.000Z" itemprop="datePublished">2015-01-14</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Railsアプリケーションにおいて、マルチスレッド処理でレコード取得処理を行う処理を書くときに、Rspecの設定周りでいろいろと知ることができたのでメモ。</p>
+<p>テスト環境は Rspec + FactoryGirl + DatabaseCleaner という感じ。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-the-ecdsa-ssh-keys-on-mac" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/12/22/the-ecdsa-ssh-keys-on-mac/">MacでSSHの鍵をECDSAにしてみる</a>
+      <a class="article-title" href="/2014/12/22/the-ecdsa-ssh-keys-on-mac/">MacでSSHの鍵をECDSAにしてみる</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-11-29T02:23:20.000Z" itemprop="datePublished">11 / 29</time>
+    <div class="article-meta clr">
+      <time datetime="2014-12-22T05:20:49.000Z" itemprop="datePublished">2014-12-22</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/tec/">tec</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Mac OS10.10(Yosemite)にして、sshのたびにpromptがでて<br>毎回パスフレーズを入力すれども、<strong>Saving password to keychain failed</strong> となりssh-agentが記憶してくれない状況になった。<br>そのときに修正したときのメモ。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/">Rubyのベンチマークを計測するのにbenchmark-ipsが便利そうだった</a>
+      <a class="article-title" href="/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/">Rubyのベンチマークを計測するのにbenchmark-ipsが便利そうだった</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-11-23T05:50:29.000Z" itemprop="datePublished">11 / 23</time>
+    <div class="article-meta clr">
+      <time datetime="2014-11-29T02:23:20.000Z" itemprop="datePublished">2014-11-29</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/memo/">memo</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Rubyのベンチマークを計測するのに<a href="https://github.com/evanphx/benchmark-ips">benchmark-ips</a>を使うと簡単だし、便利そうだったのでメモ。<br>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-examined-how-to-override-monkey-patch-methods-in-ruby" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/11/23/examined-how-to-override-monkey-patch-methods-in-ruby/">Rubyでメソッドを上書き(monkey patch)をする方法を調べてみた</a>
+      <a class="article-title" href="/2014/11/23/examined-how-to-override-monkey-patch-methods-in-ruby/">Rubyでメソッドを上書き(monkey patch)をする方法を調べてみた</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-11-17T12:40:31.000Z" itemprop="datePublished">11 / 17</time>
+    <div class="article-meta clr">
+      <time datetime="2014-11-23T05:50:29.000Z" itemprop="datePublished">2014-11-23</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Gemを作っていた時に、どうしても依存しているGemの挙動を変える必要があったので、どういう方法があるのか調べてみた。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-tried-the-dialog-element-in-html5" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/11/17/tried-the-dialog-element-in-html5/">HTML5のDialog要素を試してみた</a>
+      <a class="article-title" href="/2014/11/17/tried-the-dialog-element-in-html5/">HTML5のDialog要素を試してみた</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-11-13T11:23:08.000Z" itemprop="datePublished">11 / 13</time>
+    <div class="article-meta clr">
+      <time datetime="2014-11-17T12:40:31.000Z" itemprop="datePublished">2014-11-17</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/tec/">tec</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>ダイアログ要素やモーダルウィンドウを容易に使えるdialog要素を試してみた。<br>dialog要素を使うことで、ダイアログの要素をdom内に埋め込むので、cssなどで容易にスタイリング出来るという嬉しいもの。<br>ちなみに、dialog要素のサポート状況は<a href="http://caniuse.com/#search=dialog">こちらの通り</a>。<br>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-made-in-the-rails-api-error-handling" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/11/13/made-in-the-rails-api-error-handling/">RailsでつくったAPIのエラー処理</a>
+      <a class="article-title" href="/2014/11/13/made-in-the-rails-api-error-handling/">RailsでつくったAPIのエラー処理</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-11-05T10:11:16.000Z" itemprop="datePublished">11 / 05</time>
+    <div class="article-meta clr">
+      <time datetime="2014-11-13T11:23:08.000Z" itemprop="datePublished">2014-11-13</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>RailsでAPIを作ったとき、StandardErrorをどのように処理するのがいいのかと考えた。<br>やりたいことは、エラーの内容をjsonで返し、なおかつエラーのstatus codeも返却したいという感じ。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-what-to-do-when-git-errors-when-you-update-a-homebrew" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/11/05/what-to-do-when-git-errors-when-you-update-a-homebrew/">homebrewをupdateしたときにgitのエラーが出たときの対処</a>
+      <a class="article-title" href="/2014/11/05/what-to-do-when-git-errors-when-you-update-a-homebrew/">homebrewをupdateしたときにgitのエラーが出たときの対処</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-11-03T07:43:31.000Z" itemprop="datePublished">11 / 03</time>
+    <div class="article-meta clr">
+      <time datetime="2014-11-05T10:11:16.000Z" itemprop="datePublished">2014-11-05</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/tec/">tec</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>homebrewでupdateしたときに、gitのエラーが出たときの対応メモ。<br>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-i-look-at-sass3-4-changes-and-additions" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/11/03/i-look-at-sass3-4-changes-and-additions/">Sass3.4 変更点・追加点を眺めてみた</a>
+      <a class="article-title" href="/2014/11/03/i-look-at-sass3-4-changes-and-additions/">Sass3.4 変更点・追加点を眺めてみた</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-08-03T08:24:30.000Z" itemprop="datePublished">08 / 03</time>
+    <div class="article-meta clr">
+      <time datetime="2014-11-03T07:43:31.000Z" itemprop="datePublished">2014-11-03</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/sass/">sass</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>時間ができたので、<a href="https://github.com/sass/sass/blob/stable/doc-src/SASS_CHANGELOG.md#340-18-august-2014">sass changelog</a>眺めて、あまり実例が思い浮かばないのもあるけど、一通り試してみたときの備忘録。<br>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-floor-cleaning-cleaning-robot-bravo-braava-tried-one-week" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/08/03/floor-cleaning-cleaning-robot-bravo-braava-tried-one-week/">床拭きお掃除ロボット ブラーバ (Braava) を1週間使ってみた</a>
+      <a class="article-title" href="/2014/08/03/floor-cleaning-cleaning-robot-bravo-braava-tried-one-week/">床拭きお掃除ロボット ブラーバ (Braava) を1週間使ってみた</a>
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <time datetime="2014-07-31T10:36:14.000Z" itemprop="datePublished">07 / 31</time>
+    <div class="article-meta clr">
+      <time datetime="2014-08-03T08:24:30.000Z" itemprop="datePublished">2014-08-03</time>
 
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/days/">days</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>iRobot社の床拭きロボット <a href="http://www.irobot-jp.com/braava/">ブラーバ (Braava)</a>を、1週間ほど毎日使ってみた。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
+    <article id="post-use-rspec-on-rails-plugin-test" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
       
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2014/07/31/use-rspec-on-rails-plugin-test/">Rails pluginのテストでRspecを使う</a>
+      <a class="article-title" href="/2014/07/31/use-rspec-on-rails-plugin-test/">Rails pluginのテストでRspecを使う</a>
     </h1>
   
 
-    </header>
+    
+    <div class="article-meta clr">
+      <time datetime="2014-07-31T10:36:14.000Z" itemprop="datePublished">2014-07-31</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/memo/">memo</a>
   </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Rails pluginを調べていて、思ったのだが普通にplugin作成した場合は<a href="http://docs.ruby-lang.org/ja/2.1.0/library/test=2funit.html">Test::Unit</a>がテストフレームワークとして提供される、<br>ここで<a href="https://www.relishapp.com/rspec">Rspec</a>を使用するようにしてみたときの個人的メモ。</p>
+      
+    
+  </div>
+
+  
+
+  
 </article>
+
+
+
+
+
   
   
-    </div></section>
+    <nav class="pager" id="page-nav">
+      <a class="extend prev" rel="prev" href="/archives/">&laquo; Prev</a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/page/3/">3</a><a class="page-number" href="/archives/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/23/">23</a><a class="extend next" rel="next" href="/archives/page/3/">Next &raquo;</a>
+    </nav>
   
 </section>
       
