@@ -117,7 +117,7 @@ ga('send', 'pageview');
 <p>がある。<br>ファイルの変更はsocket.ioを使用してブラウザに通知され、IEでも問題なく利用できた。(VM環境のIE)</p>
 <p>gruntを利用している場合、 <a href="https://github.com/shakyshane/grunt-browser-sync" target="_blank" rel="external">grunt-browser-sync</a>を利用することで既存の環境に導入することも容易だった。</p>
 <h2 id="インストール">インストール</h2><p>[shell]</p>
-<h1 id="install">install</h1><p>$ npm install grunt-browser-sync —save-dev<br>[/shell]</p>
+<h1 id="install">install</h1><p>$ npm install grunt-browser-sync –save-dev<br>[/shell]</p>
 <p>[javascript]<br>// add Gruntfile.js<br>grunt.loadNpmTasks(‘grunt-browser-sync’)<br>[/javascript]</p>
 <h2 id="設定">設定</h2><p>最小の設定でlivereloadできる。<br>Gruntfileにタスクを追加<br>[ruby]<br>browser_sync:<br>  files:<br>    src: [<br>      ‘app/css/*.css’<br>    ]<br>[/ruby]</p>
 <p>[shell]<br>browser-sync  grunt browser_sync<br>Running &quot;browser_sync:files&quot; (browser_sync) task<br>   info  - socket.io started</p>

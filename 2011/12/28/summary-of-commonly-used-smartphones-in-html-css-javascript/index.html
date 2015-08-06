@@ -102,15 +102,15 @@ ga('send', 'pageview');
     
       <p>スマートフォン(ios、android)向けのウェブサイト・ウェブアプリを作る際に個人的によく使うhtml、css、javascriptの備忘録。<br><a id="more"></a></p>
 <h2 id="html関連">html関連</h2><hr>
-<h3 id="■headタグ内での設定">■headタグ内での設定</h3><p>[html]<br>&lt;!— //デバイスサイズにあわせて表示領域を変更する —&gt;<br>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</p>
-<p>&lt;!— //電話番号のリンクを無効化 —&gt;<br>&lt;meta name=&quot;format-detection&quot; content=&quot;telephone=no&quot;&gt;</p>
-<p>&lt;!— //ホーム画面用アイコン —&gt;<br>&lt;link rel=&quot;apple-touch-icon&quot; href=&quot;icon.png&quot;&gt;</p>
-<p>&lt;!— //ホーム画面用アイコンの光沢を無効化する —&gt;<br>&lt;link rel=&quot;apple-touch-icon-precomposed&quot; href=&quot;icon.png&quot;&gt;</p>
-<p>&lt;!— //iPadホーム画面用アイコン —&gt;<br>&lt;link rel=&quot;apple-touch-icon&quot; sizes=&quot;72x72&quot; href=&quot;touch-icon-ipad.png&quot;&gt;</p>
-<p>&lt;!— //iPhone4ホーム画面用アイコン —&gt;<br>&lt;link rel=&quot;apple-touch-icon&quot; sizes=&quot;114x114&quot; href=&quot;touch-icon-iphone4.png&quot;&gt;</p>
-<p>&lt;!— //splash画像の設定 —&gt;<br>&lt;link rel=&quot;apple-touch-startup-image&quot; href=&quot;startup.png&quot;&gt;</p>
-<p>&lt;!— //homeボタンから起動時にfull screen modeで起動 —&gt;<br>&lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;</p>
-<p>&lt;!— //full screen mode起動時のステータスバーの色の変更 —&gt;<br>&lt;meta name=&quot;apple-mobile-web-app-status-bar-style&quot; content=&quot;black&quot;&gt;<br>[/html]</p>
+<h3 id="■headタグ内での設定">■headタグ内での設定</h3><p>[html]<br>&lt;!– //デバイスサイズにあわせて表示領域を変更する –&gt;<br>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</p>
+<p>&lt;!– //電話番号のリンクを無効化 –&gt;<br>&lt;meta name=&quot;format-detection&quot; content=&quot;telephone=no&quot;&gt;</p>
+<p>&lt;!– //ホーム画面用アイコン –&gt;<br>&lt;link rel=&quot;apple-touch-icon&quot; href=&quot;icon.png&quot;&gt;</p>
+<p>&lt;!– //ホーム画面用アイコンの光沢を無効化する –&gt;<br>&lt;link rel=&quot;apple-touch-icon-precomposed&quot; href=&quot;icon.png&quot;&gt;</p>
+<p>&lt;!– //iPadホーム画面用アイコン –&gt;<br>&lt;link rel=&quot;apple-touch-icon&quot; sizes=&quot;72x72&quot; href=&quot;touch-icon-ipad.png&quot;&gt;</p>
+<p>&lt;!– //iPhone4ホーム画面用アイコン –&gt;<br>&lt;link rel=&quot;apple-touch-icon&quot; sizes=&quot;114x114&quot; href=&quot;touch-icon-iphone4.png&quot;&gt;</p>
+<p>&lt;!– //splash画像の設定 –&gt;<br>&lt;link rel=&quot;apple-touch-startup-image&quot; href=&quot;startup.png&quot;&gt;</p>
+<p>&lt;!– //homeボタンから起動時にfull screen modeで起動 –&gt;<br>&lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;</p>
+<p>&lt;!– //full screen mode起動時のステータスバーの色の変更 –&gt;<br>&lt;meta name=&quot;apple-mobile-web-app-status-bar-style&quot; content=&quot;black&quot;&gt;<br>[/html]</p>
 <hr>
 <h3 id="■viewportについて">■viewportについて</h3><ul>
 <li>width:ビューポート（可視領域）の幅(初期値980px)</li>
@@ -119,10 +119,10 @@ ga('send', 'pageview');
 <li>コンテンツより小さいviewport widthやheightを設定しても設定値は適用されない<br>例えば、device-width=320pxでinitial-scale=0.5の場合は、表示領域 320px/0.5px = 640pxで算出、<br>device-width=320px、width=400px、コンテンツ450pxであれば、initial-scale = 320/450で横幅450pxのドキュメントを描写される。</li>
 </ul>
 <hr>
-<h3 id="■Tel_URI、Sms_URIの設定">■Tel URI、Sms URIの設定</h3><p>[html]<br>&lt;!— //リンクをクリックで電話をかける —&gt;<br>&lt;a href=&quot;tel:00000000000&quot;&gt;00000000000&lt;/a&gt;</p>
-<p>&lt;!— //リンククリックでsms —&gt;<br>&lt;a href=&quot;sms:00000000000&quot;&gt;sms&lt;/a&gt;</p>
-<p>&lt;!— //smsの送信秋複数 —&gt;<br>&lt;a href=&quot;sms:00000000000,1111111111&quot;&gt;sms複数&lt;/a&gt;</p>
-<p>&lt;!— //smsの本文追加 —&gt;<br>&lt;a href=&quot;sms:00000000000,1111111111?body=%83e%83X%83g%83%81%83b%83Z%81%5b%83W&quot;&gt;smsメッセージ&lt;/a&gt;<br>[/html]</p>
+<h3 id="■Tel_URI、Sms_URIの設定">■Tel URI、Sms URIの設定</h3><p>[html]<br>&lt;!– //リンクをクリックで電話をかける –&gt;<br>&lt;a href=&quot;tel:00000000000&quot;&gt;00000000000&lt;/a&gt;</p>
+<p>&lt;!– //リンククリックでsms –&gt;<br>&lt;a href=&quot;sms:00000000000&quot;&gt;sms&lt;/a&gt;</p>
+<p>&lt;!– //smsの送信秋複数 –&gt;<br>&lt;a href=&quot;sms:00000000000,1111111111&quot;&gt;sms複数&lt;/a&gt;</p>
+<p>&lt;!– //smsの本文追加 –&gt;<br>&lt;a href=&quot;sms:00000000000,1111111111?body=%83e%83X%83g%83%81%83b%83Z%81%5b%83W&quot;&gt;smsメッセージ&lt;/a&gt;<br>[/html]</p>
 <hr>
 <h3 id="■inputタグ関連">■inputタグ関連</h3><p>[html]<br>&lt;input autocorrect=&quot;off&quot; autocomplete=&quot;off&quot; autocapitalize=&quot;off&quot;&gt;<br>[/html]</p>
 <ul>
@@ -186,8 +186,8 @@ ga('send', 'pageview');
 <p>/<em> 画面サイズ481px〜1024pxの端末が横（landscape）のときに </em>/<br>@media only screen and (max-width: 480px) and (max-device-width: 1024px) and (orientation:landscape) {<br>  /<em> CSS goes here </em>/<br>}</p>
 <p>/<em> 画面サイズ1025〜の端末が横（landscape）のときに </em>/<br>@media only screen and (max-width: 480px) and (max-device-width: 1024px) and (orientation:landscape) {<br>  /<em> CSS goes here </em>/<br>}</p>
 <p>width: 1025px〜の端末のときに <em>/<br>@media only screen and (max-width: 1025px) {<br>  /</em> CSS goes here */<br>}</p>
-<p>/<em> iphone4 iphone4s </em>/<br>@media (-webkit-min-device-pixel-ratio: 2),<br>             (min—moz-device-pixel-ratio: 2),<br>             (min-resolution: 300dpi) {<br>  body{ your styles here }<br>}  </p>
-<p>/<em> andoroid </em>/<br>@media (-webkit-max-device-pixel-ratio: 1.5),<br>             (max—moz-device-pixel-ratio: 1.5),<br>             (max-resolution: 299dpi) {<br>  body{ your styles here }<br>}<br>[/css]</p>
+<p>/<em> iphone4 iphone4s </em>/<br>@media (-webkit-min-device-pixel-ratio: 2),<br>             (min–moz-device-pixel-ratio: 2),<br>             (min-resolution: 300dpi) {<br>  body{ your styles here }<br>}  </p>
+<p>/<em> andoroid </em>/<br>@media (-webkit-max-device-pixel-ratio: 1.5),<br>             (max–moz-device-pixel-ratio: 1.5),<br>             (max-resolution: 299dpi) {<br>  body{ your styles here }<br>}<br>[/css]</p>
 <hr>
 <h3 id="■そのほかの設定">■そのほかの設定</h3><p>そのほか、細かい設定などなど。</p>
 <p>[css]<br>/<em> タップ時のハイライトカラー</em>/<br>-webkit-tap-highlight-color:#f00;</p>
@@ -224,10 +224,10 @@ ga('send', 'pageview');
 <p>//細かい回転量の取得<br>//返される値は<br>//alpha:0～360(degrees)<br>//beta:-180～180(degrees)<br>//gamma:-90～90(degrees)<br>window.addEventListener(&quot;deviceorientation&quot;, orientationEvent, true);</p>
 <p>//デバイスの加速度と回転データを取得<br>window.addEventListener(‘devicemotion’, deviceMotionHandler, false);<br>[/javascript]<br>このあたりは<a href="http://www.html5rocks.com/en/tutorials/device/orientation/" target="_blank" rel="external">html5rocks</a>が詳しくです。</p>
 <hr>
-<h3 id="■Media_capture_API">■Media capture API</h3><p>Andoroidはhtmlからユーザーがアップロードできるコンテンツを細かく制御できます。<br>[html]<br>&lt;!— regular file upload (Android 2.2+) —&gt;<br>&lt;input type=&quot;file&quot;&gt;&lt;/input&gt;</p>
-<p>&lt;!— opens directly to the camera (Android 3.0+) —&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;image/*;capture=camera&quot;&gt;&lt;/input&gt;  </p>
-<p>&lt;!— opens directly to the camera in video mode (Android 3.0+) —&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;video/*;capture=camcorder&quot;&gt;&lt;/input&gt;  </p>
-<p>&lt;!— opens directly to the audio recorder (Android 3.0+) —&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;audio/*;capture=microphone&quot;&gt;&lt;/input&gt;  </p>
+<h3 id="■Media_capture_API">■Media capture API</h3><p>Andoroidはhtmlからユーザーがアップロードできるコンテンツを細かく制御できます。<br>[html]<br>&lt;!– regular file upload (Android 2.2+) –&gt;<br>&lt;input type=&quot;file&quot;&gt;&lt;/input&gt;</p>
+<p>&lt;!– opens directly to the camera (Android 3.0+) –&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;image/*;capture=camera&quot;&gt;&lt;/input&gt;  </p>
+<p>&lt;!– opens directly to the camera in video mode (Android 3.0+) –&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;video/*;capture=camcorder&quot;&gt;&lt;/input&gt;  </p>
+<p>&lt;!– opens directly to the audio recorder (Android 3.0+) –&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;audio/*;capture=microphone&quot;&gt;&lt;/input&gt;  </p>
 <p>[/html]</p>
 <hr>
 

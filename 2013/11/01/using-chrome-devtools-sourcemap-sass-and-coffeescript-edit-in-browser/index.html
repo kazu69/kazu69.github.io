@@ -112,16 +112,16 @@ ga('send', 'pageview');
     
       <p>いままで普通に使っていたけど、知らないという方から質問を受けたので、再確認も含めてざっくりまとめ。</p>
 <p>ChromeのDevToolsを活用してブラウザでの開発環境が整ってきている。SassやCoffeeScriptの様なPreprocessorもブラウザで編集、変換、再読込みを自動でできる。<br><a id="more"></a><br>まず、SassはSorcemap対応の3.3系を利用。</p>
-<p>[shell]<br>$ gem install sass —pre<br>[/shell]</p>
+<p>[shell]<br>$ gem install sass –pre<br>[/shell]</p>
 <p>今回はCoffeeScriptはnpmで</p>
 <p>[shell]<br>npm install -g coffee-script<br>[/shell]</p>
 <p>たとえばstyle.scss, script.coffeeという以下のようなファイルがある場合</p>
 <p>[css]<br>body {<br>  background-color: #000;<br>}<br>[/css]</p>
 <p>[ruby]<br>func = -&gt;<br>  console.log ‘fire!’<br>[/ruby]</p>
 <p>sourcemap オプションをつけてコンパイル</p>
-<p>[shell]<br>$ scss —sourcemap style.scss style.css<br>$ coffee -c -m script.coffee<br>[/shell]</p>
+<p>[shell]<br>$ scss –sourcemap style.scss style.css<br>$ coffee -c -m script.coffee<br>[/shell]</p>
 <p>ファイル監視をする場合は</p>
-<p>[shell]<br>$ scss —sourcemap —watch  style.scss:style.css<br>$ coffee -c -m -w script.coffee<br>[/shell]</p>
+<p>[shell]<br>$ scss –sourcemap –watch  style.scss:style.css<br>$ coffee -c -m -w script.coffee<br>[/shell]</p>
 <p>sourcemap を適用すると以下のようなstyle.css.map,script.mapというファイルが生成。</p>
 <p>[text]<br>{<br>&quot;version&quot;: &quot;3&quot;,<br>&quot;mappings&quot;: &quot;AAAA,IAAK;EACH,gBAAgB,EAAE,IAAI&quot;,<br>&quot;sources&quot;: [&quot;style.scss&quot;],<br>&quot;file&quot;: &quot;style.css&quot;<br>}<br>[/text]</p>
 <p>[text]<br>{<br>  &quot;version&quot;: 3,<br>  &quot;file&quot;: &quot;script.js&quot;,<br>  &quot;sourceRoot&quot;: &quot;&quot;,<br>  &quot;sources&quot;: [<br>    &quot;script.coffee&quot;<br>  ],<br>  &quot;names&quot;: [],<br>  &quot;mappings&quot;: &quot;;AAAA;CAAA,GAAA,EAAA;;CAAA,CAAA,CAAO,CAAP,KAAO;CACG,EAAR,IAAO,IAAP,OAAA;CADF,EAAO;CAAP&quot;<br>}<br>[/text]</p>
@@ -142,7 +142,7 @@ ga('send', 'pageview');
 <p>該当するファイルを選択する。(ここではstyle.scss)<br><img src="http://gyazo.com/743e9aa1d03512f48fd38e41d1a6357e.png" alt=""></p>
 <p>これで完了。あとは該当のsourceファイル(ここではstyle.scss)を編集する。<br><img src="http://gyazo.com/e2dd95de2e858854f2adfaecc7a54404.png" alt=""></p>
 <p>これでstyle.cssも動的に編集され、ブラウザもリロードされます。script.coffeeも同様です。<br><img src="http://gyazo.com/d3e0c4ac9b6f0fe9f868b35e0ff8c329.png" alt=""></p>
-<p>watchコマンドでファイル変更を監視していたら<br>[shell]<br>$ scss —sourcemap —watch  style.scss:style.css<br>&gt;&gt;&gt; Sass is watching for changes. Press Ctrl-C to stop.<br>&gt;&gt;&gt; Change detected to: style.scss<br>      write style.css<br>      write style.css.map</p>
+<p>watchコマンドでファイル変更を監視していたら<br>[shell]<br>$ scss –sourcemap –watch  style.scss:style.css<br>&gt;&gt;&gt; Sass is watching for changes. Press Ctrl-C to stop.<br>&gt;&gt;&gt; Change detected to: style.scss<br>      write style.css<br>      write style.css.map</p>
 <p>$ coffee -c -m -w script.coffee<br>01:43:17 - compiled script.coffee<br>01:43:21 - compiled script.coffee</p>
 <p>[/shell]<br>とログも。</p>
 <p>sourcemapに対応していればlessやcompassなどもDevToolsで開発できます。<br>ということで、インブラウザ○○とかキーワードの通り、DevToolsあれば容易に実現できる。</p>

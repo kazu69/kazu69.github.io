@@ -102,11 +102,12 @@ ga('send', 'pageview');
     
       <p>Sass3.3 がそろそろリリースっぽいので、追加機能・変更点について<a href="http://davidwalsh.name/future-sass" target="_blank" rel="external">うまくまとまった記事</a>があったので、学んでみた。<br>ちなみに、<a href="https://github.com/nex3/sass/issues?direction=desc&amp;labels=v3.3&amp;page=2&amp;sort=created&amp;state=open" target="_blank" rel="external">変更点はこちら</a><br><a id="more"></a></p>
 <p>実際に動作を確認するにはpreバージョンのsassをインストールします。</p>
-<p>[shell]<br>gem install sass —pre<br>sass —watch source_dir:output_dir<br>[/shell]</p>
+<p>[shell]<br>gem install sass –pre<br>sass –watch source_dir:output_dir<br>[/shell]</p>
 <p>で確認できます。</p>
 <h2 id="＆セレクタに関連する構文の改善">＆セレクタに関連する構文の改善</h2><p>たとえば、以下のようにした場合</p>
 <p>[ruby]<br>$module: &quot;.module&quot;;</p>
-<h1 id="{$module}—element_{">{$module}—element {</h1><pre><code><span class="built_in">#</span>{$<span class="function"><span class="keyword">module</span>}<span class="title">__child</span> {</span> <span class="comment">//valid</span>
+<p>#{$module}–element {</p>
+<pre><code><span class="built_in">#</span>{$<span class="function"><span class="keyword">module</span>}<span class="title">__child</span> {</span> <span class="comment">//valid</span>
     <span class="built_in">color</span>:orange;
 }
 &amp;amp; <span class="built_in">#</span>{$<span class="function"><span class="keyword">module</span>}<span class="title">__child</span> {</span> <span class="comment">// valid</span>
@@ -120,8 +121,8 @@ ga('send', 'pageview');
 }
 </code></pre><p>}<br>[/ruby]</p>
 <p>最後のブロックは欲しい結果が得られずにエラーになっていた。</p>
-<p>この場合、<br>[css]<br>.module—element .module<strong>child {<br>  color: orange;<br>}<br>.module—element .module</strong>child {<br>  color: orange;<br>}<br>.module__parent .module—element {<br>  color: yellow;<br>}</p>
-<p>/<em> 以下はエラーで実際に出力されないがv3.3からは修正された </em>/<br>.module—element.module__parent {<br>  color:green<br>}<br>[/css]</p>
+<p>この場合、<br>[css]<br>.module–element .module<strong>child {<br>  color: orange;<br>}<br>.module–element .module</strong>child {<br>  color: orange;<br>}<br>.module__parent .module–element {<br>  color: yellow;<br>}</p>
+<p>/<em> 以下はエラーで実際に出力されないがv3.3からは修正された </em>/<br>.module–element.module__parent {<br>  color:green<br>}<br>[/css]</p>
 <p>また、<a href="http://bem.info/" target="_blank" rel="external">BEM</a>を意識した構造においては</p>
 <p>[ruby]<br>.block {<br>    /<em> Base stuff </em>/<br>      &amp;__child {<br>        /<em> Sub-element of block </em>/<br>      }</p>
 <pre><code><span class="keyword">&amp;</span><span class="tag">amp</span>;<span class="tag">--modifier</span> {
@@ -131,7 +132,7 @@ ga('send', 'pageview');
 <p>とすることで</p>
 <p>[css]<br>.block { }</p>
 <p>.block__child { }</p>
-<p>.block—modifier { }<br>[/css]</p>
+<p>.block–modifier { }<br>[/css]</p>
 <p>という具合に出力されるようになる。<br>@content(プレースホルダーセレクタ)をつかった場合などで</p>
 <p>[ruby]<br>@mixin respond-to($media, $ie-class:’ie’) {<br>  @media (#{$media}) { @content; }<br>  .#{$ie-class} &amp; { @content; }<br>}</p>
 <p>@include respond-to(‘min-width: 30em’) {<br>  .container { color: red; }<br>}<br>[/ruby]</p>
@@ -145,7 +146,7 @@ ga('send', 'pageview');
 <h2 id="listの+,_-_演算子の実装">listの+, - 演算子の実装</h2><p>リストのでの+演算子はリストへの追加ではなく、文字列連結。<br>-演算子は-をセパレーターにした文字列文字列連結だったのが<br>リストの追加、削除(join(), reduce())のようになる。</p>
 <p>[ruby]<br>$a: red, blue;<br>$b: red, green;</p>
 <h1 id="これまで">これまで</h1><p>$a + $b # =&gt; red, bluered, green;<br>$a - $b # =&gt; red, blue-red, green;</p>
-<h1 id="v3-3以降">v3.3以降</h1><p>$join: $a + $b; #=&gt; red, blue, green<br>$reduce: $a - $b; #=&gt; blue, green<br>[/ruby]</p>
+<p>#v3.3以降<br>$join: $a + $b; #=&gt; red, blue, green<br>$reduce: $a - $b; #=&gt; blue, green<br>[/ruby]</p>
 <h2 id="if()へのパーサーの組込み">if()へのパーサーの組込み</h2><p>if() のなかで評価を行うことができる。</p>
 <p>[ruby]</p>
 <h1 id="@if(_condition,_true,_false_)_{_}">@if( condition, true, false ) { }</h1><p>$a: true;<br>@if ($a == true, 1, 0) { }</p>
@@ -176,11 +177,11 @@ ga('send', 'pageview');
 <p>となりSassではネストでコンポーネントをまとめて指定しておき、<br>出力レベルではネスとさせないことができる。</p>
 <p>こちらでもBEMを意識すると</p>
 <p>[ruby]<br>.foo<br>  color: purple<br>  @at-root #{&amp;}__header<br>    color: orange</p>
-<p>  @at-root #{&amp;}__content<br>    color: black<br>  @at-root #{&amp;}—active<br>    color: green</p>
+<p>  @at-root #{&amp;}__content<br>    color: black<br>  @at-root #{&amp;}–active<br>    color: green</p>
 <p>[/ruby]</p>
 <p>[css]<br>/<em> 従来なら </em>/</p>
-<p>.foo {<br>  color: purple;<br>}<br>.foo　.foo<strong>header {<br>  color: orange;<br>}<br>.foo　.foo</strong>content {<br>  color: black;<br>}<br>.foo　.foo—active {<br>  color: green;<br>}</p>
-<p>/<em> @at-rootを使用して </em>/<br>.foo {<br>  color: purple;<br>}<br>.foo<strong>header {<br>  color: orange;<br>}<br>.foo</strong>content {<br>  color: black;<br>}<br>.foo—active {<br>  color: green;<br>}<br>[/css]</p>
+<p>.foo {<br>  color: purple;<br>}<br>.foo　.foo<strong>header {<br>  color: orange;<br>}<br>.foo　.foo</strong>content {<br>  color: black;<br>}<br>.foo　.foo–active {<br>  color: green;<br>}</p>
+<p>/<em> @at-rootを使用して </em>/<br>.foo {<br>  color: purple;<br>}<br>.foo<strong>header {<br>  color: orange;<br>}<br>.foo</strong>content {<br>  color: black;<br>}<br>.foo–active {<br>  color: green;<br>}<br>[/css]</p>
 <p>出力がネストされないので上記のような感じ。<br>冗長な記述しないですみそう。</p>
 <h2 id="モジュールとしてファイルをimport">モジュールとしてファイルをimport</h2><p>v4.0ではimport周りが大幅に変わるらしい。</p>
 <ol>

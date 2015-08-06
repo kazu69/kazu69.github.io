@@ -126,7 +126,7 @@ ga('send', 'pageview');
 <li><p>alias taskがArray形式に変更</p>
 <blockquote>
 <p>// v0.3.x (old format)<br>grunt.registerTask(‘default’, ‘jshint nodeunit concat’);</p>
-<pre><code>// v0.4.x (<span class="built_in">new</span> <span class="built_in">format</span>)
+<pre><code>// v0<span class="number">.4</span>.x (<span class="built_in">new</span> <span class="built_in">format</span>)
 </code></pre><p>grunt.registerTask(‘default’, [‘jshint’, ‘nodeunit’, ‘concat’]);</p>
 </blockquote>
 </li>
@@ -176,8 +176,8 @@ ga('send', 'pageview');
 <p>Gruntfile,package.jsonをプロジェクトrootに配置して、こんな感じ。</p>
 <p>[shell]<br>projectroot<br>├── Gruntfile.coffee<br>├── package.json<br>[/shell]</p>
 <p>npm moduleを取得する。</p>
-<p> [shell]<br>npm install grunt —save-dev<br> [/shell]</p>
-<p>—save-dev オプションでpackege.jsonにdevDependenciesプロパティが追記され、moduleの情報を追加されます。</p>
+<p> [shell]<br>npm install grunt –save-dev<br> [/shell]</p>
+<p>–save-dev オプションでpackege.jsonにdevDependenciesプロパティが追記され、moduleの情報を追加されます。</p>
 <p>[javascript]<br>…<br>  &quot;devDependencies&quot;: {<br>    &quot;grunt-contrib-concat&quot;: &quot;~0.1.2&quot;,<br>    &quot;grunt-contrib-uglify&quot;: &quot;~0.1.1&quot;,<br>    &quot;grunt-contrib-jshint&quot;: &quot;~0.1.1&quot;,<br>    &quot;grunt-contrib-nodeunit&quot;: &quot;~0.1.2&quot;,<br>    &quot;grunt-contrib-watch&quot;: &quot;~0.2.0&quot;,<br>    &quot;grunt&quot;: &quot;~0.4.0&quot;<br>}<br>…<br>[/javascript]</p>
 <p>あとは、必要に応じてmoduleを追加して、Gruntfileにタスクを追加していけばいい感じですかね。</p>
 <p>これまでグローバルで管理していたmoduleもプロジェクト単位で管理でき、プロジェクト開発者全員で同じ開発環境を容易に構築できるようになってとても便利になった感じがします。</p>

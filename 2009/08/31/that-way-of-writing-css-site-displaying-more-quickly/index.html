@@ -112,17 +112,22 @@ ga('send', 'pageview');
 <p>まず、ユニバーサルセレクタではブラウザはすべてのDOMを走査してしまうため、非効率です。</p>
 <p>`</p>
 <p>body * {…}</p>
-<h1 id="navi_*_{…}">navi * {…}</h1><p>`</p>
+<p>#navi * {…}</p>
+<p>`</p>
 <p>次に非効率なのはタグセレクタでこれも余計にdomを走査してしまうことが考えられます。</p>
 <p>`</p>
-<h1 id="footer_div_{…}">footer div {…}</h1><h1 id="side_p_{…}">side p {…}</h1><p>`</p>
+<p>#footer div {…}</p>
+<p>#side p {…}</p>
+<p>`</p>
 <p><strong>３．IDを過度に修飾しない</strong></p>
 <p>ＩＤは一意的なものであるため、過度に就職をする必要がありません。</p>
 <p>無駄に冗長的な表現をすることは避けるほうがいいと思います。</p>
 <p>`</p>
 <p>div#navi{…}・・・Not Good</p>
 <p>form#order{…}・・・Not Good</p>
-<h1 id="navi{…}・・・Good">navi{…}・・・Good</h1><h1 id="order{…}・・・Good">order{…}・・・Good</h1><p>`</p>
+<p>#navi{…}・・・Good</p>
+<p>#order{…}・・・Good</p>
+<p>`</p>
 <p><strong>４．子セレクターの使用はできれば避ける</strong></p>
 <p>それほどパフォーマンスに影響はしませんが、頻繁に辿るようなルールは非効率です。無駄なコストを避けるべきです。</p>
 <p>できるならクラスやIDで直接指定する方がコストは削減されます。</p>

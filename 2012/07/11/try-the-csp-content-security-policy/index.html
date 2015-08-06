@@ -134,7 +134,7 @@ ga('send', 'pageview');
 <p>CSPはレスポンスヘッダーに明示的に設定する必要があり、ブラウザはこの情報を見てコンテンツの読込みを決定します。</p>
 <p>FirefoxとChromeで実装済み(IE10でも提供される)ですが、ブラウザに送るヘッダーの仕様が違います。<br>Firefoxは X-Content-Security-Policy、Chromeは X-WebKit-CSP、IE10では X-Content-Security-Policyの予定。</p>
 <p>[ruby]</p>
-<h1 id="encoding:_UTF-8">encoding: UTF-8</h1><p>require ‘rubygems’<br>require ‘pp’<br>require ‘bundler’<br>require ‘sinatra/base’<br>require ‘erb’</p>
+<p>#encoding: UTF-8<br>require ‘rubygems’<br>require ‘pp’<br>require ‘bundler’<br>require ‘sinatra/base’<br>require ‘erb’</p>
 <p>Bundler.require</p>
 <p>before do</p>
 <h1 id="コンテンツの提供元の特別なクラスを記述するためのキーワード">コンテンツの提供元の特別なクラスを記述するためのキーワード</h1><p>  keyword = ‘self’</p>

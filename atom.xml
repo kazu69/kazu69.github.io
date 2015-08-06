@@ -5,7 +5,7 @@
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.kazu69.net//"/>
-  <updated>2015-07-13T11:16:24.000Z</updated>
+  <updated>2015-08-06T11:24:31.000Z</updated>
   <id>http://blog.kazu69.net//</id>
   
   <author>
@@ -16,11 +16,108 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[HTTP/2サーバーh2oでサーバプッシュを試してみた]]></title>
+    <link href="http://blog.kazu69.net/2015/08/05/try-http2-with-h2o-and-mruby/"/>
+    <id>http://blog.kazu69.net/2015/08/05/try-http2-with-h2o-and-mruby/</id>
+    <published>2015-08-05T07:56:14.000Z</published>
+    <updated>2015-08-06T11:24:31.000Z</updated>
+    <content type="html"><![CDATA[<p>HTTP/2 serverである<a href="https://github.com/h2o/h2o" target="_blank" rel="external">h2o</a>で初めてのサーバプッシュを試してみた。</p>
+<a id="more"></a>
+<p>今回は<a href="https://github.com/matsumoto-r/h2o_mruby" target="_blank" rel="external">h2o_mruby</a>も触ってみたかったということで、h2oをmrubyとともにビルドして少し触ってみた。</p>
+<p><a href="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/">前回</a>試してみた<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">nginx_mruby</a>と同じくh2o_mrunyもサーバーをrubyで動的に制御することができる。</p>
+<h2 id="サーバプッシュとは">サーバプッシュとは</h2><p>HTTP/1の場合、サーバーはクライアントからのリクエストに応じて、レスポンスを返すものでした。<br>しかし、HTTP/2の場合はクライアントからのリクエストがなくても、サーバーからレスポンスを返すことができる。</p>
+<p>今回は<a href="https://w3c.github.io/resource-hints/" target="_blank" rel="external">resouce hints</a>にあるように、リクエストヘッダーに<code>link:&lt;style.css&gt;; rel=preload; as=stylesheet</code> のようなLinkヘッダーを追加してレスポンスを返すようにした。</p>
+<p>こうすることで、h2oサーバーは予めクライアントが次に何をリクエストするのか把握できる。<br>そして、クライアントがリクエストする前に、このファイルを返してくれる。</p>
+<p>これにより、クライアントは次のリクエストからそのレスポンスまでの待ち時間(レイテンシ)を短縮できる。<br>そのため、これまでよりもブラウザは早く描画を行うことができるということになるっぽい。</p>
+<h2 id="構成">構成</h2><p>今回は、フロントにh2oを立たせて、リクエストをnginxにproxyする。<br>そして、nginx側でheaderにLinkヘッダーを追加してレスポンスを返す。</p>
+<p>こうすることで、h2oはヘッダーを解釈して、サーバプッシュを行ってくれる。</p>
+<script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=structure.txt"></script>
+<p>手元の開発環境は以下の感じ<br>今回はサーバー側からプッシュする静的ファイルとして適当なcssをnginx側に追加しておいた。</p>
+<script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=tree.sh"></script>
+<h2 id="h2o_with_mruby_の構築">h2o with mruby の構築</h2><p>今回もubuntuで、以下のようにDcokerでコンテナをビルドした。</p>
+<script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=Dockerfile"></script>
+<script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=h2o.conf"></script>
+<script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=build_config.rb"></script>
+<h2 id="nginx_の構築">nginx の構築</h2><p>nginxは<a href="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/">前回</a>と同じ感じで作成した。</p>
+<script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=Dockerfile"></script>
+<p>nginx.confは以下のようにして</p>
+<script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=nginx.conf"></script>
+<p>modify_header.rb でレスポンスヘッダーにLinkヘッダーを追加する。</p>
+<script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=modify_header.rb"></script>
+<h2 id="ブラウザでアクセスできるようにPortFoward">ブラウザでアクセスできるようにPortFoward</h2><p><a href="http://boot2docker.io/" target="_blank" rel="external">boot2docker</a>をつかっているので、ブラウザでDcokerコンテナにアクセスできるようにPortFowardしておく。</p>
+<script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=portfoward.sh"></script>
+<h2 id="Docker_run">Docker run</h2><p>準備できたのでnginx、 h2oのコンテナを立ち上げていく。</p>
+<script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=docker_run.sh"></script>
+<p>nginxのipを泥臭く取ってきてから、h2oをビルドしてしまったが、<br>本当は <a href="http://blog.matsumoto-r.jp/?p=4326" target="_blank" rel="external">Dockerとmrubyで迅速かつ容易にnginxとapacheの柔軟なリバースプロキシ構成を構築する</a> にあるようにmrubyで動的変更できるように、環境変数を使って対応する予定でした。<br>しかし、h2o_mrubyを把握できてないのでうまくいかずに、今回は一旦保留とした。</p>
+<p>とりあえず、これでブラウでアクセスしてみると分かりそう。</p>
+<h2 id="ブラウザ(Chrome)でアクセス">ブラウザ(Chrome)でアクセス</h2><p>あらかじめ <strong>chrome://net-internals/#events</strong> を開いておき、ブラウザでh2oサーバーにアクセス。</p>
+<p>すると、htmlへのリクエストはh2oでproxyされて、nginxのhtmlが帰ってくる。</p>
+<p>このリクエストのhttpヘッダーを見ると</p>
+<script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=http-header.txt"></script>
+<p>正しくLinkヘッダーが追加されている。</p>
+<p>chrome://net-internals/#events で <code>HTTP2_SESSION</code> を確認すると</p>
+<script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=chrome_header.txt"></script>
+<p>確かに、<code>HTTP2_SESSION_RECV_PUSH_PROMISE</code> とあり、サーバー側でpushしているのが確認できました。</p>
+<p>今回はh2o_mrubyまで詳しく把握できなくて、ipを動的に変更できなかったが、おそらく切り替ることはできるだと思う。</p>
+<p>また折を見て、h2o+mrubyを個人サービスのフロントに立たせてみることにチャレンジしてみようかな。</p>
+<p>参考にしたページ<br><a href="http://techblog.yahoo.co.jp/infrastructure/http2/introduction_to_http2/" target="_blank" rel="external">HTTP/2 入門</a><br><a href="http://labs.gree.jp/blog/2014/12/11987/" target="_blank" rel="external">初めてのHTTP/2サーバプッシュ</a><br><a href="http://jxck.hatenablog.com/entry/http2-server-side-architecture" target="_blank" rel="external">HTTP2 時代のサーバサイドアーキテクチャ考察</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>HTTP/2 serverである<a href="https://github.com/h2o/h2o">h2o</a>で初めてのサーバプッシュを試してみた。</p>]]>
+    
+    </summary>
+    
+      <category term="mruby" scheme="http://blog.kazu69.net/tags/mruby/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[nginx_mrubyを試してみた]]></title>
+    <link href="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/"/>
+    <id>http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/</id>
+    <published>2015-07-20T04:32:23.000Z</published>
+    <updated>2015-08-06T11:26:06.000Z</updated>
+    <content type="html"><![CDATA[<p>nginxの設定をrubyでダイナミックに設定できる<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">nginx_mruby</a>を試してみた。</p>
+<a id="more"></a>
+<p>nginx_mrubyを使うことのメリットは、個人的にサーバーの設定をダウンタイムなしに変更できるという点と、<br>rubyを使ってアプリケーションコードを書くように、サーバーの設定扱うことができる(rack middlewareのように)という点と感じた。</p>
+<h2 id="nginx_mrubyのビルド">nginx_mrubyのビルド</h2><p>今回はOSをDocker + ubuntuで試してみた。</p>
+<p><a href="https://github.com/matsumoto-r/ngx_mruby/wiki/Install" target="_blank" rel="external">wikiのinstall</a>を参考にした感じなのだが、以下のようになった。</p>
+<script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=Dockerfile"></script>
+<p>mrubyはビルドの設定をbuild_config.rbというファイルで行う。今回はbasic認証を行ってみようと思うので<br>mrubyのgemであるmgemに<a href="https://github.com/mattn/mruby-base64" target="_blank" rel="external">mruby-base64</a>を追加した。</p>
+<p>ちなみに、同じようにapcheのconfをmrubyで制御できる<a href="https://github.com/matsumoto-r/mod_mruby/" target="_blank" rel="external">mod_mruby</a>にはbasic認証のために<a href="https://github.com/matsumoto-r/mod_mruby/wiki/Directives#basic-auth" target="_blank" rel="external">mrubyAuthnCheckPasswordというDirectiveが存在していた</a>。</p>
+<p>ということで、今回は以下のようにした。</p>
+<script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=build_config.rb"></script>
+<p><a href="https://github.com/matsumoto-r/ngx_mruby/wiki/Directives" target="_blank" rel="external">ngx_mrubyのwiki</a>にあるように、サーバーの各イベントでrubyファイルをhookできるdirectiveがかある。</p>
+<p>これをconfファイルで設定していく。<br>ファイルパスを渡すものとインラインでrubyのコードを書けるものが存在している。</p>
+<script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=nginx.conf"></script>
+<p>実際に処理を行うのはrubyでかけるので、</p>
+<script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=authn_basic.rb"></script>
+<p>これで dockerのコンテナにアクセス、basic_auth ディレクトリにアクセスでbasic認証ができている。</p>
+<h2 id="basic認証してみる">basic認証してみる</h2><script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=basic_auth.sh"></script>
+<h2 id="ブラウザでアクセスしてみる">ブラウザでアクセスしてみる</h2><p>今回はboot2dockerをつかったのでブラウザアクセスするために、<br>virtualboxとホストマシン間でのポートフォワーディングの設定が必要。</p>
+<script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=boot2docker-virtualbox-portformarding.sh"></script>
+<p>ブラウザで<a href="http://localhost:8080でアクセスできるようになった。" target="_blank" rel="external">http://localhost:8080でアクセスできるようになった。</a></p>
+<p>basic認証だとあまり良い例にはならなかったけど、例えば、特定のディレクトリへのアクセスなどを制御したい時に、<br>nginxのconfに正規表現などでいろいろと書くより、rubyでかける方が個人的には敷居が低く感じる。</p>
+<p>実際にインフラ周りの知識はあまりないけど、rubyでサーバーを柔軟に制御できるのは便利だと思った。</p>
+<p>あと、mrubyのデバッグについて良い方法が知りたい。</p>
+<p><a href="https://github.com/kazu69/ngx_mruby_playground" target="_blank" rel="external">今回作ったもの</a></p>
+<p>参考にしたページ<br><a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">nginx_mruby</a><br><a href="http://qiita.com/takeswim/items/bf88ea7bb76e11fdc71e" target="_blank" rel="external">ngx_mrubyを使って簡易ファイル共有システムを作る</a><br><a href="http://qiita.com/matsumotory/items/7121d6cce728125e5ce2" target="_blank" rel="external">mod_mrubyインストール後入門</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>nginxの設定をrubyでダイナミックに設定できる<a href="https://github.com/matsumoto-r/ngx_mruby">nginx_mruby</a>を試してみた。</p>]]>
+    
+    </summary>
+    
+      <category term="mruby" scheme="http://blog.kazu69.net/tags/mruby/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[cssnextを使って最新のcss syntaxで開発するのが良さそう]]></title>
     <link href="http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/"/>
     <id>http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/</id>
     <published>2015-06-14T15:00:32.000Z</published>
-    <updated>2015-07-13T11:16:24.000Z</updated>
+    <updated>2015-07-13T11:16:30.000Z</updated>
     <content type="html"><![CDATA[<p>ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。</p>
 <a id="more"></a>
 <h2 id="JavaScriptの最近の事情">JavaScriptの最近の事情</h2><p>javascriptではES6でコードを書き、BabelでTransplieするという流れが定着しつつある。<br>これは、これまで必要だったライブラリが不要になり、コードが依存するライブラリを減らすことができ、altJSに頼らないで開発できるという利点からである。</p>
@@ -115,11 +212,11 @@
 <script src="//gist.github.com/kazu69/8b824595016ba612ff53.js?file=tree.sh"></script>
 <p>レシピは以下のとおり、普通にndenvを設定しているだけ。</p>
 <script src="//gist.github.com/kazu69/8b824595016ba612ff53.js?file=ruby_build.rb"></script>
-<h2 id="Vagrant_+_ssh">Vagrant + ssh</h2><p>Vagrantにsshでレシピを実行する、その際に—vagrantオプションを付ける。</p>
+<h2 id="Vagrant_+_ssh">Vagrant + ssh</h2><p>Vagrantにsshでレシピを実行する、その際に–vagrantオプションを付ける。</p>
 <script src="//gist.github.com/kazu69/8b824595016ba612ff53.js?file=vagrant_ssh.sh"></script>
 <h2 id="Vagrant_+_vagrant-itamae">Vagrant + vagrant-itamae</h2><p>vagrantプラグインの<a href="https://github.com/chiastolite/vagrant-itamae" target="_blank" rel="external">vagrant-itamae</a>を使うとsshより簡単にできそう。<br>これでvagrant provisionerにiamaeを指定するだけで済む。</p>
 <script src="//gist.github.com/kazu69/8b824595016ba612ff53.js?file=Vagrantfile"></script>
-<h2 id="Docker_+_ssh">Docker + ssh</h2><p>Dockerの場合も。sshでrecipeを実行する。<br>—no-tls-verify-peerはsslのエラー(Excon::Errors::SocketError)でこけたので、オプションをつけた。</p>
+<h2 id="Docker_+_ssh">Docker + ssh</h2><p>Dockerの場合も。sshでrecipeを実行する。<br>–no-tls-verify-peerはsslのエラー(Excon::Errors::SocketError)でこけたので、オプションをつけた。</p>
 <script src="//gist.github.com/kazu69/8b824595016ba612ff53.js?file=docker_ssh.sh"></script>
 <p>ちょっとした開発環境構築にchefだと学習コストも全体のファイルサイズの規模感も大きくなりがちなに対して、itamaeだと、手元の環境構築はシンプルで、簡潔なサイズでちょうどでいい感じだった。</p>
 <h2 id="今回作ったレシピ">今回作ったレシピ</h2><p><a href="https://github.com/kazu69/nodejs-develop-environment-with-itamae" target="_blank" rel="external">nodejs-develop-environment-with-itamae</a></p>
@@ -320,7 +417,7 @@
 <h2 id="pre、postフック">pre、postフック</h2><p>npmコマンドにpre、postというprefixをつけることでそのコマンドの前後にフックできる。<br>たとえば、npm testにpre postそれぞれのフックを追加すると、</p>
 <p>npm test を実行すると、 npm run pretest、 npm test, npm run posttest の順番に実行される。</p>
 <h2 id="カスタム引数">カスタム引数</h2><p>npm@2.0.0 以上では<a href="https://github.com/npm/npm/pull/5518" target="_blank" rel="external">実行スクリプトにカスタム引数を渡すことができるようになっている。</a></p>
-<p>「—」で 好きな引数を渡すことができる。<br>たとえば以下のうように</p>
+<p>「–」で 好きな引数を渡すことができる。<br>たとえば以下のうように</p>
 <script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=option.json"></script>
 
 <p>例があまり良くないけど、開発環境やstaging環境などの実行環境でオプションの有無がある場合などに便利。</p>
@@ -810,7 +907,7 @@
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample1.slim"></script>
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample1.coffee"></script>
 
-<p>See the Pen <a href="http://codepen.io/kazu69/pen/gbbNqz/" target="_blank" rel="external">gbbNqz</a> by —- (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
+<p>See the Pen <a href="http://codepen.io/kazu69/pen/gbbNqz/" target="_blank" rel="external">gbbNqz</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <p>モーダルウィンドウを表示する場合は、showModal() APIを使えば良い。<br>また、モーダルウィンドウの背景要素にスタイルを付ける場合は、::backdrop擬似要素を使うことで実現できる。<br>dialog要素にスタイルを付けることで、モーダルウィンドウにスタイルを付けることができる。</p>
@@ -818,7 +915,7 @@
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample2.scss"></script>
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample2.coffee"></script>
 
-<p>See the Pen <a href="http://codepen.io/kazu69/pen/dPPBrz/" target="_blank" rel="external">dPPBrz</a> by —- (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
+<p>See the Pen <a href="http://codepen.io/kazu69/pen/dPPBrz/" target="_blank" rel="external">dPPBrz</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <p>dialog要素でformのメソッドにdialogを指定することで、フォームとダイアログ、モーダルウィンドウを連携することができる。<br>モーダルウィンドウのボタンを押すとモーダルウィンドウが閉じられ、入力値またはボタンの値をdialog要素のreturnValueにセットすることができる。</p>
@@ -826,7 +923,7 @@
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=script.coffee"></script>
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=tyle.scss"></script>
 
-<p>See the Pen <a href="http://codepen.io/kazu69/pen/qEBJVW/" target="_blank" rel="external">dialog tag sample</a> by —- (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
+<p>See the Pen <a href="http://codepen.io/kazu69/pen/qEBJVW/" target="_blank" rel="external">dialog tag sample</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <p>ちなみに、polyfillは<a href="https://github.com/GoogleChrome/dialog-polyfill" target="_blank" rel="external">chrome/dialog-polyfill</a>。</p>
@@ -949,98 +1046,6 @@
       <category term="sass" scheme="http://blog.kazu69.net/categories/sass/"/>
     
       <category term="tec" scheme="http://blog.kazu69.net/categories/sass/tec/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[床拭きお掃除ロボット ブラーバ (Braava) を1週間使ってみた]]></title>
-    <link href="http://blog.kazu69.net/2014/08/03/floor-cleaning-cleaning-robot-bravo-braava-tried-one-week/"/>
-    <id>http://blog.kazu69.net/2014/08/03/floor-cleaning-cleaning-robot-bravo-braava-tried-one-week/</id>
-    <published>2014-08-03T08:24:30.000Z</published>
-    <updated>2015-05-10T16:21:06.000Z</updated>
-    <content type="html"><![CDATA[<p>iRobot社の床拭きロボット <a href="http://www.irobot-jp.com/braava/" target="_blank" rel="external">ブラーバ (Braava)</a>を、1週間ほど毎日使ってみた。</p>
-<a id="more"></a>
-<p>出勤前に乾拭き、帰宅後に水拭きを毎日行っている。</p>
-<h2 id="良かった点">良かった点</h2><p>まず、毎日掃除できずに週末にまとめて掃除していたこれまでに比べて、ホコリやチリを目にすることがなく、きれいな状態が保てている。<br>また、週末の掃除時間を別のことに充てられるという点でも非常にうれしい。</p>
-<p>ブラーバの稼働時には思ったより音もなく、家具にぶつかる際もさほど気になるほどの大きな音でもない。</p>
-<p>思った以上にNorthStarキューブの電波？が予想以上に届いたので、リビング以外に廊下や隣の部屋まで移動して掃除できた。</p>
-<p>ふすま溝やわずかな段差も認識してくれるので、フローリングの隣に和室がある場合や玄関と廊下の段差があまりない場でも気にしないで使えそう。</p>
-<p>専用の掃除クロスでなくても、<a href="http://www.amazon.co.jp/gp/product/B002TKLMOC/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B002TKLMOC&amp;linkCode=as2&amp;tag=kazu69-22" target="_blank" rel="external">市販のペーパーシート</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=kazu69-22&amp;l=as2&amp;o=9&amp;a=B002TKLMOC" alt="">や<a href="http://www.amazon.co.jp/gp/product/B002TKLMM4/ref=as_li_ss_tl?ie=UTF8&amp;camp=247&amp;creative=7399&amp;creativeASIN=B002TKLMM4&amp;linkCode=as2&amp;tag=kazu69-22" target="_blank" rel="external">マイクロシート</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=kazu69-22&amp;l=as2&amp;o=9&amp;a=B002TKLMM4" alt=""> でも使用できるのでランニングコストも抑えられそう。</p>
-<h2 id="気になった点">気になった点</h2><p>ゴシゴシ拭かないと取れないような汚れはとれない。これは自分で拭いた方が早い。</p>
-<p>本体部分は少し低くなる設計なので、本体の高さよりすこし低い隙間にも入ってくれる。しかし、たまに身動きとれなくなってることもある。ここは助けてあげる必要がありそう。</p>
-<p>という位。</p>
-<p>ブラーバに快適に掃除してもらうために床にものを置かなくなったので部屋自体が片付いた気もする。</p>
-<p>日本では並行輸入はサポートが受けられないっぽいので、<a href="http://store.irobot-jp.com/" target="_blank" rel="external">オンラインサイト</a>から買って正解だった。(購入して2日位で届いたのもよかった。)</p>
-<p>ルンバよりお値段はお手頃で、機能的には日本の家にむいているのかもしれない。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>iRobot社の床拭きロボット <a href="http://www.irobot-jp.com/braava/">ブラーバ (Braava)</a>を、1週間ほど毎日使ってみた。</p>]]>
-    
-    </summary>
-    
-      <category term="days" scheme="http://blog.kazu69.net/categories/days/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Rails pluginのテストでRspecを使う]]></title>
-    <link href="http://blog.kazu69.net/2014/07/31/use-rspec-on-rails-plugin-test/"/>
-    <id>http://blog.kazu69.net/2014/07/31/use-rspec-on-rails-plugin-test/</id>
-    <published>2014-07-31T10:36:14.000Z</published>
-    <updated>2015-05-10T16:21:06.000Z</updated>
-    <content type="html"><![CDATA[<p>Rails pluginを調べていて、思ったのだが普通にplugin作成した場合は<a href="http://docs.ruby-lang.org/ja/2.1.0/library/test=2funit.html" target="_blank" rel="external">Test::Unit</a>がテストフレームワークとして提供される、<br>ここで<a href="https://www.relishapp.com/rspec" target="_blank" rel="external">Rspec</a>を使用するようにしてみたときの個人的メモ。</p>
-<a id="more"></a>
-<p>Railsのバージョンは4.1.4。</p>
-<p>まずはpluginのひな形作成。testunitは使用しないのでslip。またdummyアプリのパスをspec/dummyにしておく。</p>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=creata-plugin.sh"></script>
-
-<p>rspec-rails をmy-gem.gemspecに追加</p>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=my-gem.gemspec"></script>
-
-<p>bundle installして、rspec-railsをinstallする。<br>dummy/spec へのシンボリックリンクを作成</p>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=create-symlink.sh"></script>
-
-<p>Rspecのインストールし、spec/rails_helper.rbのパスを変更</p>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=install-rspec.sh"></script>
-
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=rails_helper.rb"></script>
-
-<p>Rakeタスクも追加し、実行できることを確認</p>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=Rakefile"></script>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=rake_task.sh"></script>
-
-<p>以下のような構成で、簡単な文字列を出力するだけのプラグインを作成して</p>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=tree_mygem.sh"></script>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=version.rb"></script>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=my_gem.rb"></script>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=railtie.rb"></script>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=action_view.rb"></script>
-
-<p>テストを作成</p>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=action_view_spec.rb"></script>
-
-<p>ちなみに、RubyのStructを使うことで、コンパクトにまとめられそうとか。</p>
-<p>dummyアプリケーションにcontroller、routesとviewを追加する。</p>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=post_controller.rb"></script>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=routes.rb"></script>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=index.html.erb"></script>
-
-<p>テストを走らせてみる。</p>
-<script src="https://gist.github.com/kazu69/76ddfbefddf16c79f1fc.js?file=exec_plugin_spec"></script>
-
-<p>シンボリックリンクを作成するのどうなのかなと思ったりもしたけど、一通り良さそうである。</p>
-<p>参考にしたページ<br><a href="http://stackoverflow.com/questions/16525222/how-to-test-a-concern-in-rails" target="_blank" rel="external">How to Test a Concern in Rails</a><br><a href="http://stackoverflow.com/questions/8507798/rails-3-1-plugin-gem-dummy-test-app-rspec" target="_blank" rel="external">Rails 3.1 plugin gem, dummy test app, rspec</a><br><a href="http://pothibo.com/2013/06/customize-rails-view-controller-with-railtie/" target="_blank" rel="external">Customize Rails view &amp; controller with Railtie</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>Rails pluginを調べていて、思ったのだが普通にplugin作成した場合は<a href="http://docs.ruby-lang.org/ja/2.1.0/library/test=2funit.html">Test::Unit</a>がテストフレームワークとして提供される、<br>ここで<a href="https://www.relishapp.com/rspec">Rspec</a>を使用するようにしてみたときの個人的メモ。</p>]]>
-    
-    </summary>
-    
-      <category term="memo" scheme="http://blog.kazu69.net/categories/memo/"/>
-    
-      <category term="ruby" scheme="http://blog.kazu69.net/categories/memo/ruby/"/>
-    
-      <category term="tec" scheme="http://blog.kazu69.net/categories/memo/ruby/tec/"/>
     
   </entry>
   

@@ -140,22 +140,22 @@ ga('send', 'pageview');
 <h1 id="停止">停止</h1><p>$ sudo apachectl stop</p>
 <h1 id="再起動">再起動</h1><p>$ sudo apachectl restart</p>
 <p>$ Apache version<br>$ httpd -v<br>Server version: Apache/2.2.22 (Unix)<br>Server built:   Aug 24 2012 17:16:58<br>[/shell]</p>
-<h2 id="MySQL_install">MySQL install</h2><p>[shell]<br>$ brew install mysql<br>$ mysql_install_db —verbose -user=$(whoami) —basedir=&amp;quot;$(brew —prefix mysql)&amp;quot; —datadir=/usr/local/var/mysql —tmpdir=/tmp<br>[/shell]</p>
+<h2 id="MySQL_install">MySQL install</h2><p>[shell]<br>$ brew install mysql<br>$ mysql_install_db –verbose -user=$(whoami) –basedir=&amp;quot;$(brew –prefix mysql)&amp;quot; –datadir=/usr/local/var/mysql –tmpdir=/tmp<br>[/shell]</p>
 <h2 id="phpenvinstall">phpenvinstall</h2><p>続いて<a href="https://github.com/CHH/phpenv" target="_blank" rel="external">phpenv</a>のインストール。phpenvは<a href="https://github.com/sstephenson/rbenv/" target="_blank" rel="external">rbenv</a>を使って異なるバージョンのphpを管理するツール。</p>
-<p>[shell]<br>$brew install —HEAD phpenv</p>
+<p>[shell]<br>$brew install –HEAD phpenv</p>
 <h1 id="-bashrcなどに追加">.bashrcなどに追加</h1><p>$ vi ~/.bashrc<br>export PATH=&amp;quot;$HOME/.phpenv/bin:$PATH&amp;quot;<br>eval &amp;quot;$(phpenv init -)&amp;quot;</p>
 <h1 id="設定したPATHの設定を有効にする">設定したPATHの設定を有効にする</h1><p>$ source ~/.bashrc<br>[/shell]</p>
 <h2 id="php-build_install">php-build install</h2><p><a href="https://github.com/CHH/php-build" target="_blank" rel="external">php-build</a>は phpのダウンロードからインストールまでを行うツール</p>
 <p>[shell]<br>$ brew install php-build</p>
 <p>Add the following script block to <code>$HOME/.bashrc</code>, <code>$HOME/.zshrc</code>, or your shell’s equivalent configuration file.</p>
 <p>Change <code>5.x.x</code> to the version of PHP you’d like your shell to default to or remove <code>php-version 5.x.x &amp;amp;amp;gt;/dev/null</code><br>if you do not wish to have a default version of PHP loaded into your <code>$PATH</code>. The large comment block is optional:</p>
-<h6 id="#">#</h6><h1 id="php-version_(activate_default_PHP_version_and_autocompletion)">php-version (activate default PHP version and autocompletion)</h1><h1 id="PHP_HOME_=&amp;gt;_should_reflect_location_of_compiled_PHP_versions">PHP_HOME                      =&amp;gt; should reflect location of compiled PHP versions</h1><h1 id="PHPVERSION_DISABLE_COMPLETE=1_=&amp;gt;_to_disable_shell_completion">PHPVERSION_DISABLE_COMPLETE=1 =&amp;gt; to disable shell completion</h1><h6 id="#-1">#</h6><p>export PHP_VERSIONS=$(dirname $(brew —prefix php))<br>[ -f $(brew —prefix php-version)/php-version.sh ] &amp;amp;&amp;amp;<br>  source $(brew —prefix php-version)/php-version.sh &amp;amp;&amp;amp; php-version 5.x.x &amp;gt;/dev/null<br>/usr/local/Cellar/php-version/0.9.3: 3 files, 20K, built in 2 seconds</p>
+<h6 id="#">#</h6><h1 id="php-version_(activate_default_PHP_version_and_autocompletion)">php-version (activate default PHP version and autocompletion)</h1><h1 id="PHP_HOME_=&amp;gt;_should_reflect_location_of_compiled_PHP_versions">PHP_HOME                      =&amp;gt; should reflect location of compiled PHP versions</h1><h1 id="PHPVERSION_DISABLE_COMPLETE=1_=&amp;gt;_to_disable_shell_completion">PHPVERSION_DISABLE_COMPLETE=1 =&amp;gt; to disable shell completion</h1><h6 id="#-1">#</h6><p>export PHP_VERSIONS=$(dirname $(brew –prefix php))<br>[ -f $(brew –prefix php-version)/php-version.sh ] &amp;amp;&amp;amp;<br>  source $(brew –prefix php-version)/php-version.sh &amp;amp;&amp;amp; php-version 5.x.x &amp;gt;/dev/null<br>/usr/local/Cellar/php-version/0.9.3: 3 files, 20K, built in 2 seconds</p>
 <h1 id="php-buildのPATHを追加">php-buildのPATHを追加</h1><p>$ vi ~/.bashrc<br>export PATH=/usr/local/bin:$PATH</p>
 <h1 id="設定したPATHの設定を有効にする-1">設定したPATHの設定を有効にする</h1><p>$ source ~/.bashrc<br>[/shell]</p>
 <p>ダウンロードできるバージョンの確認</p>
-<p>[shell]<br>$ php-build —definitions<br>5.2.17<br>5.3.10<br>5.3.11<br>5.3.11RC1<br>5.3.11RC2<br>5.3.12<br>5.3.13<br>5.3.14<br>5.3.15<br>5.3.2<br>5.3.3<br>5.3.6<br>5.3.8<br>5.3.9<br>5.3.9RC3<br>5.3.9RC4<br>5.3snapshot<br>5.4.0<br>5.4.0RC1<br>5.4.0RC2<br>5.4.0RC3<br>5.4.0RC4<br>5.4.0RC5<br>5.4.0RC6<br>5.4.0RC7<br>5.4.0RC8<br>5.4.0alpha3<br>5.4.0beta1<br>5.4.0beta2<br>5.4.1<br>5.4.1RC1<br>5.4.1RC2<br>5.4.2<br>5.4.3<br>5.4.4<br>5.4.5<br>5.4snapshot<br>[/shell]</p>
+<p>[shell]<br>$ php-build –definitions<br>5.2.17<br>5.3.10<br>5.3.11<br>5.3.11RC1<br>5.3.11RC2<br>5.3.12<br>5.3.13<br>5.3.14<br>5.3.15<br>5.3.2<br>5.3.3<br>5.3.6<br>5.3.8<br>5.3.9<br>5.3.9RC3<br>5.3.9RC4<br>5.3snapshot<br>5.4.0<br>5.4.0RC1<br>5.4.0RC2<br>5.4.0RC3<br>5.4.0RC4<br>5.4.0RC5<br>5.4.0RC6<br>5.4.0RC7<br>5.4.0RC8<br>5.4.0alpha3<br>5.4.0beta1<br>5.4.0beta2<br>5.4.1<br>5.4.1RC1<br>5.4.1RC2<br>5.4.2<br>5.4.3<br>5.4.4<br>5.4.5<br>5.4snapshot<br>[/shell]</p>
 <p>php-buildはApacheのモジュールには対応してないようなので、Apacheのモジュールが生成されるように設定を変更します。<br>/usr/local/share/php-build/default_configure_options に以下を追加します。<br>[shell]</p>
-<h1 id="以下の1行を追加">以下の1行を追加</h1><p>—with-apxs2=/usr/local/sbin/apxs<br>[/shell]</p>
+<h1 id="以下の1行を追加">以下の1行を追加</h1><p>–with-apxs2=/usr/local/sbin/apxs<br>[/shell]</p>
 <p>これでphpを自動で展開してモジュールも生成します。適当なphpをホームディレクトリ以下にinstallして展開します。</p>
 <p>[shell]<br>$ php-build 5.4.5 ~/.phpenv/versions/5.4.5<br>[Info]: Loaded pyrus Plugin.<br>[Info]: Loaded xdebug Plugin.<br>[Info]: php.ini-production gets used as php.ini<br>[Info]: Building 5.4.0 into /Users/<em>*</em>/.phpenv/versions/5.4.5<br>[/shell]</p>
 <p>おそらくmake時にいろいろとエラーが出るので、その都度解決してあげる必要があります。</p>
@@ -174,7 +174,7 @@ ga('send', 'pageview');
 </ul>
 <p>system はあらかじめmacに入っているphpです。<br>php-buildでインストールしたphpはユーザーのホームディレクトリの.phpenvディレクトリに展開されてます。</p>
 <p>[shell]</p>
-<h1 id="ユーザーのホームディレクトリ">ユーザーのホームディレクトリ</h1><p>.phpenv/<br>  |—versions<br>      |—5.4.5<br>[/shell]</p>
+<h1 id="ユーザーのホームディレクトリ">ユーザーのホームディレクトリ</h1><p>.phpenv/<br>  |–versions<br>      |–5.4.5<br>[/shell]</p>
 <p>そしてphpのバージョンを切替え</p>
 <p>[shell]<br>$ phpenv global 5.4.5</p>
 <h1 id="バージョン確認">バージョン確認</h1><p>$ php -v<br>PHP 5.4.5 (cli) (built: Feb  1 2013 00:21:44)<br>Copyright (c) 1997-2012 The PHP Group<br>Zend Engine v2.4.0, Copyright (c) 1998-2012 Zend Technologies<br>    with Xdebug v2.2.0, Copyright (c) 2002-2012, by Derick Rethan<br>[/shell]</p>
@@ -182,7 +182,7 @@ ga('send', 'pageview');
 <p>が、こちらでは変わってない。<br>これは、phpenvはApacheのphpモジュールの切替えを行わないので、Apacheのphpは切り替わってません。<br>ということで、Apacheのモジュール切替スクリプト(rbenv-apache-version)を追加します。</p>
 <p>[shell]</p>
 <h1 id="~/-phpenv/libexec/rbenv-apache-version">~/.phpenv/libexec/rbenv-apache-version</h1><h1 id="!/usr/bin/env_bash">!/usr/bin/env bash</h1><p>set -e<br>[ -n &amp;quot;$RBENV_DEBUG&amp;quot; ] &amp;amp;&amp;amp; set -x</p>
-<h1 id="Provide_rbenv_completions">Provide rbenv completions</h1><p>if [ &amp;quot;$1&amp;quot; = &amp;quot;—complete&amp;quot; ]; then<br>  echo system<br>  exec rbenv-versions —bare<br>fi</p>
+<h1 id="Provide_rbenv_completions">Provide rbenv completions</h1><p>if [ &amp;quot;$1&amp;quot; = &amp;quot;–complete&amp;quot; ]; then<br>  echo system<br>  exec rbenv-versions –bare<br>fi</p>
 <p>RBENV_VERSION=&amp;quot;$1&amp;quot;<br>RBENV_ON_FILE=&amp;quot;${RBENV_ROOT}/versions&amp;quot;<br>APACHE_ROOT=&amp;quot;/usr/local/Cellar/httpd/2.2.22&amp;quot;<br>APACHE_MODULE_PATH=&amp;quot;${APACHE_ROOT}/libexec&amp;quot;</p>
 <h1 id="Make_sure_the_specified_version_is_installed-">Make sure the specified version is installed.</h1><p>RBENV_PREFIX_PATH=&amp;quot;${RBENV_ROOT}/versions/${RBENV_VERSION}&amp;quot;<br>if [ ! -d &amp;quot;$RBENV_PREFIX_PATH&amp;quot; ]; then<br>  echo &amp;quot;rbenv: version &#96;${RBENV_VERSION}’ not installed&amp;quot; &amp;gt;&amp;amp;2<br>  exit 1<br>fi</p>
 <p>PHP_MODULE_PATH=&amp;quot;$RBENV_PREFIX_PATH/libphp5.so&amp;quot;</p>
@@ -201,7 +201,7 @@ ga('send', 'pageview');
 <h1 id="vendorを作成するディレクトリでphp_archiveファイル(composer-phar)をダウンロード">vendorを作成するディレクトリでphp archiveファイル(composer.phar)をダウンロード</h1><p>$ curl -s <a href="https://getcomposer.org/installer" target="_blank" rel="external">https://getcomposer.org/installer</a> | php<br>[/shell]</p>
 <p>外部ライブラリはカレントディレクトリのcomposer.jsonで管理されます。<br>jsonファイルで定義したパッケージをautoloadしてくれます。</p>
 <p>以下のような感じです。</p>
-<p>[shell]<br>YOUR_PROJECT_DIR<br> |— vendor<br> |— composer.json<br> |— composer.phar<br>[/shell]</p>
+<p>[shell]<br>YOUR_PROJECT_DIR<br> |– vendor<br> |– composer.json<br> |– composer.phar<br>[/shell]</p>
 <p>phpのユニットテストフレームワーク<a href="https://github.com/sebastianbergmann/phpunit/" target="_blank" rel="external">phpunit</a>と、インテグレーションテストフレームワーク<a href="http://codeception.com/" target="_blank" rel="external">codeception</a>をインストールしてみようと思います。<br>composer.jsonを別個で作成してもいいですが、対話式のパッケージ作成コマンドもあります。今回は対話式のパッケージ作成コマンドで<br>composer.jsonを作成してみます。</p>
 <p>[shell]<br>$ composer init</p>
 <p>Welcome to the Composer config generator</p>
@@ -229,7 +229,7 @@ ga('send', 'pageview');
 <p>必要なパッケージをインストールします</p>
 <p>[shell]<br>$ composer install<br>Loading composer repositories with package information<br>Installing dependencies<br>Nothing to install or update<br>Generating autoload files<br>[/shell]</p>
 <p>composer.lockとvendorディレクトリが作成されます。<br>パッケージはvendorディレクトリにインストールされます。<br>また、vendorにautoload.phpが作成されます。</p>
-<p>[shell]<br>YOUR_PROJECT_DIR<br> |— .gitignore<br> |— composer.json<br> |— composer.phar<br> |— composer.lock<br> |— vendor<br>       |— autoload.php<br>       |— composer/<br>[/shell]</p>
+<p>[shell]<br>YOUR_PROJECT_DIR<br> |– .gitignore<br> |– composer.json<br> |– composer.phar<br> |– composer.lock<br> |– vendor<br>       |– autoload.php<br>       |– composer/<br>[/shell]</p>
 <p>インストールしたライブラリを読込むのはこのautoload.phpをrequireすればいいということなので、とても簡単です。</p>
 <p>[php]<br>require ‘vendor/autoload.php’;<br>[/php]</p>
 <p>composer.lockファイルが生成された段階で、composer.jsonを変更した場合はupdateする必要があります。</p>
