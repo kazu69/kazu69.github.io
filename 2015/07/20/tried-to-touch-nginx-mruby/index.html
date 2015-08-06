@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="nginxの設定をrubyでダイナミックに設定できるnginx_mrubyを試してみた。">
-<meta property="og:updated_time" content="2015-08-06T13:35:08.000Z">
+<meta property="og:updated_time" content="2015-08-06T23:25:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx_mrubyを試してみた">
 <meta name="twitter:description" content="nginxの設定をrubyでダイナミックに設定できるnginx_mrubyを試してみた。">
@@ -103,7 +103,7 @@ ga('send', 'pageview');
 <p><a href="https://github.com/matsumoto-r/ngx_mruby/wiki/Install" target="_blank" rel="external">wikiのinstall</a>を参考にした感じなのだが、以下のようになった。</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=Dockerfile"></script>
 <p>mrubyはビルドの設定をbuild_config.rbというファイルで行う。今回はbasic認証を行ってみようと思うので<br>mrubyのgemであるmgemに<a href="https://github.com/mattn/mruby-base64" target="_blank" rel="external">mruby-base64</a>を追加した。</p>
-<p>ちなみに、同じようにapcheのconfをmrubyで制御できる<a href="https://github.com/matsumoto-r/mod_mruby/" target="_blank" rel="external">mod_mruby</a>にはbasic認証のために<a href="https://github.com/matsumoto-r/mod_mruby/wiki/Directives#basic-auth" target="_blank" rel="external">mrubyAuthnCheckPasswordというDirectiveが存在していた</a>。</p>
+<p>ちなみに、同じようにapacheのconfをmrubyで制御できる<a href="https://github.com/matsumoto-r/mod_mruby/" target="_blank" rel="external">mod_mruby</a>にはbasic認証のために<a href="https://github.com/matsumoto-r/mod_mruby/wiki/Directives#basic-auth" target="_blank" rel="external">mrubyAuthnCheckPasswordというDirectiveが存在していた</a>。</p>
 <p>ということで、今回は以下のようにした。</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=build_config.rb"></script>
 <p><a href="https://github.com/matsumoto-r/ngx_mruby/wiki/Directives" target="_blank" rel="external">ngx_mrubyのwiki</a>にあるように、サーバーの各イベントでrubyファイルをhookできるdirectiveがかある。</p>
