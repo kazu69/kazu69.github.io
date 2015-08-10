@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/08/09/low-level-css-basscss-looks-good/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="ここ最近結構cssを弄っていたけど、その時に見つけたBasscssというcss Frameworkが良さそうだった。">
-<meta property="og:updated_time" content="2015-08-10T02:11:40.000Z">
+<meta property="og:updated_time" content="2015-08-10T05:51:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="low-level css framework Basscssが良さそうなきがする">
 <meta name="twitter:description" content="ここ最近結構cssを弄っていたけど、その時に見つけたBasscssというcss Frameworkが良さそうだった。">
@@ -99,14 +99,15 @@ ga('send', 'pageview');
       <p>ここ最近結構cssを弄っていたけど、その時に見つけた<a href="http://www.basscss.com/" target="_blank" rel="external">Basscss</a>というcss Frameworkが良さそうだった。</p>
 <a id="more"></a>
 <p>BasscssはOOCSSの原理に則り設計されている。<br>特徴としては、依存度の小さいImuutableなutility moduleを備えている。<br>依存性が低いので、副作用が少なくなる。<br>また軽量であり、<a href="https://github.com/postcss/postcss" target="_blank" rel="external">postCSS</a>を使っているおり、必要なmoduleのみをビルドできる。</p>
-<h2 id="マルチクラスでの実装">マルチクラスでの実装</h2><p><a href="http://www.basscss.com/docs/guides/" target="_blank" rel="external">Document</a>にある通りなのだが、マルチクラスで実装する。</p>
+<h2 id="マルチクラスでの実装">マルチクラスでの実装</h2><p><a href="http://www.basscss.com/docs/guides/" target="_blank" rel="external">Document</a>にある通りなのだが、マルチクラスで実装している。</p>
 <p>以下のような感じ(<a href="http://www.basscss.com/docs/guides/layout/" target="_blank" rel="external">Page Layoutより</a>)</p>
 <script src="//gist.github.com/kazu69/8e71f5307a7a93c9f236.js?file=navigation.html"></script>
 <script src="//gist.github.com/kazu69/8e71f5307a7a93c9f236.js?file=3colums.html"></script>
 <p>基本的な機能をImuutableなmoduleで実装していくことで、変更に対しても柔軟に対応できる。<br>また、Imuutableなmoduleはシンプルな設計なのでコードの可読性が確保できる。<br>HTML側が複雑になるという懸念もあるが、シングルクラス設計に比べHTML側である程度スタイルが予想できる点では、メリットになるのではないかなと思う。</p>
 <h2 id="依存度が低い">依存度が低い</h2><p><a href="http://www.basscss.com/stats/" target="_blank" rel="external">stats</a> にあるように、依存度が低いことがこのFrameworkの特徴。</p>
 <p>CSSはシングルクラスで設計する場合、どうしても依存性が高くなり、副作用が発生してくる。<br>マルチクラス設計にしてしまうことで、この問題を回避している。<br>サービス運用していくうちに、ネーミングルールと継承のあたりで、CSSは破綻の方に向かっていきがちなので、<br>依存度の低いFrameworkを使用して、基本設計を行うことで解決できるではないかと思う。</p>
-<p>自分でも色々と試してみたが、CSS設計ではマルチクラスでImuutableなmoduleを使うことに落ち着いた。<br>Basscssは自分が実務で取り入れた考え方なり、実装方法と似た感じだった。</p>
+<p><a href="http://www.basscss.com/docs/reference/principles/" target="_blank" rel="external">principles</a>にあるように、Basscssでは、短くシンプルな命名規則を用い、コンテンツに由来するコンポーネントの再利用を避けること。基本的なコンポーネントの構造はテーマから分離することなど、設計の原則もはっきりしている。</p>
+<p>自分でもCSSの設計は色々な手法を試してみたが、マルチクラスでImuutableなmoduleを使うことに落ち着いた。<br>Basscssは自分が実務で取り入れた考え方なり、実装方法と似た感じだった。</p>
 <p>Basscssのような依存度の低いImuutableなmoduleをうまく使ってマルチクラスで実装し、運用していく手法を選択するか、<br>厳密なネーミングルールのもとシングルクラスで実装し、運用フェーズでCSSが破綻する前にコンポーネントそのものを作り直していく手法のどちらかが今の所いいのかなと思っている。</p>
 
     
