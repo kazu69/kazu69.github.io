@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>low-level css framework Basscssが良さそうなきがする | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ここ最近結構cssを弄っていたけど、その時に見つけたBasscssというcss Frameworkが良さそうだった。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="low-level css framework Basscssが良さそうなきがする">
+<meta property="og:url" content="http://blog.kazu69.net/2015/08/09/low-level-css-basscss-looks-good/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="ここ最近結構cssを弄っていたけど、その時に見つけたBasscssというcss Frameworkが良さそうだった。">
+<meta property="og:updated_time" content="2015-08-10T02:11:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="low-level css framework Basscssが良さそうなきがする">
+<meta name="twitter:description" content="ここ最近結構cssを弄っていたけど、その時に見つけたBasscssというcss Frameworkが良さそうだった。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-low-level-css-basscss-looks-good" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      low-level css framework Basscssが良さそうなきがする
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2015-08-09T03:41:24.000Z" itemprop="datePublished">2015-08-09</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>ここ最近結構cssを弄っていたけど、その時に見つけた<a href="http://www.basscss.com/" target="_blank" rel="external">Basscss</a>というcss Frameworkが良さそうだった。</p>
+<a id="more"></a>
+<p>BasscssはOOCSSの原理に則り設計されている。<br>特徴としては、依存度の小さいImuutableなutility moduleを備えている。<br>依存性が低いので、副作用が少なくなる。<br>また軽量であり、<a href="https://github.com/postcss/postcss" target="_blank" rel="external">postCSS</a>を使っているおり、必要なmoduleのみをビルドできる。</p>
+<h2 id="マルチクラスでの実装">マルチクラスでの実装</h2><p><a href="http://www.basscss.com/docs/guides/" target="_blank" rel="external">Document</a>にある通りなのだが、マルチクラスで実装する。</p>
+<p>以下のような感じ(<a href="http://www.basscss.com/docs/guides/layout/" target="_blank" rel="external">Page Layoutより</a>)</p>
+<script src="//gist.github.com/kazu69/8e71f5307a7a93c9f236.js?file=navigation.html"></script>
+<script src="//gist.github.com/kazu69/8e71f5307a7a93c9f236.js?file=3colums.html"></script>
+<p>基本的な機能をImuutableなmoduleで実装していくことで、変更に対しても柔軟に対応できる。<br>また、Imuutableなmoduleはシンプルな設計なのでコードの可読性が確保できる。<br>HTML側が複雑になるという懸念もあるが、シングルクラス設計に比べHTML側である程度スタイルが予想できる点では、メリットになるのではないかなと思う。</p>
+<h2 id="依存度が低い">依存度が低い</h2><p><a href="http://www.basscss.com/stats/" target="_blank" rel="external">stats</a> にあるように、依存度が低いことがこのFrameworkの特徴。</p>
+<p>CSSはシングルクラスで設計する場合、どうしても依存性が高くなり、副作用が発生してくる。<br>マルチクラス設計にしてしまうことで、この問題を回避している。<br>サービス運用していくうちに、ネーミングルールと継承のあたりで、CSSは破綻の方に向かっていきがちなので、<br>依存度の低いFrameworkを使用して、基本設計を行うことで解決できるではないかと思う。</p>
+<p>自分でも色々と試してみたが、CSS設計ではマルチクラスでImuutableなmoduleを使うことに落ち着いた。<br>Basscssは自分が実務で取り入れた考え方なり、実装方法と似た感じだった。</p>
+<p>Basscssのような依存度の低いImuutableなmoduleをうまく使ってマルチクラスで実装し、運用していく手法を選択するか、<br>厳密なネーミングルールのもとシングルクラスで実装し、運用フェーズでCSSが破綻する前にコンポーネントそのものを作り直していく手法のどちらかが今の所いいのかなと思っている。</p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2015/08/09/low-level-css-basscss-looks-good/" class="hatena-bookmark-button" data-hatena-bookmark-title="low-level css framework Basscssが良さそうなきがする" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2015/08/09/low-level-css-basscss-looks-good/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/css/">css</a></li></ul>
+
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2015/08/05/try-http2-with-h2o-and-mruby/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            HTTP/2サーバーh2oでサーバプッシュを試してみた
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+  <aside>
+    
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+  </aside>
+
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2015 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2015/08/09/low-level-css-basscss-looks-good/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+</body>
+</html>
