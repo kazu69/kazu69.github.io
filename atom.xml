@@ -104,7 +104,7 @@
     <link href="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/"/>
     <id>http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/</id>
     <published>2015-07-20T04:32:23.000Z</published>
-    <updated>2015-08-17T04:38:12.000Z</updated>
+    <updated>2015-08-17T04:41:22.000Z</updated>
     <content type="html"><![CDATA[<p>nginxの設定をrubyでダイナミックに設定できる<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">nginx_mruby</a>を試してみた。</p>
 <a id="more"></a>
 <p>個人的にnginx_mrubyを使うことのメリットは、サーバーの設定をダウンタイムなしに変更できるという点と、<br>rubyを使ってアプリケーションコードを書くように、サーバーの設定扱うことができる(rack middlewareのように)という点と感じた。</p>
