@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  
   <title><![CDATA[69log]]></title>
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
-  <link href="http://blog.kazu69.net//"/>
-  <updated>2015-08-10T05:51:27.000Z</updated>
-  <id>http://blog.kazu69.net//</id>
+  <link href="http://blog.kazu69.net/"/>
+  <updated>2015-08-10T05:51:25.000Z</updated>
+  <id>http://blog.kazu69.net/</id>
   
   <author>
     <name><![CDATA[kazu69]]></name>
@@ -20,7 +19,7 @@
     <link href="http://blog.kazu69.net/2015/08/09/low-level-css-basscss-looks-good/"/>
     <id>http://blog.kazu69.net/2015/08/09/low-level-css-basscss-looks-good/</id>
     <published>2015-08-09T03:41:24.000Z</published>
-    <updated>2015-08-10T05:51:27.000Z</updated>
+    <updated>2015-08-10T05:51:25.000Z</updated>
     <content type="html"><![CDATA[<p>ここ最近結構cssを弄っていたけど、その時に見つけた<a href="http://www.basscss.com/" target="_blank" rel="external">Basscss</a>というcss Frameworkが良さそうだった。</p>
 <a id="more"></a>
 <p>BasscssはOOCSSの原理に則り設計されている。<br>特徴としては、依存度の小さいImuutableなutility moduleを備えている。<br>依存性が低いので、副作用が少なくなる。<br>また軽量であり、<a href="https://github.com/postcss/postcss" target="_blank" rel="external">postCSS</a>を使っているおり、必要なmoduleのみをビルドできる。</p>
@@ -49,7 +48,7 @@
     <link href="http://blog.kazu69.net/2015/08/05/try-http2-with-h2o-and-mruby/"/>
     <id>http://blog.kazu69.net/2015/08/05/try-http2-with-h2o-and-mruby/</id>
     <published>2015-08-05T07:56:14.000Z</published>
-    <updated>2015-08-06T11:25:34.000Z</updated>
+    <updated>2015-08-06T11:24:31.000Z</updated>
     <content type="html"><![CDATA[<p>HTTP/2 serverである<a href="https://github.com/h2o/h2o" target="_blank" rel="external">h2o</a>で初めてのサーバプッシュを試してみた。</p>
 <a id="more"></a>
 <p>今回は<a href="https://github.com/matsumoto-r/h2o_mruby" target="_blank" rel="external">h2o_mruby</a>も触ってみたかったということで、h2oをmrubyとともにビルドして少し触ってみた。</p>
@@ -105,7 +104,7 @@
     <link href="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/"/>
     <id>http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/</id>
     <published>2015-07-20T04:32:23.000Z</published>
-    <updated>2015-08-06T23:25:00.000Z</updated>
+    <updated>2015-08-17T04:38:12.000Z</updated>
     <content type="html"><![CDATA[<p>nginxの設定をrubyでダイナミックに設定できる<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">nginx_mruby</a>を試してみた。</p>
 <a id="more"></a>
 <p>個人的にnginx_mrubyを使うことのメリットは、サーバーの設定をダウンタイムなしに変更できるという点と、<br>rubyを使ってアプリケーションコードを書くように、サーバーの設定扱うことができる(rack middlewareのように)という点と感じた。</p>
@@ -125,7 +124,7 @@
 <h2 id="basic認証してみる">basic認証してみる</h2><script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=basic_auth.sh"></script>
 <h2 id="ブラウザでアクセスしてみる">ブラウザでアクセスしてみる</h2><p>今回はboot2dockerをつかったのでブラウザアクセスするために、<br>virtualboxとホストマシン間でのポートフォワーディングの設定が必要。</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=boot2docker-virtualbox-portformarding.sh"></script>
-<p>ブラウザで<a href="http://localhost:8080でアクセスできるようになった。" target="_blank" rel="external">http://localhost:8080でアクセスできるようになった。</a></p>
+<p>ブラウザで localhost:8080 でアクセスできるようになる。</p>
 <p>basic認証だとあまり良い例にはならなかったけど、例えば、特定のディレクトリへのアクセスなどを制御したい時に、<br>nginxのconfに正規表現などでいろいろと書くより、rubyでかける方が個人的には敷居が低く感じる。</p>
 <p>実際にインフラ周りの知識はあまりないけど、rubyでサーバーを柔軟に制御できるのは便利だと思った。</p>
 <p>あと、mrubyのデバッグについて良い方法が知りたい。</p>
@@ -146,7 +145,7 @@
     <link href="http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/"/>
     <id>http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/</id>
     <published>2015-06-14T15:00:32.000Z</published>
-    <updated>2015-07-13T11:16:24.000Z</updated>
+    <updated>2015-07-13T11:16:30.000Z</updated>
     <content type="html"><![CDATA[<p>ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。</p>
 <a id="more"></a>
 <h2 id="JavaScriptの最近の事情">JavaScriptの最近の事情</h2><p>javascriptではES6でコードを書き、BabelでTransplieするという流れが定着しつつある。<br>これは、これまで必要だったライブラリが不要になり、コードが依存するライブラリを減らすことができ、altJSに頼らないで開発できるという利点からである。</p>

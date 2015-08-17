@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="nginxの設定をrubyでダイナミックに設定できるnginx_mrubyを試してみた。">
-<meta property="og:updated_time" content="2015-08-06T23:25:00.000Z">
+<meta property="og:updated_time" content="2015-08-17T04:38:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx_mrubyを試してみた">
 <meta name="twitter:description" content="nginxの設定をrubyでダイナミックに設定できるnginx_mrubyを試してみた。">
@@ -115,7 +115,7 @@ ga('send', 'pageview');
 <h2 id="basic認証してみる">basic認証してみる</h2><script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=basic_auth.sh"></script>
 <h2 id="ブラウザでアクセスしてみる">ブラウザでアクセスしてみる</h2><p>今回はboot2dockerをつかったのでブラウザアクセスするために、<br>virtualboxとホストマシン間でのポートフォワーディングの設定が必要。</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=boot2docker-virtualbox-portformarding.sh"></script>
-<p>ブラウザで<a href="http://localhost:8080でアクセスできるようになった。" target="_blank" rel="external">http://localhost:8080でアクセスできるようになった。</a></p>
+<p>ブラウザで localhost:8080 でアクセスできるようになる。</p>
 <p>basic認証だとあまり良い例にはならなかったけど、例えば、特定のディレクトリへのアクセスなどを制御したい時に、<br>nginxのconfに正規表現などでいろいろと書くより、rubyでかける方が個人的には敷居が低く感じる。</p>
 <p>実際にインフラ周りの知識はあまりないけど、rubyでサーバーを柔軟に制御できるのは便利だと思った。</p>
 <p>あと、mrubyのデバッグについて良い方法が知りたい。</p>
