@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/05/16/moved-hexo/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。移行にあたり、やったことをメモにしておく。">
-<meta property="og:updated_time" content="2015-07-14T13:43:37.000Z">
+<meta property="og:updated_time" content="2015-08-17T04:52:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="WordpressからHexoに移行してGitHub Pageで公開した">
 <meta name="twitter:description" content="ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。移行にあたり、やったことをメモにしておく。">
@@ -117,7 +117,7 @@ ga('send', 'pageview');
 <p>となった。</p>
 <h2 id="wordpressの記事のslugを英語化">wordpressの記事のslugを英語化</h2><p>Hexoに移行するにあたり、wordpressからexportした記事をmigrationするツールを使うが、<br>このツールだとwordpressでexportしたxmlの各投稿情報の <strong>wp:post_name</strong> の値をHexoのmarkdownファイルのファイル名として使ってしまう。</p>
 <p>したがって、日本語などの場合URLエンコードされてしまい、どうやらうまくいかない。<br>ということでまずこの値を英語に翻訳する必要があった。</p>
-<p><strong>wp:post_name</strong>はwordpressのslugということなので、全投稿のslugを自動翻訳する <a href="https://wordpress.org/plu   gins/wp-slug-translate/" target="_blank" rel="external">wp-slug-translate</a> を使った。</p>
+<p><strong>wp:post_name</strong>はwordpressのslugということなので、全投稿のslugを自動翻訳する <a href="https://wordpress.org/plugins/wp-slug-translate/" target="_blank" rel="external">wp-slug-translate</a> を使った。</p>
 <p><strong>wp-slug-translate</strong>は内部でMicrosoft Translator APIを使っているらしく、<a href="http://azure.microsoft.com/ja-jp/marketplace/" target="_blank" rel="external">Microsoft Azure Marketplace</a> にアカウント作成が必要だ。</p>
 <p>詳しい手順は <a href="http://shumaiblog.com/wordpress-plugin-wp-slug-translate/" target="_blank" rel="external">WordPressのスラッグを日本語から英訳してくれるプラグイン「WP Slug Translate」</a> を参考にすすめた。</p>
 <p>プラグインを有効化したのちに、管理画面から記事を数十件ごとに更新することで翻訳される。<br>この状態で、wordpressのデータをexportする準備が整った。</p>
