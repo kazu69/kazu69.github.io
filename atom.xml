@@ -4,7 +4,7 @@
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.kazu69.net/"/>
-  <updated>2015-09-07T15:04:20.000Z</updated>
+  <updated>2015-10-13T15:20:28.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -13,6 +13,78 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Subresource Integrityについて調べた]]></title>
+    <link href="http://blog.kazu69.net/2015/10/01/check-for-subresource-integrity/"/>
+    <id>http://blog.kazu69.net/2015/10/01/check-for-subresource-integrity/</id>
+    <published>2015-10-01T13:34:16.000Z</published>
+    <updated>2015-10-13T15:20:28.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="http://githubengineering.com/subresource-integrity/" target="_blank" rel="external">Subresource Integrity</a> という記事をみて、<br>ちょっと興味深かったのでSubresource Integrityについて、軽く見てみた。</p>
+<a id="more"></a>
+<h2 id="Subresource_Integrityはどういうものか">Subresource Integrityはどういうものか</h2><p>おそらく、以下のようなもの。<br>ウェブアプリケーションでCDNをつかって、サブリソースを参照することは当たり前になっている。<br>しかし参照先のサブリソースが安全であるという保証はない。<br>もし、CDN経由で参照しているサブリソースが攻撃者により改変された場合、XSSの危険性が生じる。</p>
+<p>これは、サブリソースの整合性をチェックする仕組みを導入することで、危険を回避できる。<br>Subresource Integrityとは、サブリースをSHA256, SHA512などでハッシュ化して、linkタグやscriptタグにintegrity属性として付与することで、整合性を確認できるようにしたもの<br>。<br>もし、integrity属性がある場合は、ブラウザは読み込み時に整合性をチェックして一致した場合にのみロードされる。</p>
+<h2 id="Subresource_Integrityを試す">Subresource Integrityを試す</h2><p><a href="https://developer.mozilla.org/ja/docs/Web/Security/Subresource_Integrity" target="_blank" rel="external">MDN Subresource Integrity</a>をみると<br>Chrome v45, Firefox v43 とのことだったので、Chrome Canaryで試した。</p>
+<p>まず適当なファイルをsha256でハッシュ化して、integrity属性の値を生成する。</p>
+<script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=create.sh"></script>
+<p>あとはscriptタグなりlinkタグなりにintegrity属性を付与する</p>
+<script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=index.html"></script>
+<p>ちなみにscriptタグに付与しているcrossorigin属性は「anonymous」キーワードが指定された場合、<br>リクエストにはcookieやクライアントサイドのSSL証明書、HTTP認証などのユーザ認証情報は利用されなくなるらしい。</p>
+<p>もし、コードが改変され整合性が確認できない場合は</p>
+<script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=faild.js"></script>
+<p>また、そのような場合に備えてfallbackを追加しておく</p>
+<script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=fallback.html"></script>
+<p>ハッシュ値は<a href="https://www.srihash.org/" target="_blank" rel="external">SRI Hash Generator</a>を使うと便利。<br>Wordpressでは<a href="https://wordpress.org/plugins/wp-sri/" target="_blank" rel="external">Subresource Integrity (SRI) Manager</a>などが使えそう。</p>
+<p>参考しにたページ<br><a href="http://githubengineering.com/subresource-integrity/" target="_blank" rel="external">Subresource Integrity</a><br><a href="https://developer.mozilla.org/ja/docs/Web/Security/Subresource_Integrity" target="_blank" rel="external">Subresource Integrity</a><br><a href="https://developer.mozilla.org/ja/docs/Web/HTML/CORS_settings_attributes" target="_blank" rel="external">CORS 設定属性</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><a href="http://githubengineering.com/subresource-integrity/">Subresource Integrity</a> という記事をみて、<br>ちょっと興味深かったのでSubresource Integrityについて、軽く見てみた。</p>]]>
+    
+    </summary>
+    
+      <category term="web" scheme="http://blog.kazu69.net/categories/web/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[JavaScriptでMonadを試した]]></title>
+    <link href="http://blog.kazu69.net/2015/09/28/try-monad-in-javascript/"/>
+    <id>http://blog.kazu69.net/2015/09/28/try-monad-in-javascript/</id>
+    <published>2015-09-28T12:42:01.000Z</published>
+    <updated>2015-10-13T15:20:24.000Z</updated>
+    <content type="html"><![CDATA[<p>最近、時間のあるときにすこしだけ<a href="https://www.haskell.org/" target="_blank" rel="external">Haskell</a>を触ったりもしていて、<br>Monadなるものに触れた。</p>
+<p>そこで、それっぽいものをJavaScriptで試してみた。</p>
+<a id="more"></a>
+<p>確実に俄か感じではあるので、漠然としている理解であるけど。</p>
+<h2 id="Monad_Laws">Monad Laws</h2><p>Monadと名乗るにはMonad則を満たさないといけない。<br>Monad則とは</p>
+<ol>
+<li>return x &gt;&gt;= f == f x</li>
+<li>m &gt;&gt;= return == m</li>
+<li>(m &gt;&gt;= f) &gt;&gt;= g == m &gt;&gt;= (\x -&gt; f x &gt;&gt;= g)</li>
+</ol>
+<p>mはMonadを指す。<br>(&gt;&gt;=) でMonadから値を取り出す。<br>return はMonadに値を渡す。</p>
+<p>という認識でこの法則を読み取っている。<br>ということで、これを満たすことのできるclassを作成した。</p>
+<script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=monad.class.js"></script>
+<p>create(returnと同じ感じ)でMonadをインスタンス化して、<br>bind(&gt;&gt;==と同じ感じ)でMonadに値を渡し、結果を得る。というシンプルなクラス。</p>
+<p>Qunitを使ってMonad則をテストする</p>
+<script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=test.js"></script>
+<p>認識が正しければ、Monad則を満たしたので、Monadである。</p>
+<p>いろいろなMonadを試してみる</p>
+<h3 id="Identity_Monad">Identity Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=identity.js"></script>
+<h3 id="Maybe_Monad">Maybe Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=maybe.js"></script>
+<h3 id="List_Monad">List Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=list.js"></script>
+<p>ということで、JavaScriptでためしてデザインパターンという認識をした。</p>
+<p>参考にしたページ<br><a href="https://curiosity-driven.org/monads-in-javascript" target="_blank" rel="external">Monads in JavaScript</a><br><a href="http://qiita.com/7shi/items/547b6137d7a3c482fe68" target="_blank" rel="external">モナド則がちょっと分かった？</a><br><a href="http://labs.timedia.co.jp/2011/03/monad-you-already-know.html" target="_blank" rel="external">モナド: お前はもう知っている</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>最近、時間のあるときにすこしだけ<a href="https://www.haskell.org/">Haskell</a>を触ったりもしていて、<br>Monadなるものに触れた。</p>
+<p>そこで、それっぽいものをJavaScriptで試してみた。</p>]]>
+    
+    </summary>
+    
+      <category term="javascript" scheme="http://blog.kazu69.net/categories/javascript/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[gulp v4.0を眺めてみた]]></title>
@@ -979,78 +1051,6 @@
 ]]></content>
     <summary type="html">
     <![CDATA[<p>Gemを作っていた時に、どうしても依存しているGemの挙動を変える必要があったので、どういう方法があるのか調べてみた。</p>]]>
-    
-    </summary>
-    
-      <category term="ruby" scheme="http://blog.kazu69.net/categories/ruby/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[HTML5のDialog要素を試してみた]]></title>
-    <link href="http://blog.kazu69.net/2014/11/17/tried-the-dialog-element-in-html5/"/>
-    <id>http://blog.kazu69.net/2014/11/17/tried-the-dialog-element-in-html5/</id>
-    <published>2014-11-17T12:40:31.000Z</published>
-    <updated>2015-05-10T16:21:06.000Z</updated>
-    <content type="html"><![CDATA[<p>ダイアログ要素やモーダルウィンドウを容易に使えるdialog要素を試してみた。<br>dialog要素を使うことで、ダイアログの要素をdom内に埋め込むので、cssなどで容易にスタイリング出来るという嬉しいもの。<br>ちなみに、dialog要素のサポート状況は<a href="http://caniuse.com/#search=dialog" target="_blank" rel="external">こちらの通り</a>。<br><a id="more"></a></p>
-<p>ごくごく単純に以下のようにdialog 要素のshow()、close() APIを使うだけで簡単にダイアログを表示をできる。<br>show()に対してhide()ではなく、close()を呼ぶあたりが面白い。</p>
-<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample1.slim"></script>
-<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample1.coffee"></script>
-
-<p>See the Pen <a href="http://codepen.io/kazu69/pen/gbbNqz/" target="_blank" rel="external">gbbNqz</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
-<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
-
-<p>モーダルウィンドウを表示する場合は、showModal() APIを使えば良い。<br>また、モーダルウィンドウの背景要素にスタイルを付ける場合は、::backdrop擬似要素を使うことで実現できる。<br>dialog要素にスタイルを付けることで、モーダルウィンドウにスタイルを付けることができる。</p>
-<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample2.slim"></script>
-<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample2.scss"></script>
-<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample2.coffee"></script>
-
-<p>See the Pen <a href="http://codepen.io/kazu69/pen/dPPBrz/" target="_blank" rel="external">dPPBrz</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
-<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
-
-<p>dialog要素でformのメソッドにdialogを指定することで、フォームとダイアログ、モーダルウィンドウを連携することができる。<br>モーダルウィンドウのボタンを押すとモーダルウィンドウが閉じられ、入力値またはボタンの値をdialog要素のreturnValueにセットすることができる。</p>
-<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=index.slim"></script>
-<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=script.coffee"></script>
-<script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=tyle.scss"></script>
-
-<p>See the Pen <a href="http://codepen.io/kazu69/pen/qEBJVW/" target="_blank" rel="external">dialog tag sample</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
-<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
-
-<p>ちなみに、polyfillは<a href="https://github.com/GoogleChrome/dialog-polyfill" target="_blank" rel="external">chrome/dialog-polyfill</a>。</p>
-<p>参考にしたページ: <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog" target="_blank" rel="external">MDN</a>、<a href="http://updates.html5rocks.com/2013/09/dialog-element-Modals-made-easy" target="_blank" rel="external">dialog element: Modals made easy</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>ダイアログ要素やモーダルウィンドウを容易に使えるdialog要素を試してみた。<br>dialog要素を使うことで、ダイアログの要素をdom内に埋め込むので、cssなどで容易にスタイリング出来るという嬉しいもの。<br>ちなみに、dialog要素のサポート状況は<a href="http://caniuse.com/#search=dialog">こちらの通り</a>。<br>]]>
-    
-    </summary>
-    
-      <category term="tec" scheme="http://blog.kazu69.net/categories/tec/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[RailsでつくったAPIのエラー処理]]></title>
-    <link href="http://blog.kazu69.net/2014/11/13/made-in-the-rails-api-error-handling/"/>
-    <id>http://blog.kazu69.net/2014/11/13/made-in-the-rails-api-error-handling/</id>
-    <published>2014-11-13T11:23:08.000Z</published>
-    <updated>2015-05-10T16:21:06.000Z</updated>
-    <content type="html"><![CDATA[<p>RailsでAPIを作ったとき、StandardErrorをどのように処理するのがいいのかと考えた。<br>やりたいことは、エラーの内容をjsonで返し、なおかつエラーのstatus codeも返却したいという感じ。</p>
-<a id="more"></a>
-<p>エラー内容は普通にrescueしてexception.messageを返してあげるといいが、statusはどうするか。<br>そこでどこかでエラーのリストを保持しているのではないかとで調べると、<a href="https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/exception_wrapper.rb" target="_blank" rel="external">ActionDispatch::ExceptionWrapper</a>にあるっぽいことがわかった。</p>
-<p>これを上手こと利用して動的にエラーをレスポンスを生成したらどうだろうかということで、以下のようにしてみた。</p>
-<script src="https://gist.github.com/kazu69/6b6cb71ff77fbb1f40b4.js?file=api_base_controller.rb"></script>
-
-<p>とすると、standard errorの処理はできそう。<br>しかし、ExceptionNotifierなどをつかっていると、エラーを通知できないのでは？ということを<br>教えてもらったので、最終的に</p>
-<script src="https://gist.github.com/kazu69/6b6cb71ff77fbb1f40b4.js?file=api_upd_base_controller.rb"></script>
-
-<p>という形で、ExceptionNotifierでも拾えるようにした。</p>
-<p>この場合、全てのエラーを通知してしまうので、必要になエラーだけ拾うようにしたらいいのかも。</p>
-<script src="https://gist.github.com/kazu69/6b6cb71ff77fbb1f40b4.js?file=api_select_excetion_base_controller.rb"></script>
-
-<p>参考にしたページ: 2014-03-22: <a href="http://diary.sorah.jp/2014/03/22/20140322" target="_blank" rel="external">さんがつにじゅうににち: kosenconf-080tokyo</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>RailsでAPIを作ったとき、StandardErrorをどのように処理するのがいいのかと考えた。<br>やりたいことは、エラーの内容をjsonで返し、なおかつエラーのstatus codeも返却したいという感じ。</p>]]>
     
     </summary>
     
