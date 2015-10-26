@@ -4,7 +4,7 @@
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.kazu69.net/"/>
-  <updated>2015-10-13T15:24:22.000Z</updated>
+  <updated>2015-10-26T16:01:08.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -13,6 +13,45 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[nginScriptを試してみた]]></title>
+    <link href="http://blog.kazu69.net/2015/10/18/tried-nginscript/"/>
+    <id>http://blog.kazu69.net/2015/10/18/tried-nginscript/</id>
+    <published>2015-10-18T14:40:20.000Z</published>
+    <updated>2015-10-26T16:01:08.000Z</updated>
+    <content type="html"><![CDATA[<p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/" target="_blank" rel="external">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
+<p>これはリクエスト処理の実行時に評価され、特定のリクエストに対してnginxの内部処理をを調整することが可能になる。っぽい。</p>
+<p><a href="https://www.nginx.com/resources/wiki/modules/lua/" target="_blank" rel="external">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
+<a id="more"></a>
+<p><a href="https://www.nginx.com/resources/wiki/nginScript/" target="_blank" rel="external">nginScriptのwiki</a>を参考にDocker + docker-machineで簡単に試してみた。</p>
+<h2 id="install_and_build_nginx">install and build nginx</h2><p><a href="http://nginx.org/en/download.html" target="_blank" rel="external">nginx: download</a>から最新のバージョンを取得する。<br>またnginScriptはオプションとして提供されているので、<a href="http://hg.nginx.org/" target="_blank" rel="external">nginxのMercurial</a>から取得する必要がある。</p>
+<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=Dockerfile"></script>
+<p>これを適当な感じでbuild</p>
+<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=build.sh"></script>
+<h2 id="nginScript">nginScript</h2><p>ちなみにnginx.confは以下のようになっている</p>
+<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=nginx.conf"></script>
+<h3 id="js_run">js_run</h3><p>nginScriptはlocationごとに評価され、実行される。<br>locationディレクティブでnginScriptを利用する際はjs_run で実行する必要がある。</p>
+<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=js_run.sh"></script>
+<h3 id="js_set">js_set</h3><p>また、JavaScriptを使い内部変数を定義することもできる。<br>その際はhttpディレクティブに設定を書く必要がある。</p>
+<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=js_set.sh"></script>
+<h3 id="$r(リクエストオブジェクト)">$r(リクエストオブジェクト)</h3><p>その他、リクエストの内部変数として $rがJavaScriptオブジェクトとして利用できる。<br>$rはsendHeader(),send(),finish() というメソッドが現在のところ定義されており、これらを利用してレスポンスを返すことができる。</p>
+<h3 id="リクエストパラメータ">リクエストパラメータ</h3><p>$r.args にJavaScriptのオブジェクトとして格納されている。</p>
+<p>nginScriptはECMA標準準拠というわけではないようだが、基本的なことはできそう。<br>適当な関数を定義して評価することや、カスタムヘッダーを追加することなどはできた。</p>
+<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=function.sh"></script>
+<p>ということで、ほとんど<a href="http://hg.nginx.org/njs/file/tip/README" target="_blank" rel="external">Readme</a> をそのまま試したことになるけど、<br>いまのところlocationディレクティブにhookして、リクエスト、レスポンスをJavaScriptで操作できる位という感じだった。</p>
+<p>参考にしたページ<br><a href="https://www.nginx.com/resources/wiki/nginScript/" target="_blank" rel="external">nginx Wiki documentation</a><br><a href="http://hg.nginx.org/njs/file/11d4d66851ed/README?_ga=1.105907269.772607199.1445353842" target="_blank" rel="external">README</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
+<p>これはリクエスト処理の実行時に評価され、特定のリクエストに対してnginxの内部処理をを調整することが可能になる。っぽい。</p>
+<p><a href="https://www.nginx.com/resources/wiki/modules/lua/">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby">ngx_mruby</a>と同じような感じで使えるのようだ。</p>]]>
+    
+    </summary>
+    
+      <category term="nginx" scheme="http://blog.kazu69.net/categories/nginx/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Subresource Integrityについて調べた]]></title>
@@ -1013,48 +1052,6 @@
       <category term="memo" scheme="http://blog.kazu69.net/categories/memo/"/>
     
       <category term="ruby" scheme="http://blog.kazu69.net/categories/memo/ruby/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Rubyでメソッドを上書き(monkey patch)をする方法を調べてみた]]></title>
-    <link href="http://blog.kazu69.net/2014/11/23/examined-how-to-override-monkey-patch-methods-in-ruby/"/>
-    <id>http://blog.kazu69.net/2014/11/23/examined-how-to-override-monkey-patch-methods-in-ruby/</id>
-    <published>2014-11-23T05:50:29.000Z</published>
-    <updated>2015-05-10T16:21:06.000Z</updated>
-    <content type="html"><![CDATA[<p>Gemを作っていた時に、どうしても依存しているGemの挙動を変える必要があったので、どういう方法があるのか調べてみた。</p>
-<a id="more"></a>
-<h2 id="継承_+_Mixin">継承 + Mixin</h2><p>まず、普通にmoduleを作成して、classをオープンしてincludeする。もちろん</p>
-<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=include.rb"></script>
-
-<p>Rubyのクラス継承チェインの上位に上書きしたいmoduleが来てしまうため無理。</p>
-<h2 id="クラス継承">クラス継承</h2><p>普通にクラスを継承して、上書き。</p>
-<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=inheritance.rb"></script>
-
-<h2 id="オープンクラス_+_alias_method">オープンクラス + alias_method</h2><p>extendしていることを明確にするためにmoduleをincludeする形にしたが、classをopenして、alias_methodを使うのと同じで、想定通りの挙動になる。</p>
-<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=alias_method.rb"></script>
-
-<h2 id="delegation(委譲)">delegation(委譲)</h2><p>継承やオープンクラスをしないで、メソッドの実行を委譲することもできるっぽい。</p>
-<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=delegation.rb"></script>
-
-<p>DelegateClass(Country)でCountryオブジェクトにインスタンスメソッドを委譲するクラスが定義され、そのクラスを継承した DelegateCountry クラスを定義することでメソッド実行を委譲している。</p>
-<h2 id="レシーバーを動的に紐付ける">レシーバーを動的に紐付ける</h2><p>クラスのインスタンスメソッドを元にUnboundMethodオブジェクトを作成して、<br>bindをつかってレシーバーと紐づける。</p>
-<p>これも、継承やオープンクラスをしないでできそう。</p>
-<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=instance_method.rb"></script>
-
-<h2 id="クラス継承チェインの先頭に追加する">クラス継承チェインの先頭に追加する</h2><p>includeした場合は、継承チェインの上位に挿入されるので上書きできないけど、prependを使うと<br>継承チェインの先頭に追加されるので、上書きできる。</p>
-<script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=prepend.rb"></script>
-
-<p>と、ほかにもいろいろとやり方はありそうだった。</p>
-<p>結局、今回はalias使う方法にした。。。</p>
-<p>参考にしたページ: <a href="http://stackoverflow.com/questions/4470108/when-monkey-patching-a-method-can-you-call-the-overridden-method-from-the-new-i?answertab=votes#tab-top" target="_blank" rel="external">When monkey patching a method, can you call the overridden method from the new implementation?</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>Gemを作っていた時に、どうしても依存しているGemの挙動を変える必要があったので、どういう方法があるのか調べてみた。</p>]]>
-    
-    </summary>
-    
-      <category term="ruby" scheme="http://blog.kazu69.net/categories/ruby/"/>
     
   </entry>
   
