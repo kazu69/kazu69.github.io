@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/10/22/active-support-tinyint/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Activesupportを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。">
-<meta property="og:updated_time" content="2015-11-17T16:06:38.000Z">
+<meta property="og:updated_time" content="2015-11-24T15:06:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="active_support_tinyint">
 <meta name="twitter:description" content="Activesupportを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。">
@@ -106,11 +106,9 @@ ga('send', 'pageview');
 <p>これは<a href="http://apidock.com/rails/ActiveRecord/ConnectionAdapters/AbstractMysqlAdapter/emulate_booleans/class" target="_blank" rel="external">ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter#emulate_booleans</a>が使われれるため。</p>
 <p>あまりないけど、こういう場合は以下の方法で解決出来る。</p>
 <p>Railsアプリケーション全体でこの設定を使わない場合</p>
-<script src="https://gist.github.com/kazu69/da4db6ba0b96673840a5.js?file=application.rb"></script>
-
+<script src="//gist.github.com/kazu69/da4db6ba0b96673840a5.js?file=application.rb"></script>
 <p>または、Model単位ではキャストする</p>
-<script src="https://gist.github.com/kazu69/da4db6ba0b96673840a5.js?file=example_model.rb"></script>
-
+<script src="//gist.github.com/kazu69/da4db6ba0b96673840a5.js?file=example_model.rb"></script>
 <p>ちゃんとソースにコメント書いてあるんで比較的常識的なことだったんですね…。</p>
 <p>参考にしたページ<br><a href="https://github.com/rails/rails/blob/master/activerecord/lib/active_record/connection_adapters/abstract_mysql_adapter.rb#L107-L116" target="_blank" rel="external">rails/activerecord/lib/active_record/connection_adapters/abstract_mysql_adapter.rb</a><br><a href="https://github.com/rails/rails/blob/4-2-stable/activerecord/lib/active_record/attributes.rb#L50-L52" target="_blank" rel="external">rails/activerecord/lib/active_record/connection_adapters/abstract_mysql_adapter.rb</a></p>
 
@@ -154,6 +152,15 @@ ga('send', 'pageview');
     
 <nav id="article-nav">
   <div class="article-nav">
+    
+      <a href="/2015/11/13/create-efk-with-docker/" id="article-nav-newer" class="article-nav-link article-nav-link-newer">
+        <span class="article-nav-caption">Newer - </span>
+        <span class="article-nav-title">
+          
+            EFK(Elasticsearch + Fluentd + Kibana)をDocker-Composeで試してみた
+          
+        </span>
+      </a>
     
     
       <a href="/2015/10/20/use-stackprof-improve-performance-of-rspec/" id="article-nav-older" class="article-nav-link article-nav-link-older">
