@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8">
   
-  <title>active_support_tinyint | 69log</title>
+  <title>active recordでtinyint(1)がbooleanではない形式を扱う | 69log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Activesupportを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。">
+  <meta name="description" content="ActiveRecordを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="active_support_tinyint">
-<meta property="og:url" content="http://blog.kazu69.net/2015/10/22/active-support-tinyint/index.html">
+<meta property="og:title" content="active recordでtinyint(1)がbooleanではない形式を扱う">
+<meta property="og:url" content="http://blog.kazu69.net/2015/10/22/active-record-tinyint/index.html">
 <meta property="og:site_name" content="69log">
-<meta property="og:description" content="Activesupportを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。">
-<meta property="og:updated_time" content="2015-11-24T15:06:55.000Z">
+<meta property="og:description" content="ActiveRecordを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。">
+<meta property="og:updated_time" content="2015-11-25T12:57:53.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="active_support_tinyint">
-<meta name="twitter:description" content="Activesupportを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。">
+<meta name="twitter:title" content="active recordでtinyint(1)がbooleanではない形式を扱う">
+<meta name="twitter:description" content="ActiveRecordを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。">
   
     <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
   
@@ -72,13 +72,13 @@ ga('send', 'pageview');
 </header>
 
     <main role="main" id="main">
-      <section><article id="post-active-support-tinyint" class="article article-type-post" itemscope itemprop="blogPost">
+      <section><article id="post-active-record-tinyint" class="article article-type-post" itemscope itemprop="blogPost">
   <header class="article-header">
     
       
   
     <h1 class="article-title" itemprop="name">
-      active_support_tinyint
+      active recordでtinyint(1)がbooleanではない形式を扱う
     </h1>
   
 
@@ -100,7 +100,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Activesupportを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。</p>
+      <p>ActiveRecordを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。</p>
 <a id="more"></a>
 <p>MySQLでtinyint(1)はbooleanと同じなので 0 か 1 しかとらないはずだが、<br>今回はなぜか2なる値があり、常にfalseとなっていた。</p>
 <p>これは<a href="http://apidock.com/rails/ActiveRecord/ConnectionAdapters/AbstractMysqlAdapter/emulate_booleans/class" target="_blank" rel="external">ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter#emulate_booleans</a>が使われれるため。</p>
@@ -120,7 +120,7 @@ ga('send', 'pageview');
       <div class="share_content">
   <div class="hatena_sharebox">
     
-      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2015/10/22/active-support-tinyint/" class="hatena-bookmark-button" data-hatena-bookmark-title="active_support_tinyint" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2015/10/22/active-record-tinyint/" class="hatena-bookmark-button" data-hatena-bookmark-title="active recordでtinyint(1)がbooleanではない形式を扱う" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
     
   </div>
   
@@ -142,7 +142,7 @@ ga('send', 'pageview');
 </div>
 
       
-        <a href="http://blog.kazu69.net/2015/10/22/active-support-tinyint/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://blog.kazu69.net/2015/10/22/active-record-tinyint/#disqus_thread" class="article-comment-link">Comments</a>
       
       
     </footer>
@@ -219,7 +219,7 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = '69log';
   
-  var disqus_url = 'http://blog.kazu69.net/2015/10/22/active-support-tinyint/';
+  var disqus_url = 'http://blog.kazu69.net/2015/10/22/active-record-tinyint/';
   
   (function(){
     var dsq = document.createElement('script');

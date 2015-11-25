@@ -56,12 +56,12 @@
   </entry>
   
   <entry>
-    <title><![CDATA[active_support_tinyint]]></title>
-    <link href="http://blog.kazu69.net/2015/10/22/active-support-tinyint/"/>
-    <id>http://blog.kazu69.net/2015/10/22/active-support-tinyint/</id>
+    <title><![CDATA[active recordでtinyint(1)がbooleanではない形式を扱う]]></title>
+    <link href="http://blog.kazu69.net/2015/10/22/active-record-tinyint/"/>
+    <id>http://blog.kazu69.net/2015/10/22/active-record-tinyint/</id>
     <published>2015-10-22T09:17:13.000Z</published>
-    <updated>2015-11-24T15:06:55.000Z</updated>
-    <content type="html"><![CDATA[<p>Activesupportを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。</p>
+    <updated>2015-11-25T12:57:53.000Z</updated>
+    <content type="html"><![CDATA[<p>ActiveRecordを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。</p>
 <a id="more"></a>
 <p>MySQLでtinyint(1)はbooleanと同じなので 0 か 1 しかとらないはずだが、<br>今回はなぜか2なる値があり、常にfalseとなっていた。</p>
 <p>これは<a href="http://apidock.com/rails/ActiveRecord/ConnectionAdapters/AbstractMysqlAdapter/emulate_booleans/class" target="_blank" rel="external">ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter#emulate_booleans</a>が使われれるため。</p>
@@ -74,7 +74,7 @@
 <p>参考にしたページ<br><a href="https://github.com/rails/rails/blob/master/activerecord/lib/active_record/connection_adapters/abstract_mysql_adapter.rb#L107-L116" target="_blank" rel="external">rails/activerecord/lib/active_record/connection_adapters/abstract_mysql_adapter.rb</a><br><a href="https://github.com/rails/rails/blob/4-2-stable/activerecord/lib/active_record/attributes.rb#L50-L52" target="_blank" rel="external">rails/activerecord/lib/active_record/connection_adapters/abstract_mysql_adapter.rb</a></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>Activesupportを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。</p>]]>
+    <![CDATA[<p>ActiveRecordを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。</p>]]>
     
     </summary>
     
