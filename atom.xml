@@ -4,7 +4,7 @@
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.kazu69.net/"/>
-  <updated>2015-11-24T16:05:57.000Z</updated>
+  <updated>2015-12-08T13:20:08.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -13,6 +13,160 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[mysqlのバイナリログのフォーマットを調べた]]></title>
+    <link href="http://blog.kazu69.net/2015/12/01/examined-mysql-binlog-format/"/>
+    <id>http://blog.kazu69.net/2015/12/01/examined-mysql-binlog-format/</id>
+    <published>2015-12-01T10:19:09.000Z</published>
+    <updated>2015-12-08T13:20:08.000Z</updated>
+    <content type="html"><![CDATA[<p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/" target="_blank" rel="external">MariaDB</a>が以下のうようなエラーを吐いていた。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Unsafe statement written to the binary log using statement format&#10;since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it&#10;invokes a trigger or a stored function that inserts into an&#10;AUTO_INCREMENT column. Inserted values cannot be logged correctly.</span><br></pre></td></tr></table></figure>
+<p>バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。<br>STATEMENTだと安全でないということはどういうことか。少し試してみた。</p>
+<a id="more"></a>
+<h2 id="バイナリログについて">バイナリログについて</h2><p>RDBMSでいうところのトランザクションログをMySQLではバイナリログという。</p>
+<p>バイナリログにはMySQLにおいてデータベースに対して</p>
+<ul>
+<li>トランザクションの開始および終了</li>
+<li>値の挿入(INSERT)、値の更新(UPDATE)、削除(DELETE)</li>
+<li>テーブル、インデックスの作成削除</li>
+</ul>
+<p>の履歴が保持されている。</p>
+<p>トランザクションログはRDBMSによって異なり、以下に大別される。</p>
+<table>
+<thead>
+<tr>
+<th>トランザクションログ</th>
+<th>概要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>論理ロギング</td>
+<td>データベースに対する論理動作(SQL文)の変更履歴を管理</td>
+</tr>
+<tr>
+<td>物理ロギング</td>
+<td>変更があったデータの変更前のイメージを管理</td>
+</tr>
+</tbody>
+</table>
+<p>バイナリログはデフォルトでは生成されないのでmy.cnfに設定を追加する必要がある。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># grep my.cnf</span></span><br><span class="line">mysql --help | grep my.cnf</span><br><span class="line">touch /usr/<span class="built_in">local</span>/etc/my.cnf</span><br><span class="line"></span><br><span class="line">cat /usr/<span class="built_in">local</span>/etc/my.cnf</span><br></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">[mysqld]</span></span><br><span class="line"><span class="setting">log-bin=<span class="value">mysql-bin</span></span></span><br></pre></td></tr></table></figure>
+<p>設定することにより、/usr/local/var/mysql/mysql-bin.000001 のようにログファイルが生成される。<br>再起動などすると /usr/local/var/mysql/mysql-bin.000002 と新たなログファイルが生成される。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ls /usr/<span class="built_in">local</span>/var/mysql/</span><br><span class="line"></span><br><span class="line">mysql-bin.<span class="number">000001</span></span><br><span class="line"></span><br><span class="line">mysql.server restart</span><br><span class="line">Shutting down MySQL</span><br><span class="line">. SUCCESS!</span><br><span class="line">Starting MySQL</span><br><span class="line">. SUCCESS!</span><br><span class="line"></span><br><span class="line">ls /usr/<span class="built_in">local</span>/var/mysql/</span><br><span class="line"></span><br><span class="line">mysql-bin.<span class="number">000001</span></span><br><span class="line">mysql-bin.<span class="number">000002</span></span><br></pre></td></tr></table></figure>
+<p>存在するログファイルは /usr/local/var/mysql/mysql-bin.index にリストアップされている。<br>ということで rm などでログだけ消すと次回起動時にエラーになる。mysql-bin.indexからも削除する必要が有る。</p>
+<p>また、ログファイルは溜まっていく一方なので自動削除するためにmy.cnfに設定を追加。<br>expire_log_days でログを保持する期間を追加。(初期値は0で削除しない)<br>7日間保持するなら、以下のような感じ。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">[mysqld]</span></span><br><span class="line"><span class="setting">log-bin=<span class="value">mysql-bin</span></span></span><br><span class="line"><span class="setting">expire_log_days = <span class="value"><span class="number">7</span></span></span></span><br></pre></td></tr></table></figure>
+<h2 id="バイナリログのフォーマット">バイナリログのフォーマット</h2><p>バイナリログのフォーマットは3種類あり、それぞれ以下のようになっている。</p>
+<table>
+<thead>
+<tr>
+<th>フォーマット</th>
+<th>特徴</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>STATEMENT</td>
+<td>実行されたSQLに基づいてロギング</td>
+</tr>
+<tr>
+<td>ROW</td>
+<td>行ベースに基づきロギング</td>
+</tr>
+<tr>
+<td>MIXED</td>
+<td>基本はSTATEMENTだが特定の条件では行ベースでロギングする</td>
+</tr>
+</tbody>
+</table>
+<p>おそらくレンタルサーバーとかだと、STATEMENTに設定されていることが多いんじゃないかなと思う。</p>
+<p>それぞれの挙動を適当なテーブルを作り試してみる。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">create database <span class="built_in">test</span>;</span><br><span class="line">create table personal(id int auto_increment, name varchar(<span class="number">10</span>),index(id));</span><br><span class="line">SHOW FULL COLUMNS FROM personal;</span><br><span class="line">+-------+-------------+-----------------+------+-----+---------+----------------+---------------------------------+---------+</span><br><span class="line">| Field | Type        | Collation       | Null | Key | Default | Extra          | Privileges                      | Comment |</span><br><span class="line">+-------+-------------+-----------------+------+-----+---------+----------------+---------------------------------+---------+</span><br><span class="line">| id    | int(<span class="number">11</span>)     | NULL            | NO   | MUL | NULL    | auto_increment | select,insert,update,references |         |</span><br><span class="line">| name  | varchar(<span class="number">10</span>) | utf8_general_ci | YES  |     | NULL    |                | select,insert,update,references |         |</span><br><span class="line">+-------+-------------+-----------------+------+-----+---------+----------------+---------------------------------+---------+</span><br></pre></td></tr></table></figure>
+<h3 id="Statement_base">Statement base</h3><p>デフォルトのフォーマット(MySQL5.6まで)。データやテーブル変更の実際に実行されたSQL文をログとして記録する。<br>Non-Deterministicということで、Unsafeとなる。<br>つまりレプリケーションのスレーブ側のサーバーでログを元に同じSQLを実行しても<br>同じになるとは限らないため。</p>
+<p><a href="https://dev.mysql.com/doc/refman/5.6/ja/replication-sbr-rbr.html" target="_blank" rel="external">https://dev.mysql.com/doc/refman/5.6/ja/replication-sbr-rbr.html</a></p>
+<p>実際にtableに値を追加してバイナリログを確認していく。</p>
+<p>insertしてみる</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># set statement</span></span><br><span class="line">SET binlog_format = <span class="string">'STATEMENT'</span>;</span><br><span class="line"></span><br><span class="line">SHOW variables LIKE <span class="string">"binlog_format"</span>;</span><br><span class="line">+---------------+-----------+</span><br><span class="line">| Variable_name | Value     |</span><br><span class="line">+---------------+-----------+</span><br><span class="line">| binlog_format | STATEMENT |</span><br><span class="line">+---------------+-----------+</span><br><span class="line"></span><br><span class="line">FLUSH LOGS;</span><br><span class="line">Query OK, <span class="number">0</span> rows affected (<span class="number">0.07</span> sec)</span><br><span class="line"></span><br><span class="line"> SHOW MASTER STATUS;</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br><span class="line">| mysql-bin.<span class="number">000001</span> |      <span class="number">120</span> |              |                  |                   |</span><br><span class="line">+------------------+----------+--------------+------------------+-------------------+</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># insert</span></span><br><span class="line">INSERT INTO personal(name) VALUES(<span class="string">'tom'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># show binlog</span></span><br><span class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.<span class="number">000001</span></span><br><span class="line"></span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 199</span></span><br><span class="line"><span class="comment"># at 231</span></span><br><span class="line"><span class="comment">#151205 20:54:19 server id 1  end_log_pos 231 CRC32 0x40b495c3  Intvar</span></span><br><span class="line">SET INSERT_ID=<span class="number">1</span>/*!*/;</span><br><span class="line"><span class="comment">#151205 20:54:19 server id 1  end_log_pos 345 CRC32 0x9668f30b  Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">use `<span class="built_in">test</span>`/*!*/;</span><br><span class="line">SET TIMESTAMP=<span class="number">1449316459</span>/*!*/;</span><br><span class="line">INSERT INTO personal(name) VALUES(<span class="string">'tom'</span>)</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 345</span></span><br><span class="line"><span class="comment">#151205 20:54:19 server id 1  end_log_pos 376 CRC32 0x2247f106  Xid = 8</span></span><br><span class="line">COMMIT/*!*/;</span><br></pre></td></tr></table></figure>
+<p>ログファイルはそれぞれ以下のような項目がある。</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>at</td>
+<td>バイナリファイル内でのオフセット</td>
+</tr>
+<tr>
+<td>server id</td>
+<td>ステートメントが実行されたサーバー</td>
+</tr>
+<tr>
+<td>end_log_pos</td>
+<td>次のイベントが開始される位置</td>
+</tr>
+<tr>
+<td>thread_id</td>
+<td>実行したスレッド</td>
+</tr>
+<tr>
+<td>exec_time</td>
+<td>実行時間</td>
+</tr>
+<tr>
+<td>error_code</td>
+<td>イベントの実行結果(0はエラーなし)</td>
+</tr>
+</tbody>
+</table>
+<p>続いてupdateしてみる</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># update</span></span><br><span class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># show binlog</span></span><br><span class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.<span class="number">000001</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># at 376</span></span><br><span class="line"><span class="comment">#151205 20:56:39 server id 1  end_log_pos 455 CRC32 0x852a4061  Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449319780</span>/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 455</span></span><br><span class="line"><span class="comment">#151205 20:56:39 server id 1  end_log_pos 574 CRC32 0xc5128701  Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449319780</span>/*!*/;</span><br><span class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = <span class="number">1</span></span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 574</span></span><br><span class="line"><span class="comment">#151205 20:56:39 server id 1  end_log_pos 605 CRC32 0x9217061a  Xid = 9</span></span><br><span class="line">COMMIT/*!*/;</span><br></pre></td></tr></table></figure>
+<p>変更のないように同じ値でupdateを試してみると</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># update</span></span><br><span class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># at 605</span></span><br><span class="line"><span class="comment">#151205 20:58:12 server id 1  end_log_pos 684 CRC32 0x7bcd8a62  Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449319820</span>/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 684</span></span><br><span class="line"><span class="comment">#151205 20:58:12 server id 1  end_log_pos 803 CRC32 0x132e24fc  Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449319820</span>/*!*/;</span><br><span class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = <span class="number">1</span></span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 803</span></span><br><span class="line"><span class="comment">#151205 20:58:12 server id 1  end_log_pos 834 CRC32 0xb3d62bb8  Xid = 10</span></span><br><span class="line">COMMIT/*!*/;</span><br></pre></td></tr></table></figure>
+<p>STATEMENTは実行されたSQL文をロギングするので、値に変更がなくてもログが出力される。</p>
+<h3 id="Row_base">Row base</h3><p>つづいてROWフォーマットで同じように試してみる。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SET binlog_format = <span class="string">'ROW'</span>;</span><br><span class="line">SHOW variables LIKE <span class="string">"binlog_format"</span>;</span><br><span class="line">+---------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+---------------+-------+</span><br><span class="line">| binlog_format | ROW   |</span><br><span class="line">+---------------+-------+</span><br><span class="line"><span class="number">1</span> row <span class="keyword">in</span> <span class="built_in">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+<p>データをinsertする。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># insert</span></span><br><span class="line">INSERT INTO personal(name) VALUES(<span class="string">'tom'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># show binlog</span></span><br><span class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.<span class="number">000001</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># at 580</span></span><br><span class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 652 CRC32 0x629d7346  Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449321070</span>/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 652</span></span><br><span class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 706 CRC32 0xb60de956  Table_map: `test`.`personal` mapped to number 70</span></span><br><span class="line"><span class="comment"># at 706</span></span><br><span class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 750 CRC32 0x5af605af  Write_rows: table id 70 flags: STMT_END_F</span></span><br><span class="line"></span><br><span class="line">BINLOG <span class="string">'</span><br><span class="line">buJiVhMBAAAANgAAAMICAAAAAEYAAAAAAAEABHRlc3QACHBlcnNvbmFsAAIDDwIeAAJW6Q22</span><br><span class="line">buJiVh4BAAAALAAAAO4CAAAAAEYAAAAAAAEAAgAC//wCAAAAA3Rvba8F9lo=</span><br><span class="line">'</span>/*!*/;</span><br><span class="line"><span class="comment"># at 750</span></span><br><span class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 781 CRC32 0x979d473d  Xid = 12</span></span><br><span class="line">COMMIT/*!*/;</span><br></pre></td></tr></table></figure>
+<p>出力されるログはbase64エンコードされている。<br>オプションをつけて実行する。</p>
+<p><strong>–base64-output</strong>でバイナリログのエントリを base-64 エンコードで出力できる。<br>DECODE-ROWSを指定して、-vオプションもつけることで行イベントをSQLステートメントとしてデコードできる。</p>
+<p>詳細は<a href="http://dev.mysql.com/doc/refman/5.6/ja/mysqlbinlog.html#option_mysqlbinlog_base64-output" target="_blank" rel="external">このあたりを参考</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># show binlog</span></span><br><span class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.<span class="number">000001</span> --base64-output=DECODE-ROWS -v</span><br><span class="line"></span><br><span class="line"><span class="comment"># at 580</span></span><br><span class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 652 CRC32 0x629d7346  Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449321070</span>/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 652</span></span><br><span class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 706 CRC32 0xb60de956  Table_map: `test`.`personal` mapped to number 70</span></span><br><span class="line"><span class="comment"># at 706</span></span><br><span class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 750 CRC32 0x5af605af  Write_rows: table id 70 flags: STMT_END_F</span></span><br><span class="line"><span class="comment">### INSERT INTO `test`.`personal`</span></span><br><span class="line"><span class="comment">### SET</span></span><br><span class="line"><span class="comment">###   @1=2</span></span><br><span class="line"><span class="comment">###   @2='tom'</span></span><br><span class="line"><span class="comment"># at 750</span></span><br><span class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 781 CRC32 0x979d473d  Xid = 12</span></span><br><span class="line">COMMIT/*!*/;</span><br></pre></td></tr></table></figure>
+<p>updateしてみる</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># update</span></span><br><span class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># show binlog</span></span><br><span class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.<span class="number">000001</span> --base64-output=DECODE-ROWS -v</span><br><span class="line"></span><br><span class="line"><span class="comment"># at 781</span></span><br><span class="line"><span class="comment">#151206 21:12:11 server id 1  end_log_pos 853 CRC32 0xf1228fc3  Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449368345</span>/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 853</span></span><br><span class="line"><span class="comment">#151206 21:12:11 server id 1  end_log_pos 907 CRC32 0xa2ca1af1  Table_map: `test`.`personal` mapped to number 70</span></span><br><span class="line"><span class="comment"># at 907</span></span><br><span class="line"><span class="comment">#151206 21:12:11 server id 1  end_log_pos 963 CRC32 0xdfe4919c  Update_rows: table id 70 flags: STMT_END_F</span></span><br><span class="line"><span class="comment">### UPDATE `test`.`personal`</span></span><br><span class="line"><span class="comment">### WHERE</span></span><br><span class="line"><span class="comment">###   @1=1</span></span><br><span class="line"><span class="comment">###   @2='tom'</span></span><br><span class="line"><span class="comment">### SET</span></span><br><span class="line"><span class="comment">###   @1=1</span></span><br><span class="line"><span class="comment">###   @2='tommy'</span></span><br><span class="line"><span class="comment"># at 963</span></span><br><span class="line"><span class="comment">#151206 21:12:11 server id 1  end_log_pos 994 CRC32 0x81ba30c7  Xid = 16</span></span><br><span class="line">COMMIT/*!*/;</span><br></pre></td></tr></table></figure>
+<p>同じ値でupdateする。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># update</span></span><br><span class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p>更新が発生してないのでログは出力されてない。</p>
+<h3 id="Mixed_base">Mixed base</h3><p>最後にMIXEDを試してみる。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SET binlog_format = <span class="string">'MIXED'</span>;</span><br><span class="line">Query OK, <span class="number">0</span> rows affected (<span class="number">0.01</span> sec)</span><br><span class="line"></span><br><span class="line">SHOW variables LIKE <span class="string">"binlog_format"</span>;</span><br><span class="line">+---------------+-------+</span><br><span class="line">| Variable_name | Value |</span><br><span class="line">+---------------+-------+</span><br><span class="line">| binlog_format | MIXED |</span><br><span class="line">+---------------+-------+</span><br><span class="line"><span class="number">1</span> row <span class="keyword">in</span> <span class="built_in">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+<p>データをinsertする。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># insert</span></span><br><span class="line">INSERT INTO personal(name) VALUES(<span class="string">'tom'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># show binlog</span></span><br><span class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.<span class="number">000001</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># at 1198</span></span><br><span class="line"><span class="comment">#151206 21:14:35 server id 1  end_log_pos 1277 CRC32 0xe74bdeed     Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449374917</span>/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 1277</span></span><br><span class="line"><span class="comment"># at 1309</span></span><br><span class="line"><span class="comment">#151206 21:14:35 server id 1  end_log_pos 1309 CRC32 0xd5a25039     Intvar</span></span><br><span class="line">SET INSERT_ID=<span class="number">3</span>/*!*/;</span><br><span class="line"><span class="comment">#151206 21:14:35 server id 1  end_log_pos 1423 CRC32 0x2a2b7771     Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449374917</span>/*!*/;</span><br><span class="line">INSERT INTO personal(name) VALUES(<span class="string">'tom'</span>)</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 1423</span></span><br><span class="line"><span class="comment">#151206 21:14:35 server id 1  end_log_pos 1454 CRC32 0x83cb8b10     Xid = 23</span></span><br><span class="line">COMMIT/*!*/;</span><br></pre></td></tr></table></figure>
+<p>STATEMENTと同様で実行したSQLの履歴がログに出力される。<br>updateする。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># update</span></span><br><span class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># show binlog</span></span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 1732</span></span><br><span class="line"><span class="comment">#151206 21:16:48 server id 1  end_log_pos 1811 CRC32 0xd0ddade4     Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449375744</span>/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 1811</span></span><br><span class="line"><span class="comment">#151206 21:16:48 server id 1  end_log_pos 1930 CRC32 0xb27b4345     Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449375744</span>/*!*/;</span><br><span class="line">update personal <span class="built_in">set</span> name=<span class="string">'tommy'</span> <span class="built_in">where</span> id = <span class="number">1</span></span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 1930</span></span><br><span class="line"><span class="comment">#151206 21:16:48 server id 1  end_log_pos 1961 CRC32 0x51bab152     Xid = 26</span></span><br><span class="line">COMMIT/*!*/;</span><br></pre></td></tr></table></figure>
+<p>一部の関数を使った場合はROWフォーマットで出力される。<br>CURRENT_USER() を使って更新してみる。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># update</span></span><br><span class="line">UPDATE personal SET name=CURRENT_USER() WHERE id = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># show binlog</span></span><br><span class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.<span class="number">000006</span></span><br><span class="line"><span class="comment"># at 1961</span></span><br><span class="line"><span class="comment">#151206 21:18:04 server id 1  end_log_pos 2033 CRC32 0x62cb65dd     Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449376039</span>/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 2033</span></span><br><span class="line"><span class="comment">#151206 21:18:04 server id 1  end_log_pos 2087 CRC32 0x6e57c961     Table_map: `test`.`personal` mapped to number 70</span></span><br><span class="line"><span class="comment"># at 2087</span></span><br><span class="line"><span class="comment">#151206 21:18:04 server id 1  end_log_pos 2150 CRC32 0x6a1d8b78     Update_rows: table id 70 flags: STMT_END_F</span></span><br><span class="line"></span><br><span class="line">BINLOG <span class="string">'</span><br><span class="line">J7ljVhMBAAAANgAAACcIAAAAAEYAAAAAAAEABHRlc3QACHBlcnNvbmFsAAIDDwIeAAJhyVdu</span><br><span class="line">J7ljVh8BAAAAPwAAAGYIAAAAAEYAAAAAAAEAAgAC///8AwAAAAV0b21tefwDAAAACnJvb3RAbG9j</span><br><span class="line">YWx4ix1q</span><br><span class="line">'</span>/*!*/;</span><br><span class="line"><span class="comment"># at 2150</span></span><br><span class="line"><span class="comment">#151206 21:18:04 server id 1  end_log_pos 2181 CRC32 0x12bf3230     Xid = 29</span></span><br><span class="line">COMMIT/*!*/;</span><br><span class="line"></span><br><span class="line"><span class="comment"># decode base64 binlog</span></span><br><span class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.<span class="number">000006</span> --base64-output=DECODE-ROWS -v</span><br><span class="line"></span><br><span class="line"><span class="comment"># at 1961</span></span><br><span class="line"><span class="comment">#151206 21:18:04 server id 1  end_log_pos 2033 CRC32 0x62cb65dd     Query   thread_id=1 exec_time=0 error_code=0</span></span><br><span class="line">SET TIMESTAMP=<span class="number">1449376039</span>/*!*/;</span><br><span class="line">BEGIN</span><br><span class="line">/*!*/;</span><br><span class="line"><span class="comment"># at 2033</span></span><br><span class="line"><span class="comment">#151206 21:18:04 server id 1  end_log_pos 2087 CRC32 0x6e57c961     Table_map: `test`.`personal` mapped to number 70</span></span><br><span class="line"><span class="comment"># at 2087</span></span><br><span class="line"><span class="comment">#151206 21:18:04 server id 1  end_log_pos 2150 CRC32 0x6a1d8b78     Update_rows: table id 70 flags: STMT_END_F</span></span><br><span class="line"><span class="comment">### UPDATE `test`.`personal`</span></span><br><span class="line"><span class="comment">### WHERE</span></span><br><span class="line"><span class="comment">###   @1=1</span></span><br><span class="line"><span class="comment">###   @2='tommy'</span></span><br><span class="line"><span class="comment">### SET</span></span><br><span class="line"><span class="comment">###   @1=1</span></span><br><span class="line"><span class="comment">###   @2='root@local'</span></span><br><span class="line"><span class="comment"># at 2150</span></span><br><span class="line"><span class="comment">#151206 21:18:04 server id 1  end_log_pos 2181 CRC32 0x12bf3230     Xid = 29</span></span><br><span class="line">COMMIT/*!*/;</span><br></pre></td></tr></table></figure>
+<p>となりROWベースとなっている。</p>
+<h3 id="まとめ">まとめ</h3><p>STATEMENTは実行したSQL文がログに記載され、エンコードされていないためサイズも小さく、ログを読みづらい。<br>反面 Non-Deterministic なので、必ずしも同じクエリを実行しても同じ結果が得られるわけでない。<br>それに対してMIXED、ROWはサイズは大きくなるが、結果が異なるということはなく安全。</p>
+<p>デフォルトでMIXEDとかROWとかにした方がいいのじゃないかと思ってたけど、<br><a href="http://dev.mysql.com/doc/refman/5.7/en/replication-options-binary-log.html#sysvar_binlog_format" target="_blank" rel="external">MySQL 5.7.7からはdefaultがROW</a>になったようだった。</p>
+<h4 id="参考にしたページ">参考にしたページ</h4><p><a href="http://dev.mysql.com/doc/refman/5.6/ja/mysqlbinlog.html" target="_blank" rel="external">4.6.8 mysqlbinlog — バイナリログファイルを処理するためのユーティリティー</a><br><a href="https://mariadb.com/kb/en/mariadb/binary-log-formats/" target="_blank" rel="external">MariaDB Binary Log Formats</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/">MariaDB</a>が以下のうようなエラーを吐いていた。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Unsafe statement written to the binary log using statement format&#10;since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it&#10;invokes a trigger or a stored function that inserts into an&#10;AUTO_INCREMENT column. Inserted values cannot be logged correctly.</span><br></pre></td></tr></table></figure>
+<p>バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。<br>STATEMENTだと安全でないということはどういうことか。少し試してみた。</p>]]>
+    
+    </summary>
+    
+      <category term="memo" scheme="http://blog.kazu69.net/categories/memo/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[EFK(Elasticsearch + Fluentd + Kibana)をDocker-Composeで試してみた]]></title>
@@ -983,86 +1137,6 @@
 ]]></content>
     <summary type="html">
     <![CDATA[<p>cssのプロパティをJavaScriptでも扱う必要があり、方法を検討してみた。</p>]]>
-    
-    </summary>
-    
-      <category term="tec" scheme="http://blog.kazu69.net/categories/tec/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Chef12でChef Serverを試してみた]]></title>
-    <link href="http://blog.kazu69.net/2015/01/27/tried-the-chef-server-at-chef12/"/>
-    <id>http://blog.kazu69.net/2015/01/27/tried-the-chef-server-at-chef12/</id>
-    <published>2015-01-27T10:26:12.000Z</published>
-    <updated>2015-08-17T04:53:25.000Z</updated>
-    <content type="html"><![CDATA[<p>普段はChef Soloしか使う機会がないので、Chef Serverを試してみた。<br>ちなみに、Chef12からはClientからServerへのリクエストにおいて、SSL証明書の検証が必要になり安全性がたかまったとか。</p>
-<a id="more"></a>
-<p>初めに一度それぞれの名称を整理しておく。</p>
-<ul>
-<li>Chef Server：Clientの管理を行う(host name: chef_server)</li>
-<li>Chef Node：Chefによって構築、管理される対象(host name: chef_client)</li>
-<li>Chef Workstation：Cookbookの作成、更新を行う端末</li>
-</ul>
-<h2 id="Vagrantfileを作成">Vagrantfileを作成</h2><p>chef-server、chef-clientの2台分VMを定義する</p>
-<p>Vagrantfileにプロビジョニングコード追加して、<br>とりあえず、Chef ServerとChefのインストール。<br>ntpで時刻も合わせておく。</p>
-<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=Vagrantfile"></script>
-
-<h2 id="Chef_Serverのセットアップ">Chef Serverのセットアップ</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=chef-server-setup.sh"></script>
-
-<p>Web UI をインストールしている場合、192.168.33.12/signupにアクセスできるようになる。<br>workstation側でhostsの設定をしていると<a href="https://chef-server/でもアクセスできる。" target="_blank" rel="external">https://chef-server/でもアクセスできる。</a></p>
-<h2 id="ユーザー、Organization作成">ユーザー、Organization作成</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-user-organization.sh"></script>
-
-<p>またworkstationのhostsにchef-serverのipを追加しておく。</p>
-<h2 id="Workstationの-chef/knife-rbの設定">Workstationの.chef/knife.rbの設定</h2><p>knife configureで指示に従って進めると、knife.rbが生成される。</p>
-<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-knife.sh"></script>
-
-<h2 id="Workstationに鍵を転送">Workstationに鍵を転送</h2><p>knife ssl fetch を使うとChef Serverから鍵を取得できる。</p>
-<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=transfer-key.sh"></script>
-
-<h2 id="node、userの確認">node、userの確認</h2><p>knife client list、knife user listでnodeとuserを確認する。</p>
-<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=check-user-node.sh"></script>
-
-<h2 id="Chef_Clientの準備">Chef Clientの準備</h2><p>Chef Serverとの認証には鍵認証を使う。<br>Chef ServerはClientごとに秘密鍵を発行し、公開鍵を自身(Chef Server)に登録する。</p>
-<p>Clientごとに発行するのは手間なので、Chef Serverにあらかじめ用意されているvalidator keyを使う。<br>ClientはChef Serverとの通の際にこのvalidator keyを使うと、<br>Chef ServerにClientとして登録され、以降の認証に必要な鍵が発行される。</p>
-<p>これは最初の1回目にだけ利用される。<br>Chef Clientのhostsにchef-serverのipを追加して、名前解決できるようにしておく。</p>
-<h2 id="WorkstationからChef_Serverにnodeを登録する">WorkstationからChef Serverにnodeを登録する</h2><p>knife bootstrapでChef Serverに対してchef-clientを実行する。</p>
-<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-node.sh"></script>
-
-<p>ここで以下のように</p>
-<pre><code>INFO: HTTP Request Returned <span class="number">401</span> Unauthorized: Failed <span class="keyword">to</span> authenticate <span class="keyword">as</span> NODENAME. Ensure <span class="keyword">that</span> your node_name <span class="keyword">and</span> client key are correct.
-</code></pre><p>など401エラーが発生する場合、多くは証明書の問題っぽい。<br>エラーが出た際は<a href="https://docs.chef.io/errors.html" target="_blank" rel="external">https://docs.chef.io/errors.html</a>を一度参考すると良さそう。</p>
-<h2 id="Chef_Client_の情報を取得する">Chef Client の情報を取得する</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=check-chef-client.sh"></script>
-
-<h2 id="WorkstationからChef_ClientにRun_Listを適用">WorkstationからChef ClientにRun Listを適用</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=add-run-list.sh"></script>
-
-<h2 id="Chef_ClientからRecipeを実行する">Chef ClientからRecipeを実行する</h2><p>nodeでcookbookを適用するには以下の条件が必要</p>
-<ul>
-<li>Chef Serverにcookbookが登録されている</li>
-<li>Chef Serverにnodeの情報が登録されていてrun listに適用したいレシピが登録されている</li>
-<li>nodeにChef Serverと通信するためのclient keyもしくはvalidator keyが配置されている</li>
-</ul>
-<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=apply-recipe.sh"></script>
-
-<p>運用するサーバーの台数が多くなると同時に複数台に設定を適用するのが大変になるので、<br>以下の方法でclient側で処理を行う。</p>
-<ul>
-<li>Chef Clientをデーモンで起動して定期的にサーバーにアクセス</li>
-<li>knife ssh で指定するサーバーにコマンドを実行する</li>
-<li>Kickstartなどを使い、複数nodeでchef-clientコマンドを実行する</li>
-</ul>
-<script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=running-chef-client.sh"></script>
-
-<h2 id="Chef12からcookbookにname_attributeが必要になった">Chef12からcookbookにname attributeが必要になった</h2><p>Chef Serverとは関係ないが、Chef12からcookbookのmetadata.rbにname attributeが必要になったぽい。<br>適当な古いcookbookを使うとエラーになる。</p>
-<p>そんなときは、</p>
-<ul>
-<li>cookbookを修正して、name attributeを追加するか、metadata.rbを削除する。</li>
-<li>古いバージョンのchef-clientを利用する</li>
-</ul>
-<p>という方法で解決できそうだった。</p>
-<p>参考にしたページ: <a href="http://www.creationline.com/lab/6644" target="_blank" rel="external">Chef 12の新機能: knife ssl check/fetch #opschef_ja #getchef_ja</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>普段はChef Soloしか使う機会がないので、Chef Serverを試してみた。<br>ちなみに、Chef12からはClientからServerへのリクエストにおいて、SSL証明書の検証が必要になり安全性がたかまったとか。</p>]]>
     
     </summary>
     

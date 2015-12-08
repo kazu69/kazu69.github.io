@@ -73,6 +73,51 @@ ga('send', 'pageview');
     <main role="main" id="main">
       <section>
   
+    <article id="post-examined-mysql-binlog-format" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/01/examined-mysql-binlog-format/">mysqlのバイナリログのフォーマットを調べた</a>
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2015-12-01T10:19:09.000Z" itemprop="datePublished">2015-12-01</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/memo/">memo</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/">MariaDB</a>が以下のうようなエラーを吐いていた。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Unsafe statement written to the binary log using statement format&#10;since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it&#10;invokes a trigger or a stored function that inserts into an&#10;AUTO_INCREMENT column. Inserted values cannot be logged correctly.</span><br></pre></td></tr></table></figure>
+<p>バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。<br>STATEMENTだと安全でないということはどういうことか。少し試してみた。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+
+
+  
     <article id="post-ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful" class="article article-type-post" itemscope itemprop="blogPost">
   <header class="article-header">
     
@@ -446,50 +491,6 @@ ga('send', 'pageview');
     </div>
     
       <p>気になっていた<a href="http://www.polymer-project.org/">Polymer</a>を使って、独自拡張タグ <a href="https://github.com/kazu69/x-gravatar/"><x-gravatar></a>を作成してみた。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-
-
-  
-    <article id="post-to-fix-the-first-commit-in-git" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/03/04/to-fix-the-first-commit-in-git/">git のfirst commitを修正する</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2014-03-04T04:38:06.000Z" itemprop="datePublished">2014-03-04</time>
-
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/memo/">memo</a>
-  </div>
-
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>個人的なメモ。gitの最初のコミットをrebase -iで修正しようとしたけどできなかった。</p>
-<script src="https://gist.github.com/kazu69/9340353.js?file=fail.sh"></script>
       
     
   </div>

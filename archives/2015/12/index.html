@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives: 2015 | 69log</title>
+  <title>Archives: 2015/12 | 69log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="福岡でwebの仕事をしています">
 <meta property="og:type" content="website">
 <meta property="og:title" content="69log">
-<meta property="og:url" content="http://blog.kazu69.net/archives/2015/page/3/index.html">
+<meta property="og:url" content="http://blog.kazu69.net/archives/2015/12/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="福岡でwebの仕事をしています">
 <meta name="twitter:card" content="summary">
@@ -73,23 +73,23 @@ ga('send', 'pageview');
     <main role="main" id="main">
       <section>
   
-    <article id="post-tried-the-chef-server-at-chef12" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-examined-mysql-binlog-format" class="article article-type-post" itemscope itemprop="blogPost">
   <header class="article-header">
     
       
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/27/tried-the-chef-server-at-chef12/">Chef12でChef Serverを試してみた</a>
+      <a class="article-title" href="/2015/12/01/examined-mysql-binlog-format/">mysqlのバイナリログのフォーマットを調べた</a>
     </h1>
   
 
     
     <div class="article-meta clr">
-      <time datetime="2015-01-27T10:26:12.000Z" itemprop="datePublished">2015-01-27</time>
+      <time datetime="2015-12-01T10:19:09.000Z" itemprop="datePublished">2015-12-01</time>
 
       
   <div class="article-category">
-    <a class="article-category-link" href="/categories/tec/">tec</a>
+    <a class="article-category-link" href="/categories/memo/">memo</a>
   </div>
 
 
@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>普段はChef Soloしか使う機会がないので、Chef Serverを試してみた。<br>ちなみに、Chef12からはClientからServerへのリクエストにおいて、SSL証明書の検証が必要になり安全性がたかまったとか。</p>
+      <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/">MariaDB</a>が以下のうようなエラーを吐いていた。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Unsafe statement written to the binary log using statement format&#10;since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it&#10;invokes a trigger or a stored function that inserts into an&#10;AUTO_INCREMENT column. Inserted values cannot be logged correctly.</span><br></pre></td></tr></table></figure>
+<p>バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。<br>STATEMENTだと安全でないということはどういうことか。少し試してみた。</p>
       
     
   </div>
@@ -116,54 +118,6 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-set-of-writing-multi-threaded-tests-in-rails" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/14/set-of-writing-multi-threaded-tests-in-rails/">Railsでマルチスレッド処理のテストを書く際の設定</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2015-01-14T13:37:21.000Z" itemprop="datePublished">2015-01-14</time>
-
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/ruby/">ruby</a>
-  </div>
-
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>Railsアプリケーションにおいて、マルチスレッド処理でレコード取得処理を行う処理を書くときに、Rspecの設定周りでいろいろと知ることができたのでメモ。</p>
-<p>テスト環境は Rspec + FactoryGirl + DatabaseCleaner という感じ。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-
-
-  
-  
-    <nav class="pager" id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/2015/page/2/">&laquo; Prev</a><a class="page-number" href="/archives/2015/">1</a><a class="page-number" href="/archives/2015/page/2/">2</a><span class="page-number current">3</span>
-    </nav>
   
 </section>
       
