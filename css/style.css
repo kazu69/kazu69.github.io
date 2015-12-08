@@ -247,6 +247,10 @@ a:hover {
   position: relative;
   vertical-align: top;
 }
+.highlight .code pre {
+  width: 96%;
+  overflow: scroll;
+}
 .highlight .gutter pre,
 .highlight .code pre {
   margin: 0;
