@@ -114,6 +114,27 @@ a:hover {
   background-color: #eee;
   border-radius: 2px;
 }
+.article-entry > table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  word-break: normal;
+  word-break: keep-all;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.article-entry > table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+.article-entry > table th {
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  border: 1px solid #ddd;
+}
+.article-entry > table td {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+}
 .article-entry a[href] {
   margin-left: 0.2em;
   margin-right: 0.2em;
@@ -187,4 +208,142 @@ a:hover {
 }
 .addthis_button_facebook_like {
   margin-top: -0.1em;
+}
+.highlight {
+  background: #fff;
+  margin: 2rem 0;
+  color: #333;
+  border: 1px solid #eee;
+  line-height: 1.6;
+  border-radius: 3px;
+}
+.highlight table {
+  border-collapse: collapse;
+}
+.highlight table td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.highlight .gutter {
+  width: 1%;
+  min-width: 30px;
+  white-space: pre;
+  text-align: right;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: #ddd;
+  vertical-align: top;
+  border-right: 1px solid #eee;
+  backgrond-color: #fdfdfd;
+}
+.highlight .gutter .line:hover {
+  color: #bbb;
+}
+.highlight .code {
+  padding-left: 1em;
+  white-space: pre;
+  overflow: visible;
+  word-wrap: normal;
+  position: relative;
+  vertical-align: top;
+}
+.highlight .gutter pre,
+.highlight .code pre {
+  margin: 0;
+}
+.highlight .gutter .comment,
+.highlight .code .comment,
+.highlight .gutter .title,
+.highlight .code .title {
+  color: #999;
+}
+.highlight .gutter .variable,
+.highlight .code .variable,
+.highlight .gutter .attribute,
+.highlight .code .attribute,
+.highlight .gutter .tag,
+.highlight .code .tag,
+.highlight .gutter .regexp,
+.highlight .code .regexp,
+.highlight .gutter .ruby .constant,
+.highlight .code .ruby .constant,
+.highlight .gutter .xml .tag .title,
+.highlight .code .xml .tag .title,
+.highlight .gutter .xml .pi,
+.highlight .code .xml .pi,
+.highlight .gutter .xml .doctype,
+.highlight .code .xml .doctype,
+.highlight .gutter .html .doctype,
+.highlight .code .html .doctype,
+.highlight .gutter .css .id,
+.highlight .code .css .id,
+.highlight .gutter .css .class,
+.highlight .code .css .class,
+.highlight .gutter .css .pseudo,
+.highlight .code .css .pseudo {
+  color: #f2777a;
+}
+.highlight .gutter .number,
+.highlight .code .number,
+.highlight .gutter .preprocessor,
+.highlight .code .preprocessor,
+.highlight .gutter .built_in,
+.highlight .code .built_in,
+.highlight .gutter .literal,
+.highlight .code .literal,
+.highlight .gutter .params,
+.highlight .code .params,
+.highlight .gutter .constant,
+.highlight .code .constant {
+  color: #f99157;
+}
+.highlight .gutter .class,
+.highlight .code .class,
+.highlight .gutter .ruby .class .title,
+.highlight .code .ruby .class .title,
+.highlight .gutter .css .rules .attribute,
+.highlight .code .css .rules .attribute {
+  color: #9c9;
+}
+.highlight .gutter .string,
+.highlight .code .string,
+.highlight .gutter .value,
+.highlight .code .value,
+.highlight .gutter .inheritance,
+.highlight .code .inheritance,
+.highlight .gutter .header,
+.highlight .code .header,
+.highlight .gutter .ruby .symbol,
+.highlight .code .ruby .symbol,
+.highlight .gutter .xml .cdata,
+.highlight .code .xml .cdata {
+  color: #9c9;
+}
+.highlight .gutter .css .hexcolor,
+.highlight .code .css .hexcolor {
+  color: #6cc;
+}
+.highlight .gutter .function,
+.highlight .code .function,
+.highlight .gutter .python .decorator,
+.highlight .code .python .decorator,
+.highlight .gutter .python .title,
+.highlight .code .python .title,
+.highlight .gutter .ruby .function .title,
+.highlight .code .ruby .function .title,
+.highlight .gutter .ruby .title .keyword,
+.highlight .code .ruby .title .keyword,
+.highlight .gutter .perl .sub,
+.highlight .code .perl .sub,
+.highlight .gutter .javascript .title,
+.highlight .code .javascript .title,
+.highlight .gutter .coffeescript .title,
+.highlight .code .coffeescript .title {
+  color: #69c;
+}
+.highlight .gutter .keyword,
+.highlight .code .keyword,
+.highlight .gutter .javascript .function,
+.highlight .code .javascript .function {
+  color: #c9c;
 }
