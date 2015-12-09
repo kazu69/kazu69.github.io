@@ -102,25 +102,25 @@ ga('send', 'pageview');
     
       <p>Gemを作っていた時に、どうしても依存しているGemの挙動を変える必要があったので、どういう方法があるのか調べてみた。</p>
 <a id="more"></a>
-<h2 id="継承_+_Mixin">継承 + Mixin</h2><p>まず、普通にmoduleを作成して、classをオープンしてincludeする。もちろん</p>
+<h2 id="u7D99_u627F_+_Mixin"><a href="#u7D99_u627F_+_Mixin" class="headerlink" title="継承 + Mixin"></a>継承 + Mixin</h2><p>まず、普通にmoduleを作成して、classをオープンしてincludeする。もちろん</p>
 <script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=include.rb"></script>
 
 <p>Rubyのクラス継承チェインの上位に上書きしたいmoduleが来てしまうため無理。</p>
-<h2 id="クラス継承">クラス継承</h2><p>普通にクラスを継承して、上書き。</p>
+<h2 id="u30AF_u30E9_u30B9_u7D99_u627F"><a href="#u30AF_u30E9_u30B9_u7D99_u627F" class="headerlink" title="クラス継承"></a>クラス継承</h2><p>普通にクラスを継承して、上書き。</p>
 <script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=inheritance.rb"></script>
 
-<h2 id="オープンクラス_+_alias_method">オープンクラス + alias_method</h2><p>extendしていることを明確にするためにmoduleをincludeする形にしたが、classをopenして、alias_methodを使うのと同じで、想定通りの挙動になる。</p>
+<h2 id="u30AA_u30FC_u30D7_u30F3_u30AF_u30E9_u30B9_+_alias_method"><a href="#u30AA_u30FC_u30D7_u30F3_u30AF_u30E9_u30B9_+_alias_method" class="headerlink" title="オープンクラス + alias_method"></a>オープンクラス + alias_method</h2><p>extendしていることを明確にするためにmoduleをincludeする形にしたが、classをopenして、alias_methodを使うのと同じで、想定通りの挙動になる。</p>
 <script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=alias_method.rb"></script>
 
-<h2 id="delegation(委譲)">delegation(委譲)</h2><p>継承やオープンクラスをしないで、メソッドの実行を委譲することもできるっぽい。</p>
+<h2 id="delegation_28_u59D4_u8B72_29"><a href="#delegation_28_u59D4_u8B72_29" class="headerlink" title="delegation(委譲)"></a>delegation(委譲)</h2><p>継承やオープンクラスをしないで、メソッドの実行を委譲することもできるっぽい。</p>
 <script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=delegation.rb"></script>
 
 <p>DelegateClass(Country)でCountryオブジェクトにインスタンスメソッドを委譲するクラスが定義され、そのクラスを継承した DelegateCountry クラスを定義することでメソッド実行を委譲している。</p>
-<h2 id="レシーバーを動的に紐付ける">レシーバーを動的に紐付ける</h2><p>クラスのインスタンスメソッドを元にUnboundMethodオブジェクトを作成して、<br>bindをつかってレシーバーと紐づける。</p>
+<h2 id="u30EC_u30B7_u30FC_u30D0_u30FC_u3092_u52D5_u7684_u306B_u7D10_u4ED8_u3051_u308B"><a href="#u30EC_u30B7_u30FC_u30D0_u30FC_u3092_u52D5_u7684_u306B_u7D10_u4ED8_u3051_u308B" class="headerlink" title="レシーバーを動的に紐付ける"></a>レシーバーを動的に紐付ける</h2><p>クラスのインスタンスメソッドを元にUnboundMethodオブジェクトを作成して、<br>bindをつかってレシーバーと紐づける。</p>
 <p>これも、継承やオープンクラスをしないでできそう。</p>
 <script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=instance_method.rb"></script>
 
-<h2 id="クラス継承チェインの先頭に追加する">クラス継承チェインの先頭に追加する</h2><p>includeした場合は、継承チェインの上位に挿入されるので上書きできないけど、prependを使うと<br>継承チェインの先頭に追加されるので、上書きできる。</p>
+<h2 id="u30AF_u30E9_u30B9_u7D99_u627F_u30C1_u30A7_u30A4_u30F3_u306E_u5148_u982D_u306B_u8FFD_u52A0_u3059_u308B"><a href="#u30AF_u30E9_u30B9_u7D99_u627F_u30C1_u30A7_u30A4_u30F3_u306E_u5148_u982D_u306B_u8FFD_u52A0_u3059_u308B" class="headerlink" title="クラス継承チェインの先頭に追加する"></a>クラス継承チェインの先頭に追加する</h2><p>includeした場合は、継承チェインの上位に挿入されるので上書きできないけど、prependを使うと<br>継承チェインの先頭に追加されるので、上書きできる。</p>
 <script src="https://gist.github.com/kazu69/a8563d70fdad6d453ffb.js?file=prepend.rb"></script>
 
 <p>と、ほかにもいろいろとやり方はありそうだった。</p>

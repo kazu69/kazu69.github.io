@@ -107,85 +107,85 @@ ga('send', 'pageview');
 <li><a href="http://jamjs.org/" target="_blank" rel="external">jam</a></li>
 <li><a href="http://volojs.org/" target="_blank" rel="external">volo</a><br>という感じで、いくつかあります。今回はTwitter社が開発している<a href="http://twitter.github.com/bower/" target="_blank" rel="external">Bower</a>を利用しようと思います。</li>
 </ul>
-<h2 id="Bowerについて">Bowerについて</h2><p>BowerはJavascriptのほか、CSSや画像などassetsファイルのパッケージ管理ツールです。</p>
+<h2 id="Bower_u306B_u3064_u3044_u3066"><a href="#Bower_u306B_u3064_u3044_u3066" class="headerlink" title="Bowerについて"></a>Bowerについて</h2><p>BowerはJavascriptのほか、CSSや画像などassetsファイルのパッケージ管理ツールです。</p>
 <p>Bowerはほかのツールと異なり、buildやscaffoldingなどの機能はありません。<br>自作したcomponentsを<a href="http://sindresorhus.com/bower-components/" target="_blank" rel="external">Bower components</a>に登録できます。<br>あと、Bower componentsのみならずgithubやnpm、プライベートなrepositoryからもパッケージを取得できます。</p>
-<h2 id="Bowerを触ってみる">Bowerを触ってみる</h2><p>インストール(nodeとnpmはすでにインストール済み)<br>[shell]</p>
-<h1 id="とりあえずグローバルインストールしとく">とりあえずグローバルインストールしとく</h1><p>npm install bower -g<br>[/shell]</p>
+<h2 id="Bower_u3092_u89E6_u3063_u3066_u307F_u308B"><a href="#Bower_u3092_u89E6_u3063_u3066_u307F_u308B" class="headerlink" title="Bowerを触ってみる"></a>Bowerを触ってみる</h2><p>インストール(nodeとnpmはすでにインストール済み)<br>[shell]</p>
+<h1 id="u3068_u308A_u3042_u3048_u305A_u30B0_u30ED_u30FC_u30D0_u30EB_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB_u3057_u3068_u304F"><a href="#u3068_u308A_u3042_u3048_u305A_u30B0_u30ED_u30FC_u30D0_u30EB_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB_u3057_u3068_u304F" class="headerlink" title="とりあえずグローバルインストールしとく"></a>とりあえずグローバルインストールしとく</h1><p>npm install bower -g<br>[/shell]</p>
 <p>initialize<br>[shell]<br>$ bower init<br>name: [blog]<br>version: [0.0.0]<br>main file: []<br>add commonly ignored files to ignore list? (y/n): [y] y<br>[/shell]</p>
 <p>これでpackage管理のファイルとなるcomponent.jsonが生成します。<br>npmでいうことろのpackage.jsonかな。</p>
 <p>とりあえずパッケージのインストール<br>[shell]</p>
-<h1 id="$_bower_&lt;command&gt;_&lt;options&gt;">$ bower &lt;command&gt; &lt;options&gt;</h1><h1 id="help">help</h1><p>$ bower help</p>
-<h1 id="install">install</h1><p>$ bower install jquery<br>bower cloning git://github.com/components/jquery.git<br>bower cached git://github.com/components/jquery.git<br>bower fetching jquery<br>bower checking out jquery#1.9.1<br>bower copying /Users/hoge/.bower/cache/jquery/cf68c4c4e7507c8d20fee7b5f26709d9<br>bower installing jquery#1.9.1</p>
-<h1 id="component-json_に追記される">component.json に追記される</h1><p>$ bower install jquery –save<br>[/shell]</p>
+<h1 id="24_bower__26lt_3Bcommand_26gt_3B__26lt_3Boptions_26gt_3B"><a href="#24_bower__26lt_3Bcommand_26gt_3B__26lt_3Boptions_26gt_3B" class="headerlink" title="$ bower &lt;command&gt; &lt;options&gt;"></a>$ bower &lt;command&gt; &lt;options&gt;</h1><h1 id="help"><a href="#help" class="headerlink" title="help"></a>help</h1><p>$ bower help</p>
+<h1 id="install"><a href="#install" class="headerlink" title="install"></a>install</h1><p>$ bower install jquery<br>bower cloning git://github.com/components/jquery.git<br>bower cached git://github.com/components/jquery.git<br>bower fetching jquery<br>bower checking out jquery#1.9.1<br>bower copying /Users/hoge/.bower/cache/jquery/cf68c4c4e7507c8d20fee7b5f26709d9<br>bower installing jquery#1.9.1</p>
+<h1 id="component-json__u306B_u8FFD_u8A18_u3055_u308C_u308B"><a href="#component-json__u306B_u8FFD_u8A18_u3055_u308C_u308B" class="headerlink" title="component.json に追記される"></a>component.json に追記される</h1><p>$ bower install jquery –save<br>[/shell]</p>
 <p>インストールすると、/Users/hoge/.bower (~/.bower)にパッケージがキャッシュされるぽい。–saveオプションを付けるとcomponents.jsonに追記される。</p>
 <p>components.jsonはこんな感じになってる<br>[javascript]<br>{<br>  &quot;name&quot;: &quot;project&quot;,<br>  &quot;version&quot;: &quot;0.0.1&quot;,<br>  &quot;ignore&quot;: [<br>    &quot;**/.txt&quot;,<br>    &quot;node_modules&quot;,<br>    &quot;components&quot;<br>  ],<br>  &quot;dependencies&quot;: {<br>    &quot;jquery&quot;: &quot;~1.9.1&quot;<br>  }<br>}<br>[/javascript]</p>
 <p>そのほかのコマンドに関して</p>
 <p>[shell]</p>
-<h1 id="update">update</h1><p>$ bower update jquery</p>
-<h1 id="uninstall">uninstall</h1><p>$ bower uninstall jquery<br>bower uninstalling /Users/hoge/jquery</p>
-<h1 id="インストールされているリスト">インストールされているリスト</h1><p>$ bower list</p>
-<h1 id="または">または</h1><p>$ bower list</p>
-<h1 id="Bower_componentsを検索">Bower componentsを検索</h1><p>$ bower search jquery</p>
+<h1 id="update"><a href="#update" class="headerlink" title="update"></a>update</h1><p>$ bower update jquery</p>
+<h1 id="uninstall"><a href="#uninstall" class="headerlink" title="uninstall"></a>uninstall</h1><p>$ bower uninstall jquery<br>bower uninstalling /Users/hoge/jquery</p>
+<h1 id="u30A4_u30F3_u30B9_u30C8_u30FC_u30EB_u3055_u308C_u3066_u3044_u308B_u30EA_u30B9_u30C8"><a href="#u30A4_u30F3_u30B9_u30C8_u30FC_u30EB_u3055_u308C_u3066_u3044_u308B_u30EA_u30B9_u30C8" class="headerlink" title="インストールされているリスト"></a>インストールされているリスト</h1><p>$ bower list</p>
+<h1 id="u307E_u305F_u306F"><a href="#u307E_u305F_u306F" class="headerlink" title="または"></a>または</h1><p>$ bower list</p>
+<h1 id="Bower_components_u3092_u691C_u7D22"><a href="#Bower_components_u3092_u691C_u7D22" class="headerlink" title="Bower componentsを検索"></a>Bower componentsを検索</h1><p>$ bower search jquery</p>
 <ul>
 <li>jquery git://github.com/components/jquery.git</li>
 <li>jquery-ui git://github.com/components/jqueryui</li>
 <li>jquery.cookie git://github.com/carhartl/jquery-cookie.git</li>
 <li>jquery-waypoints git://github.com/imakewebthings/jquery-waypoints.git<br>…</li>
 </ul>
-<h1 id="package_url_を検索">package url を検索</h1><p>$ bower lookup jquery<br>jquery git://github.com/components/jquery.git</p>
-<h1 id="バージョン情報">バージョン情報</h1><p>$ bower info jquery<br>jquery </p>
+<h1 id="package_url__u3092_u691C_u7D22"><a href="#package_url__u3092_u691C_u7D22" class="headerlink" title="package url を検索"></a>package url を検索</h1><p>$ bower lookup jquery<br>jquery git://github.com/components/jquery.git</p>
+<h1 id="u30D0_u30FC_u30B8_u30E7_u30F3_u60C5_u5831"><a href="#u30D0_u30FC_u30B8_u30E7_u30F3_u60C5_u5831" class="headerlink" title="バージョン情報"></a>バージョン情報</h1><p>$ bower info jquery<br>jquery </p>
 <p>  Versions:</p>
-<pre><code>- <span class="number">1.9</span><span class="number">.1</span>
-- <span class="number">1.9</span><span class="number">.0</span>
-- <span class="number">1.8</span><span class="number">.3</span>
-- <span class="number">1.8</span><span class="number">.2</span>
-- <span class="number">1.8</span><span class="number">.1</span>
-- <span class="number">1.8</span><span class="number">.0</span>
-- <span class="number">1.7</span><span class="number">.2</span>
-- <span class="number">1.7</span><span class="number">.1</span>
-- <span class="number">1.7</span><span class="number">.0</span>
-- <span class="number">1.6</span><span class="number">.4</span>
-- <span class="number">1.6</span><span class="number">.3</span>
-- <span class="number">1.6</span><span class="number">.2</span>
-- <span class="number">1.6</span><span class="number">.1</span>
-- <span class="number">1.6</span><span class="number">.0</span>
-- <span class="number">1.5</span><span class="number">.2</span>
-- <span class="number">1.5</span><span class="number">.1</span>
-- <span class="number">1.5</span><span class="number">.0</span>
-- <span class="number">1.4</span><span class="number">.4</span>
-- <span class="number">1.4</span><span class="number">.3</span>
-- <span class="number">1.4</span><span class="number">.2</span>
-- <span class="number">1.4</span><span class="number">.1</span>
-- <span class="number">1.4</span><span class="number">.0</span>
-- <span class="number">1.3</span><span class="number">.2</span>
-- <span class="number">1.3</span><span class="number">.1</span>
-- <span class="number">1.3</span><span class="number">.0</span>
-- <span class="number">1.2</span><span class="number">.6</span>
-- <span class="number">1.2</span><span class="number">.3</span>
-</code></pre><h1 id="-bowerのキャッシュをクリア">.bowerのキャッシュをクリア</h1><p>$ bower cache-clean jquery<br>bower completion cleared completion cache<br>bower cache cleared jquery</p>
-<h1 id="パッケージの登録">パッケージの登録</h1><p>$ bower register &lt;name&gt; &lt;url&gt;</p>
-<h1 id="bowerコマンドの補完">bowerコマンドの補完</h1><p>$ bower completion &gt;&gt; ~/.bashrc  (or ~/.zshrc)<br>$ cat ~/.bashrc</p>
-<h1 id="Credits_to_npm’s-_Awesome_completion_utility-">Credits to npm’s. Awesome completion utility.</h1><p>#</p>
-<h1 id="Bower_completion_script,_based_on_npm_completion_script-">Bower completion script, based on npm completion script.</h1><p>###-begin-bower-completion-###<br>#</p>
-<h1 id="Installation:_bower_completion_&gt;&gt;_~/-bashrc_(or_~/-zshrc)">Installation: bower completion &gt;&gt; ~/.bashrc  (or ~/.zshrc)</h1><h1 id="Or,_maybe:_bower_completion_&gt;_/usr/local/etc/bash_completion-d/npm">Or, maybe: bower completion &gt; /usr/local/etc/bash_completion.d/npm</h1><p>#</p>
+<pre><code>- 1.9.1
+- 1.9.0
+- 1.8.3
+- 1.8.2
+- 1.8.1
+- 1.8.0
+- 1.7.2
+- 1.7.1
+- 1.7.0
+- 1.6.4
+- 1.6.3
+- 1.6.2
+- 1.6.1
+- 1.6.0
+- 1.5.2
+- 1.5.1
+- 1.5.0
+- 1.4.4
+- 1.4.3
+- 1.4.2
+- 1.4.1
+- 1.4.0
+- 1.3.2
+- 1.3.1
+- 1.3.0
+- 1.2.6
+- 1.2.3
+</code></pre><h1 id="bower_u306E_u30AD_u30E3_u30C3_u30B7_u30E5_u3092_u30AF_u30EA_u30A2"><a href="#bower_u306E_u30AD_u30E3_u30C3_u30B7_u30E5_u3092_u30AF_u30EA_u30A2" class="headerlink" title=".bowerのキャッシュをクリア"></a>.bowerのキャッシュをクリア</h1><p>$ bower cache-clean jquery<br>bower completion cleared completion cache<br>bower cache cleared jquery</p>
+<h1 id="u30D1_u30C3_u30B1_u30FC_u30B8_u306E_u767B_u9332"><a href="#u30D1_u30C3_u30B1_u30FC_u30B8_u306E_u767B_u9332" class="headerlink" title="パッケージの登録"></a>パッケージの登録</h1><p>$ bower register &lt;name&gt; &lt;url&gt;</p>
+<h1 id="bower_u30B3_u30DE_u30F3_u30C9_u306E_u88DC_u5B8C"><a href="#bower_u30B3_u30DE_u30F3_u30C9_u306E_u88DC_u5B8C" class="headerlink" title="bowerコマンドの補完"></a>bowerコマンドの補完</h1><p>$ bower completion &gt;&gt; ~/.bashrc  (or ~/.zshrc)<br>$ cat ~/.bashrc</p>
+<h1 id="Credits_to_npm_u2019s-_Awesome_completion_utility"><a href="#Credits_to_npm_u2019s-_Awesome_completion_utility" class="headerlink" title="Credits to npm’s. Awesome completion utility."></a>Credits to npm’s. Awesome completion utility.</h1><p>#</p>
+<h1 id="Bower_completion_script_2C_based_on_npm_completion_script"><a href="#Bower_completion_script_2C_based_on_npm_completion_script" class="headerlink" title="Bower completion script, based on npm completion script."></a>Bower completion script, based on npm completion script.</h1><p>###-begin-bower-completion-###<br>#</p>
+<h1 id="Installation_3A_bower_completion__26gt_3B_26gt_3B__7E/-bashrc__28or__7E/-zshrc_29"><a href="#Installation_3A_bower_completion__26gt_3B_26gt_3B__7E/-bashrc__28or__7E/-zshrc_29" class="headerlink" title="Installation: bower completion &gt;&gt; ~/.bashrc  (or ~/.zshrc)"></a>Installation: bower completion &gt;&gt; ~/.bashrc  (or ~/.zshrc)</h1><h1 id="Or_2C_maybe_3A_bower_completion__26gt_3B_/usr/local/etc/bash_completion-d/npm"><a href="#Or_2C_maybe_3A_bower_completion__26gt_3B_/usr/local/etc/bash_completion-d/npm" class="headerlink" title="Or, maybe: bower completion &gt; /usr/local/etc/bash_completion.d/npm"></a>Or, maybe: bower completion &gt; /usr/local/etc/bash_completion.d/npm</h1><p>#</p>
 <p>COMP_WORDBREAKS=${COMP_WORDBREAKS/=/}<br>COMP_WORDBREAKS=${COMP_WORDBREAKS/@/}<br>export COMP_WORDBREAKS</p>
 <p>if type complete &amp;&gt;/dev/null; then<br>  _bower_completion () {<br>    local si=&quot;$IFS&quot;<br>    IFS=$’\n’ COMPREPLY=($(COMP_CWORD=&quot;$COMP_CWORD&quot; \<br>                           COMP_LINE=&quot;$COMP_LINE&quot; \<br>                           COMP_POINT=&quot;$COMP_POINT&quot; \<br>                           bower completion – &quot;${COMP_WORDS[@]}&quot; \<br>                           2&gt;/dev/null)) || return $?<br>    IFS=&quot;$si&quot;<br>  }<br>  complete -F _bower_completion bower<br>elif type compdef &amp;&gt;/dev/null; then<br>  _bower_completion() {<br>    si=$IFS<br>    compadd – $(COMP_CWORD=$((CURRENT-1)) \<br>                 COMP_LINE=$BUFFER \<br>                 COMP_POINT=0 \<br>                 bower completion – &quot;${words[@]}&quot; \<br>                 2&gt;/dev/null)<br>    IFS=$si<br>  }<br>  compdef _bower_completion bower<br>elif type compctl &amp;&gt;/dev/null; then<br>  _bower_completion () {<br>    local cword line point words si<br>    read -Ac words<br>    read -cn cword<br>    let cword-=1<br>    read -l line<br>    read -ln point<br>    si=&quot;$IFS&quot;<br>    IFS=$’\n’ reply=($(COMP_CWORD=&quot;$cword&quot; \<br>                       COMP_LINE=&quot;$line&quot; \<br>                       COMP_POINT=&quot;$point&quot; \<br>                       bower completion – &quot;${words[@]}&quot; \<br>                       2&gt;/dev/null)) || return $?<br>    IFS=&quot;$si&quot;<br>  }<br>  compctl -K _bower_completion bower<br>fi</p>
 <p>###-end-bower-completion-###</p>
-<h1 id="リンク">リンク</h1><h1 id="テストしたいプロジェクトを登録">テストしたいプロジェクトを登録</h1><p>$ bower link (packege)<br>bower link /Users/hoge/.bower/links/project &gt; /Users/hoge/project</p>
-<h1 id="登録したプロジェクトを別のプロジェクトで利用">登録したプロジェクトを別のプロジェクトで利用</h1><p>$ bower link project<br>bower link /Users/other_project &gt; /Users/hoge/.bower/links/project<br>[/shell]</p>
+<h1 id="u30EA_u30F3_u30AF"><a href="#u30EA_u30F3_u30AF" class="headerlink" title="リンク"></a>リンク</h1><h1 id="u30C6_u30B9_u30C8_u3057_u305F_u3044_u30D7_u30ED_u30B8_u30A7_u30AF_u30C8_u3092_u767B_u9332"><a href="#u30C6_u30B9_u30C8_u3057_u305F_u3044_u30D7_u30ED_u30B8_u30A7_u30AF_u30C8_u3092_u767B_u9332" class="headerlink" title="テストしたいプロジェクトを登録"></a>テストしたいプロジェクトを登録</h1><p>$ bower link (packege)<br>bower link /Users/hoge/.bower/links/project &gt; /Users/hoge/project</p>
+<h1 id="u767B_u9332_u3057_u305F_u30D7_u30ED_u30B8_u30A7_u30AF_u30C8_u3092_u5225_u306E_u30D7_u30ED_u30B8_u30A7_u30AF_u30C8_u3067_u5229_u7528"><a href="#u767B_u9332_u3057_u305F_u30D7_u30ED_u30B8_u30A7_u30AF_u30C8_u3092_u5225_u306E_u30D7_u30ED_u30B8_u30A7_u30AF_u30C8_u3067_u5229_u7528" class="headerlink" title="登録したプロジェクトを別のプロジェクトで利用"></a>登録したプロジェクトを別のプロジェクトで利用</h1><p>$ bower link project<br>bower link /Users/other_project &gt; /Users/hoge/.bower/links/project<br>[/shell]</p>
 <p>リンクは現在のプロジェクトを/Users/hoge/.bower (~/.bower)にキャッシュして、ほかのプロジェクトでも利用できるする機能っぽい。<br>自身で開発しているパッケージのテストするときに活用できる。</p>
 <p>また、各プロジェクトのディレクトリに.bowerrcを置くことで設定が個別に設定ができる。</p>
 <p>[javascript]<br>{<br>  &quot;directory&quot; : &quot;path/to/install/dir&quot;,<br>  &quot;json&quot;      : &quot;component.json&quot;,<br>  &quot;endpoint&quot;  : &quot;<a href="https://bower.herokuapp.com&amp;quot" target="_blank" rel="external">https://bower.herokuapp.com&amp;quot</a>;<br>}<br>[/javascript]</p>
 <p>という感じで使えそう。</p>
-<h2 id="Railsプロジェクに追加">Railsプロジェクに追加</h2><p>Railsプロジェクトで使用してみる。</p>
+<h2 id="Rails_u30D7_u30ED_u30B8_u30A7_u30AF_u306B_u8FFD_u52A0"><a href="#Rails_u30D7_u30ED_u30B8_u30A7_u30AF_u306B_u8FFD_u52A0" class="headerlink" title="Railsプロジェクに追加"></a>Railsプロジェクに追加</h2><p>Railsプロジェクトで使用してみる。</p>
 <p>Rials.rootに.bwoerrcを追加<br>[shell]<br>$ touch .bwoerrc<br>[/shell]</p>
 <p>.bwoerrcを編集<br>[javascript]<br>{<br>  &quot;directory&quot; : &quot;vendor/assets/components&quot;,<br>  &quot;json&quot;      : &quot;component.json&quot;,<br>  &quot;endpoint&quot;  : &quot;<a href="https://bower.herokuapp.com&amp;quot" target="_blank" rel="external">https://bower.herokuapp.com&amp;quot</a>;<br>}<br>[/javascript]</p>
 <p>component.jsonの生成<br>[shell]<br>$ bower init</p>
-<h1 id="あとはウィザードに従って。">あとはウィザードに従って。</h1><p>[/shell]</p>
+<h1 id="u3042_u3068_u306F_u30A6_u30A3_u30B6_u30FC_u30C9_u306B_u5F93_u3063_u3066_u3002"><a href="#u3042_u3068_u306F_u30A6_u30A3_u30B6_u30FC_u30C9_u306B_u5F93_u3063_u3066_u3002" class="headerlink" title="あとはウィザードに従って。"></a>あとはウィザードに従って。</h1><p>[/shell]</p>
 <p>component.jsonにパッケージを追加<br>[javascript]<br>{<br>  &quot;name&quot;: &quot;myapp&quot;,<br>  &quot;version&quot;: &quot;0.0.1&quot;,<br>  &quot;ignore&quot;: [<br>    &quot;<em>*/.</em>&quot;,<br>    &quot;node_modules&quot;,<br>    &quot;components&quot;<br>  ],<br>  &quot;dependencies&quot;: {<br>    &quot;jquery&quot;: &quot;<a href="http://code.jquery.com/jquery-1.8.1.js&amp;quot" target="_blank" rel="external">http://code.jquery.com/jquery-1.8.1.js&amp;quot</a>;,<br>    &quot;string.js&quot;: &quot;<a href="https://github.com/jprichardson/string.js.git&amp;quot" target="_blank" rel="external">https://github.com/jprichardson/string.js.git&amp;quot</a>;<br>  }<br>}<br>[/javascript]</p>
 <p>パッケージのインストール<br>[shell]<br>$ bower install<br>[/shell]</p>
 <p>Bowerのインストールディレクトリ(vendor/assets/components)をAssetsパスに通す<br>[ruby]</p>
-<h1 id="application-rb">application.rb</h1><p>config.assets.paths &lt;&lt; Rails.root.join(‘vendor’, ‘assets’, ‘components’)<br>[/ruby]</p>
+<h1 id="application-rb"><a href="#application-rb" class="headerlink" title="application.rb"></a>application.rb</h1><p>config.assets.paths &lt;&lt; Rails.root.join(‘vendor’, ‘assets’, ‘components’)<br>[/ruby]</p>
 <p>あとはapplication.jsにパッケージを追加<br>[javascript]<br>//= require jquery/jquery-min<br>//= require string.js/lib/string.min.js<br>[/javascript]</p>
 <p>という感じで良さそう。<br>後で気がついたけど、gemで<a href="https://github.com/rharriso/bower-rails/" target="_blank" rel="external">bower-rails</a>とかもありますね。</p>
 <p>Bowerはあくまでパッケージ管理ツールなので、ほかのタスク実行ツール<a href="http://gruntjs.com/" target="_blank" rel="external">grunt</a>とかと使っていくといい気がする。<br>Bowerとgruntだと<a href="http://yeoman.io/" target="_blank" rel="external">Yeoman</a>でよかったのかな。</p>

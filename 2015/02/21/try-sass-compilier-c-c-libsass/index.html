@@ -102,16 +102,16 @@ ga('send', 'pageview');
     
       <p>フロントエンド周りを触ることがあり、Sassのコンパイル速度改善をするために、<br><a href="http://libsass.org/" target="_blank" rel="external">libsass</a>について軽く調べてみた。</p>
 <a id="more"></a>
-<h2 id="libsassとは">libsassとは</h2><p>C/C++で書かれたSass Compiler。これ自体は単なるライブラリで、実際にこれを走らせるには<br><a href="https://github.com/sass/sassc" target="_blank" rel="external">SassC</a>や<a href="https://github.com/sass/ruby-libsass" target="_blank" rel="external">ruby-libsass</a>などを使う。</p>
+<h2 id="libsass_u3068_u306F"><a href="#libsass_u3068_u306F" class="headerlink" title="libsassとは"></a>libsassとは</h2><p>C/C++で書かれたSass Compiler。これ自体は単なるライブラリで、実際にこれを走らせるには<br><a href="https://github.com/sass/sassc" target="_blank" rel="external">SassC</a>や<a href="https://github.com/sass/ruby-libsass" target="_blank" rel="external">ruby-libsass</a>などを使う。</p>
 <p>コンパイラにGCC4.6+またはClang/LLVMが必要だとか。</p>
-<h2 id="libsass_のインストール">libsass のインストール</h2><p>libsassとSassCは共にbrewインストール可能だが、<br>マニュアルに沿ってインストールする場合は、<br><script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=manual-install.sh"></script></p>
-<h2 id="libsassとRuby_Sassとの互換性">libsassとRuby Sassとの互換性</h2><p>現状ではRuby Sassとの違いもあり、完全に互換性があるわけではない。<br>実際、Ruby Sassよりも実装が遅れているため、Ruby Sass3.4の機能は多くが利用できない状況らしい。<br><a href="https://github.com/sass/sass-spec/tree/master/spec/libsass-todo-issues" target="_blank" rel="external">SassSpec/libsass-todo-issues</a>を<br>みるとサポート状況わかる。</p>
+<h2 id="libsass__u306E_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB"><a href="#libsass__u306E_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB" class="headerlink" title="libsass のインストール"></a>libsass のインストール</h2><p>libsassとSassCは共にbrewインストール可能だが、<br>マニュアルに沿ってインストールする場合は、<br><script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=manual-install.sh"></script></p>
+<h2 id="libsass_u3068Ruby_Sass_u3068_u306E_u4E92_u63DB_u6027"><a href="#libsass_u3068Ruby_Sass_u3068_u306E_u4E92_u63DB_u6027" class="headerlink" title="libsassとRuby Sassとの互換性"></a>libsassとRuby Sassとの互換性</h2><p>現状ではRuby Sassとの違いもあり、完全に互換性があるわけではない。<br>実際、Ruby Sassよりも実装が遅れているため、Ruby Sass3.4の機能は多くが利用できない状況らしい。<br><a href="https://github.com/sass/sass-spec/tree/master/spec/libsass-todo-issues" target="_blank" rel="external">SassSpec/libsass-todo-issues</a>を<br>みるとサポート状況わかる。</p>
 <p>ちなみにSass Specを使ってみると</p>
 <script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=sass-spec.sh"></script>
 <p>libsassで sass spec実行</p>
 <script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-spec.sh"></script>
 <p>まだ対応できてないのか、スキップされてる項目が多い。</p>
-<h2 id="多言語サポート">多言語サポート</h2><p>libsassのラッパーも多く、主だった言語で使えそう。</p>
+<h2 id="u591A_u8A00_u8A9E_u30B5_u30DD_u30FC_u30C8"><a href="#u591A_u8A00_u8A9E_u30B5_u30DD_u30FC_u30C8" class="headerlink" title="多言語サポート"></a>多言語サポート</h2><p>libsassのラッパーも多く、主だった言語で使えそう。</p>
 <ul>
 <li><a href="https://github.com/sass/sassc" target="_blank" rel="external">SassC</a></li>
 <li><a href="https://github.com/sass/perl-libsass" target="_blank" rel="external">perl-libsass</a></li>

@@ -108,39 +108,39 @@ ga('send', 'pageview');
 <li>Chef Node：Chefによって構築、管理される対象(host name: chef_client)</li>
 <li>Chef Workstation：Cookbookの作成、更新を行う端末</li>
 </ul>
-<h2 id="Vagrantfileを作成">Vagrantfileを作成</h2><p>chef-server、chef-clientの2台分VMを定義する</p>
+<h2 id="Vagrantfile_u3092_u4F5C_u6210"><a href="#Vagrantfile_u3092_u4F5C_u6210" class="headerlink" title="Vagrantfileを作成"></a>Vagrantfileを作成</h2><p>chef-server、chef-clientの2台分VMを定義する</p>
 <p>Vagrantfileにプロビジョニングコード追加して、<br>とりあえず、Chef ServerとChefのインストール。<br>ntpで時刻も合わせておく。</p>
 <script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=Vagrantfile"></script>
 
-<h2 id="Chef_Serverのセットアップ">Chef Serverのセットアップ</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=chef-server-setup.sh"></script>
+<h2 id="Chef_Server_u306E_u30BB_u30C3_u30C8_u30A2_u30C3_u30D7"><a href="#Chef_Server_u306E_u30BB_u30C3_u30C8_u30A2_u30C3_u30D7" class="headerlink" title="Chef Serverのセットアップ"></a>Chef Serverのセットアップ</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=chef-server-setup.sh"></script>
 
 <p>Web UI をインストールしている場合、192.168.33.12/signupにアクセスできるようになる。<br>workstation側でhostsの設定をしていると<a href="https://chef-server/でもアクセスできる。" target="_blank" rel="external">https://chef-server/でもアクセスできる。</a></p>
-<h2 id="ユーザー、Organization作成">ユーザー、Organization作成</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-user-organization.sh"></script>
+<h2 id="u30E6_u30FC_u30B6_u30FC_u3001Organization_u4F5C_u6210"><a href="#u30E6_u30FC_u30B6_u30FC_u3001Organization_u4F5C_u6210" class="headerlink" title="ユーザー、Organization作成"></a>ユーザー、Organization作成</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-user-organization.sh"></script>
 
 <p>またworkstationのhostsにchef-serverのipを追加しておく。</p>
-<h2 id="Workstationの-chef/knife-rbの設定">Workstationの.chef/knife.rbの設定</h2><p>knife configureで指示に従って進めると、knife.rbが生成される。</p>
+<h2 id="Workstation_u306E-chef/knife-rb_u306E_u8A2D_u5B9A"><a href="#Workstation_u306E-chef/knife-rb_u306E_u8A2D_u5B9A" class="headerlink" title="Workstationの.chef/knife.rbの設定"></a>Workstationの.chef/knife.rbの設定</h2><p>knife configureで指示に従って進めると、knife.rbが生成される。</p>
 <script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-knife.sh"></script>
 
-<h2 id="Workstationに鍵を転送">Workstationに鍵を転送</h2><p>knife ssl fetch を使うとChef Serverから鍵を取得できる。</p>
+<h2 id="Workstation_u306B_u9375_u3092_u8EE2_u9001"><a href="#Workstation_u306B_u9375_u3092_u8EE2_u9001" class="headerlink" title="Workstationに鍵を転送"></a>Workstationに鍵を転送</h2><p>knife ssl fetch を使うとChef Serverから鍵を取得できる。</p>
 <script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=transfer-key.sh"></script>
 
-<h2 id="node、userの確認">node、userの確認</h2><p>knife client list、knife user listでnodeとuserを確認する。</p>
+<h2 id="node_u3001user_u306E_u78BA_u8A8D"><a href="#node_u3001user_u306E_u78BA_u8A8D" class="headerlink" title="node、userの確認"></a>node、userの確認</h2><p>knife client list、knife user listでnodeとuserを確認する。</p>
 <script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=check-user-node.sh"></script>
 
-<h2 id="Chef_Clientの準備">Chef Clientの準備</h2><p>Chef Serverとの認証には鍵認証を使う。<br>Chef ServerはClientごとに秘密鍵を発行し、公開鍵を自身(Chef Server)に登録する。</p>
+<h2 id="Chef_Client_u306E_u6E96_u5099"><a href="#Chef_Client_u306E_u6E96_u5099" class="headerlink" title="Chef Clientの準備"></a>Chef Clientの準備</h2><p>Chef Serverとの認証には鍵認証を使う。<br>Chef ServerはClientごとに秘密鍵を発行し、公開鍵を自身(Chef Server)に登録する。</p>
 <p>Clientごとに発行するのは手間なので、Chef Serverにあらかじめ用意されているvalidator keyを使う。<br>ClientはChef Serverとの通の際にこのvalidator keyを使うと、<br>Chef ServerにClientとして登録され、以降の認証に必要な鍵が発行される。</p>
 <p>これは最初の1回目にだけ利用される。<br>Chef Clientのhostsにchef-serverのipを追加して、名前解決できるようにしておく。</p>
-<h2 id="WorkstationからChef_Serverにnodeを登録する">WorkstationからChef Serverにnodeを登録する</h2><p>knife bootstrapでChef Serverに対してchef-clientを実行する。</p>
+<h2 id="Workstation_u304B_u3089Chef_Server_u306Bnode_u3092_u767B_u9332_u3059_u308B"><a href="#Workstation_u304B_u3089Chef_Server_u306Bnode_u3092_u767B_u9332_u3059_u308B" class="headerlink" title="WorkstationからChef Serverにnodeを登録する"></a>WorkstationからChef Serverにnodeを登録する</h2><p>knife bootstrapでChef Serverに対してchef-clientを実行する。</p>
 <script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-node.sh"></script>
 
 <p>ここで以下のように</p>
-<pre><code>INFO: HTTP Request Returned <span class="number">401</span> Unauthorized: Failed <span class="keyword">to</span> authenticate <span class="keyword">as</span> NODENAME. Ensure <span class="keyword">that</span> your node_name <span class="keyword">and</span> client key are correct.
+<pre><code>INFO: HTTP Request Returned 401 Unauthorized: Failed to authenticate as NODENAME. Ensure that your node_name and client key are correct.
 </code></pre><p>など401エラーが発生する場合、多くは証明書の問題っぽい。<br>エラーが出た際は<a href="https://docs.chef.io/errors.html" target="_blank" rel="external">https://docs.chef.io/errors.html</a>を一度参考すると良さそう。</p>
-<h2 id="Chef_Client_の情報を取得する">Chef Client の情報を取得する</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=check-chef-client.sh"></script>
+<h2 id="Chef_Client__u306E_u60C5_u5831_u3092_u53D6_u5F97_u3059_u308B"><a href="#Chef_Client__u306E_u60C5_u5831_u3092_u53D6_u5F97_u3059_u308B" class="headerlink" title="Chef Client の情報を取得する"></a>Chef Client の情報を取得する</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=check-chef-client.sh"></script>
 
-<h2 id="WorkstationからChef_ClientにRun_Listを適用">WorkstationからChef ClientにRun Listを適用</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=add-run-list.sh"></script>
+<h2 id="Workstation_u304B_u3089Chef_Client_u306BRun_List_u3092_u9069_u7528"><a href="#Workstation_u304B_u3089Chef_Client_u306BRun_List_u3092_u9069_u7528" class="headerlink" title="WorkstationからChef ClientにRun Listを適用"></a>WorkstationからChef ClientにRun Listを適用</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=add-run-list.sh"></script>
 
-<h2 id="Chef_ClientからRecipeを実行する">Chef ClientからRecipeを実行する</h2><p>nodeでcookbookを適用するには以下の条件が必要</p>
+<h2 id="Chef_Client_u304B_u3089Recipe_u3092_u5B9F_u884C_u3059_u308B"><a href="#Chef_Client_u304B_u3089Recipe_u3092_u5B9F_u884C_u3059_u308B" class="headerlink" title="Chef ClientからRecipeを実行する"></a>Chef ClientからRecipeを実行する</h2><p>nodeでcookbookを適用するには以下の条件が必要</p>
 <ul>
 <li>Chef Serverにcookbookが登録されている</li>
 <li>Chef Serverにnodeの情報が登録されていてrun listに適用したいレシピが登録されている</li>
@@ -156,7 +156,7 @@ ga('send', 'pageview');
 </ul>
 <script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=running-chef-client.sh"></script>
 
-<h2 id="Chef12からcookbookにname_attributeが必要になった">Chef12からcookbookにname attributeが必要になった</h2><p>Chef Serverとは関係ないが、Chef12からcookbookのmetadata.rbにname attributeが必要になったぽい。<br>適当な古いcookbookを使うとエラーになる。</p>
+<h2 id="Chef12_u304B_u3089cookbook_u306Bname_attribute_u304C_u5FC5_u8981_u306B_u306A_u3063_u305F"><a href="#Chef12_u304B_u3089cookbook_u306Bname_attribute_u304C_u5FC5_u8981_u306B_u306A_u3063_u305F" class="headerlink" title="Chef12からcookbookにname attributeが必要になった"></a>Chef12からcookbookにname attributeが必要になった</h2><p>Chef Serverとは関係ないが、Chef12からcookbookのmetadata.rbにname attributeが必要になったぽい。<br>適当な古いcookbookを使うとエラーになる。</p>
 <p>そんなときは、</p>
 <ul>
 <li>cookbookを修正して、name attributeを追加するか、metadata.rbを削除する。</li>

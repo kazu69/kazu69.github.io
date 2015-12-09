@@ -104,20 +104,20 @@ ga('send', 'pageview');
 <p>実際に動作を確認するにはpreバージョンのsassをインストールします。</p>
 <p>[shell]<br>gem install sass –pre<br>sass –watch source_dir:output_dir<br>[/shell]</p>
 <p>で確認できます。</p>
-<h2 id="＆セレクタに関連する構文の改善">＆セレクタに関連する構文の改善</h2><p>たとえば、以下のようにした場合</p>
+<h2 id="uFF06_u30BB_u30EC_u30AF_u30BF_u306B_u95A2_u9023_u3059_u308B_u69CB_u6587_u306E_u6539_u5584"><a href="#uFF06_u30BB_u30EC_u30AF_u30BF_u306B_u95A2_u9023_u3059_u308B_u69CB_u6587_u306E_u6539_u5584" class="headerlink" title="＆セレクタに関連する構文の改善"></a>＆セレクタに関連する構文の改善</h2><p>たとえば、以下のようにした場合</p>
 <p>[ruby]<br>$module: &quot;.module&quot;;</p>
 <p>#{$module}–element {</p>
-<pre><code><span class="built_in">#</span>{$<span class="function"><span class="keyword">module</span>}<span class="title">__child</span> {</span> <span class="comment">//valid</span>
-    <span class="built_in">color</span>:orange;
+<pre><code>#{$module}__child { //valid
+    color:orange;
 }
-&amp;amp; <span class="built_in">#</span>{$<span class="function"><span class="keyword">module</span>}<span class="title">__child</span> {</span> <span class="comment">// valid</span>
-    <span class="built_in">color</span>:orange; 
+&amp;amp; #{$module}__child { // valid
+    color:orange; 
 }
-<span class="built_in">#</span>{$<span class="function"><span class="keyword">module</span>}<span class="title">__parent</span> &amp;<span class="title">amp</span>; {</span> <span class="comment">// valid</span>
-    <span class="built_in">color</span>:yellow;
+#{$module}__parent &amp;amp; { // valid
+    color:yellow;
 }
-&amp;amp;<span class="built_in">#</span>{$<span class="function"><span class="keyword">module</span>}--<span class="title">brother</span> {</span> <span class="comment">// invalid in v3.2.x</span>
-    <span class="built_in">color</span>:green;
+&amp;amp;#{$module}--brother { // invalid in v3.2.x
+    color:green;
 }
 </code></pre><p>}<br>[/ruby]</p>
 <p>最後のブロックは欲しい結果が得られずにエラーになっていた。</p>
@@ -125,8 +125,8 @@ ga('send', 'pageview');
 <p>/<em> 以下はエラーで実際に出力されないがv3.3からは修正された </em>/<br>.module–element.module__parent {<br>  color:green<br>}<br>[/css]</p>
 <p>また、<a href="http://bem.info/" target="_blank" rel="external">BEM</a>を意識した構造においては</p>
 <p>[ruby]<br>.block {<br>    /<em> Base stuff </em>/<br>      &amp;__child {<br>        /<em> Sub-element of block </em>/<br>      }</p>
-<pre><code><span class="keyword">&amp;</span><span class="tag">amp</span>;<span class="tag">--modifier</span> {
-  <span class="comment">/* Variation of block */</span>
+<pre><code>&amp;amp;--modifier {
+  /* Variation of block */
 }
 </code></pre><p>}<br>[/ruby]</p>
 <p>とすることで</p>
@@ -143,20 +143,20 @@ ga('send', 'pageview');
 <p>[ruby]<br>.hoge, .huge {<br>  $selector: &amp;;<br>  content: $selector<br>}<br>[/ruby]</p>
 <p>[css]<br>.hoge, .huge {<br>  content: .hoge .huge;<br>}<br>[/css]</p>
 <p>とかもできます。</p>
-<h2 id="listの+,_-_演算子の実装">listの+, - 演算子の実装</h2><p>リストのでの+演算子はリストへの追加ではなく、文字列連結。<br>-演算子は-をセパレーターにした文字列文字列連結だったのが<br>リストの追加、削除(join(), reduce())のようになる。</p>
+<h2 id="list_u306E+_2C_-__u6F14_u7B97_u5B50_u306E_u5B9F_u88C5"><a href="#list_u306E+_2C_-__u6F14_u7B97_u5B50_u306E_u5B9F_u88C5" class="headerlink" title="listの+, - 演算子の実装"></a>listの+, - 演算子の実装</h2><p>リストのでの+演算子はリストへの追加ではなく、文字列連結。<br>-演算子は-をセパレーターにした文字列文字列連結だったのが<br>リストの追加、削除(join(), reduce())のようになる。</p>
 <p>[ruby]<br>$a: red, blue;<br>$b: red, green;</p>
-<h1 id="これまで">これまで</h1><p>$a + $b # =&gt; red, bluered, green;<br>$a - $b # =&gt; red, blue-red, green;</p>
+<h1 id="u3053_u308C_u307E_u3067"><a href="#u3053_u308C_u307E_u3067" class="headerlink" title="これまで"></a>これまで</h1><p>$a + $b # =&gt; red, bluered, green;<br>$a - $b # =&gt; red, blue-red, green;</p>
 <p>#v3.3以降<br>$join: $a + $b; #=&gt; red, blue, green<br>$reduce: $a - $b; #=&gt; blue, green<br>[/ruby]</p>
-<h2 id="if()へのパーサーの組込み">if()へのパーサーの組込み</h2><p>if() のなかで評価を行うことができる。</p>
+<h2 id="if_28_29_u3078_u306E_u30D1_u30FC_u30B5_u30FC_u306E_u7D44_u8FBC_u307F"><a href="#if_28_29_u3078_u306E_u30D1_u30FC_u30B5_u30FC_u306E_u7D44_u8FBC_u307F" class="headerlink" title="if()へのパーサーの組込み"></a>if()へのパーサーの組込み</h2><p>if() のなかで評価を行うことができる。</p>
 <p>[ruby]</p>
-<h1 id="@if(_condition,_true,_false_)_{_}">@if( condition, true, false ) { }</h1><p>$a: true;<br>@if ($a == true, 1, 0) { }</p>
-<h1 id="この場合、$a:_true;なので_1が評価される。">この場合、$a: true;なので 1が評価される。</h1><p>[/ruby]</p>
-<h2 id="minifierの改善">minifierの改善</h2><p><a href="https://github.com/nex3/sass/issues/687" target="_blank" rel="external">https://github.com/nex3/sass/issues/687</a></p>
-<h2 id="データタイプの追加">データタイプの追加</h2><p><a href="https://github.com/nex3/sass/issues/642" target="_blank" rel="external">https://github.com/nex3/sass/issues/642</a></p>
+<h1 id="@if_28_condition_2C_true_2C_false__29__7B__7D"><a href="#@if_28_condition_2C_true_2C_false__29__7B__7D" class="headerlink" title="@if( condition, true, false ) { }"></a>@if( condition, true, false ) { }</h1><p>$a: true;<br>@if ($a == true, 1, 0) { }</p>
+<h1 id="u3053_u306E_u5834_u5408_u3001_24a_3A_true_3B_u306A_u306E_u3067_1_u304C_u8A55_u4FA1_u3055_u308C_u308B_u3002"><a href="#u3053_u306E_u5834_u5408_u3001_24a_3A_true_3B_u306A_u306E_u3067_1_u304C_u8A55_u4FA1_u3055_u308C_u308B_u3002" class="headerlink" title="この場合、$a: true;なので 1が評価される。"></a>この場合、$a: true;なので 1が評価される。</h1><p>[/ruby]</p>
+<h2 id="minifier_u306E_u6539_u5584"><a href="#minifier_u306E_u6539_u5584" class="headerlink" title="minifierの改善"></a>minifierの改善</h2><p><a href="https://github.com/nex3/sass/issues/687" target="_blank" rel="external">https://github.com/nex3/sass/issues/687</a></p>
+<h2 id="u30C7_u30FC_u30BF_u30BF_u30A4_u30D7_u306E_u8FFD_u52A0"><a href="#u30C7_u30FC_u30BF_u30BF_u30A4_u30D7_u306E_u8FFD_u52A0" class="headerlink" title="データタイプの追加"></a>データタイプの追加</h2><p><a href="https://github.com/nex3/sass/issues/642" target="_blank" rel="external">https://github.com/nex3/sass/issues/642</a></p>
 <p>これまではkey-valueで設定値を渡したときなどは、</p>
 <p>[ruby]<br>$data: (<br>        color red,<br>        background blue<br>      );</p>
 <p>@each $pair in $data {<br>    div {<br>    $first-item  : nth($pair, 1);<br>    $second-item : nth($pair, 2);</p>
-<pre><code>#{<span class="ruby"><span class="variable">$first</span>-item}</span>: #{<span class="ruby"><span class="variable">$second</span>-item}</span>;
+<pre><code>#{$first-item}: #{$second-item};
 }
 </code></pre><p>}<br>[/ruby]</p>
 <p>などとしていたのですが、v3.3以降では</p>
@@ -164,7 +164,7 @@ ga('send', 'pageview');
 <p>という感じJSONっぽいkey-valueがわかりやすい形で渡すことができるそうだ。<br>これでデバイスごとの設定などがより容易になりそう。<br>[ruby]<br>$media-types: (phone: ‘(max-width: 480px)’,<br>               tablet-portrait: ‘(max-width: 767px)’,<br>               tablet-landscape-desktop: ‘(min-width: 768px) and (max-width: 979px)’,<br>               large-desktop: ‘(min-width: 1200px)’,<br>               non-retina: ‘screen and (-webkit-max-device-pixel-ratio: 1)’,<br>               retina: ‘screen and (-webkit-min-device-pixel-ratio: 2)’);</p>
 <p>@mixin respond-to($media) {<br>    @if not map-contains($media-types, $media) {<br>      @warn &quot;#{$media} is not a known media type. Using large-desktop instead.&quot;;<br>      $media: large-desktop;<br>    }<br>    @media #{map-get($media-types, $media)} {<br>        @content;<br>    }<br>}</p>
 <p>@include respond-to(phone) {<br>    .foo {<br>        background: blue;<br>    }<br>}<br>[/ruby]</p>
-<h2 id="@at-root">@at-root</h2><p>@at-rootディレクティブを使用することでネストされてるセレクターがrootレベルで出力される。</p>
+<h2 id="@at-root"><a href="#@at-root" class="headerlink" title="@at-root"></a>@at-root</h2><p>@at-rootディレクティブを使用することでネストされてるセレクターがrootレベルで出力される。</p>
 <p>たとえば</p>
 <p>[ruby]<br>.foo {<br>  // .foo 内だけど @at-root ディレクティブ内の .bar は rootレベルで出力<br>  @at-root .bar {<br>    color: blue;<br>    }<br>}</p>
 <p>.foo {<br>  // @at-root ディレクティブ内の .bar は rootレベルで出力<br>  // &amp; は 親である .foo を参照<br>  @at-root .bar &amp; {<br>    color: red;<br>  }<br>}</p>
@@ -183,7 +183,7 @@ ga('send', 'pageview');
 <p>.foo {<br>  color: purple;<br>}<br>.foo　.foo<strong>header {<br>  color: orange;<br>}<br>.foo　.foo</strong>content {<br>  color: black;<br>}<br>.foo　.foo–active {<br>  color: green;<br>}</p>
 <p>/<em> @at-rootを使用して </em>/<br>.foo {<br>  color: purple;<br>}<br>.foo<strong>header {<br>  color: orange;<br>}<br>.foo</strong>content {<br>  color: black;<br>}<br>.foo–active {<br>  color: green;<br>}<br>[/css]</p>
 <p>出力がネストされないので上記のような感じ。<br>冗長な記述しないですみそう。</p>
-<h2 id="モジュールとしてファイルをimport">モジュールとしてファイルをimport</h2><p>v4.0ではimport周りが大幅に変わるらしい。</p>
+<h2 id="u30E2_u30B8_u30E5_u30FC_u30EB_u3068_u3057_u3066_u30D5_u30A1_u30A4_u30EB_u3092import"><a href="#u30E2_u30B8_u30E5_u30FC_u30EB_u3068_u3057_u3066_u30D5_u30A1_u30A4_u30EB_u3092import" class="headerlink" title="モジュールとしてファイルをimport"></a>モジュールとしてファイルをimport</h2><p>v4.0ではimport周りが大幅に変わるらしい。</p>
 <ol>
 <li>@import_once の追加</li>
 <li>cssファイルのimportが可能に</li>

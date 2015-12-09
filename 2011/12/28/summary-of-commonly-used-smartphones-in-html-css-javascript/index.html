@@ -101,8 +101,8 @@ ga('send', 'pageview');
     </div>
     
       <p>スマートフォン(ios、android)向けのウェブサイト・ウェブアプリを作る際に個人的によく使うhtml、css、javascriptの備忘録。<br><a id="more"></a></p>
-<h2 id="html関連">html関連</h2><hr>
-<h3 id="■headタグ内での設定">■headタグ内での設定</h3><p>[html]<br>&lt;!– //デバイスサイズにあわせて表示領域を変更する –&gt;<br>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</p>
+<h2 id="html_u95A2_u9023"><a href="#html_u95A2_u9023" class="headerlink" title="html関連"></a>html関連</h2><hr>
+<h3 id="u25A0head_u30BF_u30B0_u5185_u3067_u306E_u8A2D_u5B9A"><a href="#u25A0head_u30BF_u30B0_u5185_u3067_u306E_u8A2D_u5B9A" class="headerlink" title="■headタグ内での設定"></a>■headタグ内での設定</h3><p>[html]<br>&lt;!– //デバイスサイズにあわせて表示領域を変更する –&gt;<br>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</p>
 <p>&lt;!– //電話番号のリンクを無効化 –&gt;<br>&lt;meta name=&quot;format-detection&quot; content=&quot;telephone=no&quot;&gt;</p>
 <p>&lt;!– //ホーム画面用アイコン –&gt;<br>&lt;link rel=&quot;apple-touch-icon&quot; href=&quot;icon.png&quot;&gt;</p>
 <p>&lt;!– //ホーム画面用アイコンの光沢を無効化する –&gt;<br>&lt;link rel=&quot;apple-touch-icon-precomposed&quot; href=&quot;icon.png&quot;&gt;</p>
@@ -112,19 +112,19 @@ ga('send', 'pageview');
 <p>&lt;!– //homeボタンから起動時にfull screen modeで起動 –&gt;<br>&lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;</p>
 <p>&lt;!– //full screen mode起動時のステータスバーの色の変更 –&gt;<br>&lt;meta name=&quot;apple-mobile-web-app-status-bar-style&quot; content=&quot;black&quot;&gt;<br>[/html]</p>
 <hr>
-<h3 id="■viewportについて">■viewportについて</h3><ul>
+<h3 id="u25A0viewport_u306B_u3064_u3044_u3066"><a href="#u25A0viewport_u306B_u3064_u3044_u3066" class="headerlink" title="■viewportについて"></a>■viewportについて</h3><ul>
 <li>width:ビューポート（可視領域）の幅(初期値980px)</li>
 <li>initial-scale:倍率の初期値、minimum-scale:倍率の最小値、maximum-scale:倍率の最大値</li>
 <li>user-scalable:拡大縮小の可否</li>
 <li>コンテンツより小さいviewport widthやheightを設定しても設定値は適用されない<br>例えば、device-width=320pxでinitial-scale=0.5の場合は、表示領域 320px/0.5px = 640pxで算出、<br>device-width=320px、width=400px、コンテンツ450pxであれば、initial-scale = 320/450で横幅450pxのドキュメントを描写される。</li>
 </ul>
 <hr>
-<h3 id="■Tel_URI、Sms_URIの設定">■Tel URI、Sms URIの設定</h3><p>[html]<br>&lt;!– //リンクをクリックで電話をかける –&gt;<br>&lt;a href=&quot;tel:00000000000&quot;&gt;00000000000&lt;/a&gt;</p>
+<h3 id="u25A0Tel_URI_u3001Sms_URI_u306E_u8A2D_u5B9A"><a href="#u25A0Tel_URI_u3001Sms_URI_u306E_u8A2D_u5B9A" class="headerlink" title="■Tel URI、Sms URIの設定"></a>■Tel URI、Sms URIの設定</h3><p>[html]<br>&lt;!– //リンクをクリックで電話をかける –&gt;<br>&lt;a href=&quot;tel:00000000000&quot;&gt;00000000000&lt;/a&gt;</p>
 <p>&lt;!– //リンククリックでsms –&gt;<br>&lt;a href=&quot;sms:00000000000&quot;&gt;sms&lt;/a&gt;</p>
 <p>&lt;!– //smsの送信秋複数 –&gt;<br>&lt;a href=&quot;sms:00000000000,1111111111&quot;&gt;sms複数&lt;/a&gt;</p>
 <p>&lt;!– //smsの本文追加 –&gt;<br>&lt;a href=&quot;sms:00000000000,1111111111?body=%83e%83X%83g%83%81%83b%83Z%81%5b%83W&quot;&gt;smsメッセージ&lt;/a&gt;<br>[/html]</p>
 <hr>
-<h3 id="■inputタグ関連">■inputタグ関連</h3><p>[html]<br>&lt;input autocorrect=&quot;off&quot; autocomplete=&quot;off&quot; autocapitalize=&quot;off&quot;&gt;<br>[/html]</p>
+<h3 id="u25A0input_u30BF_u30B0_u95A2_u9023"><a href="#u25A0input_u30BF_u30B0_u95A2_u9023" class="headerlink" title="■inputタグ関連"></a>■inputタグ関連</h3><p>[html]<br>&lt;input autocorrect=&quot;off&quot; autocomplete=&quot;off&quot; autocapitalize=&quot;off&quot;&gt;<br>[/html]</p>
 <ul>
 <li>autocorrect:スペルチェック機能</li>
 <li>autocomplete:自動補完</li>
@@ -135,8 +135,8 @@ ga('send', 'pageview');
 <li>同様に「1000」は「1,000」の数値形式に変換される</li>
 <li>ソフトウェアキーボードを数値入力形式で表示させたいならばtel属性値を付与するかJavaScriptで回避<br>pattern属性を使って正規表現で回避するのがいいのではないかと思ってる。<br>[html]<br>&lt;input type=&quot;text&quot; pattern=&quot;[0-9]<em>&quot;/&gt;<br>[/html]<br>[html]<br>&lt;input type=&quot;text&quot; pattern=&quot;\d</em>&quot;/&gt;<br>[/html]</li>
 </ul>
-<h2 id="css関連">css関連</h2><hr>
-<h3 id="■position:fixed関連">■position:fixed関連</h3><p>position:fixed はiOS5、Android2.2以降が対応。<br>ただし</p>
+<h2 id="css_u95A2_u9023"><a href="#css_u95A2_u9023" class="headerlink" title="css関連"></a>css関連</h2><hr>
+<h3 id="u25A0position_3Afixed_u95A2_u9023"><a href="#u25A0position_3Afixed_u95A2_u9023" class="headerlink" title="■position:fixed関連"></a>■position:fixed関連</h3><p>position:fixed はiOS5、Android2.2以降が対応。<br>ただし</p>
 <ul>
 <li>Androidではviewportにuser-scalable=noの指定がないとposition:fixedが動かない</li>
 <li>iOS5ではURLに#がついた状態だと挙動が不安定</li>
@@ -144,40 +144,40 @@ ga('send', 'pageview');
 <li>Androidではuser-scalable=noとposition: fixedを使用すると、-webkit-transformが動かなくなる</li>
 </ul>
 <p>ちなみに、iOSがposition:fixをサポートしているかの判定は、<a href="https://gist.github.com/1221602" target="_blank" rel="external">Modernizr position fixed checkのコード</a>から<br>[javascript]<br>var isSupported;</p>
-<pre><code><span class="keyword">if</span> ( <span class="keyword">typeof</span> <span class="built_in">document</span>.body.scrollIntoViewIfNeeded === <span class="string">'function'</span>) {
+<pre><code>if ( typeof document.body.scrollIntoViewIfNeeded === &apos;function&apos;) {
 
-    (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{
-        <span class="keyword">var</span> container     = <span class="built_in">document</span>.body,
-            elem          = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>),
+    (function () {
+        var container     = document.body,
+            elem          = document.createElement(&apos;div&apos;),
             orgHeight     = container.style.height,
-            orgScrollTop  = <span class="built_in">window</span>.pageYOffset,
-            testScrollTop = <span class="number">20</span>;
+            orgScrollTop  = window.pageYOffset,
+            testScrollTop = 20;
 
-        elem.style.cssText = <span class="string">'position:fixed;top:0px;height:10px;'</span>;
+        elem.style.cssText = &apos;position:fixed;top:0px;height:10px;&apos;;
 
         container.appendChild(elem);
-        container.style.height = <span class="string">'2048px'</span>;
+        container.style.height = &apos;2048px&apos;;
 
-        <span class="built_in">window</span>.setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{
+        window.setTimeout(function() {
             elem.scrollIntoViewIfNeeded();
-            isSupported = !(<span class="built_in">window</span>.pageYOffset === testScrollTop) || !(<span class="built_in">window</span>.pageYOffset === testScrollTop+<span class="number">1</span>);
+            isSupported = !(window.pageYOffset === testScrollTop) || !(window.pageYOffset === testScrollTop+1);
             alert(isSupported);
             container.removeChild(elem);
             container.style.height = orgHeight;
 
-            <span class="built_in">window</span>.scrollTo(<span class="number">0</span>, orgScrollTop);
-        }, <span class="number">1000</span>);
+            window.scrollTo(0, orgScrollTop);
+        }, 1000);
 
-        <span class="built_in">window</span>.scrollTo(<span class="number">0</span>, testScrollTop);
+        window.scrollTo(0, testScrollTop);
     }());
 
 }
 </code></pre><p>   return isSupported;<br>[/javascript]</p>
 <p>という感じで判定できそうです。</p>
 <hr>
-<h3 id="■overflow:scroll関連">■overflow:scroll関連</h3><p>overflow:scrollはiOSは<strong>２本指スクロール</strong>(わかりにくい)、Androidはoverflow:hiddenとして扱われます。iOS5の場合は、<br>[css]<br>-webkit-overflow-scrolling: touch;<br>[/css]<br>で1本指スクロールが可能です。Androidの場合は現状、JavaScriptなどで回避するか別のアプローチが必要の様子。<br>overflow-scrollingは将来的にAndroidでもサポートされるかもしれないので、個人的には、<br>[javascript]<br>if(&quot;overflowScrolling&quot; in document.body.style || &quot;webkitOverflowScrolling&quot; in document.body.style || &quot;MozOverflowScrolling&quot; in document.body.style) {<br>  //対応しているときの処理<br>}<br>else {<br>  //対応してないときの処理<br>}<br>;<br>[/javascript]<br>という感じで分岐したりしてます。</p>
+<h3 id="u25A0overflow_3Ascroll_u95A2_u9023"><a href="#u25A0overflow_3Ascroll_u95A2_u9023" class="headerlink" title="■overflow:scroll関連"></a>■overflow:scroll関連</h3><p>overflow:scrollはiOSは<strong>２本指スクロール</strong>(わかりにくい)、Androidはoverflow:hiddenとして扱われます。iOS5の場合は、<br>[css]<br>-webkit-overflow-scrolling: touch;<br>[/css]<br>で1本指スクロールが可能です。Androidの場合は現状、JavaScriptなどで回避するか別のアプローチが必要の様子。<br>overflow-scrollingは将来的にAndroidでもサポートされるかもしれないので、個人的には、<br>[javascript]<br>if(&quot;overflowScrolling&quot; in document.body.style || &quot;webkitOverflowScrolling&quot; in document.body.style || &quot;MozOverflowScrolling&quot; in document.body.style) {<br>  //対応しているときの処理<br>}<br>else {<br>  //対応してないときの処理<br>}<br>;<br>[/javascript]<br>という感じで分岐したりしてます。</p>
 <hr>
-<h3 id="■Media_Queries">■Media Queries</h3><p>デバイスの向きによって、スタイルを変更する場合、インラインなら<br>[css]<br>/<em>縦向き</em>/<br>@media all and (orientation: portrait) {<br>    body {<br>       /<em> your styles </em>/<br>    }<br>}</p>
+<h3 id="u25A0Media_Queries"><a href="#u25A0Media_Queries" class="headerlink" title="■Media Queries"></a>■Media Queries</h3><p>デバイスの向きによって、スタイルを変更する場合、インラインなら<br>[css]<br>/<em>縦向き</em>/<br>@media all and (orientation: portrait) {<br>    body {<br>       /<em> your styles </em>/<br>    }<br>}</p>
 <p>/<em>横向き</em>/<br>@media all and (orientation: landscape) {<br>    body {<br>       /<em> your setting here </em>/<br>    }<br>}  </p>
 <p>[/css]<br>読込むcssファイルを変更する場合は<br>[html]<br>/<em>縦向き</em>/<br>&lt;link rel=&quot;stylesheet&quot; media=&quot;all and (orientation: portrait)&quot; href=&quot;portrait.css&quot;&gt;</p>
 <p>/<em>横向き</em>/<br>&lt;link rel=&quot;stylesheet&quot; media=&quot;all and (orientation: landscape)&quot; href=&quot;landscape.css&quot;&gt;<br>[/html]</p>
@@ -189,20 +189,20 @@ ga('send', 'pageview');
 <p>/<em> iphone4 iphone4s </em>/<br>@media (-webkit-min-device-pixel-ratio: 2),<br>             (min–moz-device-pixel-ratio: 2),<br>             (min-resolution: 300dpi) {<br>  body{ your styles here }<br>}  </p>
 <p>/<em> andoroid </em>/<br>@media (-webkit-max-device-pixel-ratio: 1.5),<br>             (max–moz-device-pixel-ratio: 1.5),<br>             (max-resolution: 299dpi) {<br>  body{ your styles here }<br>}<br>[/css]</p>
 <hr>
-<h3 id="■そのほかの設定">■そのほかの設定</h3><p>そのほか、細かい設定などなど。</p>
+<h3 id="u25A0_u305D_u306E_u307B_u304B_u306E_u8A2D_u5B9A"><a href="#u25A0_u305D_u306E_u307B_u304B_u306E_u8A2D_u5B9A" class="headerlink" title="■そのほかの設定"></a>■そのほかの設定</h3><p>そのほか、細かい設定などなど。</p>
 <p>[css]<br>/<em> タップ時のハイライトカラー</em>/<br>-webkit-tap-highlight-color:#f00;</p>
 <p>/<em>テキストの選択をキャンセルする場合</em>/<br>-webkit-user-select:none;</p>
 <p>/<em>リンクの長時間タップでリンク内容をポップアップで表示させない場合</em>/<br>-webkit-touch-callout: none;<br>[/css]</p>
 <p>などが主なものになります。</p>
-<h2 id="JavaScript関連">JavaScript関連</h2><hr>
-<h3 id="■URLバーを隠す">■URLバーを隠す</h3><p>ウェブページを表示した際にURLバーを隠すことができます。(厳密には1pxだけwindowをスクロールさせる)<br>[javascript]<br>//1000ミリ秒の遅延を設定しているのはページの読込が完了するまでの十分な時間として設定してます。<br>setTimeout(function(){  window.scrollTo(0,1);},1000);</p>
+<h2 id="JavaScript_u95A2_u9023"><a href="#JavaScript_u95A2_u9023" class="headerlink" title="JavaScript関連"></a>JavaScript関連</h2><hr>
+<h3 id="u25A0URL_u30D0_u30FC_u3092_u96A0_u3059"><a href="#u25A0URL_u30D0_u30FC_u3092_u96A0_u3059" class="headerlink" title="■URLバーを隠す"></a>■URLバーを隠す</h3><p>ウェブページを表示した際にURLバーを隠すことができます。(厳密には1pxだけwindowをスクロールさせる)<br>[javascript]<br>//1000ミリ秒の遅延を設定しているのはページの読込が完了するまでの十分な時間として設定してます。<br>setTimeout(function(){  window.scrollTo(0,1);},1000);</p>
 <p>//jQueryなどだとページ読込み完了時に呼んでやるのもありです。<br>$(function(){<br>window.scrollTo(0,1);<br>});<br>[/javascript]</p>
 <hr>
-<h3 id="■メディアクエリ・解像度関連">■メディアクエリ・解像度関連</h3><p>cssのメディアクエリのjavascript版のような感じで、window.matchMediaを使うとデバイス画面サイズごとに処理を分岐できます。<br>[javascript]<br>if ( window.matchMedia(&quot;only screen and (max-width: 480px&quot;)).matches ) {<br>     // For Mobile<br>} else if (window.matchMedia(&quot;only screen and (min-width: 481px) and (max-width: 1024px)&quot;).matches ) {<br>     // For Tablet<br>} else {<br>     // For PC<br>}<br>[/javascript]</p>
+<h3 id="u25A0_u30E1_u30C7_u30A3_u30A2_u30AF_u30A8_u30EA_u30FB_u89E3_u50CF_u5EA6_u95A2_u9023"><a href="#u25A0_u30E1_u30C7_u30A3_u30A2_u30AF_u30A8_u30EA_u30FB_u89E3_u50CF_u5EA6_u95A2_u9023" class="headerlink" title="■メディアクエリ・解像度関連"></a>■メディアクエリ・解像度関連</h3><p>cssのメディアクエリのjavascript版のような感じで、window.matchMediaを使うとデバイス画面サイズごとに処理を分岐できます。<br>[javascript]<br>if ( window.matchMedia(&quot;only screen and (max-width: 480px&quot;)).matches ) {<br>     // For Mobile<br>} else if (window.matchMedia(&quot;only screen and (min-width: 481px) and (max-width: 1024px)&quot;).matches ) {<br>     // For Tablet<br>} else {<br>     // For PC<br>}<br>[/javascript]</p>
 <p>同じように、デバイスの解像度も取得できます。<br>[javascript]<br>if( window.devicePixelRatio == 2 )<br>{<br>  //iphone4,iphone4s<br>}<br>else if( window.devicePixelRatio == 1.5 )<br>{<br>  //Android<br>}<br>else<br>{<br>  //others<br>}<br>[/javascript]</p>
 <p>また、フルスクリーンモードで起動しているかも検出できます。<br>[javascript]<br>if(!window.navigator.standalone)<br>{<br>    //your method<br>}<br>[/javascript]</p>
 <hr>
-<h3 id="■通信状態の取得">■通信状態の取得</h3><p>Android2.2以降からは接続状態も検出できます。<br>[javascript]<br>/*<br>Browser Object Model</p>
+<h3 id="u25A0_u901A_u4FE1_u72B6_u614B_u306E_u53D6_u5F97"><a href="#u25A0_u901A_u4FE1_u72B6_u614B_u306E_u53D6_u5F97" class="headerlink" title="■通信状態の取得"></a>■通信状態の取得</h3><p>Android2.2以降からは接続状態も検出できます。<br>[javascript]<br>/*<br>Browser Object Model</p>
 <p>navigator = {<br>  connection: {<br>    &quot;type&quot;: &quot;4&quot;,<br>    &quot;UNKNOWN&quot;: &quot;0&quot;,<br>    &quot;ETHERNET&quot;: &quot;1&quot;,<br>    &quot;WIFI&quot;: &quot;2&quot;,<br>    &quot;CELL_2G&quot;: &quot;3&quot;,<br>    &quot;CELL_3G&quot;: &quot;4&quot;<br>  }<br>};<br>*/</p>
 <p>switch (navigator.connection.type ) {<br>case 0:<br>//unknown<br>case 1:<br>//ETHERNET<br>break;</p>
 <p>case 2:<br>//WIFI<br>break;</p>
@@ -211,7 +211,7 @@ ga('send', 'pageview');
 <p>}<br>[/javascript]</p>
 <p>オンラインかどうかの検出もできて、以下のようになります。<br>[javascript]<br>if (window.navigator.onLine)<br>{<br>    //online<br>}<br>else<br>{<br>    //offline<br>}<br>[/javascript]</p>
 <hr>
-<h3 id="■touchイベント関連">■touchイベント関連</h3><p>touch、gestureイベントは次のようになります。<br>[javascript]<br>//スクリーンにタッチ<br>document.addEventListener(&quot;touchstart&quot;, touchHandler, false);</p>
+<h3 id="u25A0touch_u30A4_u30D9_u30F3_u30C8_u95A2_u9023"><a href="#u25A0touch_u30A4_u30D9_u30F3_u30C8_u95A2_u9023" class="headerlink" title="■touchイベント関連"></a>■touchイベント関連</h3><p>touch、gestureイベントは次のようになります。<br>[javascript]<br>//スクリーンにタッチ<br>document.addEventListener(&quot;touchstart&quot;, touchHandler, false);</p>
 <p>//タッチ後、指を動かす<br>document.addEventListener(&quot;touchmove&quot;, touchHandler, false);</p>
 <p>//タッチ後、指を離す<br>document.addEventListener(&quot;touchend&quot;, touchHandler, false);</p>
 <p>//タッチ後、指をスライドさせた(タッチをキャンセルした)<br>document.addEventListener(&quot;touchcancel&quot;, touchHandler, false);</p>
@@ -220,11 +220,11 @@ ga('send', 'pageview');
 <p>//どちらかの指がスクリーンから離れる<br>//ちなみにこの後、残りの指を離すとtouchendが発生<br>document.addEventListener(&quot;gestureend&quot;, gestureHandler, false);</p>
 <p>[/javascript]</p>
 <hr>
-<h3 id="■デバイスの向き関連">■デバイスの向き関連</h3><p>デバイスの向きも検出できます。<br>[javascript]<br>//90度ごとに向きが変更された場合に発生<br>window.addEventListener(&quot;orientationchange &quot;, orientationEvent, true);</p>
+<h3 id="u25A0_u30C7_u30D0_u30A4_u30B9_u306E_u5411_u304D_u95A2_u9023"><a href="#u25A0_u30C7_u30D0_u30A4_u30B9_u306E_u5411_u304D_u95A2_u9023" class="headerlink" title="■デバイスの向き関連"></a>■デバイスの向き関連</h3><p>デバイスの向きも検出できます。<br>[javascript]<br>//90度ごとに向きが変更された場合に発生<br>window.addEventListener(&quot;orientationchange &quot;, orientationEvent, true);</p>
 <p>//細かい回転量の取得<br>//返される値は<br>//alpha:0～360(degrees)<br>//beta:-180～180(degrees)<br>//gamma:-90～90(degrees)<br>window.addEventListener(&quot;deviceorientation&quot;, orientationEvent, true);</p>
 <p>//デバイスの加速度と回転データを取得<br>window.addEventListener(‘devicemotion’, deviceMotionHandler, false);<br>[/javascript]<br>このあたりは<a href="http://www.html5rocks.com/en/tutorials/device/orientation/" target="_blank" rel="external">html5rocks</a>が詳しくです。</p>
 <hr>
-<h3 id="■Media_capture_API">■Media capture API</h3><p>Andoroidはhtmlからユーザーがアップロードできるコンテンツを細かく制御できます。<br>[html]<br>&lt;!– regular file upload (Android 2.2+) –&gt;<br>&lt;input type=&quot;file&quot;&gt;&lt;/input&gt;</p>
+<h3 id="u25A0Media_capture_API"><a href="#u25A0Media_capture_API" class="headerlink" title="■Media capture API"></a>■Media capture API</h3><p>Andoroidはhtmlからユーザーがアップロードできるコンテンツを細かく制御できます。<br>[html]<br>&lt;!– regular file upload (Android 2.2+) –&gt;<br>&lt;input type=&quot;file&quot;&gt;&lt;/input&gt;</p>
 <p>&lt;!– opens directly to the camera (Android 3.0+) –&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;image/*;capture=camera&quot;&gt;&lt;/input&gt;  </p>
 <p>&lt;!– opens directly to the camera in video mode (Android 3.0+) –&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;video/*;capture=camcorder&quot;&gt;&lt;/input&gt;  </p>
 <p>&lt;!– opens directly to the audio recorder (Android 3.0+) –&gt;<br>&lt;input type=&quot;file&quot; accept=&quot;audio/*;capture=microphone&quot;&gt;&lt;/input&gt;  </p>

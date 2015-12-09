@@ -111,18 +111,18 @@ ga('send', 'pageview');
 <p><a href="https://www.nginx.com/resources/wiki/modules/lua/" target="_blank" rel="external">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
 <a id="more"></a>
 <p><a href="https://www.nginx.com/resources/wiki/nginScript/" target="_blank" rel="external">nginScriptのwiki</a>を参考にDocker + docker-machineで簡単に試してみた。</p>
-<h2 id="install_and_build_nginx">install and build nginx</h2><p><a href="http://nginx.org/en/download.html" target="_blank" rel="external">nginx: download</a>から最新のバージョンを取得する。<br>またnginScriptはオプションとして提供されているので、<a href="http://hg.nginx.org/" target="_blank" rel="external">nginxのMercurial</a>から取得する必要がある。</p>
+<h2 id="install_and_build_nginx"><a href="#install_and_build_nginx" class="headerlink" title="install and build nginx"></a>install and build nginx</h2><p><a href="http://nginx.org/en/download.html" target="_blank" rel="external">nginx: download</a>から最新のバージョンを取得する。<br>またnginScriptはオプションとして提供されているので、<a href="http://hg.nginx.org/" target="_blank" rel="external">nginxのMercurial</a>から取得する必要がある。</p>
 <script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=Dockerfile"></script>
 <p>これを適当な感じでbuild</p>
 <script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=build.sh"></script>
-<h2 id="nginScript">nginScript</h2><p>ちなみにnginx.confは以下のようになっている</p>
+<h2 id="nginScript"><a href="#nginScript" class="headerlink" title="nginScript"></a>nginScript</h2><p>ちなみにnginx.confは以下のようになっている</p>
 <script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=nginx.conf"></script>
-<h3 id="js_run">js_run</h3><p>nginScriptはlocationごとに評価され、実行される。<br>locationディレクティブでnginScriptを利用する際はjs_run で実行する必要がある。</p>
+<h3 id="js_run"><a href="#js_run" class="headerlink" title="js_run"></a>js_run</h3><p>nginScriptはlocationごとに評価され、実行される。<br>locationディレクティブでnginScriptを利用する際はjs_run で実行する必要がある。</p>
 <script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=js_run.sh"></script>
-<h3 id="js_set">js_set</h3><p>また、JavaScriptを使い内部変数を定義することもできる。<br>その際はhttpディレクティブに設定を書く必要がある。</p>
+<h3 id="js_set"><a href="#js_set" class="headerlink" title="js_set"></a>js_set</h3><p>また、JavaScriptを使い内部変数を定義することもできる。<br>その際はhttpディレクティブに設定を書く必要がある。</p>
 <script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=js_set.sh"></script>
-<h3 id="$r(リクエストオブジェクト)">$r(リクエストオブジェクト)</h3><p>その他、リクエストの内部変数として $rがJavaScriptオブジェクトとして利用できる。<br>$rはsendHeader(),send(),finish() というメソッドが現在のところ定義されており、これらを利用してレスポンスを返すことができる。</p>
-<h3 id="リクエストパラメータ">リクエストパラメータ</h3><p>$r.args にJavaScriptのオブジェクトとして格納されている。</p>
+<h3 id="24r_28_u30EA_u30AF_u30A8_u30B9_u30C8_u30AA_u30D6_u30B8_u30A7_u30AF_u30C8_29"><a href="#24r_28_u30EA_u30AF_u30A8_u30B9_u30C8_u30AA_u30D6_u30B8_u30A7_u30AF_u30C8_29" class="headerlink" title="$r(リクエストオブジェクト)"></a>$r(リクエストオブジェクト)</h3><p>その他、リクエストの内部変数として $rがJavaScriptオブジェクトとして利用できる。<br>$rはsendHeader(),send(),finish() というメソッドが現在のところ定義されており、これらを利用してレスポンスを返すことができる。</p>
+<h3 id="u30EA_u30AF_u30A8_u30B9_u30C8_u30D1_u30E9_u30E1_u30FC_u30BF"><a href="#u30EA_u30AF_u30A8_u30B9_u30C8_u30D1_u30E9_u30E1_u30FC_u30BF" class="headerlink" title="リクエストパラメータ"></a>リクエストパラメータ</h3><p>$r.args にJavaScriptのオブジェクトとして格納されている。</p>
 <p>nginScriptはECMA標準準拠というわけではないようだが、基本的なことはできそう。<br>適当な関数を定義して評価することや、カスタムヘッダーを追加することなどはできた。</p>
 <script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=function.sh"></script>
 <p>ということで、ほとんど<a href="http://hg.nginx.org/njs/file/tip/README" target="_blank" rel="external">Readme</a> をそのまま試したことになるけど、<br>いまのところlocationディレクティブにhookして、リクエスト、レスポンスをJavaScriptで操作できる位という感じだった。</p>

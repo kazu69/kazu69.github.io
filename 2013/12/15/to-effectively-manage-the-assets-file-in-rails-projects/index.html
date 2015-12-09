@@ -102,7 +102,7 @@ ga('send', 'pageview');
     
       <p>Railsプロジェクトでのassetsファイルの管理に<a href="http://bower.io/" target="_blank" rel="external">Bower</a>を使用している。もちろんこれでも問題はないが、他の方法もあるのでメモ。</p>
 <a id="more"></a>
-<h3 id="bower-railsを利用する">bower-railsを利用する</h3><p><a href="https://github.com/42dev/bower-rails" target="_blank" rel="external">bower-rails</a>を利用すると、Rake tasksでbowerを実行できる。またDSLを利用することでGemfileのようにassetsファイルを管理できる。</p>
+<h3 id="bower-rails_u3092_u5229_u7528_u3059_u308B"><a href="#bower-rails_u3092_u5229_u7528_u3059_u308B" class="headerlink" title="bower-railsを利用する"></a>bower-railsを利用する</h3><p><a href="https://github.com/42dev/bower-rails" target="_blank" rel="external">bower-rails</a>を利用すると、Rake tasksでbowerを実行できる。またDSLを利用することでGemfileのようにassetsファイルを管理できる。</p>
 <p>bower-rails を Gemfileに追加して install</p>
 <script src="https://gist.github.com/kazu69/7971723.js?file=Gemfile"></script>
 
@@ -116,7 +116,7 @@ ga('send', 'pageview');
 <script src="https://gist.github.com/kazu69/7971723.js?file=bower-rails-task.sh"></script>
 
 <p>installするとpackageのレポジトリ全体を取得するあたりはbowerを使用している場合と同じなので、基本的にbowerでpackageを取得ディレクトリはgitigoreでバージョン管理しないようにしている。</p>
-<h3 id="rails-sssets-orgを利用する">rails-sssets.orgを利用する</h3><p><a href="https://rails-assets.org/" target="_blank" rel="external">rails-sssets.org</a>を使用する場合は、gemを使用してassets管理が可能になる。<br>rails-sssetsはbowerのproxyで、bower.jsonを解析して、bowerのレポジトリからパッケージを取得してgemファイルにしてrails applicationに提供する。</p>
+<h3 id="rails-sssets-org_u3092_u5229_u7528_u3059_u308B"><a href="#rails-sssets-org_u3092_u5229_u7528_u3059_u308B" class="headerlink" title="rails-sssets.orgを利用する"></a>rails-sssets.orgを利用する</h3><p><a href="https://rails-assets.org/" target="_blank" rel="external">rails-sssets.org</a>を使用する場合は、gemを使用してassets管理が可能になる。<br>rails-sssetsはbowerのproxyで、bower.jsonを解析して、bowerのレポジトリからパッケージを取得してgemファイルにしてrails applicationに提供する。</p>
 <p>Gemfileにrails-assets.orgを追加し、<br>あとは使用するpackageを ‘rails-assets-BOWER_PACKAGE_NAME’ という名前で追加するだけ。</p>
 <script src="https://gist.github.com/kazu69/7973179.js?file=Gemfile"></script>
 

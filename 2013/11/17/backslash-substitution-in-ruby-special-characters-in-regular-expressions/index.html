@@ -102,12 +102,12 @@ ga('send', 'pageview');
     
       <p>rubyで特殊文字列\, (, ), [, ], {, }, ., ?, +, *, . を正規表現でバックスラッシュ置換をするメモ。<br><a id="more"></a></p>
 <p>たとえば、特殊文字を正規表現マッチさせる場合<br>[ruby]<br>str = ‘?’<br>‘hogemoge?’ =~ /#{str}/</p>
-<h1 id="RegexpError:_target_of_repeat_operator_is_not_specified:_/?/">RegexpError: target of repeat operator is not specified: /?/</h1><p>str = ‘)’<br>‘hogemoge)’ =~ /#{str}/</p>
-<h1 id="RegexpError:_unmatched_close_parenthesis:_/)/">RegexpError: unmatched close parenthesis: /)/</h1><p>[/ruby]</p>
+<h1 id="RegexpError_3A_target_of_repeat_operator_is_not_specified_3A_/_3F/"><a href="#RegexpError_3A_target_of_repeat_operator_is_not_specified_3A_/_3F/" class="headerlink" title="RegexpError: target of repeat operator is not specified: /?/"></a>RegexpError: target of repeat operator is not specified: /?/</h1><p>str = ‘)’<br>‘hogemoge)’ =~ /#{str}/</p>
+<h1 id="RegexpError_3A_unmatched_close_parenthesis_3A_/_29/"><a href="#RegexpError_3A_unmatched_close_parenthesis_3A_/_29/" class="headerlink" title="RegexpError: unmatched close parenthesis: /)/"></a>RegexpError: unmatched close parenthesis: /)/</h1><p>[/ruby]</p>
 <p>という具合にエラーになる。</p>
 <p>[ruby]<br>str = ‘?’<br>str = str.gsub(/\|\?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge?’ =~ /#{str}/</p>
-<h1 id="=&gt;_8">=&gt; 8</h1><p>str = ‘)’<br>str = str.gsub(/\|\?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge)’ =~ /#{str}/</p>
-<h1 id="=&gt;_8-1">=&gt; 8</h1><p>[/ruby]</p>
+<h1 id="3D_26gt_3B_8"><a href="#3D_26gt_3B_8" class="headerlink" title="=&gt; 8"></a>=&gt; 8</h1><p>str = ‘)’<br>str = str.gsub(/\|\?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge)’ =~ /#{str}/</p>
+<h1 id="3D_26gt_3B_8-1"><a href="#3D_26gt_3B_8-1" class="headerlink" title="=&gt; 8"></a>=&gt; 8</h1><p>[/ruby]</p>
 <p>で解決した。</p>
 
     

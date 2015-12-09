@@ -102,7 +102,7 @@ ga('send', 'pageview');
     
       <p>jQueryをCDNから取得し、jQuery pluginが活躍している場合のbrowserify導入の備忘録</p>
 <a id="more"></a>
-<h2 id="CDNのjQueryをrequireする">CDNのjQueryをrequireする</h2><p>CDNを使うことで、browserifyでbundleするファイルサイズは小さくなり、ファイル生成までの時間も短くなるという恩恵がある。</p>
+<h2 id="CDN_u306EjQuery_u3092require_u3059_u308B"><a href="#CDN_u306EjQuery_u3092require_u3059_u308B" class="headerlink" title="CDNのjQueryをrequireする"></a>CDNのjQueryをrequireする</h2><p>CDNを使うことで、browserifyでbundleするファイルサイズは小さくなり、ファイル生成までの時間も短くなるという恩恵がある。</p>
 <p>まず、CDNのjQueryを利用するのに<a href="https://github.com/thlorenz/browserify-shim" target="_blank" rel="external">browserify-shim</a>を使う。<br>globalのjQueryを「jquery」というモジュール名でrequireできるようにする。</p>
 <script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=browserify-shim.json"></script>
 
@@ -136,7 +136,7 @@ ga('send', 'pageview');
 <script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=cdn-jquery.js"></script>
 
 <p>とこれでまずはjQueryはCDNの恩恵を受けることができる。</p>
-<h2 id="jQuery_pluginの対応">jQuery pluginの対応</h2><p>jquery pluginもnpmから取得できるので、bowerを使用することなくnpm経由で直接installからexportsできる。<br>(<a href="http://blog.npmjs.org/post/111385956875/welcome-jquery-developers" target="_blank" rel="external">Welcome, jQuery developers!</a>)</p>
+<h2 id="jQuery_plugin_u306E_u5BFE_u5FDC"><a href="#jQuery_plugin_u306E_u5BFE_u5FDC" class="headerlink" title="jQuery pluginの対応"></a>jQuery pluginの対応</h2><p>jquery pluginもnpmから取得できるので、bowerを使用することなくnpm経由で直接installからexportsできる。<br>(<a href="http://blog.npmjs.org/post/111385956875/welcome-jquery-developers" target="_blank" rel="external">Welcome, jQuery developers!</a>)</p>
 <p>任意のjquery.pluginと自作モジュールのmy_module.jsを利用するとした場合、</p>
 <script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=browserify-browser-modules.json"></script>
 

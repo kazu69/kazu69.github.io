@@ -105,11 +105,11 @@ ga('send', 'pageview');
 <p>一応、導入手順。</p>
 <p>SublimeTextにPackegeInstallでrsubを導入。サーバー側ではrmateをインストール。<br>sshのconfigにremote forwardingの設定を追加</p>
 <p>[text]</p>
-<h1 id="~/-ssh/config">~/.ssh/config</h1><p>Host your_remote_server.com<br>    RemoteForward 52698 127.0.0.1:52698<br>[/text]</p>
+<h1 id="7E/-ssh/config"><a href="#7E/-ssh/config" class="headerlink" title="~/.ssh/config"></a>~/.ssh/config</h1><p>Host your_remote_server.com<br>    RemoteForward 52698 127.0.0.1:52698<br>[/text]</p>
 <p>ちなみにポート番号はrmateのデフォルトのものなので、変更も可能。<br>多分ないけど。複数人でrsubをつかうならもちろん変更する必要がある。</p>
 <p>自分はgemでいれたけど、standaloneなら<br>[shell]</p>
-<h1 id="rsubをインストール">rsubをインストール</h1><p>curl -Lo ~/bin/rsub <a href="https://raw.github.com/textmate/rmate/master/bin/rmate" target="_blank" rel="external">https://raw.github.com/textmate/rmate/master/bin/rmate</a><br>chmod a+x ~/bin/rsub</p>
-<h1 id="パスを通す">パスを通す</h1><p>export PATH=&quot;$PATH:$HOME/bin&quot;<br>[/shell]</p>
+<h1 id="rsub_u3092_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB"><a href="#rsub_u3092_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB" class="headerlink" title="rsubをインストール"></a>rsubをインストール</h1><p>curl -Lo ~/bin/rsub <a href="https://raw.github.com/textmate/rmate/master/bin/rmate" target="_blank" rel="external">https://raw.github.com/textmate/rmate/master/bin/rmate</a><br>chmod a+x ~/bin/rsub</p>
+<h1 id="u30D1_u30B9_u3092_u901A_u3059"><a href="#u30D1_u30B9_u3092_u901A_u3059" class="headerlink" title="パスを通す"></a>パスを通す</h1><p>export PATH=&quot;$PATH:$HOME/bin&quot;<br>[/shell]</p>
 <p>これで、SublimeTextを起動して、リモートサーバーから<br>[shell]<br>rsub YOUR_FILE<br>[/shell]</p>
 <p>でリモートファイルをSublimeTextで編集できる。<br>開発環境をVMで作ことがおおくなるとこれは便利。</p>
 

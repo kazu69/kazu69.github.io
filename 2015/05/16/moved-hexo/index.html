@@ -115,15 +115,15 @@ ga('send', 'pageview');
 <li>Hexo運用でやったこと</li>
 </ol>
 <p>となった。</p>
-<h2 id="wordpressの記事のslugを英語化">wordpressの記事のslugを英語化</h2><p>Hexoに移行するにあたり、wordpressからexportした記事をmigrationするツールを使うが、<br>このツールだとwordpressでexportしたxmlの各投稿情報の <strong>wp:post_name</strong> の値をHexoのmarkdownファイルのファイル名として使ってしまう。</p>
+<h2 id="wordpress_u306E_u8A18_u4E8B_u306Eslug_u3092_u82F1_u8A9E_u5316"><a href="#wordpress_u306E_u8A18_u4E8B_u306Eslug_u3092_u82F1_u8A9E_u5316" class="headerlink" title="wordpressの記事のslugを英語化"></a>wordpressの記事のslugを英語化</h2><p>Hexoに移行するにあたり、wordpressからexportした記事をmigrationするツールを使うが、<br>このツールだとwordpressでexportしたxmlの各投稿情報の <strong>wp:post_name</strong> の値をHexoのmarkdownファイルのファイル名として使ってしまう。</p>
 <p>したがって、日本語などの場合URLエンコードされてしまい、どうやらうまくいかない。<br>ということでまずこの値を英語に翻訳する必要があった。</p>
 <p><strong>wp:post_name</strong>はwordpressのslugということなので、全投稿のslugを自動翻訳する <a href="https://wordpress.org/plugins/wp-slug-translate/" target="_blank" rel="external">wp-slug-translate</a> を使った。</p>
 <p><strong>wp-slug-translate</strong>は内部でMicrosoft Translator APIを使っているらしく、<a href="http://azure.microsoft.com/ja-jp/marketplace/" target="_blank" rel="external">Microsoft Azure Marketplace</a> にアカウント作成が必要だ。</p>
 <p>詳しい手順は <a href="http://shumaiblog.com/wordpress-plugin-wp-slug-translate/" target="_blank" rel="external">WordPressのスラッグを日本語から英訳してくれるプラグイン「WP Slug Translate」</a> を参考にすすめた。</p>
 <p>プラグインを有効化したのちに、管理画面から記事を数十件ごとに更新することで翻訳される。<br>この状態で、wordpressのデータをexportする準備が整った。</p>
-<h2 id="wordpressのデータをexport">wordpressのデータをexport</h2><p>WordPress管理画面 ＞ ツール ＞ エクスポート から全てのコンテンツをexportする。<br>これだけ。</p>
-<h2 id="Hexoデータへのコンバート">Hexoデータへのコンバート</h2><p><a href="http://hexo.io/docs/migration.html#WordPress" target="_blank" rel="external">hexoのドキュメント</a> にあるように、<a href="https://github.com/hexojs/hexo-migrator-wordpress" target="_blank" rel="external">hexo-migrator-wordpress</a> を使ってmigrationを行う。<br>これで投稿記事がhexoの記事形式のmarkdownファイルにmigrateできる。</p>
-<h2 id="wordpressの投稿からredirectできるようにalias作成">wordpressの投稿からredirectできるようにalias作成</h2><p>wordpressの記事のURL形式にもよるが、これまでwordpressの記事を <strong>category/記事ID/</strong> という形式で運用していたが、Hexoでは <strong>YYYY/MM/dd/ファイル名/</strong> で運用することになるので、リダイレクトする必要がある。</p>
+<h2 id="wordpress_u306E_u30C7_u30FC_u30BF_u3092export"><a href="#wordpress_u306E_u30C7_u30FC_u30BF_u3092export" class="headerlink" title="wordpressのデータをexport"></a>wordpressのデータをexport</h2><p>WordPress管理画面 ＞ ツール ＞ エクスポート から全てのコンテンツをexportする。<br>これだけ。</p>
+<h2 id="Hexo_u30C7_u30FC_u30BF_u3078_u306E_u30B3_u30F3_u30D0_u30FC_u30C8"><a href="#Hexo_u30C7_u30FC_u30BF_u3078_u306E_u30B3_u30F3_u30D0_u30FC_u30C8" class="headerlink" title="Hexoデータへのコンバート"></a>Hexoデータへのコンバート</h2><p><a href="http://hexo.io/docs/migration.html#WordPress" target="_blank" rel="external">hexoのドキュメント</a> にあるように、<a href="https://github.com/hexojs/hexo-migrator-wordpress" target="_blank" rel="external">hexo-migrator-wordpress</a> を使ってmigrationを行う。<br>これで投稿記事がhexoの記事形式のmarkdownファイルにmigrateできる。</p>
+<h2 id="wordpress_u306E_u6295_u7A3F_u304B_u3089redirect_u3067_u304D_u308B_u3088_u3046_u306Balias_u4F5C_u6210"><a href="#wordpress_u306E_u6295_u7A3F_u304B_u3089redirect_u3067_u304D_u308B_u3088_u3046_u306Balias_u4F5C_u6210" class="headerlink" title="wordpressの投稿からredirectできるようにalias作成"></a>wordpressの投稿からredirectできるようにalias作成</h2><p>wordpressの記事のURL形式にもよるが、これまでwordpressの記事を <strong>category/記事ID/</strong> という形式で運用していたが、Hexoでは <strong>YYYY/MM/dd/ファイル名/</strong> で運用することになるので、リダイレクトする必要がある。</p>
 <p>Static Generatorを使っている場合、リダイレクトするには移行前のURL直下にindex.htmlを置き、metaタグで refresしてリダイレクトすることで可能っぽい。</p>
 <p><a href="https://github.com/hexojs/hexo-generator-alias" target="_blank" rel="external">hexo-generator-alias</a> を使うことでHexoのgenarate時にalias用のindex.htmlを作ることが可能。<br>あとは、各記事にalias用の設定を追加する。</p>
 <p>wordpressの投稿URLはexportしたxmlに<strong>link</strong>タグの値となるので、簡単なスクリプトで<strong>hexo-generator-alias</strong>の設定を追加した。</p>
@@ -131,10 +131,10 @@ ga('send', 'pageview');
 <script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=alias.rb"></script>
 <p>これで <strong>/blog/CATEGORY/POST_ID/</strong> アクセスで該当の記事にリダイレクトされるようになった。<br>今回は運用をサブドメインにもいこうしたので、URIにblogが重複しているのは気にしない。</p>
 <p>ここまでで、ほぼ完了した感じ。</p>
-<h2 id="画像パスの変換">画像パスの変換</h2><p>残りは画像のパスを修正する。画像ファイルを全てダウンロードし、<code>public/images/</code>へそのまま放り込んだ。<br>あとはパスを以下のスクリプトで変換した。</p>
+<h2 id="u753B_u50CF_u30D1_u30B9_u306E_u5909_u63DB"><a href="#u753B_u50CF_u30D1_u30B9_u306E_u5909_u63DB" class="headerlink" title="画像パスの変換"></a>画像パスの変換</h2><p>残りは画像のパスを修正する。画像ファイルを全てダウンロードし、<code>public/images/</code>へそのまま放り込んだ。<br>あとはパスを以下のスクリプトで変換した。</p>
 <script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=image_replace.rb"></script>
 <p><strong>/wp-contentt/uploads/</strong> を <strong>/images/</strong> に変換しているだけ。</p>
-<h2 id="ブログのリダイレクト">ブログのリダイレクト</h2><p>今回はドメインもサブドメインでの運用にかえるので、.htaccessで記事を301リダイレクトする。</p>
+<h2 id="u30D6_u30ED_u30B0_u306E_u30EA_u30C0_u30A4_u30EC_u30AF_u30C8"><a href="#u30D6_u30ED_u30B0_u306E_u30EA_u30C0_u30A4_u30EC_u30AF_u30C8" class="headerlink" title="ブログのリダイレクト"></a>ブログのリダイレクト</h2><p>今回はドメインもサブドメインでの運用にかえるので、.htaccessで記事を301リダイレクトする。</p>
 <p>結果としてこのやり方で移行できていないものは、</p>
 <ul>
 <li>ソーシャルなどのURLは引き継げない</li>
@@ -146,12 +146,12 @@ ga('send', 'pageview');
 <p>あと、テーマはとりあえず最低限必要なものを自作した。</p>
 <p>package.jsonは以下のようになった。npm scriptsでHexoコマンドを叩いている。</p>
 <script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=package.json"></script>
-<h2 id="Hexoで運用するためにやったこと">Hexoで運用するためにやったこと</h2><p>wordpressから移行して、Hexoで運用するにあたり<a href="https://pages.github.com/" target="_blank" rel="external">GitHub Pages</a>を利用することにした。</p>
+<h2 id="Hexo_u3067_u904B_u7528_u3059_u308B_u305F_u3081_u306B_u3084_u3063_u305F_u3053_u3068"><a href="#Hexo_u3067_u904B_u7528_u3059_u308B_u305F_u3081_u306B_u3084_u3063_u305F_u3053_u3068" class="headerlink" title="Hexoで運用するためにやったこと"></a>Hexoで運用するためにやったこと</h2><p>wordpressから移行して、Hexoで運用するにあたり<a href="https://pages.github.com/" target="_blank" rel="external">GitHub Pages</a>を利用することにした。</p>
 <p>使っていたドメインプロバイダーではGitHub Pagesでの独自ドメインを使えなかった。そこで、CloudFlareだと無料プランでも <a href="https://blog.cloudflare.com/introducing-universal-ssl/" target="_blank" rel="external">Universal SSL</a> でも使えるということを見つけたので、ネームサーバーを <a href="https://www.cloudflare.com/" target="_blank" rel="external">CloudFlare</a> に移行した。</p>
 <p>CloudFlareに申し込むと、ネームサーバーを指定されるので、ドメインプロバイダーの管理ページでDNSサーバーをCloudFlareに向ける。<br>あとは、ホスト名を書いたCNAMEファイルをドキュメントルートに配置するだけで、独自ドメインでの運用がすんなりとできた。</p>
 <p>当初はBitbucketでも同じことができるので、そちらを使うか迷っていたが <a href="https://confluence.atlassian.com/display/BITBUCKET/Associate+an+existing+domain+with+an+account" target="_blank" rel="external">Associate an existing domain with an account</a> を見る限り、CNAMEでの運用はできなくなったぽい。</p>
 <p>Hexo使ってわかったことは作者が台湾の方ということもあり、英語記事と同じくらい中国語の記事も出てくる。</p>
-<h3 id="参考にしたページ">参考にしたページ</h3><ul>
+<h3 id="u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8"><a href="#u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><ul>
 <li><a href="http://hexo.io/docs/migration.html#WordPress" target="_blank" rel="external">Migration | Hexo</a></li>
 <li><a href="http://shumaiblog.com/wordpress-plugin-wp-slug-translate/" target="_blank" rel="external">WordPressのスラッグを日本語から英訳してくれるプラグイン「WP Slug Translate」</a></li>
 <li><a href="http://pagent.github.io/2015/02/17/github-pages-redirect/" target="_blank" rel="external">GitHub Pagesのブログでリダイレクト「hexo-generator-alias」</a></li>

@@ -112,21 +112,21 @@ domscript.onreadystatechange = function() {
     }
 }</code><br>onreadystatechangeやonloadイベントを使って、ロードを状態をみてロード完了時にinit関数を実行ですかね。へー、これでパラレルロードができるのかという感じです。<del datetime="2009-09-29T14:44:22+00:00">実証してないのです。</del>ちなみに、single scriptの場合です。</p>
 <p>実証してみました。<br>`<br>function init(){<br>        alert(“init”);<br>    }</p>
-<pre><code>var domscript = document.createElement<span class="params">('script')</span>;
-domscript.src =<span class="string">"script.js"</span>;
+<pre><code>var domscript = document.createElement(&apos;script&apos;);
+domscript.src =&quot;script.js&quot;;
 
-domscript.onload = <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span> 
-    domscript.onloadDone = <span class="literal">true</span>; 
-    init<span class="params">()</span>; 
+domscript.onload = function() { 
+    domscript.onloadDone = true; 
+    init(); 
 };
 
-domscript.onreadystatechange = <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span> 
-    <span class="keyword">if</span> <span class="params">( <span class="string">"loaded"</span> === domscript.readyState &amp;&amp; ! domscript.onloadDone )</span> {
-        domscript.onloadDone = <span class="literal">true</span>; 
-        init<span class="params">()</span>;
+domscript.onreadystatechange = function() { 
+    if ( &quot;loaded&quot; === domscript.readyState &amp;&amp; ! domscript.onloadDone ) {
+        domscript.onloadDone = true; 
+        init();
     }
 }
-document.getElementsByTagName<span class="params">('head')</span>[<span class="number">0</span>].appendChild<span class="params">(domscript)</span>;
+document.getElementsByTagName(&apos;head&apos;)[0].appendChild(domscript);
 </code></pre><p>`<br>という感じで実行すると、</p>
 <p><img src="/images/090929.png" alt=""><br>という具合にjsとimgがパラレルでダウンロードされました。</p>
 <p><a href="http://stevesouders.com/efws/script-onload.php" target="_blank" rel="external"><br>stevesouders.com</a>より</p>

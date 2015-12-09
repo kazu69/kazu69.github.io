@@ -107,7 +107,7 @@ ga('send', 'pageview');
 <p>そこで、それっぽいものをJavaScriptで試してみた。</p>
 <a id="more"></a>
 <p>確実に俄か感じではあるので、漠然としている理解であるけど。</p>
-<h2 id="Monad_Laws">Monad Laws</h2><p>Monadと名乗るにはMonad則を満たさないといけない。<br>Monad則とは</p>
+<h2 id="Monad_Laws"><a href="#Monad_Laws" class="headerlink" title="Monad Laws"></a>Monad Laws</h2><p>Monadと名乗るにはMonad則を満たさないといけない。<br>Monad則とは</p>
 <ol>
 <li>return x &gt;&gt;= f == f x</li>
 <li>m &gt;&gt;= return == m</li>
@@ -121,9 +121,9 @@ ga('send', 'pageview');
 <script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=test.js"></script>
 <p>認識が正しければ、Monad則を満たしたので、Monadである。</p>
 <p>いろいろなMonadを試してみる</p>
-<h3 id="Identity_Monad">Identity Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=identity.js"></script>
-<h3 id="Maybe_Monad">Maybe Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=maybe.js"></script>
-<h3 id="List_Monad">List Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=list.js"></script>
+<h3 id="Identity_Monad"><a href="#Identity_Monad" class="headerlink" title="Identity Monad"></a>Identity Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=identity.js"></script>
+<h3 id="Maybe_Monad"><a href="#Maybe_Monad" class="headerlink" title="Maybe Monad"></a>Maybe Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=maybe.js"></script>
+<h3 id="List_Monad"><a href="#List_Monad" class="headerlink" title="List Monad"></a>List Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=list.js"></script>
 <p>ということで、JavaScriptでためしてデザインパターンという認識をした。</p>
 <p>参考にしたページ<br><a href="https://curiosity-driven.org/monads-in-javascript" target="_blank" rel="external">Monads in JavaScript</a><br><a href="http://qiita.com/7shi/items/547b6137d7a3c482fe68" target="_blank" rel="external">モナド則がちょっと分かった？</a><br><a href="http://labs.timedia.co.jp/2011/03/monad-you-already-know.html" target="_blank" rel="external">モナド: お前はもう知っている</a></p>
 

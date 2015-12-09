@@ -102,9 +102,9 @@ ga('send', 'pageview');
     
       <p><a href="http://githubengineering.com/subresource-integrity/" target="_blank" rel="external">Subresource Integrity</a> という記事をみて、<br>ちょっと興味深かったのでSubresource Integrityについて、軽く見てみた。</p>
 <a id="more"></a>
-<h2 id="Subresource_Integrityはどういうものか">Subresource Integrityはどういうものか</h2><p>おそらく、以下のようなもの。<br>ウェブアプリケーションでCDNをつかって、サブリソースを参照することは当たり前になっている。<br>しかし参照先のサブリソースが安全であるという保証はない。<br>もし、CDN経由で参照しているサブリソースが攻撃者により改変された場合、XSSの危険性が生じる。</p>
+<h2 id="Subresource_Integrity_u306F_u3069_u3046_u3044_u3046_u3082_u306E_u304B"><a href="#Subresource_Integrity_u306F_u3069_u3046_u3044_u3046_u3082_u306E_u304B" class="headerlink" title="Subresource Integrityはどういうものか"></a>Subresource Integrityはどういうものか</h2><p>おそらく、以下のようなもの。<br>ウェブアプリケーションでCDNをつかって、サブリソースを参照することは当たり前になっている。<br>しかし参照先のサブリソースが安全であるという保証はない。<br>もし、CDN経由で参照しているサブリソースが攻撃者により改変された場合、XSSの危険性が生じる。</p>
 <p>これは、サブリソースの整合性をチェックする仕組みを導入することで、危険を回避できる。<br>Subresource Integrityとは、サブリースをSHA256, SHA512などでハッシュ化して、linkタグやscriptタグにintegrity属性として付与することで、整合性を確認できるようにしたもの。<br>もし、integrity属性がある場合は、ブラウザは読み込み時に整合性をチェックして一致した場合にのみロードされる。</p>
-<h2 id="Subresource_Integrityを試す">Subresource Integrityを試す</h2><p><a href="https://developer.mozilla.org/ja/docs/Web/Security/Subresource_Integrity" target="_blank" rel="external">MDN Subresource Integrity</a>をみると<br>Chrome v45, Firefox v43 とのことだったので、Chrome Canaryで試した。</p>
+<h2 id="Subresource_Integrity_u3092_u8A66_u3059"><a href="#Subresource_Integrity_u3092_u8A66_u3059" class="headerlink" title="Subresource Integrityを試す"></a>Subresource Integrityを試す</h2><p><a href="https://developer.mozilla.org/ja/docs/Web/Security/Subresource_Integrity" target="_blank" rel="external">MDN Subresource Integrity</a>をみると<br>Chrome v45, Firefox v43 とのことだったので、Chrome Canaryで試した。</p>
 <p>まず適当なファイルをsha256でハッシュ化して、integrity属性の値を生成する。</p>
 <script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=create.sh"></script>
 <p>あとはscriptタグなりlinkタグなりにintegrity属性を付与する</p>

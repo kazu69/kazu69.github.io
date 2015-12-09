@@ -100,32 +100,32 @@ ga('send', 'pageview');
 <a id="more"></a>
 <p>今回は<a href="https://github.com/matsumoto-r/h2o_mruby" target="_blank" rel="external">h2o_mruby</a>も触ってみたかったということで、h2oをmrubyとともにビルドして少し触ってみた。</p>
 <p><a href="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/">前回</a>試してみた<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">nginx_mruby</a>と同じくh2o_mrunyもサーバーをrubyで動的に制御することができる。</p>
-<h2 id="サーバプッシュとは">サーバプッシュとは</h2><p>HTTP/1の場合、サーバーはクライアントからのリクエストに応じて、レスポンスを返すものでした。<br>しかし、HTTP/2の場合はクライアントからのリクエストがなくても、サーバーからレスポンスを返すことができる。</p>
+<h2 id="u30B5_u30FC_u30D0_u30D7_u30C3_u30B7_u30E5_u3068_u306F"><a href="#u30B5_u30FC_u30D0_u30D7_u30C3_u30B7_u30E5_u3068_u306F" class="headerlink" title="サーバプッシュとは"></a>サーバプッシュとは</h2><p>HTTP/1の場合、サーバーはクライアントからのリクエストに応じて、レスポンスを返すものでした。<br>しかし、HTTP/2の場合はクライアントからのリクエストがなくても、サーバーからレスポンスを返すことができる。</p>
 <p>今回は<a href="https://w3c.github.io/resource-hints/" target="_blank" rel="external">resouce hints</a>にあるように、リクエストヘッダーに<code>link:&lt;style.css&gt;; rel=preload; as=stylesheet</code> のようなLinkヘッダーを追加してレスポンスを返すようにした。</p>
 <p>こうすることで、h2oサーバーは予めクライアントが次に何をリクエストするのか把握できる。<br>そして、クライアントがリクエストする前に、このファイルを返してくれる。</p>
 <p>これにより、クライアントは次のリクエストからそのレスポンスまでの待ち時間(レイテンシ)を短縮できる。<br>そのため、これまでよりもブラウザは早く描画を行うことができるということになるっぽい。</p>
-<h2 id="構成">構成</h2><p>今回は、フロントにh2oを立たせて、リクエストをnginxにproxyする。<br>そして、nginx側でheaderにLinkヘッダーを追加してレスポンスを返す。</p>
+<h2 id="u69CB_u6210"><a href="#u69CB_u6210" class="headerlink" title="構成"></a>構成</h2><p>今回は、フロントにh2oを立たせて、リクエストをnginxにproxyする。<br>そして、nginx側でheaderにLinkヘッダーを追加してレスポンスを返す。</p>
 <p>こうすることで、h2oはヘッダーを解釈して、サーバプッシュを行ってくれる。</p>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=structure.txt"></script>
 <p>手元の開発環境は以下の感じ<br>今回はサーバー側からプッシュする静的ファイルとして適当なcssをnginx側に追加しておいた。</p>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=tree.sh"></script>
-<h2 id="h2o_with_mruby_の構築">h2o with mruby の構築</h2><p>今回もubuntuで、以下のようにDcokerでコンテナをビルドした。</p>
+<h2 id="h2o_with_mruby__u306E_u69CB_u7BC9"><a href="#h2o_with_mruby__u306E_u69CB_u7BC9" class="headerlink" title="h2o with mruby の構築"></a>h2o with mruby の構築</h2><p>今回もubuntuで、以下のようにDcokerでコンテナをビルドした。</p>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=Dockerfile"></script>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=h2o.conf"></script>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=build_config.rb"></script>
-<h2 id="nginx_の構築">nginx の構築</h2><p>nginxは<a href="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/">前回</a>と同じ感じで作成した。</p>
+<h2 id="nginx__u306E_u69CB_u7BC9"><a href="#nginx__u306E_u69CB_u7BC9" class="headerlink" title="nginx の構築"></a>nginx の構築</h2><p>nginxは<a href="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/">前回</a>と同じ感じで作成した。</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=Dockerfile"></script>
 <p>nginx.confは以下のようにして</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=nginx.conf"></script>
 <p>modify_header.rb でレスポンスヘッダーにLinkヘッダーを追加する。</p>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=modify_header.rb"></script>
-<h2 id="ブラウザでアクセスできるようにPortFoward">ブラウザでアクセスできるようにPortFoward</h2><p><a href="http://boot2docker.io/" target="_blank" rel="external">boot2docker</a>をつかっているので、ブラウザでDcokerコンテナにアクセスできるようにPortFowardしておく。</p>
+<h2 id="u30D6_u30E9_u30A6_u30B6_u3067_u30A2_u30AF_u30BB_u30B9_u3067_u304D_u308B_u3088_u3046_u306BPortFoward"><a href="#u30D6_u30E9_u30A6_u30B6_u3067_u30A2_u30AF_u30BB_u30B9_u3067_u304D_u308B_u3088_u3046_u306BPortFoward" class="headerlink" title="ブラウザでアクセスできるようにPortFoward"></a>ブラウザでアクセスできるようにPortFoward</h2><p><a href="http://boot2docker.io/" target="_blank" rel="external">boot2docker</a>をつかっているので、ブラウザでDcokerコンテナにアクセスできるようにPortFowardしておく。</p>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=portfoward.sh"></script>
-<h2 id="Docker_run">Docker run</h2><p>準備できたのでnginx、 h2oのコンテナを立ち上げていく。</p>
+<h2 id="Docker_run"><a href="#Docker_run" class="headerlink" title="Docker run"></a>Docker run</h2><p>準備できたのでnginx、 h2oのコンテナを立ち上げていく。</p>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=docker_run.sh"></script>
 <p>nginxのipを泥臭く取ってきてから、h2oをビルドしてしまったが、<br>本当は <a href="http://blog.matsumoto-r.jp/?p=4326" target="_blank" rel="external">Dockerとmrubyで迅速かつ容易にnginxとapacheの柔軟なリバースプロキシ構成を構築する</a> にあるようにmrubyで動的変更できるように、環境変数を使って対応する予定でした。<br>しかし、h2o_mrubyを把握できてないのでうまくいかずに、今回は一旦保留とした。</p>
 <p>とりあえず、これでブラウでアクセスしてみると分かりそう。</p>
-<h2 id="ブラウザ(Chrome)でアクセス">ブラウザ(Chrome)でアクセス</h2><p>あらかじめ <strong>chrome://net-internals/#events</strong> を開いておき、ブラウザでh2oサーバーにアクセス。</p>
+<h2 id="u30D6_u30E9_u30A6_u30B6_28Chrome_29_u3067_u30A2_u30AF_u30BB_u30B9"><a href="#u30D6_u30E9_u30A6_u30B6_28Chrome_29_u3067_u30A2_u30AF_u30BB_u30B9" class="headerlink" title="ブラウザ(Chrome)でアクセス"></a>ブラウザ(Chrome)でアクセス</h2><p>あらかじめ <strong>chrome://net-internals/#events</strong> を開いておき、ブラウザでh2oサーバーにアクセス。</p>
 <p>すると、htmlへのリクエストはh2oでproxyされて、nginxのhtmlが帰ってくる。</p>
 <p>このリクエストのhttpヘッダーを見ると</p>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=http-header.txt"></script>
