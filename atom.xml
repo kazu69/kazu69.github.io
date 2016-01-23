@@ -4,7 +4,7 @@
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.kazu69.net/"/>
-  <updated>2016-01-11T15:28:35.000Z</updated>
+  <updated>2016-01-23T03:11:52.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -13,6 +13,45 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[docker上のmysqlを使うにあたりよくあるパターン]]></title>
+    <link href="http://blog.kazu69.net/2016/01/13/put-together-pattern-of-docker-mysql/"/>
+    <id>http://blog.kazu69.net/2016/01/13/put-together-pattern-of-docker-mysql/</id>
+    <published>2016-01-13T13:43:30.000Z</published>
+    <updated>2016-01-23T03:11:52.000Z</updated>
+    <content type="html"><![CDATA[<p>しばらく時間が空くと忘れてしまうので備忘録。<br>dockerでmysqlサーバーを立てた時にありがちなパターンをまとめた。</p>
+<a id="more"></a>
+<p>今回は<a href="https://hub.docker.com/_/mysql/" target="_blank" rel="external">mysqlの公式イメージ</a>を使う前提。</p>
+<h2 id="u8D77_u52D5_u6642_u306B_u521D_u671F_u30C7_u30FC_u30BF_u3068_u30E6_u30FC_u30B6_u30FC_u8FFD_u52A0"><a href="#u8D77_u52D5_u6642_u306B_u521D_u671F_u30C7_u30FC_u30BF_u3068_u30E6_u30FC_u30B6_u30FC_u8FFD_u52A0" class="headerlink" title="起動時に初期データとユーザー追加"></a>起動時に初期データとユーザー追加</h2><p>起動時にテーブルを作成したり、データを追加したい時、ユーザーを追加しておきたい時。<br>例えば、以下のようなユーザー追加と初期データ追加用のsqlファイルを任意のディレクトリ(今回はinit.dにしておく)に置いておき、</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /bin/bash</span><br><span class="line"></span></span><br><span class="line">CREATE_USER=<span class="string">'mysql'</span></span><br><span class="line">CREATE_PASSWORD=<span class="string">'secret'</span></span><br><span class="line">GRANT=<span class="string">"GRANT ALL ON <span class="variable">$&#123;MYSQL_DATABASE&#125;</span>.* TO <span class="variable">$&#123;CREATE_USER&#125;</span>@'%' IDENTIFIED BY <span class="variable">$&#123;CREATE_PASSWORD&#125;</span>; FLUSH PRIVILEGES"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$GRANT</span> | mysql -u <span class="variable">$&#123;MYSQL_ROOT_USER&#125;</span> -p<span class="variable">$&#123;MYSQL_ROOT_PASSWORD&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`personal`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`personal`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`name`</span> <span class="built_in">varchar</span>(<span class="number">10</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`id`</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br><span class="line"></span><br><span class="line"><span class="keyword">LOCK</span> <span class="keyword">TABLES</span> <span class="string">`personal`</span> WRITE;</span><br><span class="line"><span class="comment">/*!40000 ALTER TABLE `personal` DISABLE KEYS */</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`personal`</span> (<span class="string">`id`</span>, <span class="string">`name`</span>)</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> (<span class="keyword">SELECT</span> <span class="number">1</span>, <span class="string">'root@local'</span>) <span class="keyword">AS</span> tmp</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> <span class="string">`id`</span> <span class="keyword">FROM</span> <span class="string">`personal`</span> <span class="keyword">WHERE</span> <span class="string">`id`</span> = <span class="number">1</span></span><br><span class="line">) <span class="keyword">LIMIT</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p>これをイメージの<strong>/docker-entrypoint-initdb.d</strong>に<strong>.sql</strong>や<strong>.sh</strong>ファイルとして配置してやることで<br>コンテナ起動時する前に実行される。(<a href="https://github.com/docker-library/mysql/pull/90" target="_blank" rel="external">Pull Request</a>)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># Dcokerfile</span><br><span class="line"></span><br><span class="line">FROM mysql</span><br><span class="line">EXPORT &apos;3306:3306&apos;</span><br><span class="line">ENV MYSQL_ROOT_USER root</span><br><span class="line">ENV MYSQL_ROOT_PASSWORD root</span><br><span class="line">ENV MYSQL_DATABASE sample_db</span><br><span class="line">ENV MYSQL_USER test</span><br><span class="line">ENV MYSQL_PASSWORD password</span><br><span class="line"></span><br><span class="line"># 初期データをコンテナ起動時に実行</span><br><span class="line">VOLUME ./init.d:/docker-entrypoint-initdb.d</span><br></pre></td></tr></table></figure>
+<h2 id="u30C7_u30FC_u30BF_u3092_u6C38_u7D9A_u5316_u3059_u308B"><a href="#u30C7_u30FC_u30BF_u3092_u6C38_u7D9A_u5316_u3059_u308B" class="headerlink" title="データを永続化する"></a>データを永続化する</h2><p>Dockerfile内でVOLUMEコマンドを使いホストのディレクトリをコンテナにマウントしてやることで永続化できる。<br>ポータビリティ(可搬性)を求める場合はデータを格納専用のコンテナを別途用意すると良い。</p>
+<p>データ格納専用コンテナのディレクトリをデータベース用のコンテナにマウントすることで実現できる。<br>データ自体は永続化されているので、データベース用のコンテナな使い捨てできる。</p>
+<p>データを格納専用のコンテナを作成は必要最小限の機能があればいいので<a href="https://hub.docker.com/_/busybox/" target="_blank" rel="external">busybox</a>とかでいい。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># データを格納専用のコンテナ</span></span><br><span class="line"><span class="comment"># -v でマウントするディレクトリ指定</span></span><br><span class="line">docker run \</span><br><span class="line">    <span class="_">-d</span> \</span><br><span class="line">    --name storage \</span><br><span class="line">    -v /var/lib/mysql \</span><br><span class="line">    busybox</span><br><span class="line"></span><br><span class="line"><span class="comment"># --volumes-from オプションで格納専用のコンテナを参照</span></span><br><span class="line">docker run \</span><br><span class="line">    <span class="_">-d</span> \</span><br><span class="line">    --name database \</span><br><span class="line">    --volumes-from storage \</span><br><span class="line">    <span class="_">-e</span> MYSQL_ROOT_PASSWORD=root \</span><br><span class="line">    mysql</span><br></pre></td></tr></table></figure>
+<p>docker-inspectで詳細を見ると</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">&#123;</span><br><span class="line">    &#123;</span><br><span class="line">...</span><br><span class="line">    "Mounts": [</span><br><span class="line">        &#123;</span><br><span class="line">            "Name": "1b3136bd545afa6d76427edd27408f47...",</span><br><span class="line">            "Source": "/mnt/sda1/var/lib/docker/volumes/1b3136bd545afa6d76427edd27408f47612ea1cd1f7a1857d810b24ecae2c16d/_data",</span><br><span class="line">            "Destination": "/var/lib/mysql",</span><br><span class="line">            "Driver": "local",</span><br><span class="line">            "Mode": "",</span><br><span class="line">            "RW": true</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">...</span><br><span class="line">      "Image": "mysql",</span><br><span class="line">        "Volumes": &#123;</span><br><span class="line">            "/var/lib/mysql": &#123;&#125;</span><br><span class="line">        &#125;,</span><br><span class="line">...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>実体は /mnt/sda1/var/lib/docker/volumes/ にあるようだ。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">docmer-machine ssh dev</span><br><span class="line">                        <span class="comment">##         .</span></span><br><span class="line">                  <span class="comment">## ## ##        ==</span></span><br><span class="line">               <span class="comment">## ## ## ## ##    ===</span></span><br><span class="line">           /<span class="string">""</span><span class="string">""</span><span class="string">""</span><span class="string">""</span><span class="string">""</span><span class="string">""</span><span class="string">""</span><span class="string">""</span><span class="string">"\___/ ===</span><br><span class="line">      ~~~ &#123;~~ ~~~~ ~~~ ~~~~ ~~~ ~ /  ===- ~~~</span><br><span class="line">           \______ o           __/</span><br><span class="line">             \    \         __/</span><br><span class="line">              \____\_______/</span><br><span class="line"> _                 _   ____     _            _</span><br><span class="line">| |__   ___   ___ | |_|___ \ __| | ___   ___| | _____ _ __</span><br><span class="line">| '_ \ / _ \ / _ \| __| __) / _` |/ _ \ / __| |/ / _ \ '__|</span><br><span class="line">| |_) | (_) | (_) | |_ / __/ (_| | (_) | (__|   &lt;  __/ |</span><br><span class="line">|_.__/ \___/ \___/ \__|_____\__,_|\___/ \___|_|\_\___|_|</span><br><span class="line">Boot2Docker version 1.9.1, build master : cef800b - Fri Nov 20 19:33:59 UTC 2015</span><br><span class="line"></span><br><span class="line">sudo ls /mnt/sda1/var/lib/docker/volumes/1b3136bd545afa6d76427edd27408f47612ea1cd1f7a1857d810b24ecae2c16d/_data</span><br><span class="line">auto.cnf            ib_buffer_pool      ib_logfile0         ib_logfile1         ibdata1             ibtmp1              mysql               performance_schema  sys</span></span><br></pre></td></tr></table></figure>
+<p>あった。</p>
+<h2 id="u30C7_u30FC_u30BF_u3092_u30D0_u30C3_u30AF_u30A2_u30C3_u30D7_u3059_u308B"><a href="#u30C7_u30FC_u30BF_u3092_u30D0_u30C3_u30AF_u30A2_u30C3_u30D7_u3059_u308B" class="headerlink" title="データをバックアップする"></a>データをバックアップする</h2><p>上記の方法で永続化したデータも、バックアップする必要があると思う。<br>この場合、データ格納専用コンテナのディレクトリとホストのディレクトリもマウントするコンテナを作成し、<br>データをホストディレクトに渡せばいいだけ。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm --volumes-from database -v $(<span class="built_in">pwd</span>):/backup busybox tar czvf /backup/archive.tar.gz /var/lib/mysql</span><br></pre></td></tr></table></figure>
+<p>ということで、開発環境やCI環境のコンテナ化の時にMySQL環境作成時に思い出そう。<br><a href="https://github.com/kazu69/docker-mysql-pattern-sample" target="_blank" rel="external">今回使ったデータのまとめ</a></p>
+<h4 id="u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8"><a href="#u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h4><p><a href="http://qiita.com/lciel/items/e21a4ede3bac7fb3ec5a" target="_blank" rel="external">Docker の Data Volume まわりを整理する</a><br><a href="https://docs.docker.com/engine/userguide/dockervolumes/#mount-a-host-directory-as-a-data-volume" target="_blank" rel="external">Mount a host directory as a data volume</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>しばらく時間が空くと忘れてしまうので備忘録。<br>dockerでmysqlサーバーを立てた時にありがちなパターンをまとめた。</p>]]>
+    
+    </summary>
+    
+      <category term="tec" scheme="http://blog.kazu69.net/categories/tec/"/>
+    
+      <category term="memo" scheme="http://blog.kazu69.net/categories/tec/memo/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[ビジュアルのRegression Test(回帰テスト)ツールを試してみた]]></title>
@@ -1093,59 +1132,6 @@
     </summary>
     
       <category term="php" scheme="http://blog.kazu69.net/categories/php/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[C/C++のSass Compilierのlibsassを試してみた]]></title>
-    <link href="http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/"/>
-    <id>http://blog.kazu69.net/2015/02/21/try-sass-compilier-c-c-libsass/</id>
-    <published>2015-02-21T14:51:55.000Z</published>
-    <updated>2015-07-07T06:13:59.000Z</updated>
-    <content type="html"><![CDATA[<p>フロントエンド周りを触ることがあり、Sassのコンパイル速度改善をするために、<br><a href="http://libsass.org/" target="_blank" rel="external">libsass</a>について軽く調べてみた。</p>
-<a id="more"></a>
-<h2 id="libsass_u3068_u306F"><a href="#libsass_u3068_u306F" class="headerlink" title="libsassとは"></a>libsassとは</h2><p>C/C++で書かれたSass Compiler。これ自体は単なるライブラリで、実際にこれを走らせるには<br><a href="https://github.com/sass/sassc" target="_blank" rel="external">SassC</a>や<a href="https://github.com/sass/ruby-libsass" target="_blank" rel="external">ruby-libsass</a>などを使う。</p>
-<p>コンパイラにGCC4.6+またはClang/LLVMが必要だとか。</p>
-<h2 id="libsass__u306E_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB"><a href="#libsass__u306E_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB" class="headerlink" title="libsass のインストール"></a>libsass のインストール</h2><p>libsassとSassCは共にbrewインストール可能だが、<br>マニュアルに沿ってインストールする場合は、<br><script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=manual-install.sh"></script></p>
-<h2 id="libsass_u3068Ruby_Sass_u3068_u306E_u4E92_u63DB_u6027"><a href="#libsass_u3068Ruby_Sass_u3068_u306E_u4E92_u63DB_u6027" class="headerlink" title="libsassとRuby Sassとの互換性"></a>libsassとRuby Sassとの互換性</h2><p>現状ではRuby Sassとの違いもあり、完全に互換性があるわけではない。<br>実際、Ruby Sassよりも実装が遅れているため、Ruby Sass3.4の機能は多くが利用できない状況らしい。<br><a href="https://github.com/sass/sass-spec/tree/master/spec/libsass-todo-issues" target="_blank" rel="external">SassSpec/libsass-todo-issues</a>を<br>みるとサポート状況わかる。</p>
-<p>ちなみにSass Specを使ってみると</p>
-<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=sass-spec.sh"></script>
-<p>libsassで sass spec実行</p>
-<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-spec.sh"></script>
-<p>まだ対応できてないのか、スキップされてる項目が多い。</p>
-<h2 id="u591A_u8A00_u8A9E_u30B5_u30DD_u30FC_u30C8"><a href="#u591A_u8A00_u8A9E_u30B5_u30DD_u30FC_u30C8" class="headerlink" title="多言語サポート"></a>多言語サポート</h2><p>libsassのラッパーも多く、主だった言語で使えそう。</p>
-<ul>
-<li><a href="https://github.com/sass/sassc" target="_blank" rel="external">SassC</a></li>
-<li><a href="https://github.com/sass/perl-libsass" target="_blank" rel="external">perl-libsass</a></li>
-<li><a href="https://github.com/guitarpoet/php-sass" target="_blank" rel="external">php-sass</a></li>
-<li><a href="https://github.com/sass/ruby-libsass" target="_blank" rel="external">ruby-libsass</a></li>
-<li><a href="https://github.com/andrew/node-sass" target="_blank" rel="external">node-sass</a></li>
-<li><a href="https://github.com/medialize/sass.js" target="_blank" rel="external">sass.js</a></li>
-<li><a href="https://github.com/moovweb/gosass" target="_blank" rel="external">gosass</a></li>
-<li><a href="https://github.com/dahlia/libsass-python" target="_blank" rel="external">libsass-python</a></li>
-<li><a href="https://github.com/warmuuh/libsass-maven-plugin" target="_blank" rel="external">libsass-maven-plugin</a></li>
-</ul>
-<p>libsassへ乗り換えるなら、互換性を考慮する必要があるので、まず調査のためlibsass-todo-issuesを確認するか、一通りまとめてある<br><a href="http://sass-compatibility.github.io/" target="_blank" rel="external">Sass Compatibility</a>などで確認することが必要そう。</p>
-<p>現在のlibsassのバージョンは3.1だが、<br>リリース計画によると最終的に3.4でRuby Sassに追いつく予定らしいので、<br>それまで待つでもしれない。</p>
-<p>しかし、最新のSassの機能に縛られなければ、十分に機能を享受できそうだし、やはりコンパイル時間の短縮は魅力的。<br>コンパル結果が同じなら使わない理由がなさそうな気がする。</p>
-<p>ちなみに、Sassのライブラリである、<br>compassは2.0で<a href="https://github.com/Compass/compass/issues/1916" target="_blank" rel="external">デフォルトのコンパイルはlibsass</a>になる予定、<a href="http://bourbon.io/" target="_blank" rel="external">Burbon</a>はすでにサポートしている。</p>
-<p>以下のようにCompassを使っているscssファイルをsasscでコンパルすると</p>
-<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=sample.scss"></script>
-<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-compass.sh"></script>
-<p>となってしまう。</p>
-<p>Compassのcore mixinを切り出した<a href="https://github.com/Igosuki/compass-mixins" target="_blank" rel="external">compass-mixins</a>を使えば、<br>Compassでもlibsassを利用可能っぽい。</p>
-<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=libsass-compass-mixin.sh"></script>
-<p><a href="https://github.com/sindresorhus/grunt-sass" target="_blank" rel="external">grunt-sass</a>を使用する場合は次のような感じになる。</p>
-<script src="//gist.github.com/kazu69/608fee58a23c4a9d838e.js?file=Gruntfile.js"></script>
-<p>RailsプロジェクトなどでSassコンパイルに時間かかってるとかだと、乗り換えてみるのもいのじゃないかな。</p>
-<p>参考にしたページ<br><a href="http://benfrain.com/lightning-fast-sass-compiling-with-libsass-node-sass-and-grunt-sass/" target="_blank" rel="external">Lightning fast Sass compiling with libsass, Node-sass and Grunt-sass</a><br><a href="http://www.sitepoint.com/switching-ruby-sass-libsass/" target="_blank" rel="external">Switching from Ruby Sass to LibSass</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>フロントエンド周りを触ることがあり、Sassのコンパイル速度改善をするために、<br><a href="http://libsass.org/">libsass</a>について軽く調べてみた。</p>]]>
-    
-    </summary>
-    
-      <category term="tec" scheme="http://blog.kazu69.net/categories/tec/"/>
     
   </entry>
   
