@@ -158,6 +158,18 @@ a:hover {
   margin-left: 0.2em;
   margin-right: 0.2em;
 }
+.article-entry a.headerlink {
+  margin-left: 0;
+  margin-right: 0;
+}
+.article-entry strong {
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+  padding: 0.2em 0.4em;
+  border-radius: 0.2em;
+  font-weight: 600;
+  background-color: #eee;
+}
 .article-date {
   font-size: 1.3rem;
   color: #999;
@@ -182,6 +194,9 @@ a:hover {
 .article-tag-list {
   list-style: none;
   padding: 0;
+}
+.article-footer {
+  margin-top: 3em;
 }
 .pager {
   margin-top: 2rem;
@@ -216,7 +231,7 @@ a:hover {
 }
 .share_content {
   overflow: hidden;
-  margin-top: 0.13em;
+  margin-top: 2em;
   margin-right: 0.13em;
 }
 .hatena_sharebox {
@@ -267,7 +282,8 @@ a:hover {
   vertical-align: top;
 }
 .highlight .code pre {
-  width: 96%;
+  width: 92%;
+  max-width: 790px;
   overflow: scroll;
 }
 .highlight .gutter pre,
