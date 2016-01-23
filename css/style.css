@@ -250,6 +250,7 @@ a:hover {
   border: 1px solid #eee;
   line-height: 1.6;
   border-radius: 3px;
+  overflow: hidden;
 }
 .highlight table {
   border-collapse: collapse;
@@ -283,8 +284,22 @@ a:hover {
 }
 .highlight .code pre {
   width: 92%;
-  max-width: 790px;
   overflow: scroll;
+}
+@media screen and (min-width: 800px) {
+  .highlight .code pre {
+    max-width: 790px;
+  }
+}
+@media (min-width: 600px) and (max-width: 799px) {
+  .highlight .code pre {
+    max-width: 80%;
+  }
+}
+@media (max-width: 599px) {
+  .highlight .code pre {
+    max-width: 88%;
+  }
 }
 .highlight .gutter pre,
 .highlight .code pre {
