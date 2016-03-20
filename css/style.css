@@ -269,7 +269,7 @@ a:hover {
   color: #ddd;
   vertical-align: top;
   border-right: 1px solid #eee;
-  backgrond-color: #fdfdfd;
+  background-color: #fdfdfd;
 }
 .highlight .gutter .line:hover {
   color: #bbb;
@@ -284,7 +284,7 @@ a:hover {
 }
 .highlight .code pre {
   width: 92%;
-  overflow: scroll;
+  overflow: auto;
 }
 @media screen and (min-width: 800px) {
   .highlight .code pre {
@@ -293,11 +293,13 @@ a:hover {
 }
 @media (min-width: 600px) and (max-width: 799px) {
   .highlight .code pre {
+    width: calc(100% - 1% - 10px - 1em);
     max-width: 80%;
   }
 }
 @media (max-width: 599px) {
   .highlight .code pre {
+    width: 80%;
     max-width: 88%;
   }
 }
