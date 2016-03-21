@@ -17,7 +17,7 @@
 <meta property="og:image" content="http://blog.kazu69.net/images/2016/03/19/prefetch1.png">
 <meta property="og:image" content="http://blog.kazu69.net/images/2016/03/19/prefetch2.png">
 <meta property="og:image" content="http://blog.kazu69.net/images/2016/03/19/prerender.png">
-<meta property="og:updated_time" content="2016-03-21T03:22:39.000Z">
+<meta property="og:updated_time" content="2016-03-21T12:19:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="resouce hintsとpreloadを使ってリソースの取得を最適化する">
 <meta name="twitter:description" content="Resource HintsとPreloadを使うことでリソースの取得を最適化できるようなので試してみた。">
@@ -104,7 +104,7 @@ ga('send', 'pageview');
     
       <p><a href="https://www.w3.org/TR/resource-hints/" target="_blank" rel="external">Resource Hints</a>と<a href="https://www.w3.org/TR/preload/" target="_blank" rel="external">Preload</a>を使うことでリソースの取得を最適化できるようなので試してみた。</p>
 <a id="more"></a>
-<p>もともとはHTTP2にしてServer Pushを使うことで、予めリソースをサーバー側から送ることができるが、<br>ブラウザのキャッシュのメリットを活用できないんじゃないかということが気になっていた。<br>また、単純にHTTP2対応しても多くのウェブページにはcrossoriginなリソースを多く利用しているので、<br>そのあたりはHTTP2にしても解決しないのではないかという疑問があった。</p>
+<p>もともとはHTTP2にしてServer Pushを使うことで、予めリソースをサーバー側から送ることができるが、<br>ブラウザのキャッシュのメリットを活用できないんじゃないかということが気になっていた。<br>また、単純にHTTP2対応してもウェブページにはcrossoriginなリソースを多く利用しているので、<br>そのパフォーマンスの問題は解決しないのではないかという疑問があった。</p>
 <p>それらを解決する手段としてResource Hintsなどを使ったPrebrowsingの技術が活用できそう。</p>
 <p>preloadに関しては<a href="https://www.smashingmagazine.com/2016/02/preload-what-is-it-good-for/" target="_blank" rel="external">Preload: What Is It Good For?</a>がまとまっているので参考にした。</p>
 <h2 id="Resource_Hints__u306B_u3064_u3044_u3066"><a href="#Resource_Hints__u306B_u3064_u3044_u3066" class="headerlink" title="Resource Hints について"></a>Resource Hints について</h2><p>Resource Hints はlink要素に <strong>dns-prefetch</strong>、<strong>preconnect</strong>、<strong>prefetch</strong>、<strong>prerender</strong>のいずれかを指定することで、取得するリソースに対してバックグラウンドで事前に処理をすることで、遷移後のページのパフォーマンス向上に寄与できる。<br>次に遷移するページで必要なリーソースをバックグランドで取得し、遷移後にページが表示されるまでの時間を短縮することができる。<br>Browserプロセスの裏側でRenderプロセスがPrebrowsing処理する感じ。</p>
