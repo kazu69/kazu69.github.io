@@ -4,7 +4,7 @@
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.kazu69.net/"/>
-  <updated>2016-03-21T12:19:16.000Z</updated>
+  <updated>2016-04-26T04:59:50.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -13,6 +13,55 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[PHPアプリケーションでのReact.jsのサーバーレンダリング考える]]></title>
+    <link href="http://blog.kazu69.net/2016/04/17/rendering_reactjs_template_server_side_in_php_application/"/>
+    <id>http://blog.kazu69.net/2016/04/17/rendering_reactjs_template_server_side_in_php_application/</id>
+    <published>2016-04-17T09:08:21.000Z</published>
+    <updated>2016-04-26T04:59:50.000Z</updated>
+    <content type="html"><![CDATA[<p>PHPでReact.jsなアプリケーションを導入する時に眺めてみた時のメモ。</p>
+<a id="more"></a>
+<p>まず、ブラウザからのリクエストに対して、サーバー側でDOMをレンダリングする必要がある。<br>これは、ブラウザでDOMレンダリングする場合は、サーチエンジンのアクセスに対して、<br>空の要素を返してしまう。<br>そのため、その結果がインデックスされるとSEO的によろしくないからである。</p>
+<p>そこで、どこでReact.jsを実行してDOMを生成するのかを考える必要がある。</p>
+<ul>
+<li>PHPでJSを実行する</li>
+<li>React.jsをレンダリングする小さなアプリケーションに処理を委譲する</li>
+</ul>
+<p>の2つのパターンを考えられる。</p>
+<p>例として簡単なView Classのテンプレートをレンダリングする。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props);</span><br><span class="line">    <span class="keyword">this</span>.countUp = <span class="keyword">this</span>.countUp.bind(<span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">this</span>.countDown = <span class="keyword">this</span>.countDown.bind(<span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">this</span>.state = &#123;</span><br><span class="line">      count: <span class="keyword">this</span>.props.count</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">   static defaultProps = &#123;</span><br><span class="line">    count: <span class="number">0</span></span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  static propTypes = &#123;</span><br><span class="line">    count: React.PropTypes.number.isRequired</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  countUp(event) &#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;count: <span class="keyword">this</span>.state.count + <span class="number">1</span>&#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  countDown(event) &#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;count: <span class="keyword">this</span>.state.count - <span class="number">1</span>&#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span>(</span><br><span class="line">      &lt;div className='counter'&gt;</span><br><span class="line">        &lt;span className='count'&gt;</span><br><span class="line">          &#123;this.state.count&#125;</span><br><span class="line">        &lt;/span&gt;</span><br><span class="line">        &lt;button onClick=&#123;this.countUp.bind(this)&#125;&gt; count up &lt;/button&gt;</span><br><span class="line">        &lt;button onClick=&#123;this.countDown.bind(this)&#125;&gt; count down &lt;/button&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="PHP_u3067JS_u3092_u5B9F_u884C_u3059_u308B"><a href="#PHP_u3067JS_u3092_u5B9F_u884C_u3059_u308B" class="headerlink" title="PHPでJSを実行する"></a>PHPでJSを実行する</h3><p>PHPに<a href="http://php.net/manual/ja/book.v8js.php" target="_blank" rel="external">V8jsモジュール</a>を追加することで、<br>jsをコンパイルして実行できるようになる。<br>(require: PHP &gt;= 5.3.3)</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># install v8js</span></span><br><span class="line">pecl install v8js-0.1.3 \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"extension=v8js.so"</span> &gt;&gt; /etc/php5/cli/php.ini</span><br><span class="line"></span><br><span class="line"><span class="comment"># install composer</span></span><br><span class="line">curl <span class="_">-s</span>S https://getcomposer.org/installer | php -- --install-dir=/usr/<span class="built_in">local</span>/bin --filename=composer</span><br><span class="line"></span><br><span class="line"><span class="comment"># オプションを追加してconfigure</span></span><br><span class="line">./configure --with-freetype-dir=/usr/include/ \</span><br><span class="line">            --with-jpeg-dir=/usr/include/ \</span><br><span class="line">            --with-gd \</span><br><span class="line">            --with-mcrypt \</span><br><span class="line">            --with-libzip \</span><br><span class="line">            --with-bz2 \</span><br><span class="line">            --enable-mbstring \</span><br><span class="line">            --enable-v8js</span><br></pre></td></tr></table></figure>
+<p>通常ブラウザ向けにReact.jsを提供するのと同じように、<br><a href="http://browserify.org/" target="_blank" rel="external">Browserify</a>を使いbundleし、v8jsでphpを実行する。</p>
+<p>最終的に<strong>renderToString</strong>でreactIdを割り振られたDOMを出力する。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require_once</span> dirname(<span class="keyword">__FILE__</span>) . <span class="string">'/../vendor/autoload.php'</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_markup</span><span class="params">($component, $prop)</span> </span>&#123;</span><br><span class="line">  $default_prop = json_encode($prop);</span><br><span class="line">  $v8 = <span class="keyword">new</span> V8Js();</span><br><span class="line">  $js[] = <span class="string">"var global = global || this, self = self || this, window = window || this;"</span>;</span><br><span class="line">  $js[] = file_get_contents(<span class="string">'js/bundle.min.js'</span>, <span class="keyword">true</span>);</span><br><span class="line">  $js[] = <span class="string">"print(ReactDomServer.renderToString(React.createElement($&#123;component&#125;, $&#123;default_prop&#125;)));"</span>;</span><br><span class="line">  $code = implode(<span class="string">";\n"</span>, $js);</span><br><span class="line">  ob_start();</span><br><span class="line">  $v8-&gt;executeString($code);</span><br><span class="line">  <span class="keyword">return</span> ob_get_clean();</span><br><span class="line">&#125;</span><br><span class="line">$component = <span class="string">'Counter'</span>;</span><br><span class="line">$prop = [<span class="string">'count'</span> =&gt; <span class="number">3</span>];</span><br><span class="line">$markup = get_markup($component, $prop);</span><br></pre></td></tr></table></figure>
+<p>Facebookの<a href="https://github.com/reactjs/react-php-v8js" target="_blank" rel="external">react-php-v8js</a>をそのままに処理を書いた。</p>
+<p>PHPにモジュールを追加できるのであれば、PHP側でtemplateを返すほうが容易である。<br>とくにreact-php-v8jsなどを使うことで簡単に実装はできそう。</p>
+<h3 id="u30C6_u30F3_u30D7_u30EC_u30FC_u30C8_u51E6_u7406_u3092_u30EC_u30F3_u30C0_u30EA_u30F3_u30B0_u30A2_u30D7_u30EA_u30B1_u30FC_u30B7_u30E7_u30F3_u306B_u59D4_u8B72_u3059_u308B"><a href="#u30C6_u30F3_u30D7_u30EC_u30FC_u30C8_u51E6_u7406_u3092_u30EC_u30F3_u30C0_u30EA_u30F3_u30B0_u30A2_u30D7_u30EA_u30B1_u30FC_u30B7_u30E7_u30F3_u306B_u59D4_u8B72_u3059_u308B" class="headerlink" title="テンプレート処理をレンダリングアプリケーションに委譲する"></a>テンプレート処理をレンダリングアプリケーションに委譲する</h3><p>稼動中でPHPアプリケーションに対して手を入れることができない場合などは、<br>このパターンを採用することが考えられる。<br>実際にReact.jsを実行するのはnodejsで書かれたサーバーになる。</p>
+<p>PHPアプリケーションからはHTTPリクエストを送信するだけとなる。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$context = stream_context_create(</span><br><span class="line">    <span class="keyword">array</span>(</span><br><span class="line">        <span class="string">'http'</span> =&gt; <span class="keyword">array</span>(</span><br><span class="line">            <span class="string">'method'</span>=&gt; <span class="string">'POST'</span>,</span><br><span class="line">            <span class="string">'header'</span>=&gt; <span class="string">'Content-type: application/json; charset=UTF-8'</span>,</span><br><span class="line">            <span class="string">'content'</span> =&gt; json_encode(</span><br><span class="line">                <span class="keyword">array</span>(</span><br><span class="line">                    <span class="string">'count'</span> =&gt; <span class="number">4</span></span><br><span class="line">                )</span><br><span class="line">            )</span><br><span class="line">        )</span><br><span class="line">    )</span><br><span class="line">);</span><br><span class="line">$output = file_get_contents($url, <span class="keyword">false</span>, $context);</span><br></pre></td></tr></table></figure>
+<p>という感じでPHPからPOSTされたdataに対して、<br>たとえば<a href="http://expressjs.com/" target="_blank" rel="external">express</a>でざっくりサーバーを書く。</p>
+<p>こちらも最終的に<strong>renderToString</strong>でreactIdを割り振られたDOMを出力する。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">'express'</span>;</span><br><span class="line"><span class="keyword">import</span> path <span class="keyword">from</span> <span class="string">'path'</span>;</span><br><span class="line"><span class="keyword">import</span> ReactDOMServer <span class="keyword">from</span> <span class="string">'react-dom/server'</span>;</span><br><span class="line"><span class="keyword">import</span> bodyParser <span class="keyword">from</span> <span class="string">'body-parser'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line">app.use(bodyParser.json());</span><br><span class="line"></span><br><span class="line">app.post(<span class="string">'/'</span>, (req, res) =&gt; &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> view = path.resolve(<span class="string">'./views/'</span> + req.query.component);</span><br><span class="line">    <span class="keyword">const</span> Component = <span class="built_in">require</span>(view).default;</span><br><span class="line">    <span class="keyword">const</span> props = req.body || <span class="literal">null</span>;</span><br><span class="line">    res.status(<span class="number">200</span>).send(</span><br><span class="line">      ReactDOMServer.renderToString(</span><br><span class="line">        React.createElement(Component, props)</span><br><span class="line">      )</span><br><span class="line">    );</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">     res.status(<span class="number">500</span>).send(error.message);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">3000</span>, () =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'App listening on port 3000!'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>こうすることでテンプレートを処理をして、htmlを返すことだけに注力できる。<br>nodejsサーバーからのレスポンスをPHPのレスポンスとして出力してあげると良い。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl http://APPLICATION_IP/template_nodejs.php</span><br><span class="line"></span><br><span class="line">&lt;div id=<span class="string">"app"</span>&gt;&lt;div class=<span class="string">"counter"</span> data-reactroot=<span class="string">""</span> data-reactid=<span class="string">"1"</span> data-react-checksum=<span class="string">"685065078"</span>&gt;&lt;span class=<span class="string">"count"</span> data-reactid=<span class="string">"2"</span>&gt;4&lt;/span&gt;&lt;button data-reactid=<span class="string">"3"</span>&gt; count up &lt;/button&gt;&lt;button data-reactid=<span class="string">"4"</span>&gt; count down &lt;/button&gt;&lt;/div&gt;&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>仮にnodejsサーバーとPHPアプリケーションでのConnectionエラーなどがあった場合でも、<br>ブラウザレンダリング機構を用いれば、コンテンツが表示されないという致命的な問題は回避できる。</p>
+<p>nodejsサーバーを採用した場合は、サーバーは常にステートレス(状態を保持しない)なので、<br>スケールアウトしやすく、またアプリケーションのテストも容易になる。</p>
+<h3 id="u305D_u306E_u307B_u304B"><a href="#u305D_u306E_u307B_u304B" class="headerlink" title="そのほか"></a>そのほか</h3><p>どちらの方法採用しても、サーバーでレンダリングされたDOMに対して、<br>ブラウザ側でイベントをbindする必要がある。<br>この場合、すでにDOMがレンダリングされているので、React.jsはDOMを再描画する必要はない。</p>
+<p>サーバーレンダリングを行うことで、ブラウザ側での描画を避けることができため、<br>サーバーからドキュメントがダウンロードされるとコンテンツが表示される。<br>つまり描画までの時間を短縮できる。</p>
+<hr>
+<p><a href="https://github.com/kazu69/render-reactjs-with-php-example/" target="_blank" rel="external">今回試したサンプル</a></p>
+<h3 id="u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8"><a href="#u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="http://php.net/manual/ja/book.v8js.php" target="_blank" rel="external">v8js</a><br><a href="https://github.com/reactjs/react-php-v8js" target="_blank" rel="external">react-php-v8js</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>PHPでReact.jsなアプリケーションを導入する時に眺めてみた時のメモ。</p>]]>
+    
+    </summary>
+    
+      <category term="tec" scheme="http://blog.kazu69.net/categories/tec/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[resouce hintsとpreloadを使ってリソースの取得を最適化する]]></title>
@@ -1602,68 +1651,6 @@
     </summary>
     
       <category term="web" scheme="http://blog.kazu69.net/categories/web/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[ビルドツールとしてnpmを使う]]></title>
-    <link href="http://blog.kazu69.net/2015/04/19/use-the-npm-as-the-build-tool/"/>
-    <id>http://blog.kazu69.net/2015/04/19/use-the-npm-as-the-build-tool/</id>
-    <published>2015-04-19T04:10:28.000Z</published>
-    <updated>2015-05-10T16:21:06.000Z</updated>
-    <content type="html"><![CDATA[<p><a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>、 <a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>などを使うのではなく、npmをビルドタスクを使うためにちょっとおさらいした。</p>
-<a id="more"></a>
-<h2 id="npm_u306Epath"><a href="#npm_u306Epath" class="headerlink" title="npmのpath"></a>npmのpath</h2><p>npmでインストールすると、<br>モジュールは ./node_modules/にインストールされ、<br>node_modules/.bin配下に各パッケージのbinへのシンボリックリンクが作成される。</p>
-<p>これは実際にnpm binを実行するとパスがわかる。</p>
-<p>たとえば、node_modules/jshint/bin/jshint は$(npm bin)/jshintで実行できる。<br>実際にはnpm経由で実行すると、$(npm bin)はPATHは追加されている。</p>
-<p>package.jsonに以下を追加して</p>
-<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=path.json"></script>
-
-<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=path.sh"></script>
-
-<p>でパスが通っていることが確認できる。</p>
-<p>つまり、npm run TASKではモジュールのパスに$(npm bin)は必要無い。</p>
-<h2 id="pre_u3001post_u30D5_u30C3_u30AF"><a href="#pre_u3001post_u30D5_u30C3_u30AF" class="headerlink" title="pre、postフック"></a>pre、postフック</h2><p>npmコマンドにpre、postというprefixをつけることでそのコマンドの前後にフックできる。<br>たとえば、npm testにpre postそれぞれのフックを追加すると、</p>
-<p>npm test を実行すると、 npm run pretest、 npm test, npm run posttest の順番に実行される。</p>
-<h2 id="u30AB_u30B9_u30BF_u30E0_u5F15_u6570"><a href="#u30AB_u30B9_u30BF_u30E0_u5F15_u6570" class="headerlink" title="カスタム引数"></a>カスタム引数</h2><p>npm@2.0.0 以上では<a href="https://github.com/npm/npm/pull/5518" target="_blank" rel="external">実行スクリプトにカスタム引数を渡すことができるようになっている。</a></p>
-<p>「–」で 好きな引数を渡すことができる。<br>たとえば以下のうように</p>
-<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=option.json"></script>
-
-<p>例があまり良くないけど、開発環境やstaging環境などの実行環境でオプションの有無がある場合などに便利。</p>
-<h2 id="npm-config"><a href="#npm-config" class="headerlink" title="npm-config"></a>npm-config</h2><p>package.jsonにあるconfigはスクリプトからnpm_package_config_NAMEとして参照できる</p>
-<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=package_config.json"></script>
-
-<p>とある場合、</p>
-<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=config_scriots.json"></script>
-
-<p>とすることで参照できる。</p>
-<p>各モジュールの設定はpackage.jsonにまとめておくことができる。<br>.configのようにconfig系のファイルがプロジェクトルートにたくさん作りたくないので、便利。</p>
-<p>また、設定したconfigの値はユーザーの$HOMEにある.npmrcの値によて実行時に上書きされる。</p>
-<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=npmrc.sh"></script>
-
-<p>これで</p>
-<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=npmrc_echo.sh"></script>
-
-<p>となる。各自の環境に合わせた状態などはここで上書きするなどができる感じ。</p>
-<h2 id="u30DE_u30EB_u30C1_u30BF_u30B9_u30AF"><a href="#u30DE_u30EB_u30C1_u30BF_u30B9_u30AF" class="headerlink" title="マルチタスク"></a>マルチタスク</h2><p>マルチタスクはpre、postフックでタスクを実行するほかに&amp;&amp;演算子でつなげていけば可能。</p>
-<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=mutitask.json"></script>
-
-<p>また、標準出力、標準入力、リダレクトをつかって<a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>のようにシームレスに処理できる。</p>
-<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=stream.json"></script>
-
-<h2 id="u30D5_u30A1_u30A4_u30EB_u76E3_u8996"><a href="#u30D5_u30A1_u30A4_u30EB_u76E3_u8996" class="headerlink" title="ファイル監視"></a>ファイル監視</h2><p>ファイル監視は<a href="https://www.npmjs.com/package/watch" target="_blank" rel="external">watch</a>や<a href="http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/" target="_blank" rel="external">nodemon</a>などを使う。</p>
-<script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=watch.json"></script>
-
-<p>フロントエンドのビルドツールは<a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>や<a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>、<a href="http://webpack.github.io/" target="_blank" rel="external">webpack</a>を使う規模でなければnpmだけでもいけそう。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><a href="http://gruntjs.com/">Grunt</a>、 <a href="http://gulpjs.com/">gulp</a>などを使うのではなく、npmをビルドタスクを使うためにちょっとおさらいした。</p>]]>
-    
-    </summary>
-    
-      <category term="tec" scheme="http://blog.kazu69.net/categories/tec/"/>
-    
-      <category term="web" scheme="http://blog.kazu69.net/categories/tec/web/"/>
     
   </entry>
   
