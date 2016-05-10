@@ -99,6 +99,9 @@ a:hover {
   margin-top: 0.5rem;
   color: #aaa;
 }
+.article-title {
+  line-height: 1.5em;
+}
 .article-entry h2 {
   font-size: 2.2rem;
   margin: 3em 0 0.6em;
@@ -120,10 +123,12 @@ a:hover {
   border-radius: 2px;
 }
 .article-entry blockquote {
+  font-size: smaller;
   margin-left: 0;
+  margin-bottom: 2em;
   padding: 0 15px;
-  color: #777;
-  border-left: 4px solid #ddd;
+  color: #999;
+  text-align: right;
 }
 .article-entry a.fancybox {
   display: inline-block;
