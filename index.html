@@ -73,6 +73,88 @@ ga('send', 'pageview');
     <main role="main" id="main">
       <section>
   
+    <article id="post-tracking-noscript-user-measurement-protocol" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/05/04/tracking-noscript-user-measurement-protocol/">Google AnalyticsのMeasurement ProtocolでJavaScript無効なユーザーをトラッキング</a>
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2016-05-04T02:43:25.000Z" itemprop="datePublished">2016-05-04</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/tec/">tec</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>これまでanalyticsdではJavaScriptの無効のユーザー、メールの開封率、サーバーイベント、POSシステムなどは通常のトラッキングタグでは計測できなかった。<br>しかし、新たに追加された<a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/">Measurement Protocol</a>を使うことで、直接イベントをトラッキングができる。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+  
+    <article id="post-npm-install-speedup-in-docker" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/05/02/npm-install-speedup-in-docker/">Dockerコンテナ内でのnpm installを改善してみる</a>
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2016-05-02T10:12:54.000Z" itemprop="datePublished">2016-05-02</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/tec/">tec</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>開発やCIでやDockerイメージをbuildする際にnpm installすると、cacheがないため時間がかかる。<br>これはpackageの数が多くなると結構辛いことになるので、なんとかできないかと試してみた。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-rendering_reactjs_template_server_side_in_php_application" class="article article-type-post" itemscope itemprop="blogPost">
   <header class="article-header">
     
@@ -391,93 +473,9 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-use-stackprof-improve-performance-of-rspec" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/20/use-stackprof-improve-performance-of-rspec/">stackprofを使って、Rspecのテストのパフォーマンス改善</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2015-10-20T13:58:38.000Z" itemprop="datePublished">2015-10-20</time>
-
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/ruby/">ruby</a>
-  </div>
-
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p><a href="https://github.com/tmm1/stackprof">stackprof</a> を使えばrspecのプロファイリングが出来る戸言うことを知ったので、<br>早速テストでためしてみた。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-tried-nginscript" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/18/tried-nginscript/">nginScriptを試してみた</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2015-10-18T14:40:20.000Z" itemprop="datePublished">2015-10-18</time>
-
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/nginx/">nginx</a>
-  </div>
-
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
-<p>これはリクエスト処理の実行時に評価され、特定のリクエストに対してnginxの内部処理をを調整することが可能になる。っぽい。</p>
-<p><a href="https://www.nginx.com/resources/wiki/modules/lua/">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
   
     <nav class="pager" id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 </section>

@@ -4,7 +4,7 @@
   <subtitle><![CDATA[福岡でwebの仕事をしています]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.kazu69.net/"/>
-  <updated>2016-04-26T04:59:50.000Z</updated>
+  <updated>2016-05-10T11:25:10.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -13,6 +13,159 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Google AnalyticsのMeasurement ProtocolでJavaScript無効なユーザーをトラッキング]]></title>
+    <link href="http://blog.kazu69.net/2016/05/04/tracking-noscript-user-measurement-protocol/"/>
+    <id>http://blog.kazu69.net/2016/05/04/tracking-noscript-user-measurement-protocol/</id>
+    <published>2016-05-04T02:43:25.000Z</published>
+    <updated>2016-05-10T11:25:10.000Z</updated>
+    <content type="html"><![CDATA[<p>これまでanalyticsdではJavaScriptの無効のユーザー、メールの開封率、サーバーイベント、POSシステムなどは通常のトラッキングタグでは計測できなかった。<br>しかし、新たに追加された<a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/" target="_blank" rel="external">Measurement Protocol</a>を使うことで、直接イベントをトラッキングができる。</p>
+<a id="more"></a>
+<p>Measurement Protocolはanalytics.jsなどの上位に位置する低レベルのプロトコルであり、<br>直接analyticsのAPIを実行できるため自由度が高い。</p>
+<p><img src="/images/2016/05/04/google-analytics.png" alt=""></p>
+<blockquote>
+<p>developers.google.com/analytics/devguides/platformより</p>
+</blockquote>
+<p>ちなみに<code>ga.js</code>はMeasurement Protocolを介してないが、ga.jsを使っているTracking IDでも問題なく利用できる。</p>
+<hr>
+<p>ウェブアプリケーションのnoscriptのユーザー(crawlerやbot)のアクセスをトラッキングする場合、<br>JavaScriptが無効であるため通常のTrackingタグは利用できない。<br>そこで、Measurement Protocolを使い計測する。</p>
+<p>Measurement Protocolに渡すべきパラメーターは<a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters" target="_blank" rel="external">Measurement Protocol のパラメータ リファレンス</a>を参考にする。</p>
+<p>いずれのイベントでも必須になるパラメーターは</p>
+<table>
+<thead>
+<tr>
+<th>パラメーター</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v</td>
+<td>バージョン</td>
+</tr>
+<tr>
+<td>t</td>
+<td>ヒットタイプ (pageview, screenview, event, transaction, item, social, exception, timing)</td>
+</tr>
+<tr>
+<td>tid</td>
+<td>トラッキングID (UA-XXXX-Y)</td>
+</tr>
+<tr>
+<td>cid</td>
+<td>クライアントID</td>
+</tr>
+</tbody>
+</table>
+<p>あとはイベントに応じて組み合わせることになる。</p>
+<p>実際にパラメーターが正しいかチェックするために<a href="https://ga-dev-tools.appspot.com/hit-builder/" target="_blank" rel="external">Hit Builder</a>が提供されているので、試してみると分かりやすい。</p>
+<p>実際にanalytics上でどのように解析されるかを見る場合は、Hit Builderでリクエストして、<br>analyticsのリアルタイム解析で結果をみると効率的だった。</p>
+<p>noscriptユーザーに対して次のようなパラメーターを設定する。</p>
+<table>
+<thead>
+<tr>
+<th>パラメーター</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v</td>
+<td>1</td>
+</tr>
+<tr>
+<td>tid</td>
+<td>トラッキングID (UA-XXXX-Y)</td>
+</tr>
+<tr>
+<td>cid</td>
+<td>クライアントID</td>
+</tr>
+<tr>
+<td>t</td>
+<td>event</td>
+</tr>
+<tr>
+<td>ec</td>
+<td>イベント カテゴリ</td>
+</tr>
+<tr>
+<td>ea</td>
+<td>イベント アクション</td>
+</tr>
+<tr>
+<td>el</td>
+<td>イベントラベル</td>
+</tr>
+</tbody>
+</table>
+<p>上記のパラメーターでPOSTまたはGETできればよいトラッキングできるので、</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">POST /collect HTTP/1.1</span><br><span class="line">Host: www.google-analytics.com</span><br><span class="line"></span><br><span class="line">v=1</span><br><span class="line">&amp;tid=UA-XXXXX-Y</span><br><span class="line">&amp;cid=xxxxxxxxxx</span><br><span class="line">&amp;t=event</span><br><span class="line">&amp;ec=JavaScript_Disabled</span><br><span class="line">&amp;ea=pageview</span><br><span class="line">&amp;el=UserAgent+ページパス</span><br></pre></td></tr></table></figure>
+<p>または</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /collect?v=1&amp;t=event&amp;tid=UA-XXXXX-Y-1&amp;cid=xxxxxxxxxx&amp;ea=pageview&amp;ec=JS_Disabled&amp;ea=pageview&amp;el=UserAgent+ページパス HTTP/1.1</span><br><span class="line">Host: http://www.google-analytics.com</span><br></pre></td></tr></table></figure>
+<p>が実行できれば良い。<br>実際にHit Builderで試してみると、次のようになる。</p>
+<p><img src="/images/2016/05/04/hit_builder1.png" alt=""><br><img src="/images/2016/05/04/hit_builder2.png" alt=""></p>
+<p>例えばPHPのアプリケーションでこれを用いる場合、</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getCid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    $cookie = $_COOKIE[<span class="string">'_ga'</span>];</span><br><span class="line">    <span class="keyword">if</span>(is_null($cookie)) &#123;</span><br><span class="line">        $cid = createCid();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        $cookieArray = split(<span class="string">'[\.]'</span>, $cookie, <span class="number">4</span>);</span><br><span class="line">        $cid = <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!$cookieArray[<span class="number">2</span>] &amp;&amp; !$cookieArray[<span class="number">3</span>]) &#123; $cid = $cookieArray[<span class="number">2</span>] . <span class="string">'.'</span> . $cookieArray[<span class="number">3</span>]; &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> $cid;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createCid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> sprintf(<span class="string">'%04x%04x-%04x-%04x-%04x-%04x%04x%04x'</span>,</span><br><span class="line">        mt_rand( <span class="number">0</span>, <span class="number">0xffff</span> ),</span><br><span class="line">        mt_rand( <span class="number">0</span>, <span class="number">0xffff</span> ),</span><br><span class="line">        mt_rand( <span class="number">0</span>, <span class="number">0xffff</span> ),</span><br><span class="line">        mt_rand( <span class="number">0</span>, <span class="number">0x0fff</span> ) | <span class="number">0x4000</span>,</span><br><span class="line">        mt_rand( <span class="number">0</span>, <span class="number">0x3fff</span> ) | <span class="number">0x8000</span>,</span><br><span class="line">        mt_rand( <span class="number">0</span>, <span class="number">0xffff</span> ),</span><br><span class="line">        mt_rand( <span class="number">0</span>, <span class="number">0xffff</span> ),</span><br><span class="line">        mt_rand( <span class="number">0</span>, <span class="number">0xffff</span> )</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">trackingUrl</span><span class="params">($data)</span> </span>&#123;</span><br><span class="line">    $result = <span class="string">'https://www.google-analytics.com/collect'</span>;</span><br><span class="line">    $result .= <span class="string">'?payload_data&amp;'</span>;</span><br><span class="line">    $result .= http_build_query($data);</span><br><span class="line">    <span class="keyword">return</span> $result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// send pageview</span></span><br><span class="line">$pageview_data = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">'v'</span>   =&gt; <span class="number">1</span>,</span><br><span class="line">    <span class="string">'tid'</span> =&gt; <span class="string">'UA-XXXXXXX-X'</span>,          <span class="comment">// tracking id</span></span><br><span class="line">    <span class="string">'cid'</span> =&gt; getCid(),                <span class="comment">// client id</span></span><br><span class="line">    <span class="string">'t'</span>   =&gt; <span class="string">'pageview'</span>,              <span class="comment">// event type</span></span><br><span class="line">    <span class="string">'dh'</span>  =&gt; $_SERVER[<span class="string">'SERVER_NAME'</span>], <span class="comment">// Hostname</span></span><br><span class="line">    <span class="string">'dp'</span>  =&gt; $_SERVER[<span class="string">'REQUEST_URI'</span>], <span class="comment">// Page</span></span><br><span class="line">    <span class="string">'dt'</span>  =&gt; <span class="string">'Page Title'</span>             <span class="comment">// Title</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// send custom event</span></span><br><span class="line">$event_data = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">'v'</span>   =&gt; <span class="number">1</span>,</span><br><span class="line">    <span class="string">'tid'</span> =&gt; <span class="string">'UA-XXXXXXX-X'</span>,             <span class="comment">// tracking id</span></span><br><span class="line">    <span class="string">'cid'</span> =&gt; getCid(),                   <span class="comment">// client id</span></span><br><span class="line">    <span class="string">'t'</span>   =&gt; <span class="string">'event'</span>,                    <span class="comment">// event type</span></span><br><span class="line">    <span class="string">'ec'</span>  =&gt; <span class="string">'JavaScript_Disabled'</span>,      <span class="comment">//Category</span></span><br><span class="line">    <span class="string">'ea'</span>  =&gt; <span class="string">'pageview'</span>,                 <span class="comment">//Action</span></span><br><span class="line">    <span class="string">'el'</span>  =&gt; $_SERVER[<span class="string">'HTTP_USER_AGENT'</span>] <span class="comment">//Label</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>cidはUUID(バージョン4)なのでphpでは<a href="http://php.net/manual/ja/function.uniqid.php#94959" target="_blank" rel="external">uniqid</a>を参考にした。</p>
+<p>あとは上記をHTMLに組み込んでやるだけ。<br>仕組みは簡単でnoscriptタグ内でimgタグなどで出力してMeasurement Protocolに対してGETを実行するだけでよい。<br>(ajaxでGETやPOSTするという方法もある)</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">noscript</span> <span class="attr">class</span>=<span class="string">"javascript-disabled-tracking"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"<span class="php"><span class="meta">&lt;?php</span> <span class="keyword">echo</span> trackingUrl($pageview_data); <span class="meta">?&gt;</span></span>"</span> <span class="attr">width</span>=<span class="string">"0"</span> <span class="attr">height</span>=<span class="string">"0"</span> <span class="attr">style</span>=<span class="string">"display: none;"</span> <span class="attr">alt</span>=<span class="string">""</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"<span class="php"><span class="meta">&lt;?php</span> <span class="keyword">echo</span> trackingUrl($event_data); <span class="meta">?&gt;</span></span>"</span> <span class="attr">width</span>=<span class="string">"0"</span> <span class="attr">height</span>=<span class="string">"0"</span> <span class="attr">style</span>=<span class="string">"display: none;"</span> <span class="attr">alt</span>=<span class="string">""</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">noscript</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>analyticsは独自にログ解析用のサービスを構築・運用することに比べると低コストでログ解析基盤が手に入る。<br>限度はあるけど、無料ながらも高機能なのでそこそこの規模でも問題なく利用できる。<br>それに加えて、Measurement Protocolのように直接APIを実行できる機能となると、<br>ネットに接続できれば画面のないようなものでもイベントをトラッキングできるので、ますますanalyticsの価値が高まりそうだ。</p>
+<h3 id="u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8"><a href="#u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="http://php.net/manual/ja/function.uniqid.php#94959" target="_blank" rel="external">PHP uniqid</a><br><a href="https://developers.google.com/analytics/devguides/platform/" target="_blank" rel="external">Google アナリティクスの使用方法を学習する</a><br><a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/" target="_blank" rel="external">Measurement Protocol の概要</a><br><a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters" target="_blank" rel="external">Measurement Protocol のパラメータ リファレンス</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>これまでanalyticsdではJavaScriptの無効のユーザー、メールの開封率、サーバーイベント、POSシステムなどは通常のトラッキングタグでは計測できなかった。<br>しかし、新たに追加された<a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/">Measurement Protocol</a>を使うことで、直接イベントをトラッキングができる。</p>]]>
+    
+    </summary>
+    
+      <category term="tec" scheme="http://blog.kazu69.net/categories/tec/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Dockerコンテナ内でのnpm installを改善してみる]]></title>
+    <link href="http://blog.kazu69.net/2016/05/02/npm-install-speedup-in-docker/"/>
+    <id>http://blog.kazu69.net/2016/05/02/npm-install-speedup-in-docker/</id>
+    <published>2016-05-02T10:12:54.000Z</published>
+    <updated>2016-05-08T09:54:02.000Z</updated>
+    <content type="html"><![CDATA[<p>開発やCIでやDockerイメージをbuildする際にnpm installすると、cacheがないため時間がかかる。<br>これはpackageの数が多くなると結構辛いことになるので、なんとかできないかと試してみた。</p>
+<a id="more"></a>
+<p>以下のような適当なpackageを取得する。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  "<span class="attr">name</span>": <span class="string">"example-project"</span>,</span><br><span class="line">  "<span class="attr">version</span>": <span class="string">"0.0.1"</span>,</span><br><span class="line">  "<span class="attr">description</span>": <span class="string">"example"</span>,</span><br><span class="line">  "<span class="attr">main</span>": <span class="string">"index.js"</span>,</span><br><span class="line">  "<span class="attr">scripts</span>": &#123;</span><br><span class="line">    "<span class="attr">test</span>": <span class="string">"echo \"Error: no test specified\" &amp;&amp; exit 1"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  "<span class="attr">author</span>": <span class="string">"kazu69"</span>,</span><br><span class="line">  "<span class="attr">license</span>": <span class="string">"MIT"</span>,</span><br><span class="line">  "<span class="attr">dependencies</span>": &#123;</span><br><span class="line">    "<span class="attr">express</span>": <span class="string">"^4.13.4"</span>,</span><br><span class="line">    "<span class="attr">react</span>": <span class="string">"^15.0.1"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  "<span class="attr">devDependencies</span>": &#123;</span><br><span class="line">    "<span class="attr">babel</span>": <span class="string">"^6.5.2"</span>,</span><br><span class="line">    "<span class="attr">browserify</span>": <span class="string">"^13.0.0"</span>,</span><br><span class="line">    "<span class="attr">eslint</span>": <span class="string">"^2.8.0"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Alpine_Linux_u3092_u5229_u7528_u3059_u308B"><a href="#Alpine_Linux_u3092_u5229_u7528_u3059_u308B" class="headerlink" title="Alpine Linuxを利用する"></a>Alpine Linuxを利用する</h2><p>Alpine Linuxを利用する</p>
+<p>そもそものDcokerイメージを最小にしておくこと。<br><a href="https://hub.docker.com/_/alpine/" target="_blank" rel="external">Alpine Linux</a>でイメージを作成する。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># application.dockerfile</span><br><span class="line">FROM alpine</span><br><span class="line">RUN apk add --update nodejs bash</span><br><span class="line"></span><br><span class="line">WORKDIR /var/</span><br><span class="line">ADD ./package.json .</span><br></pre></td></tr></table></figure>
+<p>この状態で計測する。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">time npm i</span><br><span class="line"></span><br><span class="line">real    0m29.258s</span><br><span class="line">user    0m0.000s</span><br><span class="line">sys 0m0.000s</span><br></pre></td></tr></table></figure>
+<h2 id="Install_Progress_u3092_u7121_u52B9_u5316_u3059_u308B"><a href="#Install_Progress_u3092_u7121_u52B9_u5316_u3059_u308B" class="headerlink" title="Install Progressを無効化する"></a>Install Progressを無効化する</h2><p>npm install時に<a href="https://github.com/npm/npm/issues/11283" target="_blank" rel="external">Progress Barを出すと遅くなる</a>ので、非表示にする。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">time npm i --production --no-progress</span><br><span class="line"></span><br><span class="line">real    0m28.150s</span><br><span class="line">user    0m0.010s</span><br><span class="line">sys 0m0.000s</span><br></pre></td></tr></table></figure>
+<h2 id="SSL_u3092_u5229_u7528_u3057_u306A_u3044"><a href="#SSL_u3092_u5229_u7528_u3057_u306A_u3044" class="headerlink" title="SSLを利用しない"></a>SSLを利用しない</h2><p>もし可能ならばSSLを使わない。</p>
+<p>sslじゃなくする</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">time npm i --no-progress --registry http://registry.npmjs.org/</span><br><span class="line"></span><br><span class="line">real    0m26.405s</span><br><span class="line">user    0m0.000s</span><br><span class="line">sys 0m0.000s</span><br></pre></td></tr></table></figure>
+<h2 id="Cache_Container__u3092_u4F7F_u3046"><a href="#Cache_Container__u3092_u4F7F_u3046" class="headerlink" title="Cache Container を使う"></a>Cache Container を使う</h2><p>キャッシュコンテナを利用する。<br>簡単なpackageをキャッシュするだけなコンテナを作成。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># cache.dockerfile</span><br><span class="line">FROM alpine</span><br><span class="line">RUN apk add --update nodejs bash</span><br><span class="line"></span><br><span class="line">WORKDIR /var/</span><br><span class="line">ADD ./package.json .</span><br><span class="line">RUN npm i</span><br><span class="line">VOLUME /var/node_modules</span><br></pre></td></tr></table></figure>
+<p>このコンテナのnode_modulesディレクトリをマウントする。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker build -t cache <span class="_">-f</span> cache.dockerfile .</span><br><span class="line">docker run <span class="_">-d</span> --name cache_volume -it cache:latest /bin/bash</span><br><span class="line"></span><br><span class="line">docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span><br><span class="line">621b7fe67bc8        cache:latest        <span class="string">"/bin/bash"</span>         3 seconds ago       Up 2 seconds                            cache_volume</span><br><span class="line"></span><br><span class="line">docker run --volumes-from cache_volume -it ci:latest /bin/bash</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">time npm i</span><br><span class="line"></span><br><span class="line">real    0m2.270s</span><br><span class="line">user    0m0.000s</span><br><span class="line">sys 0m0.000s</span><br></pre></td></tr></table></figure>
+<p>CIなどでDockerを使っている場合はcacheコンテナをサポートしていると思うので、<br>cacheコンテナを利用すると圧倒的に改善できそう。</p>
+<p>毎回キャッシュコンテナにinstallしてるのつらいので、package.jsonに変更ある場合のみ<br>キャッシュコンテナをupdateする必要がある。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git diff --name-only master $(git rev-parse --abbrev-ref HEAD) | grep -q package.json</span><br><span class="line"><span class="built_in">test</span> $? <span class="_">-eq</span> 0 &amp;&amp; \</span><br><span class="line">docker <span class="built_in">exec</span> -t cache npm i --no-progress --registry http://registry.npmjs.org/</span><br></pre></td></tr></table></figure>
+<h3 id="u305D_u306E_u307B_u304B"><a href="#u305D_u306E_u307B_u304B" class="headerlink" title="そのほか"></a>そのほか</h3><p>一度キャッシュしてしまえば、以下のように<br><strong>cache-min</strong> オプションに十分に大きな値を渡す。<br>cache-minはキャッシュを再チェックするまでの最小時間となるので、これによりキャッシュからインストールするようにできる。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i --cache-min 999999</span><br></pre></td></tr></table></figure>
+<p>また、devDependenciesが不要ならば<strong>production</strong>オプションを追加して</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i --production</span><br></pre></td></tr></table></figure>
+<p>でdependenciesのみインストールすると良さそう。</p>
+<h2 id="u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8"><a href="#u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h2><p><a href="https://github.com/npm/npm/issues/8581" target="_blank" rel="external">cache-min &amp; unknown version</a><br><a href="https://github.com/npm/npm/issues/2568" target="_blank" rel="external">feature request: force install from cache.</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>開発やCIでやDockerイメージをbuildする際にnpm installすると、cacheがないため時間がかかる。<br>これはpackageの数が多くなると結構辛いことになるので、なんとかできないかと試してみた。</p>]]>
+    
+    </summary>
+    
+      <category term="tec" scheme="http://blog.kazu69.net/categories/tec/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[PHPアプリケーションでのReact.jsのサーバーレンダリング考える]]></title>
@@ -1487,170 +1640,6 @@
       <category term="tec" scheme="http://blog.kazu69.net/categories/tec/"/>
     
       <category term="docker" scheme="http://blog.kazu69.net/categories/tec/docker/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[FluxアーキテクチャのTodoMVCとImmutableJSを試してみた]]></title>
-    <link href="http://blog.kazu69.net/2015/05/30/flux-architecture-todomvc-with-immutablejs/"/>
-    <id>http://blog.kazu69.net/2015/05/30/flux-architecture-todomvc-with-immutablejs/</id>
-    <published>2015-05-30T01:54:41.000Z</published>
-    <updated>2015-07-14T13:44:10.000Z</updated>
-    <content type="html"><![CDATA[<p>Fluxアーキテクチャにふれてみようということで、TodoMVCを試してみた。</p>
-<a id="more"></a>
-<h2 id="Flux_u30A2_u30FC_u30AD_u30C6_u30AF_u30C1_u30E3_u3068_u7279_u5FB4"><a href="#Flux_u30A2_u30FC_u30AD_u30C6_u30AF_u30C1_u30E3_u3068_u7279_u5FB4" class="headerlink" title="Fluxアーキテクチャと特徴"></a>Fluxアーキテクチャと特徴</h2><p>Fluxのページにあるので最近よくみる図だけど、Fluxのアーキテクチャは以下のとおり</p>
-<img src="https://raw.githubusercontent.com/facebook/flux/master/docs/img/flux-diagram-white-background.png" width="600">
-<p>4つに大きく分かれていて、それぞれの特徴は</p>
-<ol>
-<li><p>ActionCreators</p>
-<ul>
-<li>viewからのアクションを受けてDispatcherにPublish</li>
-<li>外部のAPIとの連携を受け持ちを行う</li>
-</ul>
-</li>
-<li><p>Dispatcher</p>
-<ul>
-<li>Viewからのアクションを受けてStoreに対してPublish</li>
-<li>処理の実行順序制御を行い、依存性を解決する役割もある</li>
-</ul>
-</li>
-<li><p>Store</p>
-<ul>
-<li>ビジネスロジックを受け持つ。</li>
-<li>Dispatcherの通知をSubscribeして、アクションを実行する</li>
-<li>データに変更があると、メッセージをPublishする</li>
-<li>シングルトンオブジェクト</li>
-</ul>
-</li>
-<li><p>Rect(View)</p>
-<ul>
-<li>UIコンポーネント</li>
-<li>ユーザーからの入力(イベント)を受け取り、Actionを呼び出す</li>
-<li>Storeの発行する通知をSubscribeして、画面の再描画を行う</li>
-<li>描画は変更のある箇所のみ(VirtualDOM)</li>
-</ul>
-</li>
-</ol>
-<p>整理すると、</p>
-<ul>
-<li>StoreはActionのイベントを監視</li>
-<li>ComponentはStoreのイベントを監視</li>
-<li>Componentはイベントを通じてActionのイベントをPublish</li>
-</ul>
-<p>というサイクルの一連の処理の流れが単一方向で行われるオブザーバーパターン。<br>単一方向ということで複雑さが軽減でき、おおよその処理系統を推測できる。<br>アプリケーションが大きい場合は、運用にとってメリットとなりそう。</p>
-<h2 id="TodoMVC"><a href="#TodoMVC" class="headerlink" title="TodoMVC"></a>TodoMVC</h2><p>TodoMVCのディレクトリ構成は以下の感じでした。</p>
-<script src="//gist.github.com/kazu69/4f29d802a38ee478007b.js?file=dir.sh"></script>
-<p>それぞれ役割ごとにディレクトリができている。<br>constantsはActionがPublishするメッセージが定義されているだけ。</p>
-<p>イベントをPublish・Subscribeの箇所であるComponentとStore間はEventEmitterで、<br>ActionとStore間はFlux::Dispatcherを使っている。</p>
-<p>EventEmitterとFlux::Dispatcherについては簡単には以下のようなもの。</p>
-<script src="//gist.github.com/kazu69/4f29d802a38ee478007b.js?file=eventEmitter.js"></script>
-<script src="//gist.github.com/kazu69/4f29d802a38ee478007b.js?file=flux.Dispatcher.js"></script>
-<p>写経した<a href="https://github.com/kazu69/todomvc-with-flux-immutable" target="_blank" rel="external">TodoMVC</a>のコードをもとに見ていくと</p>
-<script src="//gist.github.com/kazu69/4f29d802a38ee478007b.js?file=TodoItem.react.js"></script>
-<p>チェックボックスをチェックすることでonChangeイベントでTodoActions.toggleCompleteが実行される。<br>Component上での変更はActionの該当するアクションにデータを渡す。</p>
-<script src="//gist.github.com/kazu69/4f29d802a38ee478007b.js?file=TodoActions.js"></script>
-<p>ActionはDispatcherにActionTypeをPublishする。</p>
-<script src="//gist.github.com/kazu69/4f29d802a38ee478007b.js?file=TodoStore.js"></script>
-<p>StoreではSubscribeしたActionTypeごとに適切な処理を行い、ChangeEventをPublishする。</p>
-<script src="//gist.github.com/kazu69/4f29d802a38ee478007b.js?file=TodoItem.react.js"></script>
-<p>Cpmponentはイベントを受け取りviewの再描画を行う。</p>
-<h2 id="ImmutableJS_u3092_u4F7F_u3063_u305F"><a href="#ImmutableJS_u3092_u4F7F_u3063_u305F" class="headerlink" title="ImmutableJSを使った"></a>ImmutableJSを使った</h2><p>TodoMVCのStoreでデータはJavaScriptの単純なObjectだったが、今回は<a href="http://facebook.github.io/immutable-js/" target="_blank" rel="external">ImmutableJS</a>を使ってみた。</p>
-<p>ImmutableJSを使用することにより、深い構造のObjectデータ操作が容易にできるほか、<br>パフォーマンス向上の為の<a href="https://facebook.github.io/react/docs/pure-render-mixin.html" target="_blank" rel="external">PureRenderMixin</a>などを使っている場合に起こる予期せぬ状態を避けることができるようだ。</p>
-<p>ReactのコンポーネントライフサイクルではStoreからのイベントを受けて、差分があるコンポーネントを再描画する。<br>その際に呼ばれる<a href="http://facebook.github.io/react/docs/component-specs.html#updating-shouldcomponentupdate" target="_blank" rel="external">shouldComponentUpdate</a>の値がtrueとならない限りそれ以降が実行されない為、再描画されない(renderが実行されない)。</p>
-<p>簡単な例としてカウントアップをする場合、</p>
-<iframe width="100%" height="300" src="http://jsfiddle.net/kazu69/0rmf6tcn/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
-<p>shouldComponentUpdateがfalseを返すようにするとカウントアップされない。</p>
-<iframe width="100%" height="300" src="http://jsfiddle.net/kazu69/puvwov20/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
-<p>PureRenderMixinはshouldcomponentupdateを利用して、変更前後のオブジェクトの値と参照をチェックし、変更がない場合はfalseを返す。<br>これにより変更がないとされ、無駄な再描画されないためパフォーマンスが向上する。</p>
-<p>しかし、PureRenderMixinにも説明がにあるように、深い構造を持つObjectだと予期しないことになる。</p>
-<iframe width="100%" height="300" src="http://jsfiddle.net/kazu69/zp9L4oxo/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
-<p>また、自前でshouldComponentUpdateに差分チェック機能を実装することもできるが、深い構造のオブジェクトのチェックが頻繁に呼び出されるshouldComponentUpdateで行うのはパフォーマンス的にもよろしくない。</p>
-<p>ImmutableJSを使うと、以下のように単純な比較でも予期した通りの結果を得られる</p>
-<script src="//gist.github.com/kazu69/4f29d802a38ee478007b.js?file=Immutable.js"></script>
-<p>よってをPureRenderMixinでの予期せぬ結果を回避できるということのようだ。</p>
-<iframe width="100%" height="300" src="http://jsfiddle.net/kazu69/1z2d98z4/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
-<p>ということで、<br>Fluxのアーキテクチャは単一方向性のオブザーバーパターンなので、これに従って、<br>BackboneやAngulerなどのフレームワークを組み合わせることである程度の規模でも煩雑さの少ない<br>アプリケーションができそう。</p>
-<p>今回作成したTodoMVC <a href="https://github.com/kazu69/todomvc-with-flux-immutable" target="_blank" rel="external">kazu69/todomvc-with-flux-immutable</a></p>
-<h3 id="u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8"><a href="#u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://facebook.github.io/react/docs/advanced-performance.html" target="_blank" rel="external">Advanced Performance</a><br><a href="http://blog.risingstack.com/the-react-js-way-flux-architecture-with-immutable-js/" target="_blank" rel="external">The React.js Way: Flux Architecture with Immutable.js</a><br><a href="http://kenev.net/2015/03/08/react-purerendermixin%E3%81%AE%E6%A4%9C%E8%A8%BC/" target="_blank" rel="external">React – PureRenderMixinの検証</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>Fluxアーキテクチャにふれてみようということで、TodoMVCを試してみた。</p>]]>
-    
-    </summary>
-    
-      <category term="javascript" scheme="http://blog.kazu69.net/categories/javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[WordpressからHexoに移行してGitHub Pageで公開した]]></title>
-    <link href="http://blog.kazu69.net/2015/05/16/moved-hexo/"/>
-    <id>http://blog.kazu69.net/2015/05/16/moved-hexo/</id>
-    <published>2015-05-16T00:36:08.000Z</published>
-    <updated>2015-08-17T04:52:25.000Z</updated>
-    <content type="html"><![CDATA[<p>ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。<br>移行にあたり、やったことをメモにしておく。</p>
-<a id="more"></a>
-<p><a href="https://www.staticgen.com/" target="_blank" rel="external">staticgen.com</a> を見ながら<a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>か<a href="http://gohugo.io/" target="_blank" rel="external">Hugo</a>か悩んだが、比較的にwordpressから移行した情報が多いのでHexoにした。</p>
-<p>特にnodeかGoかという理由ではなく、一度Static Generatorに移行できれば、あとは大きく変わらずに渡り歩けるだろうという軽い気持ち。</p>
-<p>Hexoに移行するにあたり行った手順は大きく分けて</p>
-<ol>
-<li>wordpress記事のslugを英語化</li>
-<li>wordpressのデータexport</li>
-<li>Hexoデータをmigrate</li>
-<li>wordpressの投稿からredirectできるようにalias作成</li>
-<li>画像パスの変換</li>
-<li>ブログのリダイレクト</li>
-<li>Hexo運用でやったこと</li>
-</ol>
-<p>となった。</p>
-<h2 id="wordpress_u306E_u8A18_u4E8B_u306Eslug_u3092_u82F1_u8A9E_u5316"><a href="#wordpress_u306E_u8A18_u4E8B_u306Eslug_u3092_u82F1_u8A9E_u5316" class="headerlink" title="wordpressの記事のslugを英語化"></a>wordpressの記事のslugを英語化</h2><p>Hexoに移行するにあたり、wordpressからexportした記事をmigrationするツールを使うが、<br>このツールだとwordpressでexportしたxmlの各投稿情報の <strong>wp:post_name</strong> の値をHexoのmarkdownファイルのファイル名として使ってしまう。</p>
-<p>したがって、日本語などの場合URLエンコードされてしまい、どうやらうまくいかない。<br>ということでまずこの値を英語に翻訳する必要があった。</p>
-<p><strong>wp:post_name</strong>はwordpressのslugということなので、全投稿のslugを自動翻訳する <a href="https://wordpress.org/plugins/wp-slug-translate/" target="_blank" rel="external">wp-slug-translate</a> を使った。</p>
-<p><strong>wp-slug-translate</strong>は内部でMicrosoft Translator APIを使っているらしく、<a href="http://azure.microsoft.com/ja-jp/marketplace/" target="_blank" rel="external">Microsoft Azure Marketplace</a> にアカウント作成が必要だ。</p>
-<p>詳しい手順は <a href="http://shumaiblog.com/wordpress-plugin-wp-slug-translate/" target="_blank" rel="external">WordPressのスラッグを日本語から英訳してくれるプラグイン「WP Slug Translate」</a> を参考にすすめた。</p>
-<p>プラグインを有効化したのちに、管理画面から記事を数十件ごとに更新することで翻訳される。<br>この状態で、wordpressのデータをexportする準備が整った。</p>
-<h2 id="wordpress_u306E_u30C7_u30FC_u30BF_u3092export"><a href="#wordpress_u306E_u30C7_u30FC_u30BF_u3092export" class="headerlink" title="wordpressのデータをexport"></a>wordpressのデータをexport</h2><p>WordPress管理画面 ＞ ツール ＞ エクスポート から全てのコンテンツをexportする。<br>これだけ。</p>
-<h2 id="Hexo_u30C7_u30FC_u30BF_u3078_u306E_u30B3_u30F3_u30D0_u30FC_u30C8"><a href="#Hexo_u30C7_u30FC_u30BF_u3078_u306E_u30B3_u30F3_u30D0_u30FC_u30C8" class="headerlink" title="Hexoデータへのコンバート"></a>Hexoデータへのコンバート</h2><p><a href="http://hexo.io/docs/migration.html#WordPress" target="_blank" rel="external">hexoのドキュメント</a> にあるように、<a href="https://github.com/hexojs/hexo-migrator-wordpress" target="_blank" rel="external">hexo-migrator-wordpress</a> を使ってmigrationを行う。<br>これで投稿記事がhexoの記事形式のmarkdownファイルにmigrateできる。</p>
-<h2 id="wordpress_u306E_u6295_u7A3F_u304B_u3089redirect_u3067_u304D_u308B_u3088_u3046_u306Balias_u4F5C_u6210"><a href="#wordpress_u306E_u6295_u7A3F_u304B_u3089redirect_u3067_u304D_u308B_u3088_u3046_u306Balias_u4F5C_u6210" class="headerlink" title="wordpressの投稿からredirectできるようにalias作成"></a>wordpressの投稿からredirectできるようにalias作成</h2><p>wordpressの記事のURL形式にもよるが、これまでwordpressの記事を <strong>category/記事ID/</strong> という形式で運用していたが、Hexoでは <strong>YYYY/MM/dd/ファイル名/</strong> で運用することになるので、リダイレクトする必要がある。</p>
-<p>Static Generatorを使っている場合、リダイレクトするには移行前のURL直下にindex.htmlを置き、metaタグで refresしてリダイレクトすることで可能っぽい。</p>
-<p><a href="https://github.com/hexojs/hexo-generator-alias" target="_blank" rel="external">hexo-generator-alias</a> を使うことでHexoのgenarate時にalias用のindex.htmlを作ることが可能。<br>あとは、各記事にalias用の設定を追加する。</p>
-<p>wordpressの投稿URLはexportしたxmlに<strong>link</strong>タグの値となるので、簡単なスクリプトで<strong>hexo-generator-alias</strong>の設定を追加した。</p>
-<p>xmlのパーサーには<a href="https://github.com/YorickPeterse/oga" target="_blank" rel="external">oga</a>を使ってみた。</p>
-<script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=alias.rb"></script>
-<p>これで <strong>/blog/CATEGORY/POST_ID/</strong> アクセスで該当の記事にリダイレクトされるようになった。<br>今回は運用をサブドメインにもいこうしたので、URIにblogが重複しているのは気にしない。</p>
-<p>ここまでで、ほぼ完了した感じ。</p>
-<h2 id="u753B_u50CF_u30D1_u30B9_u306E_u5909_u63DB"><a href="#u753B_u50CF_u30D1_u30B9_u306E_u5909_u63DB" class="headerlink" title="画像パスの変換"></a>画像パスの変換</h2><p>残りは画像のパスを修正する。画像ファイルを全てダウンロードし、<code>public/images/</code>へそのまま放り込んだ。<br>あとはパスを以下のスクリプトで変換した。</p>
-<script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=image_replace.rb"></script>
-<p><strong>/wp-contentt/uploads/</strong> を <strong>/images/</strong> に変換しているだけ。</p>
-<h2 id="u30D6_u30ED_u30B0_u306E_u30EA_u30C0_u30A4_u30EC_u30AF_u30C8"><a href="#u30D6_u30ED_u30B0_u306E_u30EA_u30C0_u30A4_u30EC_u30AF_u30C8" class="headerlink" title="ブログのリダイレクト"></a>ブログのリダイレクト</h2><p>今回はドメインもサブドメインでの運用にかえるので、.htaccessで記事を301リダイレクトする。</p>
-<p>結果としてこのやり方で移行できていないものは、</p>
-<ul>
-<li>ソーシャルなどのURLは引き継げない</li>
-<li>RSSなどフィード情報はリダイレクトにいたっていない</li>
-<li><a href="http://disqus.com" target="_blank" rel="external">Disqus</a> 使うことにしたのでworpressのコメントを引き継げない</li>
-</ul>
-<p>ということに至った。</p>
-<p>ちなみにHexoではRSS feedを使うために別途 <a href="https://github.com/hexojs/hexo-generator-feed" target="_blank" rel="external">hexo-generator-feed</a> をインストール必要があった。</p>
-<p>あと、テーマはとりあえず最低限必要なものを自作した。</p>
-<p>package.jsonは以下のようになった。npm scriptsでHexoコマンドを叩いている。</p>
-<script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=package.json"></script>
-<h2 id="Hexo_u3067_u904B_u7528_u3059_u308B_u305F_u3081_u306B_u3084_u3063_u305F_u3053_u3068"><a href="#Hexo_u3067_u904B_u7528_u3059_u308B_u305F_u3081_u306B_u3084_u3063_u305F_u3053_u3068" class="headerlink" title="Hexoで運用するためにやったこと"></a>Hexoで運用するためにやったこと</h2><p>wordpressから移行して、Hexoで運用するにあたり<a href="https://pages.github.com/" target="_blank" rel="external">GitHub Pages</a>を利用することにした。</p>
-<p>使っていたドメインプロバイダーではGitHub Pagesでの独自ドメインを使えなかった。そこで、CloudFlareだと無料プランでも <a href="https://blog.cloudflare.com/introducing-universal-ssl/" target="_blank" rel="external">Universal SSL</a> でも使えるということを見つけたので、ネームサーバーを <a href="https://www.cloudflare.com/" target="_blank" rel="external">CloudFlare</a> に移行した。</p>
-<p>CloudFlareに申し込むと、ネームサーバーを指定されるので、ドメインプロバイダーの管理ページでDNSサーバーをCloudFlareに向ける。<br>あとは、ホスト名を書いたCNAMEファイルをドキュメントルートに配置するだけで、独自ドメインでの運用がすんなりとできた。</p>
-<p>当初はBitbucketでも同じことができるので、そちらを使うか迷っていたが <a href="https://confluence.atlassian.com/display/BITBUCKET/Associate+an+existing+domain+with+an+account" target="_blank" rel="external">Associate an existing domain with an account</a> を見る限り、CNAMEでの運用はできなくなったぽい。</p>
-<p>Hexo使ってわかったことは作者が台湾の方ということもあり、英語記事と同じくらい中国語の記事も出てくる。</p>
-<h3 id="u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8"><a href="#u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><ul>
-<li><a href="http://hexo.io/docs/migration.html#WordPress" target="_blank" rel="external">Migration | Hexo</a></li>
-<li><a href="http://shumaiblog.com/wordpress-plugin-wp-slug-translate/" target="_blank" rel="external">WordPressのスラッグを日本語から英訳してくれるプラグイン「WP Slug Translate」</a></li>
-<li><a href="http://pagent.github.io/2015/02/17/github-pages-redirect/" target="_blank" rel="external">GitHub Pagesのブログでリダイレクト「hexo-generator-alias」</a></li>
-</ul>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。<br>移行にあたり、やったことをメモにしておく。</p>]]>
-    
-    </summary>
-    
-      <category term="web" scheme="http://blog.kazu69.net/categories/web/"/>
     
   </entry>
   
