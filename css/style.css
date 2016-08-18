@@ -123,12 +123,10 @@ a:hover {
   border-radius: 2px;
 }
 .article-entry blockquote {
-  font-size: smaller;
   margin-left: 0;
   margin-bottom: 2em;
-  padding: 0 15px;
+  padding: 0.2em 0.6em;
   color: #999;
-  text-align: right;
 }
 .article-entry a.fancybox {
   display: inline-block;
@@ -256,6 +254,7 @@ a:hover {
   line-height: 1.6;
   border-radius: 3px;
   overflow: hidden;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 .highlight table {
   border-collapse: collapse;
