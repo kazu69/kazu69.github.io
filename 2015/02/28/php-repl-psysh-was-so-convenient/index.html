@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -103,22 +103,22 @@ ga('send', 'pageview');
       <p>phpのインタラクティブコンソール<a href="http://psysh.org/" target="_blank" rel="external">psysh</a>というものが便利そうだった。<br>phpの開発している人なら既に知ってるのかもしれないけど、<br>デバッグが非常に楽になりそうだった。</p>
 <a id="more"></a>
 <p>phpのREPLにはFacebookの<a href="https://github.com/facebookarchive/phpsh" target="_blank" rel="external">phpsh</a>、<a href="https://github.com/ieure/php_repl" target="_blank" rel="external">php_repl</a>、<a href="https://github.com/d11wtq/boris" target="_blank" rel="external">boris</a> などもあるそうだが、psyshはRubyの<a href="https://github.com/pry/pry" target="_blank" rel="external">pry</a>のような感覚で使えそうな感じだった。</p>
-<h2 id="u30A4_u30F3_u30B9_u30C8_u30FC_u30EB_u3057_u3066_u8A66_u3057_u3066_u307F_u305F"><a href="#u30A4_u30F3_u30B9_u30C8_u30FC_u30EB_u3057_u3066_u8A66_u3057_u3066_u307F_u305F" class="headerlink" title="インストールして試してみた"></a>インストールして試してみた</h2><script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=install.sh"></script>
+<h2 id="インストールして試してみた"><a href="#インストールして試してみた" class="headerlink" title="インストールして試してみた"></a>インストールして試してみた</h2><script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=install.sh"></script>
 
 <p>Readmeにしたがいcomposer経由でインストールした。</p>
 <script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=use-psysh.sh"></script>
 
 <p>ls, dump, trace, history などのほかに直近の例外を表示できるwtfとかコードを読めるshowなど、重宝しそう。</p>
-<h2 id="u30D6_u30EC_u30A4_u30AF_u30DD_u30A4_u30F3_u30C8_u3092_u8A2D_u7F6E_u3059_u308B"><a href="#u30D6_u30EC_u30A4_u30AF_u30DD_u30A4_u30F3_u30C8_u3092_u8A2D_u7F6E_u3059_u308B" class="headerlink" title="ブレイクポイントを設置する"></a>ブレイクポイントを設置する</h2><p>Rubyでのbinding.pry感覚でブレイクポイントを設置できる。</p>
+<h2 id="ブレイクポイントを設置する"><a href="#ブレイクポイントを設置する" class="headerlink" title="ブレイクポイントを設置する"></a>ブレイクポイントを設置する</h2><p>Rubyでのbinding.pry感覚でブレイクポイントを設置できる。</p>
 <script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=debugger.php"></script>
 
 <p>psyshをrequireして、デバッグしたい箇所でeval(\Psy\sh());を実行するだけで、<br>該当箇所でプログラムが中断しpsyshが起動してデバッグできます。</p>
 <script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=debugger.sh"></script>
 
-<h2 id="php_u306E_u65E5_u672C_u8A9E_u30C9_u30AD_u30E5_u30E1_u30F3_u30C8_u3092_u8AAD_u3081_u308B_u3088_u3046_u306B_u3059_u308B"><a href="#php_u306E_u65E5_u672C_u8A9E_u30C9_u30AD_u30E5_u30E1_u30F3_u30C8_u3092_u8AAD_u3081_u308B_u3088_u3046_u306B_u3059_u308B" class="headerlink" title="phpの日本語ドキュメントを読めるようにする"></a>phpの日本語ドキュメントを読めるようにする</h2><p>日本語ドキュメントを取得することで、docで日本語のphpドキュメントも読める</p>
+<h2 id="phpの日本語ドキュメントを読めるようにする"><a href="#phpの日本語ドキュメントを読めるようにする" class="headerlink" title="phpの日本語ドキュメントを読めるようにする"></a>phpの日本語ドキュメントを読めるようにする</h2><p>日本語ドキュメントを取得することで、docで日本語のphpドキュメントも読める</p>
 <script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=show_php_doc.sh"></script>
 
-<h2 id="psysh_u306E_u8A2D_u5B9A"><a href="#psysh_u306E_u8A2D_u5B9A" class="headerlink" title="psyshの設定"></a>psyshの設定</h2><p>ここもpryのように、設定ファイルを追加してカスタマイズできる</p>
+<h2 id="psyshの設定"><a href="#psyshの設定" class="headerlink" title="psyshの設定"></a>psyshの設定</h2><p>ここもpryのように、設定ファイルを追加してカスタマイズできる</p>
 <script src="https://gist.github.com/kazu69/194061218893d4934dbf.js?file=add_psysh_config.sh"></script>
 
 <p>ということで、これはデバッグがはかどりそう。</p>
@@ -246,11 +246,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="nginxの設定をrubyでダイナミックに設定できるnginx_mrubyを試してみた。">
-<meta property="og:updated_time" content="2015-08-17T04:41:22.000Z">
+<meta property="og:updated_time" content="2015-08-17T04:38:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx_mrubyを試してみた">
 <meta name="twitter:description" content="nginxの設定をrubyでダイナミックに設定できるnginx_mrubyを試してみた。">
@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -99,7 +99,7 @@ ga('send', 'pageview');
       <p>nginxの設定をrubyでダイナミックに設定できる<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">nginx_mruby</a>を試してみた。</p>
 <a id="more"></a>
 <p>個人的にnginx_mrubyを使うことのメリットは、サーバーの設定をダウンタイムなしに変更できるという点と、<br>rubyを使ってアプリケーションコードを書くように、サーバーの設定扱うことができる(rack middlewareのように)という点と感じた。</p>
-<h2 id="nginx_mruby_u306E_u30D3_u30EB_u30C9"><a href="#nginx_mruby_u306E_u30D3_u30EB_u30C9" class="headerlink" title="nginx_mrubyのビルド"></a>nginx_mrubyのビルド</h2><p>今回はOSをDocker + ubuntuで試してみた。</p>
+<h2 id="nginx-mrubyのビルド"><a href="#nginx-mrubyのビルド" class="headerlink" title="nginx_mrubyのビルド"></a>nginx_mrubyのビルド</h2><p>今回はOSをDocker + ubuntuで試してみた。</p>
 <p><a href="https://github.com/matsumoto-r/ngx_mruby/wiki/Install" target="_blank" rel="external">wikiのinstall</a>を参考にした感じなのだが、以下のようになった。</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=Dockerfile"></script>
 <p>mrubyはビルドの設定をbuild_config.rbというファイルで行う。今回はbasic認証を行ってみようと思うので<br>mrubyのgemであるmgemに<a href="https://github.com/mattn/mruby-base64" target="_blank" rel="external">mruby-base64</a>を追加した。</p>
@@ -112,8 +112,8 @@ ga('send', 'pageview');
 <p>実際に処理を行うのはrubyでかけるので、</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=authn_basic.rb"></script>
 <p>これで dockerのコンテナにアクセス、basic_auth ディレクトリにアクセスでbasic認証ができている。</p>
-<h2 id="basic_u8A8D_u8A3C_u3057_u3066_u307F_u308B"><a href="#basic_u8A8D_u8A3C_u3057_u3066_u307F_u308B" class="headerlink" title="basic認証してみる"></a>basic認証してみる</h2><script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=basic_auth.sh"></script>
-<h2 id="u30D6_u30E9_u30A6_u30B6_u3067_u30A2_u30AF_u30BB_u30B9_u3057_u3066_u307F_u308B"><a href="#u30D6_u30E9_u30A6_u30B6_u3067_u30A2_u30AF_u30BB_u30B9_u3057_u3066_u307F_u308B" class="headerlink" title="ブラウザでアクセスしてみる"></a>ブラウザでアクセスしてみる</h2><p>今回はboot2dockerをつかったのでブラウザアクセスするために、<br>virtualboxとホストマシン間でのポートフォワーディングの設定が必要。</p>
+<h2 id="basic認証してみる"><a href="#basic認証してみる" class="headerlink" title="basic認証してみる"></a>basic認証してみる</h2><script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=basic_auth.sh"></script>
+<h2 id="ブラウザでアクセスしてみる"><a href="#ブラウザでアクセスしてみる" class="headerlink" title="ブラウザでアクセスしてみる"></a>ブラウザでアクセスしてみる</h2><p>今回はboot2dockerをつかったのでブラウザアクセスするために、<br>virtualboxとホストマシン間でのポートフォワーディングの設定が必要。</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=boot2docker-virtualbox-portformarding.sh"></script>
 <p>ブラウザで localhost:8080 でアクセスできるようになる。</p>
 <p>basic認証だとあまり良い例にはならなかったけど、例えば、特定のディレクトリへのアクセスなどを制御したい時に、<br>nginxのconfに正規表現などでいろいろと書くより、rubyでかける方が個人的には敷居が低く感じる。</p>
@@ -247,11 +247,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

@@ -17,6 +17,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="EFK(Elasticsearch + Fluentd + Kibana)をDocker-Composeで試してみた">
 <meta name="twitter:description" content="なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。Docker 1.8 からFluentdもlog driverに追加されているので、これを使って簡単なサンプルを構築した。">
+<meta name="twitter:image" content="https://gist.githubusercontent.com/kazu69/84e383c0dab2e115352c/raw/3602e3920c3021754b7a8bda17f8b6505cd49b6d/1.png">
   
     <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
   
@@ -24,7 +25,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -104,9 +105,9 @@ ga('send', 'pageview');
     
       <p>なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。<br>Docker 1.8 から<a href="http://docs.docker.com/engine/reference/logging/fluentd/" target="_blank" rel="external">Fluentdもlog driver</a>に追加されているので、これを使って簡単なサンプルを構築した。</p>
 <a id="more"></a>
-<h2 id="u69CB_u6210"><a href="#u69CB_u6210" class="headerlink" title="構成"></a>構成</h2><p>適当なnodeJSアプリケーションのフロントにnginxを立たせて、<br>収集したログをtd-agentで、Fluentdのログ収集コンテナに24224ポートで転送する。<br>あとはElasticsearch、Kibanaで解析・表示する。</p>
+<h2 id="構成"><a href="#構成" class="headerlink" title="構成"></a>構成</h2><p>適当なnodeJSアプリケーションのフロントにnginxを立たせて、<br>収集したログをtd-agentで、Fluentdのログ収集コンテナに24224ポートで転送する。<br>あとはElasticsearch、Kibanaで解析・表示する。</p>
 <p>アプリケーションからのログ転送はDockerのlog-driverオプションを使うので、td-agentの導入を省けた。<br><a href="https://github.com/fluent/fluentd-docker-image" target="_blank" rel="external">Fluentd</a>、<a href="https://github.com/dockerfile/elasticsearch" target="_blank" rel="external">Elasticsearch</a>、<a href="https://github.com/eliotk/docker-kibana" target="_blank" rel="external">Kibana</a>はそれぞれオフィシャルのイメージがあるので、そちらを活用した。<br>Elasticsearchは9200ポート、kibanaは5601ポートを使った。</p>
-<h2 id="u30ED_u30B0_u53CE_u96C6_u30FB_u89E3_u6790_u57FA_u76E4_u306E_u30BB_u30C3_u30C8_u30A2_u30C3_u30D7"><a href="#u30ED_u30B0_u53CE_u96C6_u30FB_u89E3_u6790_u57FA_u76E4_u306E_u30BB_u30C3_u30C8_u30A2_u30C3_u30D7" class="headerlink" title="ログ収集・解析基盤のセットアップ"></a>ログ収集・解析基盤のセットアップ</h2><h3 id="Fluentd"><a href="#Fluentd" class="headerlink" title="Fluentd"></a>Fluentd</h3>
+<h2 id="ログ収集・解析基盤のセットアップ"><a href="#ログ収集・解析基盤のセットアップ" class="headerlink" title="ログ収集・解析基盤のセットアップ"></a>ログ収集・解析基盤のセットアップ</h2><h3 id="Fluentd"><a href="#Fluentd" class="headerlink" title="Fluentd"></a>Fluentd</h3>
 <script src="https://gist-it.appspot.com/github/kazu69/docker-efk/blob/master/fluentd/Dockerfile"></script>
 
 <p>fluentdの設定はログをElasticsearch(9200ポート)に転送している。<br>forwardで転送されてきたログでdockerというタグのついたものを9200ポートで送信している。<br>logstash_formatの設定は出力形式、これがfalseの場合kibanaで解析する際に@timestampフィールドが作成されないようで時系列で集計できない。</p>
@@ -114,19 +115,19 @@ ga('send', 'pageview');
 <script src="https://gist-it.appspot.com/github/kazu69/docker-efk/blob/master/fluentd/fluent.conf"></script>
 
 <h3 id="kibana"><a href="#kibana" class="headerlink" title="kibana"></a>kibana</h3><p>5601ポートでアクセスすることで解析画面を表示できる。<br>これはどちらかというと設定より使い方を習得する方が大変そうな。</p>
-<h2 id="docker-compose_u306E_u30B3_u30F3_u30C6_u30CA_u306E_u30D8_u30EB_u30B9_u30C1_u30A7_u30C3_u30AF"><a href="#docker-compose_u306E_u30B3_u30F3_u30C6_u30CA_u306E_u30D8_u30EB_u30B9_u30C1_u30A7_u30C3_u30AF" class="headerlink" title="docker-composeのコンテナのヘルスチェック"></a>docker-composeのコンテナのヘルスチェック</h2><p>docker-composeを使った際に、各コンテナとの疎通確認にncコマンドを使っている。そのため、ほとんどのentrypoint.shファイルの内容がほとんど同じになってしまった。</p>
+<h2 id="docker-composeのコンテナのヘルスチェック"><a href="#docker-composeのコンテナのヘルスチェック" class="headerlink" title="docker-composeのコンテナのヘルスチェック"></a>docker-composeのコンテナのヘルスチェック</h2><p>docker-composeを使った際に、各コンテナとの疎通確認にncコマンドを使っている。そのため、ほとんどのentrypoint.shファイルの内容がほとんど同じになってしまった。</p>
 
 <script src="https://gist-it.appspot.com/github/kazu69/docker-efk/blob/master/fluentd/entrypoint.sh"></script>
 
 <p>コンテナ間の依存を解消する方法がいまいちわかってないのでこのような手法をとったのだが、もっといい方法がありそう。<br><a href="https://github.com/docker/compose/pull/686" target="_blank" rel="external">docker-compose issue#686</a>にあるようなので、今後解決されるかも。</p>
-<h2 id="u8D77_u52D5_u3057_u3066_u307F_u308B"><a href="#u8D77_u52D5_u3057_u3066_u307F_u308B" class="headerlink" title="起動してみる"></a>起動してみる</h2><script src="//gist.github.com/kazu69/84e383c0dab2e115352c.js?file=exec.sh"></script>
+<h2 id="起動してみる"><a href="#起動してみる" class="headerlink" title="起動してみる"></a>起動してみる</h2><script src="//gist.github.com/kazu69/84e383c0dab2e115352c.js?file=exec.sh"></script>
 <p>kibanaにアクセスすると</p>
 <p><img src="https://gist.githubusercontent.com/kazu69/84e383c0dab2e115352c/raw/3602e3920c3021754b7a8bda17f8b6505cd49b6d/1.png" alt=""></p>
 <p>logstash形式のものをフィルタリング</p>
 <p><img src="https://gist.githubusercontent.com/kazu69/84e383c0dab2e115352c/raw/3602e3920c3021754b7a8bda17f8b6505cd49b6d/2.png" alt=""></p>
 <p>ということで、とりあえず最小限の環境は構築できた。</p>
 <p>今回作成したサンプル <a href="https://github.com/kazu69/docker-efk" target="_blank" rel="external">kazu69/docker-efk</a></p>
-<h3 id="u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8"><a href="#u53C2_u8003_u306B_u3057_u305F_u30DA_u30FC_u30B8" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="http://stackoverflow.com/questions/31212547/passing-bash-code-through-the-environment-for-docker-compose/" target="_blank" rel="external">Passing bash code through the environment (for docker-compose)</a></p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="http://stackoverflow.com/questions/31212547/passing-bash-code-through-the-environment-for-docker-compose/" target="_blank" rel="external">Passing bash code through the environment (for docker-compose)</a></p>
 
     
   </div>
@@ -251,11 +252,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -137,20 +137,20 @@ ga('send', 'pageview');
 <p>#encoding: UTF-8<br>require ‘rubygems’<br>require ‘pp’<br>require ‘bundler’<br>require ‘sinatra/base’<br>require ‘erb’</p>
 <p>Bundler.require</p>
 <p>before do</p>
-<h1 id="u30B3_u30F3_u30C6_u30F3_u30C4_u306E_u63D0_u4F9B_u5143_u306E_u7279_u5225_u306A_u30AF_u30E9_u30B9_u3092_u8A18_u8FF0_u3059_u308B_u305F_u3081_u306E_u30AD_u30FC_u30EF_u30FC_u30C9"><a href="#u30B3_u30F3_u30C6_u30F3_u30C4_u306E_u63D0_u4F9B_u5143_u306E_u7279_u5225_u306A_u30AF_u30E9_u30B9_u3092_u8A18_u8FF0_u3059_u308B_u305F_u3081_u306E_u30AD_u30FC_u30EF_u30FC_u30C9" class="headerlink" title="コンテンツの提供元の特別なクラスを記述するためのキーワード"></a>コンテンツの提供元の特別なクラスを記述するためのキーワード</h1><p>  keyword = ‘self’</p>
-<h1 id="u30C7_u30D5_u30A9_u30EB_u30C8_u3067_u8A2D_u5B9A_u3059_u308B_u63D0_u4F9B_u5143"><a href="#u30C7_u30D5_u30A9_u30EB_u30C8_u3067_u8A2D_u5B9A_u3059_u308B_u63D0_u4F9B_u5143" class="headerlink" title="デフォルトで設定する提供元"></a>デフォルトで設定する提供元</h1><p>  default = ‘default-src self;’</p>
-<h1 id="u753B_u50CF_u3068_favicon__u306E_u8AAD_u307F_u8FBC_u307F_u306B_u4F7F_u7528_u3055_u308C_u308B_u53EF_u80FD_u6027_u306E_u3042_u308B_u63D0_u4F9B_u5143_u3092_u6307_u5B9A"><a href="#u753B_u50CF_u3068_favicon__u306E_u8AAD_u307F_u8FBC_u307F_u306B_u4F7F_u7528_u3055_u308C_u308B_u53EF_u80FD_u6027_u306E_u3042_u308B_u63D0_u4F9B_u5143_u3092_u6307_u5B9A" class="headerlink" title="画像と favicon の読み込みに使用される可能性のある提供元を指定"></a>画像と favicon の読み込みに使用される可能性のある提供元を指定</h1><p>  img = ‘img-src ;’</p>
-<h1 id="JavaScirpt__u306E_u6B63_u5F53_u306A_u63D0_u4F9B_u5143_u3092_u6307_u5B9A_u3057_u307E_u3059"><a href="#JavaScirpt__u306E_u6B63_u5F53_u306A_u63D0_u4F9B_u5143_u3092_u6307_u5B9A_u3057_u307E_u3059" class="headerlink" title="JavaScirpt の正当な提供元を指定します"></a>JavaScirpt の正当な提供元を指定します</h1><p>  script = ‘script-src <a href="http://ajax.googleapis.com" target="_blank" rel="external">http://ajax.googleapis.com</a>;’</p>
-<h1 id="26lt_3Bframe_26gt_3B__u8981_u7D20_u3084__26lt_3Biframe_26gt_3B__u8981_u7D20_u3092_u4F7F_u7528_u3057_u3066_u8AAD_u307F_u8FBC_u307E_u308C_u308B_u30D5_u30EC_u30FC_u30E0_u30B3_u30F3_u30C6_u30F3_u30C4_u306E_u6B63_u5F53_u306A_u63D0_u4F9B_u5143_u3092_u6307_u5B9A"><a href="#26lt_3Bframe_26gt_3B__u8981_u7D20_u3084__26lt_3Biframe_26gt_3B__u8981_u7D20_u3092_u4F7F_u7528_u3057_u3066_u8AAD_u307F_u8FBC_u307E_u308C_u308B_u30D5_u30EC_u30FC_u30E0_u30B3_u30F3_u30C6_u30F3_u30C4_u306E_u6B63_u5F53_u306A_u63D0_u4F9B_u5143_u3092_u6307_u5B9A" class="headerlink" title="&lt;frame&gt; 要素や &lt;iframe&gt; 要素を使用して読み込まれるフレームコンテンツの正当な提供元を指定"></a>&lt;frame&gt; 要素や &lt;iframe&gt; 要素を使用して読み込まれるフレームコンテンツの正当な提供元を指定</h1><p>  frame = ‘frame-src ;’</p>
+<h1 id="コンテンツの提供元の特別なクラスを記述するためのキーワード"><a href="#コンテンツの提供元の特別なクラスを記述するためのキーワード" class="headerlink" title="コンテンツの提供元の特別なクラスを記述するためのキーワード"></a>コンテンツの提供元の特別なクラスを記述するためのキーワード</h1><p>  keyword = ‘self’</p>
+<h1 id="デフォルトで設定する提供元"><a href="#デフォルトで設定する提供元" class="headerlink" title="デフォルトで設定する提供元"></a>デフォルトで設定する提供元</h1><p>  default = ‘default-src self;’</p>
+<h1 id="画像と-favicon-の読み込みに使用される可能性のある提供元を指定"><a href="#画像と-favicon-の読み込みに使用される可能性のある提供元を指定" class="headerlink" title="画像と favicon の読み込みに使用される可能性のある提供元を指定"></a>画像と favicon の読み込みに使用される可能性のある提供元を指定</h1><p>  img = ‘img-src ;’</p>
+<h1 id="JavaScirpt-の正当な提供元を指定します"><a href="#JavaScirpt-の正当な提供元を指定します" class="headerlink" title="JavaScirpt の正当な提供元を指定します"></a>JavaScirpt の正当な提供元を指定します</h1><p>  script = ‘script-src <a href="http://ajax.googleapis.com" target="_blank" rel="external">http://ajax.googleapis.com</a>;’</p>
+<h1 id="lt-frame-gt-要素や-lt-iframe-gt-要素を使用して読み込まれるフレームコンテンツの正当な提供元を指定"><a href="#lt-frame-gt-要素や-lt-iframe-gt-要素を使用して読み込まれるフレームコンテンツの正当な提供元を指定" class="headerlink" title="&lt;frame&gt; 要素や &lt;iframe&gt; 要素を使用して読み込まれるフレームコンテンツの正当な提供元を指定"></a>&lt;frame&gt; 要素や &lt;iframe&gt; 要素を使用して読み込まれるフレームコンテンツの正当な提供元を指定</h1><p>  frame = ‘frame-src ;’</p>
 <h1 id="Firefox"><a href="#Firefox" class="headerlink" title="Firefox"></a>Firefox</h1><p>  headers ‘X-Content-Security-Policy’ =&gt; &quot;allow &quot; + keyword + default + script + style + img + frame</p>
 <h1 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h1><p>  headers ‘X-WebKit-CSP’ =&gt; &quot;allow &quot; + keyword + default + script + style + img + frame</p>
 <p>end</p>
 <p>get ‘/‘ do<br>  erb :index<br>end<br>[/ruby]</p>
 <p>また、ポリシーの違反があった場合は、指定したURIにレポートを送ることもできます。<br>[ruby]</p>
-<h1 id="Content_Security_Policy__u9055_u53CD_u3092_u5831_u544A_u3059_u308B_u3088_u3046_u306B_u30D6_u30E9_u30A6_u30B6_u306B_u6307_u793A"><a href="#Content_Security_Policy__u9055_u53CD_u3092_u5831_u544A_u3059_u308B_u3088_u3046_u306B_u30D6_u30E9_u30A6_u30B6_u306B_u6307_u793A" class="headerlink" title="Content Security Policy 違反を報告するようにブラウザに指示"></a>Content Security Policy 違反を報告するようにブラウザに指示</h1><p>reporturi = ‘report-uri /report;’</p>
+<h1 id="Content-Security-Policy-違反を報告するようにブラウザに指示"><a href="#Content-Security-Policy-違反を報告するようにブラウザに指示" class="headerlink" title="Content Security Policy 違反を報告するようにブラウザに指示"></a>Content Security Policy 違反を報告するようにブラウザに指示</h1><p>reporturi = ‘report-uri /report;’</p>
 <h1 id="Firefox-1"><a href="#Firefox-1" class="headerlink" title="Firefox"></a>Firefox</h1><p>headers ‘X-Content-Security-Policy’ =&gt; &quot;allow &quot; + keyword + default + script + style + img + frame + reporturi</p>
 <h1 id="Webkit"><a href="#Webkit" class="headerlink" title="Webkit"></a>Webkit</h1><p>headers ‘X-WebKit-CSP’ =&gt; &quot;allow &quot; + keyword + default + script + style + img + frame + reporturi</p>
-<h1 id="u30A8_u30E9_u30FC_u30EC_u30DD_u30FC_u30C8"><a href="#u30A8_u30E9_u30FC_u30EC_u30DD_u30FC_u30C8" class="headerlink" title="エラーレポート"></a>エラーレポート</h1><h1 id="u3068_u308A_u3042_u3048_u305A_u51FA_u529B_u3057_u3066_u307F_u308B"><a href="#u3068_u308A_u3042_u3048_u305A_u51FA_u529B_u3057_u3066_u307F_u308B" class="headerlink" title="とりあえず出力してみる"></a>とりあえず出力してみる</h1><p>post ‘/report’ do<br> pp request.env[‘rack.input’].read.to_s<br>end<br>[/ruby]<br>レポートはjson形式でpostされます。<br>[javascript]<br>&quot;{\&quot;csp-report\&quot;:{\&quot;request\&quot;:\&quot;GET <a href="http://127.0.0.1:9393/" target="_blank" rel="external">http://127.0.0.1:9393/</a> HTTP/1.1\&quot;,\&quot;blocked-uri\&quot;:\&quot;self\&quot;,\&quot;violated-directive\&quot;:\&quot;inline script base restriction\&quot;,\&quot;source-file\&quot;:\&quot;<a href="http://127.0.0.1:9393/\&quot;,\&quot;script-sample\&quot;:\&quot;\\n" target="_blank" rel="external">http://127.0.0.1:9393/\&quot;,\&quot;script-sample\&quot;:\&quot;\\n</a>    $(function(){\n      $(‘body’).appen…\&quot;,\&quot;line-number\&quot;:13}}&quot;<br>[/javascript]</p>
+<h1 id="エラーレポート"><a href="#エラーレポート" class="headerlink" title="エラーレポート"></a>エラーレポート</h1><h1 id="とりあえず出力してみる"><a href="#とりあえず出力してみる" class="headerlink" title="とりあえず出力してみる"></a>とりあえず出力してみる</h1><p>post ‘/report’ do<br> pp request.env[‘rack.input’].read.to_s<br>end<br>[/ruby]<br>レポートはjson形式でpostされます。<br>[javascript]<br>&quot;{\&quot;csp-report\&quot;:{\&quot;request\&quot;:\&quot;GET <a href="http://127.0.0.1:9393/" target="_blank" rel="external">http://127.0.0.1:9393/</a> HTTP/1.1\&quot;,\&quot;blocked-uri\&quot;:\&quot;self\&quot;,\&quot;violated-directive\&quot;:\&quot;inline script base restriction\&quot;,\&quot;source-file\&quot;:\&quot;<a href="http://127.0.0.1:9393/\&quot;,\&quot;script-sample\&quot;:\&quot;\\n" target="_blank" rel="external">http://127.0.0.1:9393/\&quot;,\&quot;script-sample\&quot;:\&quot;\\n</a>    $(function(){\n      $(‘body’).appen…\&quot;,\&quot;line-number\&quot;:13}}&quot;<br>[/javascript]</p>
 <p>という感じなんですが、これを使うとなると既に動いてるサービスとかは変更が大変だ。<br>現在読込んでる外部リソースをリスト化してそれぞれをホワイトリストとして登録するとか。。。</p>
 <p>ただCSP自体は完全な後方互換らしいので、設定しておいてもいいかも。</p>
 
@@ -277,11 +277,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

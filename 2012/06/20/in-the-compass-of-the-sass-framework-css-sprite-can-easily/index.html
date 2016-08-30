@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -107,7 +107,7 @@ ga('send', 'pageview');
 <p>水平に結合したときは<br>[code]<br>$sprite: sprite-map(&quot;hoge/*.png&quot;, $layout:horizontal);<br>[/code]</p>
 <p>とかでいいし、便利で楽。</p>
 <p>実際に画像を表示したいところで<br>[code]<br>background-image: $sprite; </p>
-<h1 id="u7B2C_u4E8C_u5F15_u6570_u306F_u30D5_u30A1_u30A4_u30EB_u540D"><a href="#u7B2C_u4E8C_u5F15_u6570_u306F_u30D5_u30A1_u30A4_u30EB_u540D" class="headerlink" title="第二引数はファイル名"></a>第二引数はファイル名</h1><p>background-position: sprite-position($sprite, file-name);<br>[/code]<br>とかでpositionを自動で算出してくれます。</p>
+<h1 id="第二引数はファイル名"><a href="#第二引数はファイル名" class="headerlink" title="第二引数はファイル名"></a>第二引数はファイル名</h1><p>background-position: sprite-position($sprite, file-name);<br>[/code]<br>とかでpositionを自動で算出してくれます。</p>
 <p>下記のようすると、ファイルの縦幅と横幅を取得してwidthとheightに設定できます。<br>[code]<br>width: image-width(&quot;hoge/file-name.png&quot;);<br>height: image-height(&quot;hoge/file-name.png&quot;);<br>background-image: $sprite;<br>background-position: sprite-position($sprite, file-name);<br>[/code]<br>これだと、画像の変更がありファイルの縦幅や横幅が変わっても、特に修正の必要がないのでかなり楽です。</p>
 <p>そのほかにも色々できるんですけど、気がついたら追記します。<br>でも、詳しくは一回<a href="http://compass-style.org/help/tutorials/spriting/" target="_blank" rel="external">チュートリアル</a>やればいいんじゃないかな。</p>
 
@@ -234,11 +234,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

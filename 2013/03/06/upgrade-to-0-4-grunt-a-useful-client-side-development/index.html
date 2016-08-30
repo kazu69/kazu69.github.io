@@ -25,7 +25,7 @@ Grunt 0.4 変更点ドキュメントまんまなんですが、grunt 0.4で変�
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -104,7 +104,7 @@ ga('send', 'pageview');
     </div>
     
       <p><a href="http://grunt.com" target="_blank" rel="external">Grunt</a> v0.4がリリースされて、しばらく経過したけどやっと機会ができたのでアップグレードしてみた。</p>
-<h2 id="Grunt_0-4__u5909_u66F4_u70B9"><a href="#Grunt_0-4__u5909_u66F4_u70B9" class="headerlink" title="Grunt 0.4 変更点"></a>Grunt 0.4 変更点</h2><p>ドキュメントまんまなんですが、grunt 0.4で変わったことをざっくりまとめてみた。<br><a id="more"></a></p>
+<h2 id="Grunt-0-4-変更点"><a href="#Grunt-0-4-変更点" class="headerlink" title="Grunt 0.4 変更点"></a>Grunt 0.4 変更点</h2><p>ドキュメントまんまなんですが、grunt 0.4で変わったことをざっくりまとめてみた。<br><a id="more"></a></p>
 <ul>
 <li>node &gt;= 0.8.0 が必須</li>
 <li>0.3系のmoduleは0.4系にアップグレード対応しないといけない</li>
@@ -134,7 +134,7 @@ ga('send', 'pageview');
 </li>
 </ul>
 <p>ということでアップグレーとしてみる。</p>
-<h2 id="Getting_Started_/_Upgrade"><a href="#Getting_Started_/_Upgrade" class="headerlink" title="Getting Started / Upgrade"></a>Getting Started / Upgrade</h2><p>とりあえず、現在インストールされているgruntを削除<br>[shell]<br>$ npm uninstall -g grunt<br>[/shell]</p>
+<h2 id="Getting-Started-Upgrade"><a href="#Getting-Started-Upgrade" class="headerlink" title="Getting Started / Upgrade"></a>Getting Started / Upgrade</h2><p>とりあえず、現在インストールされているgruntを削除<br>[shell]<br>$ npm uninstall -g grunt<br>[/shell]</p>
 <p>つづいて、CLIをグローバルにinstall<br>[shell]<br>$ npm install -g grunt-cli<br>[/shell]</p>
 <p>これではじめてgruntコマンドが使用できます。</p>
 <p>package.jsonを作成する。<br>package.jsonの情報をもとに　プロジェクト毎にnpmのmoduleがインストールされる。<br>moduleのバージョンを固定することでstableな開発環境を維持できる。</p>
@@ -148,7 +148,7 @@ ga('send', 'pageview');
 <p>{<br>  &quot;name&quot;: &quot;project&quot;,<br>  &quot;version&quot;: &quot;0.0.0&quot;,<br>  &quot;description&quot;: &quot;ERROR: No README.md file found!&quot;,<br>  &quot;main&quot;: &quot;index.js&quot;,<br>  &quot;scripts&quot;: {<br>    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;<br>  },<br>  &quot;repository&quot;: &quot;&quot;,<br>  &quot;author&quot;: &quot;&quot;,<br>  &quot;license&quot;: &quot;BSD&quot;<br>}<br> [/shell]</p>
 <p>ほかにも、すでに提供されているテンプレートを使用して作成することも可能。grunt-init-<em>*</em> という形式で配布してあるので探して最適なものを使う。<br>今回はjquery-init-templateをつかってやってみる。</p>
 <p>[shell]</p>
-<h1 id="u307E_u305A_u306Fgrunt-init_module_u3092_u30B0_u30ED_u30FC_u30D0_u30EB_u306B_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB"><a href="#u307E_u305A_u306Fgrunt-init_module_u3092_u30B0_u30ED_u30FC_u30D0_u30EB_u306B_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB" class="headerlink" title="まずはgrunt-init moduleをグローバルにインストール"></a>まずはgrunt-init moduleをグローバルにインストール</h1><p>$ npm install grunt-init<br>$ git clone git@github.com:gruntjs/grunt-init-jquery.git ~/.grunt-init/jquery</p>
+<h1 id="まずはgrunt-init-moduleをグローバルにインストール"><a href="#まずはgrunt-init-moduleをグローバルにインストール" class="headerlink" title="まずはgrunt-init moduleをグローバルにインストール"></a>まずはgrunt-init moduleをグローバルにインストール</h1><p>$ npm install grunt-init<br>$ git clone git@github.com:gruntjs/grunt-init-jquery.git ~/.grunt-init/jquery</p>
 <p>$ grunt-init jquery<br>Running &quot;init:jquery&quot; (init) task<br>This task will create one or more files in the current directory, based on the<br>environment and the answers to a few questions. Note that answering &quot;?&quot; to any<br>question will show question-specific help and answering &quot;none&quot; to most questions<br>will leave its value blank.</p>
 <p>&quot;jquery&quot; template notes:<br>Project name should not contain &quot;jquery&quot; or &quot;js&quot; and should be a unique ID not<br>already in use at plugins.jquery.com. Project title should be a human-readable<br>title, and doesn’t need to contain the word &quot;jQuery&quot;, although it may. For<br>example, a plugin titled &quot;Awesome Plugin&quot; might have the name &quot;awesome-plugin&quot;.</p>
 <p>For more information, please see the following documentation:</p>
@@ -182,7 +182,7 @@ ga('send', 'pageview');
 <p>あとは、必要に応じてmoduleを追加して、Gruntfileにタスクを追加していけばいい感じですかね。</p>
 <p>これまでグローバルで管理していたmoduleもプロジェクト単位で管理でき、プロジェクト開発者全員で同じ開発環境を容易に構築できるようになってとても便利になった感じがします。</p>
 <p>とりあえず、クライアントサイドの開発が多い、エンジニアやデザイナーは使うといいですよ、Grunt。</p>
-<h2 id="u53C2_u8003_u30B5_u30A4_u30C8"><a href="#u53C2_u8003_u30B5_u30A4_u30C8" class="headerlink" title="参考サイト"></a>参考サイト</h2><p><a href="http://gruntjs.com/upgrading-from-0.3-to-0.4" target="_blank" rel="external">Grunt Upgrading from 0.3 to 0.4</a></p>
+<h2 id="参考サイト"><a href="#参考サイト" class="headerlink" title="参考サイト"></a>参考サイト</h2><p><a href="http://gruntjs.com/upgrading-from-0.3-to-0.4" target="_blank" rel="external">Grunt Upgrading from 0.3 to 0.4</a></p>
 
     
   </div>
@@ -307,11 +307,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

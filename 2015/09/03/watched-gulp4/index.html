@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -98,7 +98,7 @@ ga('send', 'pageview');
     
       <p>gulpfileをES6に置き換える必要があり、何気にgulpの情報追っていると、<br>そろそろv4.0がリリースされそうなのでざっくりと眺めてみた。</p>
 <a id="more"></a>
-<h2 id="gulpfile_u3092ES6_u3067_u66F8_u304F"><a href="#gulpfile_u3092ES6_u3067_u66F8_u304F" class="headerlink" title="gulpfileをES6で書く"></a>gulpfileをES6で書く</h2><p>まず、本来の目的だったこの件、<a href="https://github.com/gulpjs/gulp/issues/830#issuecomment-123601869" target="_blank" rel="external">v3.9</a>ですでに対応されていた。</p>
+<h2 id="gulpfileをES6で書く"><a href="#gulpfileをES6で書く" class="headerlink" title="gulpfileをES6で書く"></a>gulpfileをES6で書く</h2><p>まず、本来の目的だったこの件、<a href="https://github.com/gulpjs/gulp/issues/830#issuecomment-123601869" target="_blank" rel="external">v3.9</a>ですでに対応されていた。</p>
 <p>以下の条件であれば利用可能のようだった。</p>
 <ul>
 <li>gulp v3.9以上</li>
@@ -108,13 +108,13 @@ ga('send', 'pageview');
 <p>内部的にはbabelで変換しているようだ。</p>
 <hr>
 <p>続いて、v4.0の<a href="https://github.com/gulpjs/gulp/blob/4.0/docs/API.md" target="_blank" rel="external">CAHNGELOG</a>も眺めてみた。</p>
-<h2 id="gulp4-0_u3092_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB"><a href="#gulp4-0_u3092_u30A4_u30F3_u30B9_u30C8_u30FC_u30EB" class="headerlink" title="gulp4.0をインストール"></a>gulp4.0をインストール</h2><script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=install.sh"></script>
-<h2 id="cli_u306E_u5909_u66F4_u70B9"><a href="#cli_u306E_u5909_u66F4_u70B9" class="headerlink" title="cliの変更点"></a>cliの変更点</h2><p><code>--tasks-json</code> と <code>--verify</code> オプションが追加されてる。</p>
+<h2 id="gulp4-0をインストール"><a href="#gulp4-0をインストール" class="headerlink" title="gulp4.0をインストール"></a>gulp4.0をインストール</h2><script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=install.sh"></script>
+<h2 id="cliの変更点"><a href="#cliの変更点" class="headerlink" title="cliの変更点"></a>cliの変更点</h2><p><code>--tasks-json</code> と <code>--verify</code> オプションが追加されてる。</p>
 <p>–task-json はタスクをjson形式で出力する。</p>
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=cli-task-json.sh"></script>
 <p>–verify はpluginsがpackage.jsonを参照しているかチェックする。</p>
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=gulp-verify.sh"></script>
-<h2 id="API_u306E_u5909_u66F4_u70B9"><a href="#API_u306E_u5909_u66F4_u70B9" class="headerlink" title="APIの変更点"></a>APIの変更点</h2><p>大きな変更点はタスク処理機構が、<a href="https://www.npmjs.com/package/orchestrator" target="_blank" rel="external">orchestrator</a> から <a href="https://github.com/phated/undertaker" target="_blank" rel="external">undertaker</a> に変更される点だった。</p>
+<h2 id="APIの変更点"><a href="#APIの変更点" class="headerlink" title="APIの変更点"></a>APIの変更点</h2><p>大きな変更点はタスク処理機構が、<a href="https://www.npmjs.com/package/orchestrator" target="_blank" rel="external">orchestrator</a> から <a href="https://github.com/phated/undertaker" target="_blank" rel="external">undertaker</a> に変更される点だった。</p>
 <p>orchestratorではタスクの同期制御サポートされてないが、undertakerで使うことでタスクの同期処理などが簡単に解決できるようになる。</p>
 <p>処理機構の変更のため、APIも大きく変更されている。</p>
 <p>gulp.taskはこれまで引数に<strong>gulp.task(name[, deps], fn)</strong>となっていたが、<strong>gulp.task([name,] fn)</strong>と依存タスクを指定するdepsがなくなった。</p>
@@ -268,11 +268,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

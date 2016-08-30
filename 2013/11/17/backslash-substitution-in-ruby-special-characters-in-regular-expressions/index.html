@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -102,12 +102,12 @@ ga('send', 'pageview');
     
       <p>rubyで特殊文字列\, (, ), [, ], {, }, ., ?, +, *, . を正規表現でバックスラッシュ置換をするメモ。<br><a id="more"></a></p>
 <p>たとえば、特殊文字を正規表現マッチさせる場合<br>[ruby]<br>str = ‘?’<br>‘hogemoge?’ =~ /#{str}/</p>
-<h1 id="RegexpError_3A_target_of_repeat_operator_is_not_specified_3A_/_3F/"><a href="#RegexpError_3A_target_of_repeat_operator_is_not_specified_3A_/_3F/" class="headerlink" title="RegexpError: target of repeat operator is not specified: /?/"></a>RegexpError: target of repeat operator is not specified: /?/</h1><p>str = ‘)’<br>‘hogemoge)’ =~ /#{str}/</p>
-<h1 id="RegexpError_3A_unmatched_close_parenthesis_3A_/_29/"><a href="#RegexpError_3A_unmatched_close_parenthesis_3A_/_29/" class="headerlink" title="RegexpError: unmatched close parenthesis: /)/"></a>RegexpError: unmatched close parenthesis: /)/</h1><p>[/ruby]</p>
+<h1 id="RegexpError-target-of-repeat-operator-is-not-specified"><a href="#RegexpError-target-of-repeat-operator-is-not-specified" class="headerlink" title="RegexpError: target of repeat operator is not specified: /?/"></a>RegexpError: target of repeat operator is not specified: /?/</h1><p>str = ‘)’<br>‘hogemoge)’ =~ /#{str}/</p>
+<h1 id="RegexpError-unmatched-close-parenthesis"><a href="#RegexpError-unmatched-close-parenthesis" class="headerlink" title="RegexpError: unmatched close parenthesis: /)/"></a>RegexpError: unmatched close parenthesis: /)/</h1><p>[/ruby]</p>
 <p>という具合にエラーになる。</p>
 <p>[ruby]<br>str = ‘?’<br>str = str.gsub(/\|\?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge?’ =~ /#{str}/</p>
-<h1 id="3D_26gt_3B_8"><a href="#3D_26gt_3B_8" class="headerlink" title="=&gt; 8"></a>=&gt; 8</h1><p>str = ‘)’<br>str = str.gsub(/\|\?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge)’ =~ /#{str}/</p>
-<h1 id="3D_26gt_3B_8-1"><a href="#3D_26gt_3B_8-1" class="headerlink" title="=&gt; 8"></a>=&gt; 8</h1><p>[/ruby]</p>
+<h1 id="gt-8"><a href="#gt-8" class="headerlink" title="=&gt; 8"></a>=&gt; 8</h1><p>str = ‘)’<br>str = str.gsub(/\|\?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge)’ =~ /#{str}/</p>
+<h1 id="gt-8-1"><a href="#gt-8-1" class="headerlink" title="=&gt; 8"></a>=&gt; 8</h1><p>[/ruby]</p>
 <p>で解決した。</p>
 
     
@@ -233,11 +233,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -102,7 +102,7 @@ ga('send', 'pageview');
     
       <p><a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>、 <a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>などを使うのではなく、npmをビルドタスクを使うためにちょっとおさらいした。</p>
 <a id="more"></a>
-<h2 id="npm_u306Epath"><a href="#npm_u306Epath" class="headerlink" title="npmのpath"></a>npmのpath</h2><p>npmでインストールすると、<br>モジュールは ./node_modules/にインストールされ、<br>node_modules/.bin配下に各パッケージのbinへのシンボリックリンクが作成される。</p>
+<h2 id="npmのpath"><a href="#npmのpath" class="headerlink" title="npmのpath"></a>npmのpath</h2><p>npmでインストールすると、<br>モジュールは ./node_modules/にインストールされ、<br>node_modules/.bin配下に各パッケージのbinへのシンボリックリンクが作成される。</p>
 <p>これは実際にnpm binを実行するとパスがわかる。</p>
 <p>たとえば、node_modules/jshint/bin/jshint は$(npm bin)/jshintで実行できる。<br>実際にはnpm経由で実行すると、$(npm bin)はPATHは追加されている。</p>
 <p>package.jsonに以下を追加して</p>
@@ -112,9 +112,9 @@ ga('send', 'pageview');
 
 <p>でパスが通っていることが確認できる。</p>
 <p>つまり、npm run TASKではモジュールのパスに$(npm bin)は必要無い。</p>
-<h2 id="pre_u3001post_u30D5_u30C3_u30AF"><a href="#pre_u3001post_u30D5_u30C3_u30AF" class="headerlink" title="pre、postフック"></a>pre、postフック</h2><p>npmコマンドにpre、postというprefixをつけることでそのコマンドの前後にフックできる。<br>たとえば、npm testにpre postそれぞれのフックを追加すると、</p>
+<h2 id="pre、postフック"><a href="#pre、postフック" class="headerlink" title="pre、postフック"></a>pre、postフック</h2><p>npmコマンドにpre、postというprefixをつけることでそのコマンドの前後にフックできる。<br>たとえば、npm testにpre postそれぞれのフックを追加すると、</p>
 <p>npm test を実行すると、 npm run pretest、 npm test, npm run posttest の順番に実行される。</p>
-<h2 id="u30AB_u30B9_u30BF_u30E0_u5F15_u6570"><a href="#u30AB_u30B9_u30BF_u30E0_u5F15_u6570" class="headerlink" title="カスタム引数"></a>カスタム引数</h2><p>npm@2.0.0 以上では<a href="https://github.com/npm/npm/pull/5518" target="_blank" rel="external">実行スクリプトにカスタム引数を渡すことができるようになっている。</a></p>
+<h2 id="カスタム引数"><a href="#カスタム引数" class="headerlink" title="カスタム引数"></a>カスタム引数</h2><p>npm@2.0.0 以上では<a href="https://github.com/npm/npm/pull/5518" target="_blank" rel="external">実行スクリプトにカスタム引数を渡すことができるようになっている。</a></p>
 <p>「–」で 好きな引数を渡すことができる。<br>たとえば以下のうように</p>
 <script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=option.json"></script>
 
@@ -134,13 +134,13 @@ ga('send', 'pageview');
 <script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=npmrc_echo.sh"></script>
 
 <p>となる。各自の環境に合わせた状態などはここで上書きするなどができる感じ。</p>
-<h2 id="u30DE_u30EB_u30C1_u30BF_u30B9_u30AF"><a href="#u30DE_u30EB_u30C1_u30BF_u30B9_u30AF" class="headerlink" title="マルチタスク"></a>マルチタスク</h2><p>マルチタスクはpre、postフックでタスクを実行するほかに&amp;&amp;演算子でつなげていけば可能。</p>
+<h2 id="マルチタスク"><a href="#マルチタスク" class="headerlink" title="マルチタスク"></a>マルチタスク</h2><p>マルチタスクはpre、postフックでタスクを実行するほかに&amp;&amp;演算子でつなげていけば可能。</p>
 <script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=mutitask.json"></script>
 
 <p>また、標準出力、標準入力、リダレクトをつかって<a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>のようにシームレスに処理できる。</p>
 <script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=stream.json"></script>
 
-<h2 id="u30D5_u30A1_u30A4_u30EB_u76E3_u8996"><a href="#u30D5_u30A1_u30A4_u30EB_u76E3_u8996" class="headerlink" title="ファイル監視"></a>ファイル監視</h2><p>ファイル監視は<a href="https://www.npmjs.com/package/watch" target="_blank" rel="external">watch</a>や<a href="http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/" target="_blank" rel="external">nodemon</a>などを使う。</p>
+<h2 id="ファイル監視"><a href="#ファイル監視" class="headerlink" title="ファイル監視"></a>ファイル監視</h2><p>ファイル監視は<a href="https://www.npmjs.com/package/watch" target="_blank" rel="external">watch</a>や<a href="http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/" target="_blank" rel="external">nodemon</a>などを使う。</p>
 <script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=watch.json"></script>
 
 <p>フロントエンドのビルドツールは<a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>や<a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>、<a href="http://webpack.github.io/" target="_blank" rel="external">webpack</a>を使う規模でなければnpmだけでもいけそう。</p>
@@ -268,11 +268,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -101,7 +101,7 @@ ga('send', 'pageview');
     </div>
     
       <p>Railsで開発するときにUIの実装時にIE8あたりで困ることないように備忘録としてまとめておく。<br><a id="more"></a></p>
-<h4 id="IE9_u307E_u3067_u306F_u30D5_u30A1_u30A4_u30EB_u306E_u8AAD_u307F_u8FBC_u307F_u9650_u754C_u5024_u306B_u6C17_u3092_u3064_u3051_u308B_u3002"><a href="#IE9_u307E_u3067_u306F_u30D5_u30A1_u30A4_u30EB_u306E_u8AAD_u307F_u8FBC_u307F_u9650_u754C_u5024_u306B_u6C17_u3092_u3064_u3051_u308B_u3002" class="headerlink" title="IE9まではファイルの読み込み限界値に気をつける。"></a><strong>IE9まではファイルの読み込み限界値に気をつける。</strong></h4><p>IEだけなぜかCSSが適用されないとき、IEの以下の仕様が原因。<br>IE9までは </p>
+<h4 id="IE9まではファイルの読み込み限界値に気をつける。"><a href="#IE9まではファイルの読み込み限界値に気をつける。" class="headerlink" title="IE9まではファイルの読み込み限界値に気をつける。"></a><strong>IE9まではファイルの読み込み限界値に気をつける。</strong></h4><p>IEだけなぜかCSSが適用されないとき、IEの以下の仕様が原因。<br>IE9までは </p>
 <ul>
 <li>1スタイルシートにルールは4095まで</li>
 <li>1スタイルシートに @importは31個まで</li>
@@ -115,7 +115,7 @@ ga('send', 'pageview');
 <p>回避策として、</p>
 <p><yourappdir>/config/environments/development.rb の設定を変更<br>[ruby]<br>config.assets.debug = true<br>[/ruby]<br>してやることで、Sprocketsがファイルを連結するので回避できるかもしれない。</yourappdir></p>
 <hr>
-<h4 id="IE9_u307E_u3067_u306F1_u30D5_u30A1_u30A4_u30EB_u3042_u305F_u308A_u306Ecss_u306E_u30BB_u30EC_u30AF_u30BF_u30FC_u6570_u306E_u9650_u754C_u5024_u306B_u6C17_u3092_u3064_u3051_u308B_u3002"><a href="#IE9_u307E_u3067_u306F1_u30D5_u30A1_u30A4_u30EB_u3042_u305F_u308A_u306Ecss_u306E_u30BB_u30EC_u30AF_u30BF_u30FC_u6570_u306E_u9650_u754C_u5024_u306B_u6C17_u3092_u3064_u3051_u308B_u3002" class="headerlink" title="IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。"></a><strong>IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。</strong></h4><p>ファイル数の上限にあたらなくても、上記の通り１ファイルあたりのセレクターの限界値を超えるとCSSが無視されます。<br>4095ルールが原因の場合は、cssのリファクタリングを行うことや、<br>Asset Pipelineでファイルを別々にプリコンパイルする必要があります。</p>
+<h4 id="IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。"><a href="#IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。" class="headerlink" title="IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。"></a><strong>IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。</strong></h4><p>ファイル数の上限にあたらなくても、上記の通り１ファイルあたりのセレクターの限界値を超えるとCSSが無視されます。<br>4095ルールが原因の場合は、cssのリファクタリングを行うことや、<br>Asset Pipelineでファイルを別々にプリコンパイルする必要があります。</p>
 <p>別々にプリコンパイルするには</p>
 <p><yourappdir>/config/environments/production.rb の設定を<br>[ruby]<br>config.assets.precompile += %w( hoge.css fuga.css )<br>[/ruby]<br>としてやることで、application.cssのほかにhoge.cssやhuga.cssで指定したファイルをプリコンパイルできます。<br>(hoge.cssやfuga.cssは CSS manifest file です)</yourappdir></p>
 <p>あとは、viewファイルで</p>
@@ -123,7 +123,7 @@ ga('send', 'pageview');
 <p>として、読込みます。</p>
 <p>このほかにも、<a href="http://blesscss.com/" target="_blank" rel="external">Bless</a>を使うことで、CSSを分割できます。<br>この場合は@importでcssファイルを読込むようになります。</p>
 <hr>
-<h4 id="CSS3_u3092_u4F7F_u3044_u305F_u3044_u3068_u304D_u306FCompass_u306ECSS3_Pie_u3092_u4F7F_u3046_u3068_u4FBF_u5229"><a href="#CSS3_u3092_u4F7F_u3044_u305F_u3044_u3068_u304D_u306FCompass_u306ECSS3_Pie_u3092_u4F7F_u3046_u3068_u4FBF_u5229" class="headerlink" title="CSS3を使いたいときはCompassのCSS3 Pieを使うと便利"></a><strong>CSS3を使いたいときはCompassのCSS3 Pieを使うと便利</strong></h4><p>CSS3を使うことが多いのですが、IE9以下だとつかえなことも多い。そんなときに<a href="http://compass-style.org/reference/compass/css3/pie/" target="_blank" rel="external">Comass CSS3 Pie</a>を使って回避すると便利。<br>Comass CSS3 Pieを使うとIEでも</p>
+<h4 id="CSS3を使いたいときはCompassのCSS3-Pieを使うと便利"><a href="#CSS3を使いたいときはCompassのCSS3-Pieを使うと便利" class="headerlink" title="CSS3を使いたいときはCompassのCSS3 Pieを使うと便利"></a><strong>CSS3を使いたいときはCompassのCSS3 Pieを使うと便利</strong></h4><p>CSS3を使うことが多いのですが、IE9以下だとつかえなことも多い。そんなときに<a href="http://compass-style.org/reference/compass/css3/pie/" target="_blank" rel="external">Comass CSS3 Pie</a>を使って回避すると便利。<br>Comass CSS3 Pieを使うとIEでも</p>
 <ul>
 <li>border-radius</li>
 <li>box-shadow</li>
@@ -258,11 +258,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

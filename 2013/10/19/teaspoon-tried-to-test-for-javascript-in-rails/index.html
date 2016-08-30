@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -139,7 +139,7 @@ create  spec/javascripts/spec_helper.js
 <p>これで基本的なファイルなどまとめて設定、作成される。</p>
 <p>teaspoonの設定は initializers/teaspoon.rb で変更できます。<br>基本は以下になっている。<br>[ruby]<br>Teaspoon.setup do |config|<br>  config.mount_at = &quot;/teaspoon&quot;<br>  config.root = nil<br>  config.asset_paths = [&quot;spec/javascripts&quot;, &quot;spec/javascripts/stylesheets&quot;]<br>  config.fixture_path = &quot;spec/javascripts/fixtures&quot;<br>  config.suite do |suite|<br>    suite.matcher = &quot;{spec/javascripts,app/assets}/<em>*/</em>_spec.{js,js.coffee,coffee}&quot;<br>    suite.helper = &quot;spec_helper&quot;<br>    suite.javascripts = [&quot;teaspoon-jasmine&quot;]<br>    suite.stylesheets = [&quot;teaspoon&quot;]<br>    suite.no_coverage = [%r{/lib/ruby/gems/}, %r{/vendor/assets/}, %r{/support/}, %r{/(.+)_helper.}]<br>  end<br>end if defined?(Teaspoon) &amp;&amp; Teaspoon.respond_to?(:setup)<br>[/ruby]</p>
 <p>またTest Runnerの設定は spec/teaspoon_env.rb で行います。<br>基本設定は<br>[ruby]<br>ENV[&quot;RAILS_ROOT&quot;] = File.expand_path(&quot;../../&quot;, <strong>FILE</strong>)<br>require File.expand_path(&quot;../../config/environment&quot;, <strong>FILE</strong>)<br>Teaspoon.setup do |config|</p>
-<h1 id="Driver_/_Server"><a href="#Driver_/_Server" class="headerlink" title="Driver / Server"></a>Driver / Server</h1><p>  config.driver              = &quot;phantomjs&quot; # available: phantomjs, selenium</p>
+<h1 id="Driver-Server"><a href="#Driver-Server" class="headerlink" title="Driver / Server"></a>Driver / Server</h1><p>  config.driver              = &quot;phantomjs&quot; # available: phantomjs, selenium</p>
 <p>  #config.driver              = &quot;selenium&quot;</p>
 <p>  #config.server              = nil # defaults to Rack::Server</p>
 <h1 id="Behaviors"><a href="#Behaviors" class="headerlink" title="Behaviors"></a>Behaviors</h1><p>  #config.server_timeout      = 20 # timeout for starting the server</p>
@@ -148,13 +148,13 @@ create  spec/javascripts/spec_helper.js
 <h1 id="Output"><a href="#Output" class="headerlink" title="Output"></a>Output</h1><p>  #config.formatters          = &quot;dot&quot; # available: dot, tap, tap_y, swayze_or_oprah</p>
 <p>  #config.suppress_log        = false # suppress logs coming from console[log/error/debug]</p>
 <p>  #config.color               = true</p>
-<h1 id="Driver_Options"><a href="#Driver_Options" class="headerlink" title="Driver Options"></a>Driver Options</h1><h1 id="config-driver_cli_options__3D__u2018_u2013ssl-protocol_3Dany_u2019"><a href="#config-driver_cli_options__3D__u2018_u2013ssl-protocol_3Dany_u2019" class="headerlink" title="config.driver_cli_options  = ‘–ssl-protocol=any’"></a>config.driver_cli_options  = ‘–ssl-protocol=any’</h1><h1 id="Coverage__28requires_istanbul__u2013_https_3A//github-com/gotwarlost/istanbul_29"><a href="#Coverage__28requires_istanbul__u2013_https_3A//github-com/gotwarlost/istanbul_29" class="headerlink" title="Coverage (requires istanbul – https://github.com/gotwarlost/istanbul)"></a>Coverage (requires istanbul – <a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">https://github.com/gotwarlost/istanbul</a>)</h1><p>  #config.coverage            = true</p>
+<h1 id="Driver-Options"><a href="#Driver-Options" class="headerlink" title="Driver Options"></a>Driver Options</h1><h1 id="config-driver-cli-options-‘–ssl-protocol-any’"><a href="#config-driver-cli-options-‘–ssl-protocol-any’" class="headerlink" title="config.driver_cli_options  = ‘–ssl-protocol=any’"></a>config.driver_cli_options  = ‘–ssl-protocol=any’</h1><h1 id="Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul"><a href="#Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul" class="headerlink" title="Coverage (requires istanbul – https://github.com/gotwarlost/istanbul)"></a>Coverage (requires istanbul – <a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">https://github.com/gotwarlost/istanbul</a>)</h1><p>  #config.coverage            = true</p>
 <p>  #config.coverage_reports    = &quot;text,html,cobertura&quot;</p>
 <p>  #config.coverage_output_dir = &quot;coverage&quot;<br>end<br>[/ruby]</p>
 <p>テストはconsole<br>[shell]<br>$ bundle exec teaspoon<br>[/shell]<br>または <a href="http://localhost:3000/teaspoon" target="_blank" rel="external">http://localhost:3000/teaspoon</a> でブラウザから実行が可能。</p>
 <p>Coverageレポートは <a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">Istanbul</a>を使用するので別途インストールする必要があります。<br>[shell]<br>$ npm install -g istanbul<br>[/shell]</p>
 <p>teaspoon_env.rbの設定を変更して<br>[ruby]</p>
-<h1 id="Coverage__28requires_istanbul__u2013_https_3A//github-com/gotwarlost/istanbul_29-1"><a href="#Coverage__28requires_istanbul__u2013_https_3A//github-com/gotwarlost/istanbul_29-1" class="headerlink" title="Coverage (requires istanbul – https://github.com/gotwarlost/istanbul)"></a>Coverage (requires istanbul – <a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">https://github.com/gotwarlost/istanbul</a>)</h1><p>  config.coverage            = true<br>  config.coverage_reports    = &quot;text,html,cobertura&quot;<br>  config.coverage_output_dir = &quot;coverage&quot;</p>
+<h1 id="Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul-1"><a href="#Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul-1" class="headerlink" title="Coverage (requires istanbul – https://github.com/gotwarlost/istanbul)"></a>Coverage (requires istanbul – <a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">https://github.com/gotwarlost/istanbul</a>)</h1><p>  config.coverage            = true<br>  config.coverage_reports    = &quot;text,html,cobertura&quot;<br>  config.coverage_output_dir = &quot;coverage&quot;</p>
 <p>[/ruby]</p>
 <p>これでCoverageレポートが出力されます。</p>
 <p>[shell]</p>
@@ -292,11 +292,11 @@ create  spec/javascripts/spec_helper.js
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

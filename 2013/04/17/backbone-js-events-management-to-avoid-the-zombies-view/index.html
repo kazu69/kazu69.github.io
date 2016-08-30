@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -101,12 +101,12 @@ ga('send', 'pageview');
     </div>
     
       <p><a href="http://lostechies.com/derickbailey/2011/09/15/zombies-run-managing-page-transitions-in-backbone-apps/" target="_blank" rel="external">Backbone.js</a>のイベントの管理についての個人的なメモ。<br><a id="more"></a></p>
-<h2 id="u30A4_u30D9_u30F3_u30C8_u306E_u7BA1_u7406"><a href="#u30A4_u30D9_u30F3_u30C8_u306E_u7BA1_u7406" class="headerlink" title="イベントの管理"></a>イベントの管理</h2><p>画面遷移しないアプリなどでは、Backbone.jsではviewオブジェクトにbindしたイベントを自前管理することが重要になる。<br>viewオブジェクトはそれぞれが独立しつつも、相互バインドしあう関係であることが理想的。</p>
+<h2 id="イベントの管理"><a href="#イベントの管理" class="headerlink" title="イベントの管理"></a>イベントの管理</h2><p>画面遷移しないアプリなどでは、Backbone.jsではviewオブジェクトにbindしたイベントを自前管理することが重要になる。<br>viewオブジェクトはそれぞれが独立しつつも、相互バインドしあう関係であることが理想的。</p>
 <p>しかし、イベント管理がうまくいっていないと、削除したはずなのに再び生成されるゾンビのようなviewが残ることになる。<br>この辺りをふまえて、個人的なやり方をメモ。</p>
 <p>まずは基礎となるviewのclass</p>
 <p>[ruby]<br>class Animal extends Backbone.Views</p>
-<h1 id="u7D99_u627F_u3059_u308Bclass_u9593_u3067_u30A4_u30D9_u30F3_u30C8_u3092_u96C6_u7D04_u3059_u308B_u30D7_u30ED_u30D1_u30C6_u30A3"><a href="#u7D99_u627F_u3059_u308Bclass_u9593_u3067_u30A4_u30D9_u30F3_u30C8_u3092_u96C6_u7D04_u3059_u308B_u30D7_u30ED_u30D1_u30C6_u30A3" class="headerlink" title="継承するclass間でイベントを集約するプロパティ"></a>継承するclass間でイベントを集約するプロパティ</h1><p>  vent: _.extend {}, Backbone.Events</p>
-<h1 id="u81EA_u524D_u3067_u30A4_u30D9_u30F3_u30C8_u3092_u89E3_u9664_u3059_u308B_u30E1_u30BD_u30C3_u30C9"><a href="#u81EA_u524D_u3067_u30A4_u30D9_u30F3_u30C8_u3092_u89E3_u9664_u3059_u308B_u30E1_u30BD_u30C3_u30C9" class="headerlink" title="自前でイベントを解除するメソッド"></a>自前でイベントを解除するメソッド</h1><p>  close: -&gt;<br>    @model.off null, null, this if @model &amp;&amp; @model.off<br>    @collection.off null, null, this if @collection &amp;&amp; @collection.off<br>    @vent.off()<br>    @undelegateEvents()<br>[/ruby]</p>
+<h1 id="継承するclass間でイベントを集約するプロパティ"><a href="#継承するclass間でイベントを集約するプロパティ" class="headerlink" title="継承するclass間でイベントを集約するプロパティ"></a>継承するclass間でイベントを集約するプロパティ</h1><p>  vent: _.extend {}, Backbone.Events</p>
+<h1 id="自前でイベントを解除するメソッド"><a href="#自前でイベントを解除するメソッド" class="headerlink" title="自前でイベントを解除するメソッド"></a>自前でイベントを解除するメソッド</h1><p>  close: -&gt;<br>    @model.off null, null, this if @model &amp;&amp; @model.off<br>    @collection.off null, null, this if @collection &amp;&amp; @collection.off<br>    @vent.off()<br>    @undelegateEvents()<br>[/ruby]</p>
 <p>上記のclassを継承したclass同士はventプロパティを通じてイベント相互作用する。<br>これにより、直接viewオブジェクト同士が参照を持つことなくイベント駆動でそれぞれのイベントを発火することができる。</p>
 <p>また、不要になったviewを削除する場合は、viewが参照しているmodelやcollectionのほかにバインドしているイベントも削除することが重要。</p>
 <p>ちなみにBackbone.jsではイベントのバインド関連はのメソッドは以下になる。</p>
@@ -116,12 +116,12 @@ ga('send', 'pageview');
 <li>listenTo / stopListening</li>
 <li>once, listenToOnce (一度だけイベントにバインド)</li>
 </ul>
-<h2 id="u30E1_u30E2_u30EA_u30FC_u30FB_u30EA_u30FC_u30AF_u306E_u539F_u56E0"><a href="#u30E1_u30E2_u30EA_u30FC_u30FB_u30EA_u30FC_u30AF_u306E_u539F_u56E0" class="headerlink" title="メモリー・リークの原因"></a>メモリー・リークの原因</h2><p>JavaScriptではどこからも参照されていないオブジェクトはガーベッジ・コレクションによって回収さて、メモリーは解放される仕様なので、viewオブジェクトがメモリ上から削除されないでゾンビのように生き返るのはそのオブジェクトへの参照が有効になっているのが原因。</p>
-<h2 id="u30E1_u30E2_u30EA_u30FC_u30FB_u30EA_u30FC_u30AF_u3059_u308Bview"><a href="#u30E1_u30E2_u30EA_u30FC_u30FB_u30EA_u30FC_u30AF_u3059_u308Bview" class="headerlink" title="メモリー・リークするview"></a>メモリー・リークするview</h2><p>たとえば参照を残したままの状態では</p>
+<h2 id="メモリー・リークの原因"><a href="#メモリー・リークの原因" class="headerlink" title="メモリー・リークの原因"></a>メモリー・リークの原因</h2><p>JavaScriptではどこからも参照されていないオブジェクトはガーベッジ・コレクションによって回収さて、メモリーは解放される仕様なので、viewオブジェクトがメモリ上から削除されないでゾンビのように生き返るのはそのオブジェクトへの参照が有効になっているのが原因。</p>
+<h2 id="メモリー・リークするview"><a href="#メモリー・リークするview" class="headerlink" title="メモリー・リークするview"></a>メモリー・リークするview</h2><p>たとえば参照を残したままの状態では</p>
 <iframe width="100%" height="300" src="http://jsfiddle.net/kazu69/bajgY/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
 <p>変数zombieにnullを代入しても、deleteしても、イベントが発火する。<br>これは変数zombie(windowのプロパティ)は削除されたが(オブジェクトへの参照が削除されただけ)、ventプロパティの参照が残っているためメモリから削除されず、イベントの発火とともに蘇ることになる。</p>
-<h2 id="class_u7D99_u627F_u3068_u76F8_u4E92_u30D0_u30A4_u30F3_u30C9"><a href="#class_u7D99_u627F_u3068_u76F8_u4E92_u30D0_u30A4_u30F3_u30C9" class="headerlink" title="class継承と相互バインド"></a>class継承と相互バインド</h2><p>ということで、Baseのclassを継承したview classを作成して、それぞれでイベントやり取りする。<br>さらに自前のイベント削除機能で奇麗に削除する。</p>
+<h2 id="class継承と相互バインド"><a href="#class継承と相互バインド" class="headerlink" title="class継承と相互バインド"></a>class継承と相互バインド</h2><p>ということで、Baseのclassを継承したview classを作成して、それぞれでイベントやり取りする。<br>さらに自前のイベント削除機能で奇麗に削除する。</p>
 <p>[ruby]<br>class Animal extends Backbone.View<br>  vent: _.extend {}, Backbone.Events</p>
 <p>  close: -&gt;<br>    @model.off null, null, this if @model &amp;&amp; @model.off<br>    @collection.off null, null, this if @collection &amp;&amp; @collection.off<br>    @vent.off()<br>    @undelegateEvents()</p>
 <p>class Cat extends Animal<br>  initialize: -&gt;</p>
@@ -141,7 +141,7 @@ super
 <iframe width="100%" height="300" src="http://jsfiddle.net/kazu69/j7qWm/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
 <p>close メソッドを自前で用意して、イベントのbindを管理することにより特定のviewオブジェクトのイベントの参照をきちんと削除することで、ゾンビの様なviewを発生しないようにできている。</p>
-<h2 id="class_u7D99_u627F_u6642_u306E_u30B3_u30C4"><a href="#class_u7D99_u627F_u6642_u306E_u30B3_u30C4" class="headerlink" title="class継承時のコツ"></a>class継承時のコツ</h2><p>class継承したときに、backbone.jsの場合は constractorの<strong>super</strong> をたどって継承もと(スーパークラス)にアクセスできる。(プロトタイプチェーンが<strong>proto</strong>をたどる様な感じ)<br><a href="http://coffeescript.org/" target="_blank" rel="external">coffeescript</a>だと super() メソッドを使うことでと継承元クラス(スーパークラス)の同名メソッドを呼べるので、これを利用することでメソッドを拡張できる。</p>
+<h2 id="class継承時のコツ"><a href="#class継承時のコツ" class="headerlink" title="class継承時のコツ"></a>class継承時のコツ</h2><p>class継承したときに、backbone.jsの場合は constractorの<strong>super</strong> をたどって継承もと(スーパークラス)にアクセスできる。(プロトタイプチェーンが<strong>proto</strong>をたどる様な感じ)<br><a href="http://coffeescript.org/" target="_blank" rel="external">coffeescript</a>だと super() メソッドを使うことでと継承元クラス(スーパークラス)の同名メソッドを呼べるので、これを利用することでメソッドを拡張できる。</p>
 <p>また、functionオブジェクトはsuperメソッドで継承、拡張できるが、プロパティは継承できずに上書きされる。<br>そこでプロパティに関しては、継承元(スーパークラス)のプロトタイプをたどって、<a href="http://documentcloud.github.io/underscore/" target="_blank" rel="external">underscore.js</a>のextendメソッドで拡張している。</p>
 <p>[ruby]<br>class Dog extends Animal</p>
 <p>  initialize: -&gt;</p>
@@ -277,11 +277,11 @@ super
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

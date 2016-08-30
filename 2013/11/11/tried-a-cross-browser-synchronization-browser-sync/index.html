@@ -25,7 +25,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -116,10 +116,10 @@ ga('send', 'pageview');
 </ul>
 <p>がある。<br>ファイルの変更はsocket.ioを使用してブラウザに通知され、IEでも問題なく利用できた。(VM環境のIE)</p>
 <p>gruntを利用している場合、 <a href="https://github.com/shakyshane/grunt-browser-sync" target="_blank" rel="external">grunt-browser-sync</a>を利用することで既存の環境に導入することも容易だった。</p>
-<h2 id="u30A4_u30F3_u30B9_u30C8_u30FC_u30EB"><a href="#u30A4_u30F3_u30B9_u30C8_u30FC_u30EB" class="headerlink" title="インストール"></a>インストール</h2><p>[shell]</p>
+<h2 id="インストール"><a href="#インストール" class="headerlink" title="インストール"></a>インストール</h2><p>[shell]</p>
 <h1 id="install"><a href="#install" class="headerlink" title="install"></a>install</h1><p>$ npm install grunt-browser-sync –save-dev<br>[/shell]</p>
 <p>[javascript]<br>// add Gruntfile.js<br>grunt.loadNpmTasks(‘grunt-browser-sync’)<br>[/javascript]</p>
-<h2 id="u8A2D_u5B9A"><a href="#u8A2D_u5B9A" class="headerlink" title="設定"></a>設定</h2><p>最小の設定でlivereloadできる。<br>Gruntfileにタスクを追加<br>[ruby]<br>browser_sync:<br>  files:<br>    src: [<br>      ‘app/css/*.css’<br>    ]<br>[/ruby]</p>
+<h2 id="設定"><a href="#設定" class="headerlink" title="設定"></a>設定</h2><p>最小の設定でlivereloadできる。<br>Gruntfileにタスクを追加<br>[ruby]<br>browser_sync:<br>  files:<br>    src: [<br>      ‘app/css/*.css’<br>    ]<br>[/ruby]</p>
 <p>[shell]<br>browser-sync  grunt browser_sync<br>Running &quot;browser_sync:files&quot; (browser_sync) task<br>   info  - socket.io started</p>
 <p>All Set Up! Now copy &amp; paste this snippet just before the closing &lt;/body&gt; tag in your website.</p>
 <p>&lt;script src=’<a href="http://192.168.0.5:3000/socket.io/socket.io.js&#39;&gt;&lt;/script&amp;gt" target="_blank" rel="external">http://192.168.0.5:3000/socket.io/socket.io.js&#39;&gt;&lt;/script&amp;gt</a>;<br>&lt;script src=’<a href="http://192.168.0.5:3001/browser-sync-client.min.js&#39;&gt;&lt;/script&amp;gt" target="_blank" rel="external">http://192.168.0.5:3001/browser-sync-client.min.js&#39;&gt;&lt;/script&amp;gt</a>;</p>
@@ -267,11 +267,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

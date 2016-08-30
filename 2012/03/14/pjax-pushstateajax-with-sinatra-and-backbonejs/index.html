@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -132,7 +132,7 @@ $(window).bind(&amp;quot;popstate&amp;quot;, function(e){
         if(&#39;/&#39; !== id) $(&#39;#content&#39;).load(id);
 });
 [/sourcecode]</code></p>
-<p>backbornjsはURLのhash値を監視してルーティングしてるので、<a href="/#hoge/moge">pjax</a>の用にしないといけないのですが、URLを奇麗にしたかったので以下のように<br>URLを分解してます。</p>
+<p>backbornjsはURLのhash値を監視してルーティングしてるので、<a href="#hoge/moge">pjax</a>の用にしないといけないのですが、URLを奇麗にしたかったので以下のように<br>URLを分解してます。</p>
 <p><code>[sourcecode language=&quot;javascript&quot;]
 $(&#39;a&#39;).bind(&#39;click&#39;, function (e) {
      e.preventDefault();
@@ -263,11 +263,11 @@ $(&#39;a&#39;).bind(&#39;click&#39;, function (e) {
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>

@@ -22,7 +22,7 @@
     <link rel="icon" href="/favicon.png">
   
   <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
   
 <!-- Google Analytics -->
 <script type="text/javascript">
@@ -101,40 +101,40 @@ ga('send', 'pageview');
     </div>
     
       <p>時間ができたので、<a href="https://github.com/sass/sass/blob/stable/doc-src/SASS_CHANGELOG.md#340-18-august-2014" target="_blank" rel="external">sass changelog</a>眺めて、あまり実例が思い浮かばないのもあるけど、一通り試してみたときの備忘録。<br><a id="more"></a></p>
-<h2 id="parent_selector_28_26amp_3B_29__u306B_u95A2_u3057_u3066"><a href="#parent_selector_28_26amp_3B_29__u306B_u95A2_u3057_u3066" class="headerlink" title="parent selector(&amp;) に関して"></a>parent selector(&amp;) に関して</h2><script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=parent-selector.scss"></script>
+<h2 id="parent-selector-amp-に関して"><a href="#parent-selector-amp-に関して" class="headerlink" title="parent selector(&amp;) に関して"></a>parent selector(&amp;) に関して</h2><script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=parent-selector.scss"></script>
 
-<h3 id="unquote_u306A_u30EA_u30B9_u30C8_u3092_u8FD4_u5374_u3059_u308B_u3088_u3046_u306B_u306A_u3063_u305F"><a href="#unquote_u306A_u30EA_u30B9_u30C8_u3092_u8FD4_u5374_u3059_u308B_u3088_u3046_u306B_u306A_u3063_u305F" class="headerlink" title="unquoteなリストを返却するようになった"></a>unquoteなリストを返却するようになった</h3><p>3.3 ではエラーになっていたけど、</p>
+<h3 id="unquoteなリストを返却するようになった"><a href="#unquoteなリストを返却するようになった" class="headerlink" title="unquoteなリストを返却するようになった"></a>unquoteなリストを返却するようになった</h3><p>3.3 ではエラーになっていたけど、</p>
 <p>bemっぽことを意識して、以下のようにもできる。</p>
 <script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=parent-selector2.scss"></script>
 
-<h3 id="u8A72_u5F53_u306E_u89AA_u30BB_u30EC_u30AF_u30BF_u304C_u306A_u3044_u5834_u5408_null_u3092_u8FD4_u3059_u3088_u3046_u306B_u3082_u306A_u3063_u305F"><a href="#u8A72_u5F53_u306E_u89AA_u30BB_u30EC_u30AF_u30BF_u304C_u306A_u3044_u5834_u5408_null_u3092_u8FD4_u3059_u3088_u3046_u306B_u3082_u306A_u3063_u305F" class="headerlink" title="該当の親セレクタがない場合 nullを返すようにもなった"></a>該当の親セレクタがない場合 nullを返すようにもなった</h3><p>3.3ではエラーでしたが、可能になった。</p>
+<h3 id="該当の親セレクタがない場合-nullを返すようにもなった"><a href="#該当の親セレクタがない場合-nullを返すようにもなった" class="headerlink" title="該当の親セレクタがない場合 nullを返すようにもなった"></a>該当の親セレクタがない場合 nullを返すようにもなった</h3><p>3.3ではエラーでしたが、可能になった。</p>
 <script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=parent-selector3.scss"></script>
 
-<h2 id="u8FFD_u52A0_u3055_u308C_u305Fselector_function"><a href="#u8FFD_u52A0_u3055_u308C_u305Fselector_function" class="headerlink" title="追加されたselector function"></a>追加されたselector function</h2><h3 id="selector-nest_28_24selectors_u2026_29"><a href="#selector-nest_28_24selectors_u2026_29" class="headerlink" title="selector-nest($selectors…)"></a>selector-nest($selectors…)</h3><p>そのまんまselectorをネストさせる</p>
+<h2 id="追加されたselector-function"><a href="#追加されたselector-function" class="headerlink" title="追加されたselector function"></a>追加されたselector function</h2><h3 id="selector-nest-selectors…"><a href="#selector-nest-selectors…" class="headerlink" title="selector-nest($selectors…)"></a>selector-nest($selectors…)</h3><p>そのまんまselectorをネストさせる</p>
 <script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-nest.scss"></script>
 
-<h3 id="selector-append_28_24selectors_u2026_29"><a href="#selector-append_28_24selectors_u2026_29" class="headerlink" title="selector-append($selectors…)"></a>selector-append($selectors…)</h3><p>$selecorsのリスト順に追加していく</p>
+<h3 id="selector-append-selectors…"><a href="#selector-append-selectors…" class="headerlink" title="selector-append($selectors…)"></a>selector-append($selectors…)</h3><p>$selecorsのリスト順に追加していく</p>
 <script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-append.scss"></script>
 
 <p>また単純に順番に追加するだけなので、いかのようにもなる</p>
 <script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-append2.scss"></script>
 
-<h3 id="selector-extend_28_24selectors_2C__24extendee_2C__24extender_29"><a href="#selector-extend_28_24selectors_2C__24extendee_2C__24extender_29" class="headerlink" title="selector-extend($selectors, $extendee, $extender)"></a>selector-extend($selectors, $extendee, $extender)</h3><p>$selectorsはselectorリスト、<br>$extendeeはextendされるselector、<br>$extenderはextendするselector</p>
+<h3 id="selector-extend-selectors-extendee-extender"><a href="#selector-extend-selectors-extendee-extender" class="headerlink" title="selector-extend($selectors, $extendee, $extender)"></a>selector-extend($selectors, $extendee, $extender)</h3><p>$selectorsはselectorリスト、<br>$extendeeはextendされるselector、<br>$extenderはextendするselector</p>
 <script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-extend.scss"></script>
 
 <p>.showを継承もととして、.edit .content-areaが追加されたセレクターが返却されるっぽい。</p>
-<h3 id="selector-replace_28_24selector_2C__24original_2C__24replacement_29"><a href="#selector-replace_28_24selector_2C__24original_2C__24replacement_29" class="headerlink" title="selector-replace($selector, $original, $replacement)"></a>selector-replace($selector, $original, $replacement)</h3><p>これはそのまま、selectorの$originalを$replacementに置換</p>
+<h3 id="selector-replace-selector-original-replacement"><a href="#selector-replace-selector-original-replacement" class="headerlink" title="selector-replace($selector, $original, $replacement)"></a>selector-replace($selector, $original, $replacement)</h3><p>これはそのまま、selectorの$originalを$replacementに置換</p>
 <script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-replace.scss"></script>
 
-<h3 id="selector-unify_28_24selector1_2C__24selector2_29"><a href="#selector-unify_28_24selector1_2C__24selector2_29" class="headerlink" title="selector-unify($selector1, $selector2)"></a>selector-unify($selector1, $selector2)</h3><p>二つのセレクターの組み合わせたセレクターを返す。<br>selctor1とselector2からできる組み合わせをすべて返すので例えば</p>
+<h3 id="selector-unify-selector1-selector2"><a href="#selector-unify-selector1-selector2" class="headerlink" title="selector-unify($selector1, $selector2)"></a>selector-unify($selector1, $selector2)</h3><p>二つのセレクターの組み合わせたセレクターを返す。<br>selctor1とselector2からできる組み合わせをすべて返すので例えば</p>
 <script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-unify.scss"></script>
 
 <p>全パターンを返してくれる。パターン生成が楽になりそう。</p>
-<h3 id="is-superselector_28_24super_2C__24sub_29"><a href="#is-superselector_28_24super_2C__24sub_29" class="headerlink" title="is-superselector($super, $sub)"></a>is-superselector($super, $sub)</h3><p>$super が $sub の親要素かどうかを返してくれる</p>
+<h3 id="is-superselector-super-sub"><a href="#is-superselector-super-sub" class="headerlink" title="is-superselector($super, $sub)"></a>is-superselector($super, $sub)</h3><p>$super が $sub の親要素かどうかを返してくれる</p>
 <script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=is-superselector.scss"></script>
 
 <p>という具合にできるっぽい。これまでより柔軟に分岐できそう。</p>
-<h3 id="selector-parse_28_24selector_29"><a href="#selector-parse_28_24selector_29" class="headerlink" title="selector-parse($selector)"></a>selector-parse($selector)</h3><p>string型の変数から簡単にcssを生成できる。</p>
+<h3 id="selector-parse-selector"><a href="#selector-parse-selector" class="headerlink" title="selector-parse($selector)"></a>selector-parse($selector)</h3><p>string型の変数から簡単にcssを生成できる。</p>
 <script src="https://gist.github.com/kazu69/592501113ed426297de8.js?file=selector-parse.scss"></script>
 
 <p>という感じ。実用例としていい感じのものが浮かばなかった。<br><a href="http://qiita.com/kazu69/items/45b707d5e05c6b6bd259" target="_blank" rel="external">qiita</a>に投稿した。</p>
@@ -262,11 +262,11 @@ ga('send', 'pageview');
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/script.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
 
 </body>
 </html>
