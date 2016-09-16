@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Supportsルールを使って未来のcssプロパティに備えた開発 | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="css3で追加された機能クエリ@supportsを使うことで、将来のcssプロパティで実装しつつ、一昔前のブラウザもサポートする感じで実装することができる。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Supportsルールを使って未来のcssプロパティに備えた開発">
+<meta property="og:url" content="http://blog.kazu69.net/2016/09/14/using-at-rule-supports-development-with-css-property-of-future/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="css3で追加された機能クエリ@supportsを使うことで、将来のcssプロパティで実装しつつ、一昔前のブラウザもサポートする感じで実装することができる。">
+<meta property="og:updated_time" content="2016-09-16T14:58:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Supportsルールを使って未来のcssプロパティに備えた開発">
+<meta name="twitter:description" content="css3で追加された機能クエリ@supportsを使うことで、将来のcssプロパティで実装しつつ、一昔前のブラウザもサポートする感じで実装することができる。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-using-at-rule-supports-development-with-css-property-of-future" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Supportsルールを使って未来のcssプロパティに備えた開発
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2016-09-14T14:02:00.000Z" itemprop="datePublished">2016-09-14</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/css/">css</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>css3で追加された機能クエリ<a href="https://www.w3.org/TR/css3-conditional/#at-supports" target="_blank" rel="external">@supports</a>を使うことで、将来のcssプロパティで実装しつつ、<br>一昔前のブラウザもサポートする感じで実装することができる。</p>
+<a id="more"></a>
+<h2 id="supports-とは"><a href="#supports-とは" class="headerlink" title="@supports とは"></a>@supports とは</h2><p>与えられた条件はユーザーエージェントのCSSでサポートされているかをネイティブメソッドを使ってテストするルール。<br>一部ブラウザでは2012あたりから対応されている機能。</p>
+<p>Progressive Enhancement(プログレッシブ・エンハンスメント)といわれる開発思想において、<br>ブラウザごとにcssプロパティの実装状況が異なるため、開発時に<a href="https://modernizr.com/" target="_blank" rel="external">Modernizr</a>などを使ってサポート状況ごとにスタイルの分岐をするという手法はこれまでもあった。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.no-cssgradients</span> <span class="selector-class">.header</span> &#123;</div><div class="line">    <span class="comment">/* gradients サポートしてない時のスタイル */</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.cssgradients</span> <span class="selector-class">.header</span> &#123;</div><div class="line">    <span class="comment">/* gradients サポートしている時のスタイル */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>これと同じことをネイティブのみでできるようなる感じなのが@supportsルール。<br>いわばネイティブなModernizrという感じになるだろうか。</p>
+<p>ちなみにブラウザサポート状況は<a href="http://caniuse.com/#search=Feature%20Queries" target="_blank" rel="external">http://caniuse.com/#feat=css-featurequeries</a>の通り。IEは未サポートです。</p>
+<h2 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h2><p>例として <strong>disokay: grid</strong> のサポートの有無で試してみる。<br>ちなみに <a href="https://www.w3.org/TR/css3-grid-layout/" target="_blank" rel="external">display: grid</a> はその名の通りグリッドレイアウトを行えるプロパティ。</p>
+<p><a href="http://caniuse.com/#search=grid" target="_blank" rel="external">ブラウザのサポート状況</a> はIE edgeのみである。<br>IE以外で表示すするならば</p>
+<table>
+<thead>
+<tr>
+<th>browser</th>
+<th>setting</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chrome(Canary)</td>
+<td>chrome://flags/#enable-experimental-web-platform-features を有効にする</td>
+</tr>
+<tr>
+<td>Firefox</td>
+<td>about:configからlayout.css.grid.enabled を有効にする</td>
+</tr>
+<tr>
+<td>Opera</td>
+<td>opera://flags/#enable-experimental-web-platform-features を有効にする</td>
+</tr>
+<tr>
+<td>WebKit(Nightky build)</td>
+<td>developのexternal featuresからcss grid を有効にする</td>
+</tr>
+</tbody>
+</table>
+<p>以下のコードを実行した時、display: grid のサポートしていれば<strong>背景色が#C00 </strong>のboxがグリッドレイアウトが表示されるはずである。</p>
+<p></p><p data-height="265" data-theme-id="0" data-slug-hash="dpXrEA" data-default-tab="css,result" data-user="kazu69" data-embed-version="2" class="codepen">See the Pen <a href="http://codepen.io/kazu69/pen/dpXrEA/" target="_blank" rel="external">@supports example</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p><p></p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
+
+<hr>
+<p>実際に使うとしたら以下のような感じ。<br>IEが@supportsを未サポートなのでfallbackしてやる。<br>あとは@supportディレクティブでスタイルを書いておけば良さそう。</p>
+<p>将来的には <strong>@support (true) </strong>な条件になると言う前提で書いておけば、<br>近い未来のcssプロパティに備ることができる。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* @supportsをサポートしないブラウザ向けのfallback */</span></div><div class="line"><span class="selector-class">.not-FUTURE-PROPERTIES</span> &#123;</div><div class="line">    <span class="comment">/* ... */</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* 未来のプロパティ未サポートの場合 */</span></div><div class="line"><span class="comment">/* 上記のfallbackとまとめられることもある */</span></div><div class="line">@<span class="keyword">supports</span> not (FUTURE-PROPERTIES) &#123;</div><div class="line">    <span class="comment">/* ... */</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* 未来のプロパティサポートの場合 */</span></div><div class="line">@<span class="keyword">supports</span> (FUTURE-PROPERTIES) &#123;</div><div class="line">    <span class="comment">/* ... */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="JavaScriptでの代替"><a href="#JavaScriptでの代替" class="headerlink" title="JavaScriptでの代替"></a>JavaScriptでの代替</h2><p>cssのサポートをJavaScriptで検知して何かするとしたら、<strong>CSS.supports()</strong>を使う。<br>今回のように display: grid の場合であるならば、ざっくりだけど</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> isGridSupport = () =&gt; &#123;</div><div class="line">    <span class="keyword">if</span>(<span class="built_in">window</span>.CSS) &#123;</div><div class="line">        <span class="keyword">return</span> CSS.supports(<span class="string">'display'</span>, <span class="string">'grid'</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">if</span>(isGridSupport()) &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Support display: grid'</span>);</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Not Support display: grid'</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>という感じかな。</p>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>まだまだModernizrの活躍にも期待しつつも、Web APIとしてCSS.supportsの実装が進んでるので、<br>@supportsを使って、近い将来のCSSプロパティに備える時期に来ているのではないだろうか。</p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://www.w3.org/TR/css3-conditional/#at-supports" target="_blank" rel="external">Feature queries: the ‘@supports’ rule</a><br><a href="https://developer.mozilla.org/ja/docs/Web/CSS/@supports" target="_blank" rel="external">@supports</a><br><a href="https://www.w3.org/TR/css3-grid-layout/" target="_blank" rel="external">CSS Grid Layout Module Level 1</a><br><a href="https://igalia.github.io/css-grid-layout/enable.html" target="_blank" rel="external">Enable CSS Grid Layout</a><br><a href="https://developer.mozilla.org/ja/docs/Web/API/CSS/supports" target="_blank" rel="external">CSS.supports()</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2016/09/14/using-at-rule-supports-development-with-css-property-of-future/" class="hatena-bookmark-button" data-hatena-bookmark-title="Supportsルールを使って未来のcssプロパティに備えた開発" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2016/09/14/using-at-rule-supports-development-with-css-property-of-future/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2016/09/10/protect-bypass-form-action-reflected-xss/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            form-actionを使ったCSPのXSS攻撃手法を学んだ
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2016 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2016/09/14/using-at-rule-supports-development-with-css-property-of-future/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>

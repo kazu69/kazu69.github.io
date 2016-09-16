@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.kazu69.net/"/>
-  <updated>2016-08-30T15:55:19.000Z</updated>
+  <updated>2016-09-16T14:58:31.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -16,11 +16,131 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Supportsルールを使って未来のcssプロパティに備えた開発</title>
+    <link href="http://blog.kazu69.net/2016/09/14/using-at-rule-supports-development-with-css-property-of-future/"/>
+    <id>http://blog.kazu69.net/2016/09/14/using-at-rule-supports-development-with-css-property-of-future/</id>
+    <published>2016-09-14T14:02:00.000Z</published>
+    <updated>2016-09-16T14:58:31.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>css3で追加された機能クエリ<a href="https://www.w3.org/TR/css3-conditional/#at-supports" target="_blank" rel="external">@supports</a>を使うことで、将来のcssプロパティで実装しつつ、<br>一昔前のブラウザもサポートする感じで実装することができる。</p>
+<a id="more"></a>
+<h2 id="supports-とは"><a href="#supports-とは" class="headerlink" title="@supports とは"></a>@supports とは</h2><p>与えられた条件はユーザーエージェントのCSSでサポートされているかをネイティブメソッドを使ってテストするルール。<br>一部ブラウザでは2012あたりから対応されている機能。</p>
+<p>Progressive Enhancement(プログレッシブ・エンハンスメント)といわれる開発思想において、<br>ブラウザごとにcssプロパティの実装状況が異なるため、開発時に<a href="https://modernizr.com/" target="_blank" rel="external">Modernizr</a>などを使ってサポート状況ごとにスタイルの分岐をするという手法はこれまでもあった。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.no-cssgradients</span> <span class="selector-class">.header</span> &#123;</div><div class="line">    <span class="comment">/* gradients サポートしてない時のスタイル */</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.cssgradients</span> <span class="selector-class">.header</span> &#123;</div><div class="line">    <span class="comment">/* gradients サポートしている時のスタイル */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>これと同じことをネイティブのみでできるようなる感じなのが@supportsルール。<br>いわばネイティブなModernizrという感じになるだろうか。</p>
+<p>ちなみにブラウザサポート状況は<a href="http://caniuse.com/#search=Feature%20Queries" target="_blank" rel="external">http://caniuse.com/#feat=css-featurequeries</a>の通り。IEは未サポートです。</p>
+<h2 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h2><p>例として <strong>disokay: grid</strong> のサポートの有無で試してみる。<br>ちなみに <a href="https://www.w3.org/TR/css3-grid-layout/" target="_blank" rel="external">display: grid</a> はその名の通りグリッドレイアウトを行えるプロパティ。</p>
+<p><a href="http://caniuse.com/#search=grid" target="_blank" rel="external">ブラウザのサポート状況</a> はIE edgeのみである。<br>IE以外で表示すするならば</p>
+<table>
+<thead>
+<tr>
+<th>browser</th>
+<th>setting</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chrome(Canary)</td>
+<td>chrome://flags/#enable-experimental-web-platform-features を有効にする</td>
+</tr>
+<tr>
+<td>Firefox</td>
+<td>about:configからlayout.css.grid.enabled を有効にする</td>
+</tr>
+<tr>
+<td>Opera</td>
+<td>opera://flags/#enable-experimental-web-platform-features を有効にする</td>
+</tr>
+<tr>
+<td>WebKit(Nightky build)</td>
+<td>developのexternal featuresからcss grid を有効にする</td>
+</tr>
+</tbody>
+</table>
+<p>以下のコードを実行した時、display: grid のサポートしていれば<strong>背景色が#C00 </strong>のboxがグリッドレイアウトが表示されるはずである。</p>
+<p></p><p data-height="265" data-theme-id="0" data-slug-hash="dpXrEA" data-default-tab="css,result" data-user="kazu69" data-embed-version="2" class="codepen">See the Pen <a href="http://codepen.io/kazu69/pen/dpXrEA/" target="_blank" rel="external">@supports example</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p><p></p>
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
+
+<hr>
+<p>実際に使うとしたら以下のような感じ。<br>IEが@supportsを未サポートなのでfallbackしてやる。<br>あとは@supportディレクティブでスタイルを書いておけば良さそう。</p>
+<p>将来的には <strong>@support (true) </strong>な条件になると言う前提で書いておけば、<br>近い未来のcssプロパティに備ることができる。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* @supportsをサポートしないブラウザ向けのfallback */</span></div><div class="line"><span class="selector-class">.not-FUTURE-PROPERTIES</span> &#123;</div><div class="line">    <span class="comment">/* ... */</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* 未来のプロパティ未サポートの場合 */</span></div><div class="line"><span class="comment">/* 上記のfallbackとまとめられることもある */</span></div><div class="line">@<span class="keyword">supports</span> not (FUTURE-PROPERTIES) &#123;</div><div class="line">    <span class="comment">/* ... */</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* 未来のプロパティサポートの場合 */</span></div><div class="line">@<span class="keyword">supports</span> (FUTURE-PROPERTIES) &#123;</div><div class="line">    <span class="comment">/* ... */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="JavaScriptでの代替"><a href="#JavaScriptでの代替" class="headerlink" title="JavaScriptでの代替"></a>JavaScriptでの代替</h2><p>cssのサポートをJavaScriptで検知して何かするとしたら、<strong>CSS.supports()</strong>を使う。<br>今回のように display: grid の場合であるならば、ざっくりだけど</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> isGridSupport = () =&gt; &#123;</div><div class="line">    <span class="keyword">if</span>(<span class="built_in">window</span>.CSS) &#123;</div><div class="line">        <span class="keyword">return</span> CSS.supports(<span class="string">'display'</span>, <span class="string">'grid'</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">if</span>(isGridSupport()) &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Support display: grid'</span>);</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Not Support display: grid'</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>という感じかな。</p>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>まだまだModernizrの活躍にも期待しつつも、Web APIとしてCSS.supportsの実装が進んでるので、<br>@supportsを使って、近い将来のCSSプロパティに備える時期に来ているのではないだろうか。</p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://www.w3.org/TR/css3-conditional/#at-supports" target="_blank" rel="external">Feature queries: the ‘@supports’ rule</a><br><a href="https://developer.mozilla.org/ja/docs/Web/CSS/@supports" target="_blank" rel="external">@supports</a><br><a href="https://www.w3.org/TR/css3-grid-layout/" target="_blank" rel="external">CSS Grid Layout Module Level 1</a><br><a href="https://igalia.github.io/css-grid-layout/enable.html" target="_blank" rel="external">Enable CSS Grid Layout</a><br><a href="https://developer.mozilla.org/ja/docs/Web/API/CSS/supports" target="_blank" rel="external">CSS.supports()</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;css3で追加された機能クエリ&lt;a href=&quot;https://www.w3.org/TR/css3-conditional/#at-supports&quot;&gt;@supports&lt;/a&gt;を使うことで、将来のcssプロパティで実装しつつ、&lt;br&gt;一昔前のブラウザもサポートする感じで実装することができる。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="css" scheme="http://blog.kazu69.net/categories/css/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>form-actionを使ったCSPのXSS攻撃手法を学んだ</title>
+    <link href="http://blog.kazu69.net/2016/09/10/protect-bypass-form-action-reflected-xss/"/>
+    <id>http://blog.kazu69.net/2016/09/10/protect-bypass-form-action-reflected-xss/</id>
+    <published>2016-09-09T16:23:00.000Z</published>
+    <updated>2016-09-16T14:52:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>XSS攻撃の検出と軽減手法として<a href="https://developer.mozilla.org/ja/docs/Web/Security/CSP" target="_blank" rel="external">CSP(Content Security Policy)</a>を設定することはよく取られている手法。<br>しかし、これは決して万全ではないということを改めて学んだ。</p>
+<a id="more"></a>
+<p>CSP(Content Security Policy)をでのXSSの事例を掲載している<a href="https://swehack.org/viewtopic.php?t=1504" target="_blank" rel="external">Bypassa CSP form-action och referrer</a>の記事が興味深かった。</p>
+<p><a href="https://developer.mozilla.org/ja/docs/Web/Security/CSP/Using_Content_Security_Policy" target="_blank" rel="external">CSP(Content Security Policy)</a>とはMDNにある通り</p>
+<blockquote>
+<p>Content Security Policy の設定とは、Web ページに対する Content-Security-Policy HTTP ヘッダの付加、またそのページ上でユーザエージェントが読み込むリソースを制限する値の設定に他なりません。</p>
+</blockquote>
+<p>ということで指定したポリシーに基づきリソースの取扱うため、XSS Injectionなどの攻撃を軽減できる。</p>
+<p>例えば form-action ディレクティブを設定することで許可する送信先を設定できる。</p>
+<p>次のようにcspを設定をしている場合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Content-Security-Policy:default-src &apos;self&apos;; form-action &apos;self&apos;; report-uri /csp-reports/</div></pre></td></tr></table></figure>
+<p>外部スクリプトを実行しようとすると、実行されないでレポートが送られる。<br>また、form-action ディレクティブを追加してももちろん、許可サイト以外へのPOSTは拒否される。<br>(default-srcは基本全ディレクティブに対して設定される)</p>
+<p>例えば、次のようなフォームの場合、送信先が許可されていないため送信できない。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">"POST"</span> <span class="attr">action</span>=<span class="string">"https://google.com/"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"csrftoken"</span> <span class="attr">value</span>=<span class="string">"randomcsrftoken"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"scubscribe"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>またレポート設定をしている場合は違反事象が報告される。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;&quot;csp-report&quot;=&gt;&#123;&quot;document-uri&quot;=&gt;&quot;http://localhost:4567/unsafe/&quot;, &quot;referrer&quot;=&gt;&quot;&quot;, &quot;violated-directive&quot;=&gt;&quot;form-action &apos;self&apos;&quot;, &quot;effective-directive&quot;=&gt;&quot;form-action&quot;, &quot;original-policy&quot;=&gt;&quot;default-src &apos;self&apos;; form-action &apos;self&apos;; report-uri /csp-reports/&quot;, &quot;blocked-uri&quot;=&gt;&quot;http://google.com&quot;, &quot;status-code&quot;=&gt;200&#125;&#125;</div></pre></td></tr></table></figure>
+<p>次のようにformタグがinjectionされた場合</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">”https://google.com/</span>"&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">"POST"</span> <span class="attr">action</span>=<span class="string">"/subscribe/"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"csrftoken"</span> <span class="attr">value</span>=<span class="string">"randomcsrftoken"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"scubscribe"</span>&gt;</span></div><div class="line">     <span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>このフォームがPOSTされるとフォームの内容がすべてGETされURLパラメータに渡される。<br>もちろんCSPのレポートにも報告される。</p>
+<p>このパラメーター付きのGETリクエストがリファラーに送られるとtokenなども任意のサイトに送ることが可能になる。<br>例えばフォームタグの出現前になにかしらの入力値を出力する箇所があり、そこからhtmlが注入できた場合、<br>(例としてはありえないけどGETで渡された値をそのまま出力している場合)</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/?xss=%3Cinput%20value%3D%22Click%20Me%22%20type%3D%22submit%22%20formaction%3D%22%22%20form%3D%22subscribe%22%20formmethod%3D%22get%22%20%2F%3E%3Cinput%20type%3D%22hidden%22%20value%3D%22%3Cmeta%20name%3D%27referrer%27%20content%3D%27always%27%3E%22%3E"</span>&gt;</span>XSS<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>上記のようなリンクを踏ませて、任意のsubmitボタンをページに注入する。<br>その場合のコードは以下のようになる。<br>(わかりやすくするために適宜改行を入れている)</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">value</span>=<span class="string">"Click Me"</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">formaction</span>=<span class="string">""</span> <span class="attr">form</span>=<span class="string">"subscribe"</span> <span class="attr">formmethod</span>=<span class="string">"get"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">value</span>=<span class="string">"&lt;meta name='referrer' content='always'&gt;"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"/subscribe/"</span> <span class="attr">id</span>=<span class="string">"subscribe"</span> <span class="attr">method</span>=<span class="string">"POST"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">"csrftoken"</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">value</span>=<span class="string">"randomcsrftoken"</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"scubscribe"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>inputタグにはhtml5から追加された<a href="https://www.w3.org/TR/html5/forms.html#attr-fae-form" target="_blank" rel="external">form属性</a>、<a href="https://www.w3.org/TR/html5/forms.html#attr-fs-formaction" target="_blank" rel="external">formaction属性</a>、<a href="https://www.w3.org/TR/html5/forms.html#attr-fs-formmethod" target="_blank" rel="external">formmethod属性</a>を使ってformをpostできるようにする。<br>また、リファラを送るようにメタタグを追加しているのがキモらしい。</p>
+<p>このボタンを押すことで、フォームの内容がリファラを通して任意のサイトに送られる。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Referer:http://YOURSITE.COM/?xss=%3Cinput%20value%3D%22Click%20Me%22%20type%3D%22submit%22%20formaction%3D%22%22%20form%3D%22subscribe%22%20formmethod%3D%22get%22%20%2F%3E%3Cinput%20type%3D%22hidden%22%20value%3D%22%3Cmeta%20name%3D%27referrer%27%20content%3D%27always%27%3E%22%3E</div></pre></td></tr></table></figure>
+<p>この手法はCSPでのレポートは報告されない。<br>攻撃手法がReflected XSS(反射型XSS)ということで、<a href="https://www.w3.org/TR/2012/WD-CSP11-20121213/#relationship-to-x-xss-protection" target="_blank" rel="external">X-XSS-Protection</a>を有効にしているとinjectionされたinputボタンは有効化しない。</p>
+<p>CSPである程度のXSSは軽減できると思っていたが、それなりに攻撃手法もあるものですね。<br>header周りのセキュリティも合わせて行うことが必要ということが身にしみる感じになる。</p>
+<p>ちなみにGitHubはこのあたりのことから、formタグの前にコメントを入れて少しでも軽減できるようにしているみたいです。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- &lt;/textarea&gt; --&gt;</span><span class="comment">&lt;!-- '"` --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">accept-charset</span>=<span class="string">"UTF-8"</span> <span class="attr">action</span>=<span class="string">"/kazu69/XXX/search"</span> <span class="attr">class</span>=<span class="string">"js-site-search-form"</span> <span class="attr">data-scoped-search-url</span>=<span class="string">"/kazu69/page-data-cli/search"</span> <span class="attr">data-unscoped-search-url</span>=<span class="string">"/search"</span> <span class="attr">method</span>=<span class="string">"get"</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>今回はSinatraで試しました。<a href="https://gist.github.com/kazu69/c0262196c49f4a8fdf3f7e9f3889ca41" target="_blank" rel="external">ソースはこちらにあります</a>。</p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://swehack.org/viewtopic.php?t=1504" target="_blank" rel="external">Bypassa CSP form-action och referrer</a><br><a href="https://labs.detectify.com/2016/04/04/csp-bypassing-form-action-with-reflected-xss/" target="_blank" rel="external">CSP: bypassing form-action with reflected XSS</a><br><a href="https://chloe.re/2016/07/19/protect-against-html-extraction/" target="_blank" rel="external">Protect against HTML-extraction</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;XSS攻撃の検出と軽減手法として&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/Security/CSP&quot;&gt;CSP(Content Security Policy)&lt;/a&gt;を設定することはよく取られている手法。&lt;br&gt;しかし、これは決して万全ではないということを改めて学んだ。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="web" scheme="http://blog.kazu69.net/categories/web/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>target=&quot;_blank&quot;を使った脆弱性Tabnabbingとその対策</title>
     <link href="http://blog.kazu69.net/2016/08/23/target-blank-vulnerability-tabnabbing-and-countermeasures/"/>
     <id>http://blog.kazu69.net/2016/08/23/target-blank-vulnerability-tabnabbing-and-countermeasures/</id>
     <published>2016-08-23T13:00:13.000Z</published>
-    <updated>2016-08-30T15:55:19.000Z</updated>
+    <updated>2016-09-11T07:43:55.000Z</updated>
     
     <content type="html"><![CDATA[<p><a href="https://mathiasbynens.github.io/rel-noopener/" target="_blank" rel="external">About rel=noopener</a>の記事を見て、フィッシング詐欺の手法Tabnabbing(タブナビング)について、<br>以前にそれっぽい記事読んだけど、すっかり忘れていた。</p>
 <p>改めて見直してみて、その内容と対策がまとまっていたのでおさらい。</p>
@@ -1937,85 +2057,6 @@
     </summary>
     
       <category term="ruby" scheme="http://blog.kazu69.net/categories/ruby/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>nginScriptを試してみた</title>
-    <link href="http://blog.kazu69.net/2015/10/18/tried-nginscript/"/>
-    <id>http://blog.kazu69.net/2015/10/18/tried-nginscript/</id>
-    <published>2015-10-18T14:40:20.000Z</published>
-    <updated>2015-10-26T16:01:32.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/" target="_blank" rel="external">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
-<p>これはリクエスト処理の実行時に評価され、特定のリクエストに対してnginxの内部処理をを調整することが可能になる。っぽい。</p>
-<p><a href="https://www.nginx.com/resources/wiki/modules/lua/" target="_blank" rel="external">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
-<a id="more"></a>
-<p><a href="https://www.nginx.com/resources/wiki/nginScript/" target="_blank" rel="external">nginScriptのwiki</a>を参考にDocker + docker-machineで簡単に試してみた。</p>
-<h2 id="install-and-build-nginx"><a href="#install-and-build-nginx" class="headerlink" title="install and build nginx"></a>install and build nginx</h2><p><a href="http://nginx.org/en/download.html" target="_blank" rel="external">nginx: download</a>から最新のバージョンを取得する。<br>またnginScriptはオプションとして提供されているので、<a href="http://hg.nginx.org/" target="_blank" rel="external">nginxのMercurial</a>から取得する必要がある。</p>
-<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=Dockerfile"></script>
-<p>これを適当な感じでbuild</p>
-<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=build.sh"></script>
-<h2 id="nginScript"><a href="#nginScript" class="headerlink" title="nginScript"></a>nginScript</h2><p>ちなみにnginx.confは以下のようになっている</p>
-<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=nginx.conf"></script>
-<h3 id="js-run"><a href="#js-run" class="headerlink" title="js_run"></a>js_run</h3><p>nginScriptはlocationごとに評価され、実行される。<br>locationディレクティブでnginScriptを利用する際はjs_run で実行する必要がある。</p>
-<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=js_run.sh"></script>
-<h3 id="js-set"><a href="#js-set" class="headerlink" title="js_set"></a>js_set</h3><p>また、JavaScriptを使い内部変数を定義することもできる。<br>その際はhttpディレクティブに設定を書く必要がある。</p>
-<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=js_set.sh"></script>
-<h3 id="r-リクエストオブジェクト"><a href="#r-リクエストオブジェクト" class="headerlink" title="$r(リクエストオブジェクト)"></a>$r(リクエストオブジェクト)</h3><p>その他、リクエストの内部変数として $rがJavaScriptオブジェクトとして利用できる。<br>$rはsendHeader(),send(),finish() というメソッドが現在のところ定義されており、これらを利用してレスポンスを返すことができる。</p>
-<h3 id="リクエストパラメータ"><a href="#リクエストパラメータ" class="headerlink" title="リクエストパラメータ"></a>リクエストパラメータ</h3><p>$r.args にJavaScriptのオブジェクトとして格納されている。</p>
-<p>nginScriptはECMA標準準拠というわけではないようだが、基本的なことはできそう。<br>適当な関数を定義して評価することや、カスタムヘッダーを追加することなどはできた。</p>
-<script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=function.sh"></script>
-<p>ということで、ほとんど<a href="http://hg.nginx.org/njs/file/tip/README" target="_blank" rel="external">Readme</a> をそのまま試したことになるけど、<br>いまのところlocationディレクティブにhookして、リクエスト、レスポンスをJavaScriptで操作できる位という感じだった。</p>
-<p>参考にしたページ<br><a href="https://www.nginx.com/resources/wiki/nginScript/" target="_blank" rel="external">nginx Wiki documentation</a><br><a href="http://hg.nginx.org/njs/file/11d4d66851ed/README?_ga=1.105907269.772607199.1445353842" target="_blank" rel="external">README</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;nginx上で動作するJavaScript仮想マシンである、&lt;a href=&quot;https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/&quot;&gt;nginScript&lt;/a&gt; なるものがリリースされた。&lt;br&gt;(まだプレビュー版とのことだが)&lt;/p&gt;
-&lt;p&gt;これはリクエスト処理の実行時に評価され、特定のリクエストに対してnginxの内部処理をを調整することが可能になる。っぽい。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://www.nginx.com/resources/wiki/modules/lua/&quot;&gt;Lua&lt;/a&gt;や&lt;a href=&quot;https://github.com/matsumoto-r/ngx_mruby&quot;&gt;ngx_mruby&lt;/a&gt;と同じような感じで使えるのようだ。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="nginx" scheme="http://blog.kazu69.net/categories/nginx/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Subresource Integrityについて調べた</title>
-    <link href="http://blog.kazu69.net/2015/10/01/check-for-subresource-integrity/"/>
-    <id>http://blog.kazu69.net/2015/10/01/check-for-subresource-integrity/</id>
-    <published>2015-10-01T13:34:16.000Z</published>
-    <updated>2015-10-13T15:24:22.000Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="http://githubengineering.com/subresource-integrity/" target="_blank" rel="external">Subresource Integrity</a> という記事をみて、<br>ちょっと興味深かったのでSubresource Integrityについて、軽く見てみた。</p>
-<a id="more"></a>
-<h2 id="Subresource-Integrityはどういうものか"><a href="#Subresource-Integrityはどういうものか" class="headerlink" title="Subresource Integrityはどういうものか"></a>Subresource Integrityはどういうものか</h2><p>おそらく、以下のようなもの。<br>ウェブアプリケーションでCDNをつかって、サブリソースを参照することは当たり前になっている。<br>しかし参照先のサブリソースが安全であるという保証はない。<br>もし、CDN経由で参照しているサブリソースが攻撃者により改変された場合、XSSの危険性が生じる。</p>
-<p>これは、サブリソースの整合性をチェックする仕組みを導入することで、危険を回避できる。<br>Subresource Integrityとは、サブリースをSHA256, SHA512などでハッシュ化して、linkタグやscriptタグにintegrity属性として付与することで、整合性を確認できるようにしたもの。<br>もし、integrity属性がある場合は、ブラウザは読み込み時に整合性をチェックして一致した場合にのみロードされる。</p>
-<h2 id="Subresource-Integrityを試す"><a href="#Subresource-Integrityを試す" class="headerlink" title="Subresource Integrityを試す"></a>Subresource Integrityを試す</h2><p><a href="https://developer.mozilla.org/ja/docs/Web/Security/Subresource_Integrity" target="_blank" rel="external">MDN Subresource Integrity</a>をみると<br>Chrome v45, Firefox v43 とのことだったので、Chrome Canaryで試した。</p>
-<p>まず適当なファイルをsha256でハッシュ化して、integrity属性の値を生成する。</p>
-<script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=create.sh"></script>
-<p>あとはscriptタグなりlinkタグなりにintegrity属性を付与する</p>
-<script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=index.html"></script>
-<p>ちなみにscriptタグに付与しているcrossorigin属性は「anonymous」キーワードが指定された場合、<br>リクエストにはcookieやクライアントサイドのSSL証明書、HTTP認証などのユーザ認証情報は利用されなくなるらしい。</p>
-<p>もし、コードが改変され整合性が確認できない場合は</p>
-<script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=faild.js"></script>
-<p>また、そのような場合に備えてfallbackを追加しておく</p>
-<script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=fallback.html"></script>
-<p>ハッシュ値は<a href="https://www.srihash.org/" target="_blank" rel="external">SRI Hash Generator</a>を使うと便利。<br>Wordpressでは<a href="https://wordpress.org/plugins/wp-sri/" target="_blank" rel="external">Subresource Integrity (SRI) Manager</a>などが使えそう。</p>
-<p>参考しにたページ<br><a href="http://githubengineering.com/subresource-integrity/" target="_blank" rel="external">Subresource Integrity</a><br><a href="https://developer.mozilla.org/ja/docs/Web/Security/Subresource_Integrity" target="_blank" rel="external">Subresource Integrity</a><br><a href="https://developer.mozilla.org/ja/docs/Web/HTML/CORS_settings_attributes" target="_blank" rel="external">CORS 設定属性</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;a href=&quot;http://githubengineering.com/subresource-integrity/&quot;&gt;Subresource Integrity&lt;/a&gt; という記事をみて、&lt;br&gt;ちょっと興味深かったのでSubresource Integrityについて、軽く見てみた。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="web" scheme="http://blog.kazu69.net/categories/web/"/>
     
     
   </entry>
