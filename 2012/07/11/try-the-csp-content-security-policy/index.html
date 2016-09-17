@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2012/07/11/try-the-csp-content-security-policy/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="CSP(Content Security Policy))を設定することでXSSやクリックジャッキング、パケットキャプチャなどの攻撃を軽減できるということなので、どんなものなのか試してみた。">
-<meta property="og:updated_time" content="2016-09-11T07:39:24.000Z">
+<meta property="og:updated_time" content="2016-09-17T03:40:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CSP(content security policy)をためしてみる">
 <meta name="twitter:description" content="CSP(Content Security Policy))を設定することでXSSやクリックジャッキング、パケットキャプチャなどの攻撃を軽減できるということなので、どんなものなのか試してみた。">
@@ -105,16 +105,16 @@ ga('send', 'pageview');
 <p>CSPを有効にすると、コンテンツの提供元を制限することで、制作者がリストに登録していない提供元からのコンテンツを読込ませないようにできます。<br>このため悪意のあるコードを実行させないなどの対策がきます。<br>特に設定してない、デフォルト状態では以下のことが制限されます。</p>
 <ul>
 <li>data: URLでのコンテンツの埋込</li>
-<li><a href="javascript:" target="_blank" rel="external">のようなhtmlへのjavascriptの埋込</a></li>
+<li>href=’javascript:’のようなhtmlへのjavascriptの埋込</li>
 <li>onclickなどのインラインのイベント属性</li>
-<li><script>要素内のインラインスクリプト</li>
+<li>script要素内のインラインスクリプト</li>
 <li>eval() での文字列コード new Function()コンストラクタ</li>
 <li>setInterval()ないでの文字列コード setTimeout()ないでの文字列コード</li>
-<li>&le;style&gt;要素でのCSSの設定</li>
+<li>style要素でのCSSの設定</li>
 <li>インラインのstyle属性</li>
 </ul>
 <p>という感じでデフォルトではかなり制限されます。</p>
-<p>CSPでサービス開発者が任意に設定できる項目は<a href="https://developer.mozilla.org/ja/Security/CSP/CSP_policy_directives">MDN</a>によると</p>
+<p>CSPでサービス開発者が任意に設定できる項目は<a href="https://developer.mozilla.org/ja/Security/CSP/CSP_policy_directives" target="_blank" rel="external">MDN</a>によると</p>
 <table>
 <thead>
 <tr>
@@ -194,8 +194,8 @@ ga('send', 'pageview');
 <figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">'&#123;'</span>csp-report<span class="string">':&#123;'</span>request<span class="string">':'</span>GET http:<span class="comment">//127.0.0.1:9393/ HTTP/1.1','blocked-uri':'self','violated-directive':'inline script base restriction','source-file':'http://127.0.0.1:9393/','script-sample':'\    $(function()&#123;\      $('body').appen...','line-number':13&#125;&#125;'</span></div></pre></td></tr></table></figure>
 <p>という感じなんですが、これを使うとなると既に動いてるサービスとかは変更が大変だ。<br>現在読込んでる外部リソースをリスト化してそれぞれをホワイトリストとして登録するとか。。。</p>
 <p>ただCSP自体は完全な後方互換らしいので、設定しておいてもいいかも。</p>
-<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://content-security-policy.com/">ontent-security-policy.com</a></p>
-</script></li></ul>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://content-security-policy.com/" target="_blank" rel="external">ontent-security-policy.com</a></p>
+
     
   </div>
 

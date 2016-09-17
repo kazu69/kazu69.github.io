@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2012/12/15/fontcustom-icon-font/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="fontcustomを使って、サクッとアイコンフォントができました。これは簡単でいいですね、サービス開発するときにどうしてもアイコンフォンとがしっくりないときにカスタムで作成できますね。">
-<meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
+<meta property="og:updated_time" content="2016-09-17T03:44:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="fontcustomで、アイコンフォントを作ってみる">
 <meta name="twitter:description" content="fontcustomを使って、サクッとアイコンフォントができました。これは簡単でいいですね、サービス開発するときにどうしてもアイコンフォンとがしっくりないときにカスタムで作成できますね。">
@@ -101,13 +101,13 @@ ga('send', 'pageview');
     </div>
     
       <p><a href="http://fontcustom.com/" target="_blank" rel="external">fontcustom</a>を使って、サクッとアイコンフォントができました。<br>これは簡単でいいですね、サービス開発するときにどうしてもアイコンフォンとがしっくりないときにカスタムで作成できますね。<br><a id="more"></a><br>手順は、fontcustomのページ見ればわかる感じなんですが、<br>とりあえずアイコンのsvgデータが必要です。</p>
-<p>[shell]<br>brew install fontforge eot-utils ttfautohint<br>gem install fontcustom<br>[/shell]</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew install fontforge eot-utils ttfautohint</div><div class="line">gem install fontcustom</div></pre></td></tr></table></figure>
 <p>brewをupdateしてない場合は先にupdateした方がいいかも。<br>undefined method <code>chomp</code> とかでエラーがでるなら、パスが通ってないかも。</p>
-<p>[shell]<br>source ~/.bashrc<br>[/shell]</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">source</span> ~/.bashrc</div></pre></td></tr></table></figure>
 <p>とかで読込みなおしてみた方がいいかも。</p>
 <p>あとはアイコンのsvgデータをコンパイルするだけ。</p>
-<p>[shell]<br>fontcustom compile /path/to/vectors<br>[/shell]</p>
-<p>fontcustom とディレクトリが生成され<br>[text]<br>fontcustom.css<br>fontcustom-UNIQUEHASH.ttf<br>fontcustom-UNIQUEHASH.eot<br>fontcustom-UNIQUEHASH.woff<br>fontcustom-UNIQUEHASH.svg<br>[/text]</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">fontcustom compile /path/to/vectors</div></pre></td></tr></table></figure>
+<p>fontcustom とディレクトリが生成され<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">fontcustom.css</div><div class="line">fontcustom-UNIQUEHASH.ttf</div><div class="line">fontcustom-UNIQUEHASH.eot</div><div class="line">fontcustom-UNIQUEHASH.woff</div><div class="line">fontcustom-UNIQUEHASH.svg</div></pre></td></tr></table></figure></p>
 <p>という感じでフォントができました。</p>
 <p>cssはというと<br>[css]<br>/<em><br>  Font Custom - icon webfonts made simple
 </em>/</p>

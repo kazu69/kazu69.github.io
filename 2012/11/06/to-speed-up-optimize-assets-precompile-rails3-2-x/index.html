@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2012/11/06/to-speed-up-optimize-assets-precompile-rails3-2-x/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Rails3.2.x で開発時にassets precompileに時間を要していたので、なんとか早くすべく調べていたら、stackoverflowに以下の記述があったので実際に試してみたらスピードアップしたので忘れないうちまとめてみた。">
-<meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
+<meta property="og:updated_time" content="2016-09-17T03:42:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rails3.2.xのAssets precompile を最適化してスピードアップする">
 <meta name="twitter:description" content="Rails3.2.x で開発時にassets precompileに時間を要していたので、なんとか早くすべく調べていたら、stackoverflowに以下の記述があったので実際に試してみたらスピードアップしたので忘れないうちまとめてみた。">
@@ -102,15 +102,17 @@ ga('send', 'pageview');
     
       <p>Rails3.2.x で開発時にassets precompileに時間を要していたので、なんとか早くすべく調べていたら、<a href="http://stackoverflow.com/questions/11390447/speedup-rails-asset-pipeline-precompile-process/11390454" target="_blank" rel="external">stackoverflow</a>に以下の記述があったので実際に試してみたらスピードアップしたので忘れないうちまとめてみた。<br><a id="more"></a></p>
 <ul>
-<li><p><strong>Capistranoを利用している場合は、Capistranoのビルトインタスクである ‘deploy/assets’ を使用する。</strong><br>Capistranoのビルトインタスクを利用することで、assetsのみをプリコンパイルするためアプリ全体を対象にプリコンパイルするよりも早くなります。<br>[ruby] bundle exec rake RAILS_ENV=production RAILS_GROUPS=assets assets:precompile [/ruby]</p>
+<li><p><strong>Capistranoを利用している場合は、Capistranoのビルトインタスクである ‘deploy/assets’ を使用する。</strong><br>Capistranoのビルトインタスクを利用することで、assetsのみをプリコンパイルするためアプリ全体を対象にプリコンパイルするよりも早くなります。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bundle exec rake RAILS_ENV=production RAILS_GROUPS=assets <span class="symbol">assets:</span>precompile</div></pre></td></tr></table></figure>
 </li>
 <li><p><strong>変更のあったファイルだけをプリコンパイルする。</strong><br>変更のあったファイルだけをプリコンパイルし、それ以外のファイルはスキップするたプリコンパイルにかかる時間が短くなります。<br>今回、私は <a href="https://github.com/ndbroadbent/turbo-sprockets-rails3" target="_blank" rel="external">Turbo Sprockets for Rails 3.2.x</a> を使いました。</p>
 </li>
 <li><p><strong>Sassの@importの見直し</strong><br>SassやScssを使っている場合、<a href="http://compass-style.org/" target="_blank" rel="external">Compass</a>を利用すると思うのですが、Compassのmixinのimportはできるだけ細かく制御する。<br>とくに @import “compass”; のように記述してしまうと、Compass全体を読込むため、@import “compass/css3/transition” の様に必要なmixinのみを読込むのに比べて約9倍遅くなるそうです。</p>
 </li>
-<li><p><strong>partialを使用しない</strong><br>変数や依存ファイルを読込む場合も @import ではなく require で読込む方がより早いそうです。<br>[ruby]<br>@import &quot;reset&quot;;<br>@import &quot;base&quot;;<br>@import &quot;product&quot;;<br>[/ruby]</p>
+<li><p><strong>partialを使用しない</strong><br>変数や依存ファイルを読込む場合も @import ではなく require で読込む方がより早いそうです。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">@import <span class="string">"reset"</span>;</div><div class="line">@import <span class="string">"base"</span>;</div><div class="line">@import <span class="string">"product"</span>;</div></pre></td></tr></table></figure>
 <p>よりも</p>
-<p>[ruby]<br>//= require &quot;reset&quot;<br>//= require &quot;base&quot;<br>//= require &quot;product&quot;<br>[/ruby]</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">//= require "reset"</div><div class="line">//= require "base"</div><div class="line">//= require "product"</div></pre></td></tr></table></figure>
 </li>
 <li><p><strong>require_tree は使わない</strong><br>例えば、それぞれが空のファイルのmain.js.cofee、signup.js.coffee、login.js.coffeeがあったとき<br>application.jsに require_tree の記述があると、プリコンパイルには最低でも約750msかかります。<br>.coffeeファイルが空であっても、application.jsにrequire_treeが記述されている場合、<br>プリコンパイルには1ファイルあたり約250msをかかるっぽい。ファイル数が増えるだけ、比例的にプリコンパイルの時間がかかります。</p>
 </li>

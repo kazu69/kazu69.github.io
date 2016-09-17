@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2012/11/07/note-during-rails3-x-developing-trouble-in-ie/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Railsで開発するときにUIの実装時にIE8あたりで困ることないように備忘録としてまとめておく。">
-<meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
+<meta property="og:updated_time" content="2016-09-17T03:43:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rails3.x開発時にIEで困らないためのメモ">
 <meta name="twitter:description" content="Railsで開発するときにUIの実装時にIE8あたりで困ることないように備忘録としてまとめておく。">
@@ -113,13 +113,15 @@ ga('send', 'pageview');
 <li>@importの入れ子は4095階層まで<br>に変更されてる。<br>詳しくしらべると、asset pipelineがdebug modeのままだとSprocketsがファイルを連結しないため、大量のファイルを読込むことでIEの仕様に引っかかってました。</li>
 </ul>
 <p>回避策として、</p>
-<p><yourappdir>/config/environments/development.rb の設定を変更<br>[ruby]<br>config.assets.debug = true<br>[/ruby]<br>してやることで、Sprocketsがファイルを連結するので回避できるかもしれない。</yourappdir></p>
+<p><yourappdir>/config/environments/development.rb の設定を変更<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">config.assets.debug = <span class="literal">true</span></div></pre></td></tr></table></figure></yourappdir></p>
+<p>してやることで、Sprocketsがファイルを連結するので回避できるかもしれない。</p>
 <hr>
 <h4 id="IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。"><a href="#IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。" class="headerlink" title="IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。"></a><strong>IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。</strong></h4><p>ファイル数の上限にあたらなくても、上記の通り１ファイルあたりのセレクターの限界値を超えるとCSSが無視されます。<br>4095ルールが原因の場合は、cssのリファクタリングを行うことや、<br>Asset Pipelineでファイルを別々にプリコンパイルする必要があります。</p>
 <p>別々にプリコンパイルするには</p>
-<p><yourappdir>/config/environments/production.rb の設定を<br>[ruby]<br>config.assets.precompile += %w( hoge.css fuga.css )<br>[/ruby]<br>としてやることで、application.cssのほかにhoge.cssやhuga.cssで指定したファイルをプリコンパイルできます。<br>(hoge.cssやfuga.cssは CSS manifest file です)</yourappdir></p>
+<p><yourappdir>/config/environments/production.rb の設定を<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">config.assets.precompile += <span class="string">%w( hoge.css fuga.css )</span></div></pre></td></tr></table></figure></yourappdir></p>
+<p>としてやることで、application.cssのほかにhoge.cssやhuga.cssで指定したファイルをプリコンパイルできます。<br>(hoge.cssやfuga.cssは CSS manifest file です)</p>
 <p>あとは、viewファイルで</p>
-<p>[ruby]<br>&lt;%= stylesheet_link_tag  &quot;application&quot; %&gt;<br>&lt;%= stylesheet_link_tag  &quot;hoge&quot; %&gt;<br>&lt;%= stylesheet_link_tag  &quot;fuga&quot; %&gt;<br>[/ruby]</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;%= stylesheet_link_tag  <span class="string">"application"</span> %&gt;</div><div class="line">&lt;%= stylesheet_link_tag  <span class="string">"hoge"</span> %&gt;</div><div class="line">&lt;%= stylesheet_link_tag  <span class="string">"fuga"</span> %&gt;</div></pre></td></tr></table></figure>
 <p>として、読込みます。</p>
 <p>このほかにも、<a href="http://blesscss.com/" target="_blank" rel="external">Bless</a>を使うことで、CSSを分割できます。<br>この場合は@importでcssファイルを読込むようになります。</p>
 <hr>
