@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Expressでのhttp2 + server pushを使う | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="nodejsのExpressをhttp2サポートして、server pushを試したときのメモ。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Expressでのhttp2 + server pushを使う">
+<meta property="og:url" content="http://blog.kazu69.net/2016/10/06/using-http2-serverpush-with-expressjs/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="nodejsのExpressをhttp2サポートして、server pushを試したときのメモ。">
+<meta property="og:updated_time" content="2016-10-06T10:43:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Expressでのhttp2 + server pushを使う">
+<meta name="twitter:description" content="nodejsのExpressをhttp2サポートして、server pushを試したときのメモ。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-using-http2-serverpush-with-expressjs" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Expressでのhttp2 + server pushを使う
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2016-10-06T09:43:38.000Z" itemprop="datePublished">2016-10-06</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/memo/">memo</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>nodejsの<a href="http://expressjs.com/" target="_blank" rel="external">Express</a>をhttp2サポートして、server pushを試したときのメモ。</p>
+<a id="more"></a>
+<p>今回は手元でサクッと試すので、自己証明書を使う。</p>
+<h2 id="自己証明書の作成"><a href="#自己証明書の作成" class="headerlink" title="自己証明書の作成"></a>自己証明書の作成</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">openssl genrsa -h</div><div class="line">usage: genrsa [args] [numbits]</div><div class="line"> -des            encrypt the generated key with DES <span class="keyword">in</span> cbc mode</div><div class="line"> -des3           encrypt the generated key with DES <span class="keyword">in</span> ede cbc mode (168 bit key)</div><div class="line"> -seed</div><div class="line">                 encrypt PEM output with cbc seed</div><div class="line"> -aes128, -aes192, -aes256</div><div class="line">                 encrypt PEM output with cbc aes</div><div class="line"> -out file       output the key to <span class="string">'file</span></div><div class="line"> -passout arg    output file pass phrase source</div><div class="line"> -f4             use F4 (0x10001) for the E value</div><div class="line"> -3              use 3 for the E value</div><div class="line"> -engine e       use engine e, possibly a hardware device.</div><div class="line"> -rand file:file:...</div><div class="line">                 load the file (or the files in the directory) into</div><div class="line">                 the random number generator</div></pre></td></tr></table></figure>
+<p>秘密鍵作成を作成</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># openssl genrsa -des3(暗号化アルゴリズム) -passout pass:(パスワード) -out （秘密鍵ファイル名）（キー長）</span></div><div class="line">openssl genrsa -des3 -passout pass:password -out keys/private.key 2048</div></pre></td></tr></table></figure>
+<p>秘密鍵を確認する</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">openssl rsa -text &lt; private.key</div><div class="line">Enter pass phrase:</div><div class="line"></div><div class="line">Private-Key: (2048 bit)</div><div class="line">modulus:</div><div class="line">...</div><div class="line">...</div><div class="line">...</div><div class="line">-----END RSA PRIVATE KEY-----</div></pre></td></tr></table></figure>
+<p>秘密鍵からRSA公開鍵の作成</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># openssl rsa -in （秘密鍵ファイル名） -pubout -out （公開鍵ファイル名） -passin pass:(パスワード)</span></div><div class="line">openssl rsa -in private.key -pubout -out public.key -passin pass:password</div><div class="line">writing RSA key</div></pre></td></tr></table></figure>
+<p>CSRを作成</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># openssl req -new -key （秘密鍵ファイル名） -out （CSRファイル名）</span></div><div class="line">openssl req -new -key private.key -out server.csr</div><div class="line"></div><div class="line">openssl req -text &lt; server.csr</div><div class="line">Certificate Request:</div><div class="line">    Data:</div><div class="line">    ...</div><div class="line">    ...</div><div class="line">    ...</div><div class="line">-----END CERTIFICATE REQUEST-----</div></pre></td></tr></table></figure>
+<p>証明書(CRT)を作成</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 365日有効な証明書を作成</span></div><div class="line">openssl x509 -req -days 365 -signkey private.key &lt; server.csr &gt; server.crt</div></pre></td></tr></table></figure>
+<h2 id="expressセットアップ"><a href="#expressセットアップ" class="headerlink" title="expressセットアップ"></a>expressセットアップ</h2><p>続いでexpressのセットアップ。ES nextでサーバーを書くのでbabel-nodeを使ってexpressを起動する<br>(ちなみにproductionではoverheadが大きいので使うことは推奨されていない)</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i -D babel-cli babel-preset-latest</div></pre></td></tr></table></figure>
+<p>http2のモジュールは<a href="https://github.com/molnarg/node-http2/" target="_blank" rel="external">node-http2</a>が<a href="https://github.com/molnarg/node-http2/issues/100#issuecomment-231173779" target="_blank" rel="external">Expressで動かない</a>。(Express ver5では対応されるはず)<br><a href="https://github.com/indutny/node-spdy" target="_blank" rel="external">spdy</a>を使ってhttp2に対応させる。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i -S express spdy morgan file-stream-rotator</div></pre></td></tr></table></figure>
+<h3 id="node-http2の場合の実装例"><a href="#node-http2の場合の実装例" class="headerlink" title="node_http2の場合の実装例"></a>node_http2の場合の実装例</h3><p>ちなみにnode_http2を使った場合は以下の感じで対応するようになる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> htttp2 <span class="keyword">from</span> <span class="string">'http2'</span>;</div><div class="line">option = &#123;</div><div class="line">    <span class="attr">key</span>: fs.readFileSync(<span class="string">'./example/localhost.key'</span>),</div><div class="line">    <span class="attr">cert</span>: fs.readFileSync(<span class="string">'./example/localhost.crt'</span>),</div><div class="line">    <span class="attr">passphrase</span>: <span class="string">'password'</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">http2.createServer(options, (req, res) =&gt; &#123;</div><div class="line">    <span class="comment">// pushするリソースのStreamを作り、データを書き込んで送信する。</span></div><div class="line">    <span class="keyword">if</span> (res.push) &#123;</div><div class="line">      <span class="keyword">const</span> push = res.push(<span class="string">'/pushed.js'</span>);</div><div class="line">      push.writeHead(<span class="number">200</span>);</div><div class="line">      fs.createReadStream(path.join(__dirname, <span class="string">'/pushed.js'</span>)).pipe(push);</div><div class="line">    &#125;</div><div class="line">     fs.createReadStream(path.join(__dirname, <span class="string">'/client.js'</span>)).pipe(res);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>Expressサーバーを作成する。<br>実際の作成したものは<a href="https://github.com/kazu69/express-with-http2-and-server-push-example" target="_blank" rel="external">こちらから</a>。</p>
+<p>エントリポイント(index.js)は以下のようになる</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">import express from <span class="string">'express'</span>;</div><div class="line">import spdy from <span class="string">'spdy'</span>;</div><div class="line">import morgan from <span class="string">'morgan'</span>;</div><div class="line">import path from <span class="string">'path'</span>;</div><div class="line">import fs from <span class="string">'fs'</span>;</div><div class="line">import FileStreamRotator from <span class="string">'file-stream-rotator'</span>;</div><div class="line"></div><div class="line">import routes from <span class="string">'./routes/index.js'</span></div><div class="line"></div><div class="line">// when index.js execute app/index.js</div><div class="line">const rootDir = __dirname + <span class="string">'/..'</span>;</div><div class="line">const viewPath = `<span class="variable">$&#123;rootDir&#125;</span>/app/views`;</div><div class="line"></div><div class="line">const port = 3000;</div><div class="line">const app = express();</div><div class="line">const options = &#123;</div><div class="line">    key: fs.readFileSync(`<span class="variable">$&#123;rootDir&#125;</span>/keys/private.key`), // private key</div><div class="line">    cert: fs.readFileSync(`<span class="variable">$&#123;rootDir&#125;</span>/keys/server.crt`), // cert file</div><div class="line">    passphrase: <span class="string">'password'</span></div><div class="line">&#125;;</div><div class="line">const <span class="built_in">log</span>Dir = path.join(`<span class="variable">$&#123;rootDir&#125;</span>/app/<span class="built_in">log</span>`);</div><div class="line">const accessLogOption = &#123;</div><div class="line">    date_format: <span class="string">'YYYYMMDD'</span>,</div><div class="line">    filename: path.join(<span class="built_in">log</span>Dir, <span class="string">'production-%DATE%.log'</span>),</div><div class="line">    frequency: <span class="string">'daily'</span>,</div><div class="line">    verbose: <span class="literal">false</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line">app.use(express.static(<span class="string">'app/views'</span>));</div><div class="line">app.use(express.static(<span class="string">'app/public'</span>));</div><div class="line">app.use(<span class="string">'/'</span>, routes);</div><div class="line"></div><div class="line">fs.existsSync(<span class="built_in">log</span>Dir) || fs.mkdirSync(<span class="built_in">log</span>Dir);</div><div class="line"><span class="keyword">if</span>(app.get(<span class="string">'env'</span>) === <span class="string">'production'</span>) &#123;</div><div class="line">    const accessLogStream = FileStreamRotator.getStream(accessLogOption);</div><div class="line">    app.use(morgan(&#123; format: <span class="string">'common'</span>, stream: accessLogStream &#125;));</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    app.use(morgan(&#123; format: <span class="string">'dev'</span>, date: <span class="string">'clf'</span>, immediate: <span class="literal">true</span> &#125;));</div><div class="line">    app.use(morgan(&#123; format: <span class="string">'common'</span> &#125;));</div><div class="line">&#125;</div><div class="line"></div><div class="line">spdy.createServer(options, app)</div><div class="line">    .listen(port, (error) =&gt; &#123;</div><div class="line">        <span class="keyword">if</span> (error) &#123;</div><div class="line">            console.error(error);</div><div class="line">            <span class="built_in">return</span> process.exit(1);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            console.log(`Listening on port: <span class="variable">$&#123;port&#125;</span>.`);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">module.exports = app;</div></pre></td></tr></table></figure>
+<p>サーバーをビルドして起動できるるようににnpm scriptを追加</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">...</div><div class="line">  "scripts": &#123;</div><div class="line">    "build": "babel --presets es2015 -d dist src",</div><div class="line">    "prestart": "npm run build",</div><div class="line">    "start": "node dist/index.js",</div><div class="line">    "dev": "babel-node --debug --presets es2015 -- src/index.js --debug"</div><div class="line">  &#125;,</div><div class="line">...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="curl-with-http2"><a href="#curl-with-http2" class="headerlink" title="curl with http2"></a>curl with http2</h2><p>curlでhttp2出来るようにlibcurlにnghttp2オプションを追加する</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">brew install curl --with-nghttp2</div><div class="line">brew link curl --force</div><div class="line"></div><div class="line">brew info curl</div><div class="line">curl: stable 7.50.3 (bottled) [keg-only]</div><div class="line">Get a file from an HTTP, HTTPS or FTP server</div><div class="line">https://curl.haxx.se/</div><div class="line">/usr/<span class="built_in">local</span>/Cellar/curl/7.50.3 (366 files, 2.6M) *</div><div class="line">  Built from <span class="built_in">source</span> on 2016-09-18 at 16:08:22 with: --with-nghttp2</div><div class="line">From: https://github.com/Homebrew/homebrew-core/blob/master/Formula/curl.rb</div><div class="line">==&gt; Dependencies</div><div class="line">Build: pkg-config ✔</div><div class="line">Optional: openssl ✔, libidn ✘, rtmpdump ✘, libssh2 ✘, c-ares ✘, libmetalink ✘, libressl ✘, nghttp2 ✔</div><div class="line">==&gt; Options</div><div class="line">--with-c-ares</div><div class="line">    Build with C-Ares async DNS support</div><div class="line">--with-gssapi</div><div class="line">    Build with GSSAPI/Kerberos authentication support.</div><div class="line">--with-libidn</div><div class="line">    Build with support <span class="keyword">for</span> Internationalized Domain Names</div><div class="line">--with-libmetalink</div><div class="line">    Build with libmetalink support.</div><div class="line">--with-libressl</div><div class="line">    Build with LibreSSL instead of Secure Transport or OpenSSL</div><div class="line">--with-libssh2</div><div class="line">    Build with scp and sftp support</div><div class="line">--with-nghttp2</div><div class="line">    Build with HTTP/2 support (requires OpenSSL or LibreSSL)</div><div class="line">--with-openssl</div><div class="line">    Build with OpenSSL instead of Secure Transport</div><div class="line">--with-rtmpdump</div><div class="line">    Build with RTMP support</div><div class="line">...</div><div class="line"></div><div class="line">ということで、http2できるのか試して見る。</div><div class="line"></div><div class="line">```sh</div><div class="line">curl -I --http2 https://www.cloudflare.com/</div><div class="line"></div><div class="line">HTTP/2 200</div><div class="line">date: Sun, 18 Sep 2016 07:26:23 GMT</div><div class="line">content-type: text/html</div><div class="line"><span class="built_in">set</span>-cookie: __cfduid=dc330f6d51f40d20cfc7056c62e193<span class="built_in">fc</span>21474183583; expires=Mon, 18-Sep-17 07:26:23 GMT; path=/; domain=.cloudflare.com; HttpOnly</div><div class="line">last-modified: Wed, 14 Sep 2016 17:39:07 GMT</div><div class="line">cf-cache-status: HIT</div><div class="line">expires: Sun, 18 Sep 2016 11:26:23 GMT</div><div class="line">cache-control: public, max-age=14400</div><div class="line">server: cloudflare-nginx</div><div class="line">cf-ray: 2e4311c74c242e09-NRT</div><div class="line">cf-h2-pushed: &lt;/js/jquery-2.1.4-min.js&gt;</div></pre></td></tr></table></figure>
+<h2 id="http2を確認"><a href="#http2を確認" class="headerlink" title="http2を確認"></a>http2を確認</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">npm start</div><div class="line"></div><div class="line">curl -kiv https://127.0.0.1:3000/</div><div class="line">*   Trying 127.0.0.1...</div><div class="line">* TCP_NODELAY <span class="built_in">set</span></div><div class="line">* Connected to 127.0.0.1 (127.0.0.1) port 3000 (<span class="comment">#0)</span></div><div class="line">* ALPN, offering h2</div><div class="line">* ALPN, offering http/1.1</div><div class="line">* Cipher selection: ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH</div><div class="line">* successfully <span class="built_in">set</span> certificate verify locations:</div><div class="line">*   CAfile: /usr/<span class="built_in">local</span>/etc/openssl/cert.pem</div><div class="line">  CApath: none</div><div class="line">* TLSv1.2 (OUT), TLS header, Certificate Status (22):</div><div class="line">* TLSv1.2 (OUT), TLS handshake, Client hello (1):</div><div class="line">* TLSv1.2 (IN), TLS handshake, Server hello (2):</div><div class="line">* TLSv1.2 (IN), TLS handshake, Certificate (11):</div><div class="line">* TLSv1.2 (IN), TLS handshake, Server key exchange (12):</div><div class="line">* TLSv1.2 (IN), TLS handshake, Server finished (14):</div><div class="line">* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):</div><div class="line">* TLSv1.2 (OUT), TLS change cipher, Client hello (1):</div><div class="line">* TLSv1.2 (OUT), TLS handshake, Finished (20):</div><div class="line">* TLSv1.2 (IN), TLS change cipher, Client hello (1):</div><div class="line">* TLSv1.2 (IN), TLS handshake, Finished (20):</div><div class="line">* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256</div><div class="line">* ALPN, server accepted to use h2</div><div class="line">* Server certificate:</div><div class="line">*  subject: C=AU; ST=Some-State; O=Internet Widgits Pty Ltd</div><div class="line">*  start date: Sep 17 14:59:31 2016 GMT</div><div class="line">*  expire date: Sep 17 14:59:31 2017 GMT</div><div class="line">*  issuer: C=AU; ST=Some-State; O=Internet Widgits Pty Ltd</div><div class="line">*  SSL certificate verify result: self signed certificate (18), continuing anyway.</div><div class="line">* Using HTTP2, server supports multi-use</div><div class="line">* Connection state changed (HTTP/2 confirmed)</div><div class="line">* Copying HTTP/2 data <span class="keyword">in</span> stream buffer to connection buffer after upgrade: len=0</div><div class="line">* Using Stream ID: 1 (easy handle 0x7fd47080e200)</div><div class="line">&gt; GET / HTTP/1.1</div><div class="line">&gt; Host: 127.0.0.1:3000</div><div class="line">&gt; User-Agent: curl/7.50.3</div><div class="line">&gt; Accept: */*</div><div class="line">&gt;</div><div class="line">* Connection state changed (MAX_CONCURRENT_STREAMS updated)!</div><div class="line">&lt; HTTP/2 200</div><div class="line">HTTP/2 200</div><div class="line">&lt; x-powered-by: Express</div><div class="line">x-powered-by: Express</div><div class="line">&lt; content-type: application/json; charset=utf-8</div><div class="line">content-type: application/json; charset=utf-8</div><div class="line">&lt; content-length: 16</div><div class="line">content-length: 16</div><div class="line">&lt; etag: W/<span class="string">"10-RUik8aEaJBEg+XocNzeBeg"</span></div><div class="line">etag: W/<span class="string">"10-RUik8aEaJBEg+XocNzeBeg"</span></div><div class="line">...</div></pre></td></tr></table></figure>
+<p>HTTP/2 200 でレスポンス確認できた。<br>引き続きServer Pushの対応。</p>
+<h2 id="Server-Push"><a href="#Server-Push" class="headerlink" title="Server Push"></a>Server Push</h2><p>実装的には、レスポンスとして返却されるhtmlファイルからjsやcssファイルを抽出し、<br>新しいStreamを作成して、データを書き込み送信する。</p>
+<p>ざっくりと以下のようなミドルウェアを作成にする。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// viewPath はviewファイルへのパス</span></div><div class="line"></div><div class="line">router.get(<span class="string">'/push'</span>, (req, res) =&gt; &#123;</div><div class="line">    <span class="keyword">const</span> html = fs.readFileSync(<span class="string">`<span class="subst">$&#123;viewPath&#125;</span>/index.html`</span>);</div><div class="line"></div><div class="line">    <span class="comment">// files = &#123; 'filename': [ &#123; 'path': 'file/to/path', 'mime': 'file-mime-type' &#125; ]&#125;</span></div><div class="line">    <span class="keyword">const</span> pushFIles = files[<span class="string">`<span class="subst">$&#123;viewPath&#125;</span>/index.html`</span>];</div><div class="line">    pushFIles.forEach(<span class="function">(<span class="params">file</span>) =&gt;</span> &#123;</div><div class="line">        <span class="keyword">const</span> option = <span class="built_in">Object</span>.assign(stremOption, &#123;<span class="string">'response'</span>: &#123;<span class="string">'content-type'</span>: file.mime&#125;&#125;);</div><div class="line"></div><div class="line">        <span class="comment">// create push stream</span></div><div class="line">        <span class="keyword">const</span> stream = res.push(<span class="string">`<span class="subst">$&#123;publicPath&#125;</span><span class="subst">$&#123;file.path&#125;</span>`</span>, option);</div><div class="line"></div><div class="line">        stream.on(<span class="string">'error'</span>, (error) =&gt; &#123;</div><div class="line">            <span class="built_in">console</span>.error(error);</div><div class="line">        &#125;);</div><div class="line">        stream.end();</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    res.end(html);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>Chromeでnet-internals(chrome://net-internals/#events)を使って確認する。<br>/push にアクセスして、chrome://net-internals/#eventsからHTTP2_SESSIONを確認。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">t=3850 [st=10]  HTTP2_SESSION_RECV_PUSH_PROMISE</div><div class="line">                --&gt; :method: GET</div><div class="line">                    :path: /app/public//js/main.js</div><div class="line">                    :scheme: https</div><div class="line">                    :authority: localhost:3000</div><div class="line">                    accept: */*</div><div class="line">                --&gt; id = 7</div><div class="line">                --&gt; promised_stream_id = 6</div><div class="line">t=3850 [st=10]  HTTP2_SESSION_RECV_PUSH_PROMISE</div><div class="line">                --&gt; :method: GET</div><div class="line">                    :path: /app/public/js/app.js</div><div class="line">                    :scheme: https</div><div class="line">                    :authority: localhost:3000</div><div class="line">                    accept: */*</div><div class="line">                --&gt; id = 7</div><div class="line">                --&gt; promised_stream_id = 8</div></pre></td></tr></table></figure>
+<p><strong> HTTP2_SESSION_RECV_PUSH_PROMISE </strong> となりサーバーからpushされていることがわかる。</p>
+<p>Expressでのhttp2とserver push は想像よりも簡単に対応できるのかもしれないという気がした。</p>
+<h3 id="作成したサンプル"><a href="#作成したサンプル" class="headerlink" title="作成したサンプル"></a>作成したサンプル</h3><p><a href="https://github.com/kazu69/express-with-http2-and-server-push-example" target="_blank" rel="external">express-with-http2-and-server-push-example</a></p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="http://webapplog.com/http2-node/" target="_blank" rel="external">Optimize Your App with HTTP/2 Server Push Using Node and Express</a><br><a href="https://github.com/indutny/node-spdy" target="_blank" rel="external">node-spdy</a><br><a href="https://curl.haxx.se/docs/http2.html" target="_blank" rel="external">HTTP/2 with curl</a><br><a href="https://simonecarletti.com/blog/2016/01/http2-curl-macosx/" target="_blank" rel="external">Using cURL with HTTP/2 on Mac OS X</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2016/10/06/using-http2-serverpush-with-expressjs/" class="hatena-bookmark-button" data-hatena-bookmark-title="Expressでのhttp2 + server pushを使う" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2016/10/06/using-http2-serverpush-with-expressjs/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2016/09/14/using-at-rule-supports-development-with-css-property-of-future/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            Supportsルールを使って未来のcssプロパティに備えた開発
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2016 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2016/10/06/using-http2-serverpush-with-expressjs/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
