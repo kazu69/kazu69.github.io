@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.kazu69.net/"/>
-  <updated>2016-10-06T10:43:39.000Z</updated>
+  <updated>2017-01-29T14:01:10.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -14,6 +14,83 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>HTTP2 Server PushとService Workerを使ったレスポンス改善</title>
+    <link href="http://blog.kazu69.net/2017/01/28/response_improvement_using_http2_server_push_service_worke/"/>
+    <id>http://blog.kazu69.net/2017/01/28/response_improvement_using_http2_server_push_service_worke/</id>
+    <published>2017-01-28T09:43:38.000Z</published>
+    <updated>2017-01-29T14:01:10.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://blog.kazu69.net/2016/10/06/using-http2-serverpush-with-expressjs/">Express width HTTP2 Server Push</a> を試したので、<br>今回はPushされたリソースをCache APIでブラウにキャッシュして、<br>二度目以降のアクセスはキャッシュを使いHTTPリクエストしないでレスポンスをさらに向上できることを試してみた。</p>
+<a id="more"></a>
+<p>復習でHTTP2 Server Pushを試してみる。</p>
+<h2 id="HTTP2-Server-Push"><a href="#HTTP2-Server-Push" class="headerlink" title="HTTP2 Server Push"></a>HTTP2 Server Push</h2><p><a href="https://github.com/kazu69/express-http2-serviceworker-example" target="_blank" rel="external">サンプルで作ったアプリケーション</a>ではStreamにリソースファイルをPushしてレスポンスを返すことで、Server Pushを実現している。</p>
+<p>もしアプリケーションの前にNginxなどのProxyサーバーがある場合は、HTTPヘッダーにLinkヘッダーを追加してレスポンスを返すようにしたら良い。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Promise</span>.all(</div><div class="line">    pushFiles.map(<span class="function"><span class="params">file</span> =&gt;</span> &#123;</div><div class="line">        <span class="keyword">const</span> option = <span class="built_in">Object</span>.assign(stremOption, &#123;<span class="string">'response'</span>: &#123;<span class="string">'content-type'</span>: file.mime&#125;&#125;);</div><div class="line">        <span class="comment">// create push stream</span></div><div class="line">        <span class="keyword">const</span> stream = res.push(file.path, option);</div><div class="line"></div><div class="line">        stream.on(<span class="string">'error'</span>, error =&gt; &#123;</div><div class="line">            <span class="built_in">console</span>.error(error);</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        stream.end(fs.readFileSync(<span class="string">`<span class="subst">$&#123;publicPath&#125;</span><span class="subst">$&#123;file.path&#125;</span>`</span>));</div><div class="line">        <span class="keyword">return</span> file;</div><div class="line">    &#125;)</div><div class="line">).then(<span class="function"><span class="params">files</span> =&gt;</span> &#123;</div><div class="line">    next();</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>HTTPリクエストする<br>(あらかじめcurlでhttp2出来るようにlibcurlにnghttp2オプションを追加している)</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">curl -kI https://localhost:3000/push/</div><div class="line">HTTP/2 200</div><div class="line">x-powered-by: Express</div><div class="line">access-control-allow-origin: *</div><div class="line">access-control-allow-headers: Origin, X-Requested-With, Content-Type, Accept</div></pre></td></tr></table></figure>
+<p>Chrome Devtoolのネットワークを見てみると、HTTP2 + Server Push されていることがわかる。</p>
+<p><img src="/images/2017/01/28/server-push.png" alt=""></p>
+<h2 id="Service-Worker"><a href="#Service-Worker" class="headerlink" title="Service Worker"></a>Service Worker</h2><p><a href="https://www.w3.org/TR/service-workers/" target="_blank" rel="external">Service Worker</a>はブラウザがwebページのスクリプトとは別のプロセスでスクリプトをバックグラウンドできる機能。<br>プッシュ通知やモバイルアプリでのバックグラウンドでのデータの同期などが実現できる。</p>
+<p>Caniuseでみると<a href="http://caniuse.com/#feat=serviceworkers" target="_blank" rel="external">各ブラウザのサポート状況はこんな感じ</a>。</p>
+<p>今回は<a href="https://www.google.co.jp/chrome/browser/canary.html" target="_blank" rel="external">Chrome Canary (v58)</a>を使う。もちろんHTTPS環境は必要。<br>そのほかChromeでService Workerを使うためのDebug環境を整えておく。</p>
+<h3 id="自己証明書を許可する"><a href="#自己証明書を許可する" class="headerlink" title="自己証明書を許可する"></a>自己証明書を許可する</h3><p>chromeでローカルホスト証明書を許可するようにフラグを切り替えておく。</p>
+<p>chrome://flags/#allow-insecure-localhost を開いて設定を切替る。</p>
+<p><img src="/images/2017/01/28/allow-insecure-localhost.png" alt=""></p>
+<h3 id="Service-Worker-Inspector"><a href="#Service-Worker-Inspector" class="headerlink" title="Service Worker Inspector"></a>Service Worker Inspector</h3><p>Service Worker が有効になっているかは、chrome://inspect/#service-workers を開くことで確認できる。<br>Service Worker の一覧と内容、解除を操作できる。</p>
+<p><img src="/images/2017/01/28/service-worker-inspector.png" alt=""></p>
+<h3 id="serviceworker-internals"><a href="#serviceworker-internals" class="headerlink" title="serviceworker-internals"></a>serviceworker-internals</h3><p>chrome://serviceworker-internals/ を開いて確認できる。</p>
+<p>Service Workerの内容や開始、停止やデバックなどを行える。</p>
+<p><img src="/images/2017/01/28/serviceworker-internals.png" alt=""></p>
+<h3 id="Service-Worker-について"><a href="#Service-Worker-について" class="headerlink" title="Service Worker について"></a>Service Worker について</h3><p>まずはService Workerについてざっくりと学ぶ。<br>Service Workerのライフサイクルは次のようになる。</p>
+<p><img src="/images/2017/01/28/service-workers-lifecycle.png" alt=""></p>
+<h3 id="1-Service-Workerの登録"><a href="#1-Service-Workerの登録" class="headerlink" title="1. Service Workerの登録"></a>1. Service Workerの登録</h3><p>まずページにアクセスすると、Service Workerをダウンロード。<br>register メソッドをつかってjavascriptを登録する。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">navigator.serviceWorker.register(<span class="string">'/serviceworker.js'</span>, &#123;<span class="attr">scope</span>: <span class="string">'/'</span>&#125;)</div></pre></td></tr></table></figure>
+<p>登録の際にscopeパラメータオプションを指定できる。<br>scopeを指定することで、service workerが制御可能なコンテンツを指定できる。<br>たとえば <strong>{ socpe: ‘/sw/‘ }</strong> と指定した場合、 sw/ ディレクトリ以下をService Workerで制御できる。</p>
+<p>ちなみに何度か登録に失敗した、その場合は次のことが考えられる。</p>
+<ul>
+<li>https通信ではない</li>
+<li>service workerファイルへのパスが相対パスではない</li>
+<li>指定するファイルがSameOriginではない</li>
+</ul>
+<h3 id="2-Service-Workerのインストールとアクティベート"><a href="#2-Service-Workerのインストールとアクティベート" class="headerlink" title="2 Service Workerのインストールとアクティベート"></a>2 Service Workerのインストールとアクティベート</h3><p>登録すると、InstallとActivate というイベントが順番に実行される。<br>すでにService Workerがすでに登録されている場合は、Service Workerが更新できる状況になるまで待つことになる。<br>(すぐに処理を開始するとデータに不整合が発生する恐れがあるため)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (<span class="string">'serviceWorker'</span> <span class="keyword">in</span> navigator) &#123;</div><div class="line">    navigator.serviceWorker.register(<span class="string">'/sw.js'</span>, &#123;<span class="attr">scope</span>: <span class="string">'/'</span>&#125;).then(<span class="function"><span class="params">reg</span> =&gt;</span> &#123;</div><div class="line">        <span class="keyword">if</span>(reg.installing) &#123;</div><div class="line">            <span class="comment">// インストール中</span></div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'Service worker installing'</span>);</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(reg.waiting) &#123;</div><div class="line">            <span class="comment">// すでに登録されているService Workerがある場合</span></div><div class="line">            <span class="comment">// service workerが更新できる状況になるまで待つ</span></div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'Service worker installed'</span>);</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(reg.active) &#123;</div><div class="line">            <span class="comment">// アクティベート</span></div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'Service worker active'</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</div><div class="line">        <span class="built_in">console</span>.error(<span class="string">'ServiceWorker registration failed:'</span>, err);</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.addEventListener(<span class="string">'install'</span>, event =&gt; &#123;</div><div class="line">        event.waitUntil(</div><div class="line">            <span class="comment">// some install event hook script</span></div><div class="line">        );</div><div class="line">    &#125;, <span class="literal">false</span>);</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.addEventListener(<span class="string">'activate'</span>, event =&gt; &#123;</div><div class="line">        event.waitUntil(</div><div class="line">            <span class="comment">// some event activate hook script</span></div><div class="line">        );</div><div class="line">    &#125;, <span class="literal">false</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>各状態のイベントリスナーを追加することで、callbackできる。<br>このとき、各遷移状態に移行した際に実行するメソッドは waitUntil()メソッドに引数で渡すことができる。</p>
+<p>また、install後に直ちにactivate状態に遷移するには</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">self.addEventListener(<span class="string">'install'</span>, event =&gt; &#123;</div><div class="line">    event.waitUntil(self.skipWaiting());</div><div class="line">&#125;, <span class="literal">false</span>);</div></pre></td></tr></table></figure>
+<p>activate後に直ちにactivated状態に遷移するには</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">self.addEventListener(<span class="string">'activate'</span>, event =&gt; &#123;</div><div class="line">    event.waitUntil(self.clients.claim());</div><div class="line">&#125;, <span class="literal">false</span>);</div></pre></td></tr></table></figure>
+<p>今回はinstall時にファイルをキャッシュについする。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">self.addEventListener(<span class="string">'install'</span>, event =&gt; &#123;</div><div class="line">    event.waitUntil(</div><div class="line">        caches.open(CACHE_NAME)</div><div class="line">        .then(<span class="function"><span class="params">cache</span> =&gt;</span> &#123;</div><div class="line">            <span class="keyword">const</span> cachePromises = CACHE.map(<span class="function"><span class="params">url</span> =&gt;</span> &#123;</div><div class="line">                <span class="keyword">const</span> fetchUrl = <span class="keyword">new</span> URL(url, location.href);</div><div class="line">                <span class="comment">// no-cors: クロスオリジンでのリクエストを防ぐ。HEAD、GET、POST 以外のメソッド実行を防ぐ。</span></div><div class="line">                <span class="keyword">const</span> request = <span class="keyword">new</span> Request(fetchUrl, &#123; <span class="attr">mode</span>: <span class="string">'no-cors'</span> &#125;);</div><div class="line"></div><div class="line">                <span class="comment">// HTTPリクエストにクレデンシャルを含める</span></div><div class="line">                <span class="keyword">return</span> fetch(request, &#123;<span class="attr">credentials</span>: <span class="string">'include'</span>&#125;).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</div><div class="line">                    <span class="keyword">if</span> (response.status &gt;= <span class="number">400</span>) &#123;</div><div class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'request for '</span> + fetchUrl + <span class="string">' failed with status '</span> + response.statusText);</div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">return</span> cache.add(fetchUrl, response);</div><div class="line">                &#125;).catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</div><div class="line">                    <span class="built_in">console</span>.error(<span class="string">'Not caching '</span> + url + <span class="string">' due to '</span> + error);</div><div class="line">                &#125;);</div><div class="line">            &#125;);</div><div class="line"></div><div class="line">            <span class="keyword">return</span> <span class="built_in">Promise</span>.all(cachePromises)</div><div class="line"></div><div class="line">        &#125;).catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</div><div class="line">            <span class="built_in">console</span>.error(<span class="string">'Pre-fetching failed:'</span>, error);</div><div class="line">        &#125;)</div><div class="line">    );</div><div class="line">    event.waitUntil(global.skipWaiting());</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>すでにエンドユーザーのブラウザに登録されたservice workerを更新したいときなどに有効な手段っぽい。</p>
+<h3 id="3-Fetchイベント"><a href="#3-Fetchイベント" class="headerlink" title="3 Fetchイベント"></a>3 Fetchイベント</h3><p>Service Workerがactivateな状態で、scope配下のページを移動したり、ページを更新したりすると、<br>fetchイベントを受け取る。</p>
+<p>このfetchイベントのリスナーでHTTPレスポンスを横取りして、リソースファイルをCache APIを介してに登録したり、読み込んだりできる。<br>これにより実際にHTTPリクエストすることなくページを返すことができる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">self.addEventListener(<span class="string">'fetch'</span>, event =&gt; &#123;</div><div class="line">    event.respondWith(</div><div class="line">        <span class="comment">// キャッシュの中に該当するリソースがある</span></div><div class="line">        caches.match(event.request)</div><div class="line">        .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</div><div class="line"></div><div class="line">            <span class="comment">// キャッシュがあればキャッシュを返す</span></div><div class="line">            <span class="keyword">if</span> (response) &#123;</div><div class="line">                <span class="keyword">return</span> response;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">// リソースを取得する</span></div><div class="line">            <span class="keyword">return</span> fetch(event.request)</div><div class="line">                .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</div><div class="line">                    <span class="comment">// リソースが取得できないときはレスポンスを返す</span></div><div class="line">                    <span class="comment">// HTTP Statusのチェック</span></div><div class="line">                    <span class="comment">// Same Originのチェック(サードパーティのリソースはキャッシュされない)</span></div><div class="line">                    <span class="keyword">if</span>(!response || response.status !== <span class="number">200</span> || response.type !== <span class="string">'basic'</span>) &#123;</div><div class="line">                        <span class="keyword">return</span> response;</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    <span class="comment">// ブラウザに返すレスポンスとキャッシュ用のレスポンスの2つ必要なので複製</span></div><div class="line">                    <span class="keyword">const</span> responseToCache = response.clone();</div><div class="line"></div><div class="line">                    caches.open(CACHE_NAME)</div><div class="line">                    .then(<span class="function"><span class="params">cache</span> =&gt;</span> &#123;</div><div class="line">                        <span class="comment">// キャッシュを更新</span></div><div class="line">                        cache.put(event.request, responseToCache);</div><div class="line">                    &#125;);</div><div class="line"></div><div class="line">                    <span class="comment">// ブラウザにレスポンスを返す</span></div><div class="line">                    <span class="keyword">return</span> response;</div><div class="line">               &#125;</div><div class="line">            );</div><div class="line">        &#125;)</div><div class="line">    );</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>実際にリクエストしてみる。<br>1回目はHTTP2 + Server Push でレスポンスを返す。</p>
+<p><img src="/images/2017/01/28/server-push.png" alt=""></p>
+<p>2回目はキャッシュを返す。from ServiceWorkerとあり、リクエストをしないでService WorkerがCacheを返し、ページが描画されることがわかる。</p>
+<p><img src="/images/2017/01/28/server-push-serviceworker.png" alt=""></p>
+<h3 id="4-Service-Worker-の更新"><a href="#4-Service-Worker-の更新" class="headerlink" title="4. Service Worker の更新"></a>4. Service Worker の更新</h3><p>Service workerファイルが更新され、ファイルにバイト単位で差分がある場合、<br>再度ファイルをダウンロード、インストールを行う。</p>
+<p>ただし、既存のService Worker稼働しているので、新しくダウンロードしたファイルはwaitingになる。<br>ページが閉じられるなどして、新しい Service Workerコントーロール可能な状態となりactivateに遷移する。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>Server Push + Service Worker によりトラフィックは改善される。<br>両者は技術的にも相性が良いなぁという感じ。<br>とくにデバイスによってはオフライン時でもキャッシュを利用できることで、恩恵を受けるものもありそう。</p>
+<p>また、HTTP2もしくはServie Workerをサポートしてない(両方ともサポートしてない)場合でも副作用はないため、受けられる恩恵は大きい。<br>まだ市場的には試用段階ではあるが、Progressive Web App(PWA)は今後当たり前にウェブ開発の流れにシフトしていくんだろうな。</p>
+<h3 id="作成したサンプル"><a href="#作成したサンプル" class="headerlink" title="作成したサンプル"></a>作成したサンプル</h3><p><a href="https://github.com/kazu69/express-http2-serviceworker-example" target="_blank" rel="external">express-http2-serviceworker-example</a></p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://developers.google.com/web/fundamentals/getting-started/codelabs/your-first-pwapp" target="_blank" rel="external">はじめてのプログレッシブ ウェブアプリ</a><br><a href="https://developers.google.com/web/fundamentals/getting-started/primers/service-workers" target="_blank" rel="external">Service Worker の紹介</a><br><a href="https://developer.mozilla.org/ja/docs/Web/API/ServiceWorker_API" target="_blank" rel="external">ServiceWorker API</a><br><a href="https://developer.mozilla.org/en-US/docs/Web/API/Cache" target="_blank" rel="external">Cache</a><br><a href="https://jakearchibald.github.io/isserviceworkerready/" target="_blank" rel="external">ServiceWorker ready?</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;https://blog.kazu69.net/2016/10/06/using-http2-serverpush-with-expressjs/&quot;&gt;Express width HTTP2 Server Push&lt;/a&gt; を試したので、&lt;br&gt;今回はPushされたリソースをCache APIでブラウにキャッシュして、&lt;br&gt;二度目以降のアクセスはキャッシュを使いHTTPリクエストしないでレスポンスをさらに向上できることを試してみた。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="web" scheme="http://blog.kazu69.net/categories/web/"/>
+    
+      <category term="memo" scheme="http://blog.kazu69.net/categories/web/memo/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>Expressでのhttp2 + server pushを使う</title>
@@ -78,7 +155,7 @@
     <link href="http://blog.kazu69.net/2016/09/14/using-at-rule-supports-development-with-css-property-of-future/"/>
     <id>http://blog.kazu69.net/2016/09/14/using-at-rule-supports-development-with-css-property-of-future/</id>
     <published>2016-09-14T14:02:00.000Z</published>
-    <updated>2016-09-16T14:58:14.000Z</updated>
+    <updated>2016-09-16T14:58:31.000Z</updated>
     
     <content type="html"><![CDATA[<p>css3で追加された機能クエリ<a href="https://www.w3.org/TR/css3-conditional/#at-supports" target="_blank" rel="external">@supports</a>を使うことで、将来のcssプロパティで実装しつつ、<br>一昔前のブラウザもサポートする感じで実装することができる。</p>
 <a id="more"></a>
@@ -198,7 +275,7 @@
     <link href="http://blog.kazu69.net/2016/08/23/target-blank-vulnerability-tabnabbing-and-countermeasures/"/>
     <id>http://blog.kazu69.net/2016/08/23/target-blank-vulnerability-tabnabbing-and-countermeasures/</id>
     <published>2016-08-23T13:00:13.000Z</published>
-    <updated>2016-08-30T15:55:19.000Z</updated>
+    <updated>2016-09-11T07:43:55.000Z</updated>
     
     <content type="html"><![CDATA[<p><a href="https://mathiasbynens.github.io/rel-noopener/" target="_blank" rel="external">About rel=noopener</a>の記事を見て、フィッシング詐欺の手法Tabnabbing(タブナビング)について、<br>以前にそれっぽい記事読んだけど、すっかり忘れていた。</p>
 <p>改めて見直してみて、その内容と対策がまとまっていたのでおさらい。</p>
@@ -1853,7 +1930,7 @@
     <link href="http://blog.kazu69.net/2015/12/01/examined-mysql-binlog-format/"/>
     <id>http://blog.kazu69.net/2015/12/01/examined-mysql-binlog-format/</id>
     <published>2015-12-01T10:19:09.000Z</published>
-    <updated>2015-12-09T04:48:20.000Z</updated>
+    <updated>2015-12-08T13:45:56.000Z</updated>
     
     <content type="html"><![CDATA[<p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/" target="_blank" rel="external">MariaDB</a>が以下のようなエラーを吐いていた。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Unsafe statement written to the binary log using statement format</div><div class="line">since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it</div><div class="line">invokes a trigger or a stored function that inserts into an</div><div class="line">AUTO_INCREMENT column. Inserted values cannot be logged correctly.</div></pre></td></tr></table></figure>
@@ -2047,37 +2124,6 @@
     </summary>
     
       <category term="web" scheme="http://blog.kazu69.net/categories/web/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>active recordでtinyint(1)がbooleanではない形式を扱う</title>
-    <link href="http://blog.kazu69.net/2015/10/22/active-record-tinyint/"/>
-    <id>http://blog.kazu69.net/2015/10/22/active-record-tinyint/</id>
-    <published>2015-10-22T09:17:13.000Z</published>
-    <updated>2015-11-25T12:57:53.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>ActiveRecordを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。</p>
-<a id="more"></a>
-<p>MySQLでtinyint(1)はbooleanと同じなので 0 か 1 しかとらないはずだが、<br>今回はなぜか2なる値があり、常にfalseとなっていた。</p>
-<p>これは<a href="http://apidock.com/rails/ActiveRecord/ConnectionAdapters/AbstractMysqlAdapter/emulate_booleans/class" target="_blank" rel="external">ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter#emulate_booleans</a>が使われれるため。</p>
-<p>あまりないけど、こういう場合は以下の方法で解決出来る。</p>
-<p>Railsアプリケーション全体でこの設定を使わない場合</p>
-<script src="//gist.github.com/kazu69/da4db6ba0b96673840a5.js?file=application.rb"></script>
-<p>または、Model単位ではキャストする</p>
-<script src="//gist.github.com/kazu69/da4db6ba0b96673840a5.js?file=example_model.rb"></script>
-<p>ちゃんとソースにコメント書いてあるんで比較的常識的なことだったんですね…。</p>
-<p>参考にしたページ<br><a href="https://github.com/rails/rails/blob/master/activerecord/lib/active_record/connection_adapters/abstract_mysql_adapter.rb#L107-L116" target="_blank" rel="external">rails/activerecord/lib/active_record/connection_adapters/abstract_mysql_adapter.rb</a><br><a href="https://github.com/rails/rails/blob/4-2-stable/activerecord/lib/active_record/attributes.rb#L50-L52" target="_blank" rel="external">rails/activerecord/lib/active_record/connection_adapters/abstract_mysql_adapter.rb</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;ActiveRecordを使っていて、tinyint(1)なレコードの取り扱いにちょっとハマったので備忘録。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="ruby" scheme="http://blog.kazu69.net/categories/ruby/"/>
     
     
   </entry>
