@@ -73,6 +73,47 @@ ga('send', 'pageview');
     <main role="main" id="main">
       <section>
   
+    <article id="post-start-node-server-with-systemd" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/06/06/start-node-server-with-systemd/">systemdを使ってnodejsサーバー起動する</a>
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2016-06-06T10:26:02.000Z" itemprop="datePublished">2016-06-06</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/tec/">tec</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>nodejsのプロセスバックグラウンドで実行する(デーモン化)する場合、だいたい<a href="https://www.npmjs.com/package/forever">forever</a>などが選択されると思う。<br>今回は、Fedora、CentOS 7のデーモンとなるsystemdを使ってデーモン化してみた。<br>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-playing-aws-lamda-api-gateway-using-serverless-framework" class="article article-type-post" itemscope itemprop="blogPost">
   <header class="article-header">
     
@@ -420,47 +461,6 @@ ga('send', 'pageview');
       <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/">MariaDB</a>が以下のようなエラーを吐いていた。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Unsafe statement written to the binary log using statement format</div><div class="line">since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it</div><div class="line">invokes a trigger or a stored function that inserts into an</div><div class="line">AUTO_INCREMENT column. Inserted values cannot be logged correctly.</div></pre></td></tr></table></figure>
 <p>バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。<br>STATEMENTだと安全でないということはどういうことか。少し試してみた。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-create-efk-with-docker" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/13/create-efk-with-docker/">EFK(Elasticsearch + Fluentd + Kibana)をDocker-Composeで試してみた</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2015-11-13T13:44:53.000Z" itemprop="datePublished">2015-11-13</time>
-
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/web/">web</a>
-  </div>
-
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。<br>Docker 1.8 から<a href="http://docs.docker.com/engine/reference/logging/fluentd/">Fluentdもlog driver</a>に追加されているので、これを使って簡単なサンプルを構築した。</p>
       
     
   </div>
