@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Cross-Origin Resource Sharing(CORS)を使用したHTTPリクエスト | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Webブラウザで異なるWebサイトのリソースを取り扱う際には、HTTPリクエストはCross-Origin Resource Sharing (CORS)が適用される。
+ということは知っている話ですが、詳細まで追えてなかったので改めて眺めてみた。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cross-Origin Resource Sharing(CORS)を使用したHTTPリクエスト">
+<meta property="og:url" content="http://blog.kazu69.net/2017/03/23/http-request-using-cors/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="Webブラウザで異なるWebサイトのリソースを取り扱う際には、HTTPリクエストはCross-Origin Resource Sharing (CORS)が適用される。
+ということは知っている話ですが、詳細まで追えてなかったので改めて眺めてみた。">
+<meta property="og:updated_time" content="2017-04-02T03:40:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cross-Origin Resource Sharing(CORS)を使用したHTTPリクエスト">
+<meta name="twitter:description" content="Webブラウザで異なるWebサイトのリソースを取り扱う際には、HTTPリクエストはCross-Origin Resource Sharing (CORS)が適用される。
+ということは知っている話ですが、詳細まで追えてなかったので改めて眺めてみた。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-http-request-using-cors" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Cross-Origin Resource Sharing(CORS)を使用したHTTPリクエスト
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2017-03-23T11:49:52.000Z" itemprop="datePublished">2017-03-23</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/memo/">memo</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Webブラウザで異なるWebサイトのリソースを取り扱う際には、HTTPリクエストは<a href="http://www.w3.org/TR/cors/" target="_blank" rel="external">Cross-Origin Resource Sharing (CORS)</a>が適用される。</p>
+<p>ということは知っている話ですが、詳細まで追えてなかったので改めて眺めてみた。</p>
+<a id="more"></a>
+<h3 id="CORS-同一生成元"><a href="#CORS-同一生成元" class="headerlink" title="CORS(同一生成元)"></a>CORS(同一生成元)</h3><p>CORSは異なるドメインへのアクセス方法を規定しており、これによりドメイン間の通信の安全性が保障される。<br>一般的なWebブラウザではXMLHttpRequestやFeatch APIなどHTTPリクエストでCORSが適用され、リソースの取得は許可されない。</p>
+<p>CORSは以下のブラウザでサポートされている。</p>
+<ul>
+<li>Chrome 3+</li>
+<li>Firefox 3.5+</li>
+<li>Internet Explorer 11+</li>
+<li>Opera 12+</li>
+<li>Safari 4+</li>
+</ul>
+<p>ちなみにCORSは日本語で同一生成元などと言われる。<br>プロトコル、ドメイン、ポートの3つが同じである場合に同一生成元となる。</p>
+<p>同じプロトコル、ドメインでもポートが違うと同一生成元となる。</p>
+<h3 id="Cross-OriginのリソースをFetch-APIを使って取得する"><a href="#Cross-OriginのリソースをFetch-APIを使って取得する" class="headerlink" title="Cross OriginのリソースをFetch APIを使って取得する"></a>Cross OriginのリソースをFetch APIを使って取得する</h3><p>確認するにあたり<a href="https://github.com/expressjs/express" target="_blank" rel="external">Express</a>で簡単なアプリケーションを作成する。</p>
+<p><a href="https://127.0.0.1:3001" target="_blank" rel="external">https://127.0.0.1:3001</a> のホストから <a href="http://127.0.0.1:3000/no-cors/" target="_blank" rel="external">http://127.0.0.1:3000/no-cors/</a> にFetch APIでリクエストを行い、取得したリソースにアクセスをする。</p>
+<p>Express routing</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> ALLOWED_ORIGINS = [</div><div class="line">    <span class="string">'https://127.0.0.1:3000'</span>,</div><div class="line">    <span class="string">'https://127.0.0.1:3001'</span></div><div class="line">];</div><div class="line"></div><div class="line"><span class="comment">// routes</span></div><div class="line">app.get(ROUTES, (req, res) =&gt; &#123;</div><div class="line">    res.render(<span class="string">'index'</span>, &#123;<span class="attr">title</span>: <span class="string">`access to <span class="subst">$&#123;req.url&#125;</span>`</span>&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>Viewファイルからリクエストをする</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> fetchOption = &#123;&#125;;</div><div class="line"></div><div class="line"><span class="comment">// Headerを作成</span></div><div class="line"><span class="keyword">const</span> headers = <span class="keyword">new</span> Headers();</div><div class="line">headers.append(<span class="string">'Content-Type'</span>, <span class="string">'text/plain'</span>);</div><div class="line">headers.append(<span class="string">'X-Custom-Header'</span>, <span class="string">'custom-header'</span>);</div><div class="line">fetchOption[<span class="string">'headers'</span>] = headers;</div><div class="line"></div><div class="line"><span class="comment">// Featch</span></div><div class="line">fetch(<span class="string">'https://127.0.0.1:3000/no-cors/'</span>, fetchOption)</div><div class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</div><div class="line">    <span class="built_in">document</span>.body.innerHTML = <span class="string">"statusCode: "</span> + res.status + <span class="string">"&lt;br&gt;statusText: "</span> + res.statusText + <span class="string">"&lt;br&gt;cookie: "</span> + <span class="built_in">document</span>.cookie;</div><div class="line">&#125;)</div><div class="line">.catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</div><div class="line">    <span class="keyword">const</span> elem = <span class="built_in">document</span>.querySelector(<span class="string">'.response'</span>);</div><div class="line">    elem.innerHTML = <span class="built_in">JSON</span>.stringify(error);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>これはもちろんエラーとなる。Google Chrome の場合以下のようなエラーがコンソールに出力される。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">127.0.0.1/:1 Fetch API cannot load https://127.0.0.1:3000/no-cros/.</div><div class="line">Response to preflight request doesn&apos;t pass access control check: No &apos;Access-Control-Allow-Origin&apos; header is present on the requested resource.</div><div class="line">Origin &apos;https://127.0.0.1:3001&apos; is therefore not allowed access.</div><div class="line">If an opaque response serves your needs, set the request&apos;s mode to &apos;no-cors&apos; to fetch the resource with CORS disabled.</div></pre></td></tr></table></figure>
+<p>実際のHTTPヘッダのやりとりを見てみる</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"># Request Header</div><div class="line">OPTIONS /no-cros/ HTTP/1.1</div><div class="line">Host: 127.0.0.1:3000</div><div class="line">Connection: keep-alive</div><div class="line">Access-Control-Request-Method: GET</div><div class="line">Origin: https://127.0.0.1:3001</div><div class="line">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36</div><div class="line">Access-Control-Request-Headers: x-custom-header</div><div class="line">Accept: */*</div><div class="line">DNT: 1</div><div class="line">Referer: https://127.0.0.1:3001/no-cros/</div><div class="line">Accept-Encoding: gzip, deflate, sdch, br</div><div class="line">Accept-Language: ja,en-US;q=0.8,en;q=0.6</div><div class="line"></div><div class="line"># Response Header</div><div class="line">HTTP/1.1 200 OK</div><div class="line">X-Powered-By: Express</div><div class="line">Content-Type: text/plain; charset=utf-8</div><div class="line">Content-Length: 2</div><div class="line">ETag: W/&quot;2-nOO9QiTIwXgNtWtBJezz8kv3SLc&quot;</div><div class="line">set-cookie: connect.sid=s%3AqFiO6ASvY-4Sc0IFI_bWSKZV2rbwBoDH.WIyBhxr31leCLd%2BSv532FQHUS1chxk2d3iv6zweCh8k; Path=/; HttpOnly</div><div class="line">Date: Thu, 23 Mar 2017 13:26:23 GMT</div><div class="line">Connection: keep-alive</div></pre></td></tr></table></figure>
+<p>エラー内容にあるように<br>preflight request(プリフライトリクエスト)の際に <strong>Access-Control-Allow-Origin ヘッダがない</strong> ということでエラーになっている。</p>
+<p>ちなみにCORSに使われるHTTPリクエストヘッダは以下</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>HTTP リクエストヘッダ</th>
+<th>content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Origin</td>
+<td>リクエストしたオリジン</td>
+</tr>
+<tr>
+<td>Access-Control-Request-Method</td>
+<td>リクエストを行うHTTPメソッド。プリフライトリクエストに使われる</td>
+</tr>
+<tr>
+<td>Access-Control-Request-Headers</td>
+<td>リクエストを行う際に利用されるHTTPヘッダ</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Access-Control-Allow-OriginとCROS"><a href="#Access-Control-Allow-OriginとCROS" class="headerlink" title="Access-Control-Allow-OriginとCROS"></a>Access-Control-Allow-OriginとCROS</h3><p>次に Access-Control-Allow-Origin ヘッダを返してあげるようにする。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> ALLOWED_METHODS = [</div><div class="line">    <span class="string">'GET'</span>,</div><div class="line">    <span class="string">'POST'</span>,</div><div class="line">    <span class="string">'PUT'</span>,</div><div class="line">    <span class="string">'PATCH'</span>,</div><div class="line">    <span class="string">'DELETE'</span>,</div><div class="line">    <span class="string">'HEAD'</span>,</div><div class="line">    <span class="string">'OPTIONS'</span></div><div class="line">];</div><div class="line"></div><div class="line"><span class="keyword">const</span> ALLOWED_ORIGINS = [</div><div class="line">    <span class="string">'https://127.0.0.1:3000'</span>,</div><div class="line">    <span class="string">'https://127.0.0.1:3001'</span></div><div class="line">];</div><div class="line"></div><div class="line"><span class="comment">// レスポンスHeaderを組み立てる</span></div><div class="line">app.use(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">const</span> origin = req.headers.origin;</div><div class="line">    <span class="keyword">if</span>(ALLOWED_ORIGINS.indexOf(req.headers.origin) &gt; <span class="number">-1</span>) &#123;</div><div class="line">        sess.cookie.secure = <span class="literal">true</span>;</div><div class="line">        res.cookie(<span class="string">'example'</span>, <span class="built_in">Math</span>.random().toString(), &#123;<span class="attr">maxAge</span>: <span class="number">86400</span>, <span class="attr">httpOnly</span>: <span class="literal">true</span>&#125;);</div><div class="line">        res.setHeader(<span class="string">'Access-Control-Allow-Origin'</span>, origin);</div><div class="line">        res.setHeader(<span class="string">'Access-Control-Allow-Methods'</span>, ALLOWED_METHODS.join(<span class="string">','</span>));</div><div class="line">        res.setHeader(<span class="string">'Access-Control-Allow-Headers'</span>, <span class="string">'Content-type,Accept,X-Custom-Header'</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    next();</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// HTTP OPTIONS</span></div><div class="line">app.options(<span class="string">'*'</span>, (req, res) =&gt; &#123;</div><div class="line">    res.sendStatus(<span class="number">200</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// routes</span></div><div class="line">app.get(ROUTES, (req, res) =&gt; &#123;</div><div class="line">    res.render(<span class="string">'index'</span>, &#123;<span class="attr">title</span>: <span class="string">`access to <span class="subst">$&#123;req.url&#125;</span>`</span>&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>実際のHeaderのやりとりは以下のようになる。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"># Request Header</div><div class="line">OPTIONS /cros/ HTTP/1.1</div><div class="line">Host: 127.0.0.1:3000</div><div class="line">Connection: keep-alive</div><div class="line">Access-Control-Request-Method: GET</div><div class="line">Origin: https://127.0.0.1:3001</div><div class="line">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36</div><div class="line">Access-Control-Request-Headers: x-custom-header</div><div class="line">Accept: */*</div><div class="line">DNT: 1</div><div class="line">Referer: https://127.0.0.1:3001/cros/</div><div class="line">Accept-Encoding: gzip, deflate, sdch, br</div><div class="line">Accept-Language: ja,en-US;q=0.8,en;q=0.6</div><div class="line"></div><div class="line"># Response Header</div><div class="line">HTTP/1.1 200 OK</div><div class="line">X-Powered-By: Express</div><div class="line">set-cookie: example=0.6767570391231008; Max-Age=86; Path=/; Expires=Thu, 23 Mar 2017 13:49:13 GMT; HttpOnly</div><div class="line">set-cookie: connect.sid=s%3AebdnoA5XfiJBSma9g9i-PMzsTbTzHH16.dlGmLYU26FIAgP8SYyhV9cOWJ%2FP0caflOexh5%2FmkZkk; Path=/; HttpOnly</div><div class="line">Access-Control-Allow-Origin: https://127.0.0.1:3001</div><div class="line">Access-Control-Max-Age:86400</div><div class="line">Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS</div><div class="line">Access-Control-Allow-Headers: Content-type,Accept,X-Custom-Header</div><div class="line">Content-Type: text/plain; charset=utf-8</div><div class="line">Content-Length: 2</div><div class="line">ETag: W/&quot;2-nOO9QiTIwXgNtWtBJezz8kv3SLc&quot;</div><div class="line">Date: Thu, 23 Mar 2017 13:47:47 GMT</div><div class="line">Connection: keep-alive</div></pre></td></tr></table></figure>
+<p>ということで、エラーもなく成功する。</p>
+<p>HTTPヘッダを眺めてみると、リクエストHeaderはHTTP OPTINSメソッドが投げられている。<br>これは、プリフライトリクエストとなる。<br>プリフライトリクエストは一般的なシンプルなリクエストと異なり、CORSなどのリクエストを行う前に先行して送信される。<br>これによりリクエスト先のリソースにアクセス可能か、リクエストメソッドが実装されいるかを検証する。</p>
+<p>ここでエラーとなった場合は実際にはリクエストしないことになる。</p>
+<p>ちなみにプリフライトリクエストが送信される条件は以下となる。</p>
+<ul>
+<li>GET、HEAD、POST 以外のHTTPメソッドでリクエストした場合</li>
+<li>Content-Typeがapplication/x-www-form-urlencoded、multipart/form-data、text/plainのPOSTリクエストをした場合</li>
+<li>カスタムヘッダをリクエストをした場合</li>
+</ul>
+<p>ということで、CORSに対応する場合は、サーバー側では必ずOPTIONSメソッドを正しく返却ししないと、<br>本来のリクエストも失敗することになる。</p>
+<p>つづいてレスポンスヘッダを眺めてみる。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Origin: https://127.0.0.1:3001</div><div class="line">Access-Control-Max-Age:86400</div><div class="line">Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS</div><div class="line">Access-Control-Allow-Headers: Content-type,Accept,X-Custom-Header</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>http レスポンスヘッダ</th>
+<th>content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Access-Control-Allow-Origin</td>
+<td>アクセスを許可するURI (* でワイルドカードとなる)</td>
+</tr>
+<tr>
+<td>Access-Control-Allow-Methods</td>
+<td>許可するHTTPメソッドを指定</td>
+</tr>
+<tr>
+<td>Access-Control-Allow-Headers</td>
+<td>実際のリクエストで使用できるHTTPヘッダを明示</td>
+</tr>
+<tr>
+<td>Access-Control-Max-Age</td>
+<td>プリフライトの結果をキャッシュ時間</td>
+</tr>
+<tr>
+<td>Access-Control-Expose-Headers</td>
+<td>利用できるヘッダのホワイトリストを明示</td>
+</tr>
+<tr>
+<td>Access-Control-Allow-Credentials</td>
+<td>Credentialsを含めたリクエストを取り扱えるか</td>
+</tr>
+</tbody>
+</table>
+<p>ということで取得したリソースにアクセスできる。</p>
+<h3 id="CredentialsとCORS"><a href="#CredentialsとCORS" class="headerlink" title="CredentialsとCORS"></a>CredentialsとCORS</h3><p>認証情報やcookieなどを含むリクエストの場合のHTTP headerは以下の通り</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"># Request</div><div class="line">OPTIONS /cros-with-credentials/ HTTP/1.1</div><div class="line">Host: 127.0.0.1:3000</div><div class="line">Connection: keep-alive</div><div class="line">Access-Control-Request-Method: GET</div><div class="line">Origin: https://127.0.0.1:3001</div><div class="line">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36</div><div class="line">Access-Control-Request-Headers: x-custom-header</div><div class="line">Accept: */*</div><div class="line">DNT: 1</div><div class="line">Referer: https://127.0.0.1:3001/cros-with-credentials/</div><div class="line">Accept-Encoding: gzip, deflate, sdch, br</div><div class="line">Accept-Language: ja,en-US;q=0.8,en;q=0.6</div><div class="line"></div><div class="line"># Response</div><div class="line">HTTP/1.1 200 OK</div><div class="line">X-Powered-By: Express</div><div class="line">set-cookie: example=0.654153584678103; Max-Age=86; Path=/; Expires=Thu, 23 Mar 2017 16:10:43 GMT; HttpOnly</div><div class="line">set-cookie: connect.sid=s%3AM9NQy3hz5cLb3kW6htuybWE6nEX1_iL6.ENXqiTfVPMQVyP%2FGFZ9pshnC87D7rX5%2BM48mjVqwR7s; Path=/; HttpOnly</div><div class="line">Access-Control-Allow-Origin: https://127.0.0.1:3001</div><div class="line">Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS</div><div class="line">Access-Control-Max-Age: 86400</div><div class="line">Access-Control-Allow-Headers: Content-type,Accept,X-Custom-Header</div><div class="line">Access-Control-Allow-Credentials: true</div><div class="line">Content-Type: text/plain; charset=utf-8</div><div class="line">Content-Length: 2</div><div class="line">ETag: W/&quot;2-nOO9QiTIwXgNtWtBJezz8kv3SLc&quot;</div><div class="line">Date: Thu, 23 Mar 2017 16:09:17 GMT</div><div class="line">Connection: keep-alive</div></pre></td></tr></table></figure>
+<p>ここではヘッダに以下を含まれるようにする必要がある。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Credentials: true</div></pre></td></tr></table></figure>
+<p>また、Credentialsを含めたリクエストの場合は、Access-Control-Allow-Originがワイルドカード(*を指定している)場合はリクエストが失敗する。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Fetch API cannot load https://127.0.0.1:3000/cros-with-credentials/.</div><div class="line">The value of the &apos;Access-Control-Allow-Origin&apos; header in the response must not be the wildcard &apos;*&apos; when the request&apos;s credentials mode is &apos;include&apos;.</div><div class="line">Origin &apos;https://127.0.0.1:3001&apos; is therefore not allowed access.</div></pre></td></tr></table></figure>
+<p>とうことで、CORSでのリクエストとその概要を改めて眺めた。<br>プリフライトリクエストの存在とその役割、若干曖昧だったCORSの正しい対応方法を理解することができた。</p>
+<h3 id="今回使ったサンプル"><a href="#今回使ったサンプル" class="headerlink" title="今回使ったサンプル"></a>今回使ったサンプル</h3><p><a href="https://github.com/kazu69/cross-origin-resource-sharing-exmpress-example" target="_blank" rel="external">kazu69/cross-origin-resource-sharing-exmpress-example</a></p>
+<h3 id="参考しにしたページ"><a href="#参考しにしたページ" class="headerlink" title="参考しにしたページ"></a>参考しにしたページ</h3><p><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/HTTP_access_control#Access-Control-Request-Method" target="_blank" rel="external">HTTP アクセス制御 (CORS)</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2017/03/23/http-request-using-cors/" class="hatena-bookmark-button" data-hatena-bookmark-title="Cross-Origin Resource Sharing(CORS)を使用したHTTPリクエスト" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2017/03/23/http-request-using-cors/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2017/02/19/learned_consul_again/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            Consulを再度学んだ
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2017 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2017/03/23/http-request-using-cors/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>

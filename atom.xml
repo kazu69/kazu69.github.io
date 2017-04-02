@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.kazu69.net/"/>
-  <updated>2017-02-27T13:51:57.000Z</updated>
+  <updated>2017-04-02T03:40:31.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -14,6 +14,138 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Cross-Origin Resource Sharing(CORS)を使用したHTTPリクエスト</title>
+    <link href="http://blog.kazu69.net/2017/03/23/http-request-using-cors/"/>
+    <id>http://blog.kazu69.net/2017/03/23/http-request-using-cors/</id>
+    <published>2017-03-23T11:49:52.000Z</published>
+    <updated>2017-04-02T03:40:31.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Webブラウザで異なるWebサイトのリソースを取り扱う際には、HTTPリクエストは<a href="http://www.w3.org/TR/cors/" target="_blank" rel="external">Cross-Origin Resource Sharing (CORS)</a>が適用される。</p>
+<p>ということは知っている話ですが、詳細まで追えてなかったので改めて眺めてみた。</p>
+<a id="more"></a>
+<h3 id="CORS-同一生成元"><a href="#CORS-同一生成元" class="headerlink" title="CORS(同一生成元)"></a>CORS(同一生成元)</h3><p>CORSは異なるドメインへのアクセス方法を規定しており、これによりドメイン間の通信の安全性が保障される。<br>一般的なWebブラウザではXMLHttpRequestやFeatch APIなどHTTPリクエストでCORSが適用され、リソースの取得は許可されない。</p>
+<p>CORSは以下のブラウザでサポートされている。</p>
+<ul>
+<li>Chrome 3+</li>
+<li>Firefox 3.5+</li>
+<li>Internet Explorer 11+</li>
+<li>Opera 12+</li>
+<li>Safari 4+</li>
+</ul>
+<p>ちなみにCORSは日本語で同一生成元などと言われる。<br>プロトコル、ドメイン、ポートの3つが同じである場合に同一生成元となる。</p>
+<p>同じプロトコル、ドメインでもポートが違うと同一生成元となる。</p>
+<h3 id="Cross-OriginのリソースをFetch-APIを使って取得する"><a href="#Cross-OriginのリソースをFetch-APIを使って取得する" class="headerlink" title="Cross OriginのリソースをFetch APIを使って取得する"></a>Cross OriginのリソースをFetch APIを使って取得する</h3><p>確認するにあたり<a href="https://github.com/expressjs/express" target="_blank" rel="external">Express</a>で簡単なアプリケーションを作成する。</p>
+<p><a href="https://127.0.0.1:3001" target="_blank" rel="external">https://127.0.0.1:3001</a> のホストから <a href="http://127.0.0.1:3000/no-cors/" target="_blank" rel="external">http://127.0.0.1:3000/no-cors/</a> にFetch APIでリクエストを行い、取得したリソースにアクセスをする。</p>
+<p>Express routing</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> ALLOWED_ORIGINS = [</div><div class="line">    <span class="string">'https://127.0.0.1:3000'</span>,</div><div class="line">    <span class="string">'https://127.0.0.1:3001'</span></div><div class="line">];</div><div class="line"></div><div class="line"><span class="comment">// routes</span></div><div class="line">app.get(ROUTES, (req, res) =&gt; &#123;</div><div class="line">    res.render(<span class="string">'index'</span>, &#123;<span class="attr">title</span>: <span class="string">`access to <span class="subst">$&#123;req.url&#125;</span>`</span>&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>Viewファイルからリクエストをする</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> fetchOption = &#123;&#125;;</div><div class="line"></div><div class="line"><span class="comment">// Headerを作成</span></div><div class="line"><span class="keyword">const</span> headers = <span class="keyword">new</span> Headers();</div><div class="line">headers.append(<span class="string">'Content-Type'</span>, <span class="string">'text/plain'</span>);</div><div class="line">headers.append(<span class="string">'X-Custom-Header'</span>, <span class="string">'custom-header'</span>);</div><div class="line">fetchOption[<span class="string">'headers'</span>] = headers;</div><div class="line"></div><div class="line"><span class="comment">// Featch</span></div><div class="line">fetch(<span class="string">'https://127.0.0.1:3000/no-cors/'</span>, fetchOption)</div><div class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</div><div class="line">    <span class="built_in">document</span>.body.innerHTML = <span class="string">"statusCode: "</span> + res.status + <span class="string">"&lt;br&gt;statusText: "</span> + res.statusText + <span class="string">"&lt;br&gt;cookie: "</span> + <span class="built_in">document</span>.cookie;</div><div class="line">&#125;)</div><div class="line">.catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</div><div class="line">    <span class="keyword">const</span> elem = <span class="built_in">document</span>.querySelector(<span class="string">'.response'</span>);</div><div class="line">    elem.innerHTML = <span class="built_in">JSON</span>.stringify(error);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>これはもちろんエラーとなる。Google Chrome の場合以下のようなエラーがコンソールに出力される。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">127.0.0.1/:1 Fetch API cannot load https://127.0.0.1:3000/no-cros/.</div><div class="line">Response to preflight request doesn&apos;t pass access control check: No &apos;Access-Control-Allow-Origin&apos; header is present on the requested resource.</div><div class="line">Origin &apos;https://127.0.0.1:3001&apos; is therefore not allowed access.</div><div class="line">If an opaque response serves your needs, set the request&apos;s mode to &apos;no-cors&apos; to fetch the resource with CORS disabled.</div></pre></td></tr></table></figure>
+<p>実際のHTTPヘッダのやりとりを見てみる</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"># Request Header</div><div class="line">OPTIONS /no-cros/ HTTP/1.1</div><div class="line">Host: 127.0.0.1:3000</div><div class="line">Connection: keep-alive</div><div class="line">Access-Control-Request-Method: GET</div><div class="line">Origin: https://127.0.0.1:3001</div><div class="line">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36</div><div class="line">Access-Control-Request-Headers: x-custom-header</div><div class="line">Accept: */*</div><div class="line">DNT: 1</div><div class="line">Referer: https://127.0.0.1:3001/no-cros/</div><div class="line">Accept-Encoding: gzip, deflate, sdch, br</div><div class="line">Accept-Language: ja,en-US;q=0.8,en;q=0.6</div><div class="line"></div><div class="line"># Response Header</div><div class="line">HTTP/1.1 200 OK</div><div class="line">X-Powered-By: Express</div><div class="line">Content-Type: text/plain; charset=utf-8</div><div class="line">Content-Length: 2</div><div class="line">ETag: W/&quot;2-nOO9QiTIwXgNtWtBJezz8kv3SLc&quot;</div><div class="line">set-cookie: connect.sid=s%3AqFiO6ASvY-4Sc0IFI_bWSKZV2rbwBoDH.WIyBhxr31leCLd%2BSv532FQHUS1chxk2d3iv6zweCh8k; Path=/; HttpOnly</div><div class="line">Date: Thu, 23 Mar 2017 13:26:23 GMT</div><div class="line">Connection: keep-alive</div></pre></td></tr></table></figure>
+<p>エラー内容にあるように<br>preflight request(プリフライトリクエスト)の際に <strong>Access-Control-Allow-Origin ヘッダがない</strong> ということでエラーになっている。</p>
+<p>ちなみにCORSに使われるHTTPリクエストヘッダは以下</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>HTTP リクエストヘッダ</th>
+<th>content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Origin</td>
+<td>リクエストしたオリジン</td>
+</tr>
+<tr>
+<td>Access-Control-Request-Method</td>
+<td>リクエストを行うHTTPメソッド。プリフライトリクエストに使われる</td>
+</tr>
+<tr>
+<td>Access-Control-Request-Headers</td>
+<td>リクエストを行う際に利用されるHTTPヘッダ</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Access-Control-Allow-OriginとCROS"><a href="#Access-Control-Allow-OriginとCROS" class="headerlink" title="Access-Control-Allow-OriginとCROS"></a>Access-Control-Allow-OriginとCROS</h3><p>次に Access-Control-Allow-Origin ヘッダを返してあげるようにする。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> ALLOWED_METHODS = [</div><div class="line">    <span class="string">'GET'</span>,</div><div class="line">    <span class="string">'POST'</span>,</div><div class="line">    <span class="string">'PUT'</span>,</div><div class="line">    <span class="string">'PATCH'</span>,</div><div class="line">    <span class="string">'DELETE'</span>,</div><div class="line">    <span class="string">'HEAD'</span>,</div><div class="line">    <span class="string">'OPTIONS'</span></div><div class="line">];</div><div class="line"></div><div class="line"><span class="keyword">const</span> ALLOWED_ORIGINS = [</div><div class="line">    <span class="string">'https://127.0.0.1:3000'</span>,</div><div class="line">    <span class="string">'https://127.0.0.1:3001'</span></div><div class="line">];</div><div class="line"></div><div class="line"><span class="comment">// レスポンスHeaderを組み立てる</span></div><div class="line">app.use(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">const</span> origin = req.headers.origin;</div><div class="line">    <span class="keyword">if</span>(ALLOWED_ORIGINS.indexOf(req.headers.origin) &gt; <span class="number">-1</span>) &#123;</div><div class="line">        sess.cookie.secure = <span class="literal">true</span>;</div><div class="line">        res.cookie(<span class="string">'example'</span>, <span class="built_in">Math</span>.random().toString(), &#123;<span class="attr">maxAge</span>: <span class="number">86400</span>, <span class="attr">httpOnly</span>: <span class="literal">true</span>&#125;);</div><div class="line">        res.setHeader(<span class="string">'Access-Control-Allow-Origin'</span>, origin);</div><div class="line">        res.setHeader(<span class="string">'Access-Control-Allow-Methods'</span>, ALLOWED_METHODS.join(<span class="string">','</span>));</div><div class="line">        res.setHeader(<span class="string">'Access-Control-Allow-Headers'</span>, <span class="string">'Content-type,Accept,X-Custom-Header'</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    next();</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// HTTP OPTIONS</span></div><div class="line">app.options(<span class="string">'*'</span>, (req, res) =&gt; &#123;</div><div class="line">    res.sendStatus(<span class="number">200</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="comment">// routes</span></div><div class="line">app.get(ROUTES, (req, res) =&gt; &#123;</div><div class="line">    res.render(<span class="string">'index'</span>, &#123;<span class="attr">title</span>: <span class="string">`access to <span class="subst">$&#123;req.url&#125;</span>`</span>&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>実際のHeaderのやりとりは以下のようになる。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"># Request Header</div><div class="line">OPTIONS /cros/ HTTP/1.1</div><div class="line">Host: 127.0.0.1:3000</div><div class="line">Connection: keep-alive</div><div class="line">Access-Control-Request-Method: GET</div><div class="line">Origin: https://127.0.0.1:3001</div><div class="line">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36</div><div class="line">Access-Control-Request-Headers: x-custom-header</div><div class="line">Accept: */*</div><div class="line">DNT: 1</div><div class="line">Referer: https://127.0.0.1:3001/cros/</div><div class="line">Accept-Encoding: gzip, deflate, sdch, br</div><div class="line">Accept-Language: ja,en-US;q=0.8,en;q=0.6</div><div class="line"></div><div class="line"># Response Header</div><div class="line">HTTP/1.1 200 OK</div><div class="line">X-Powered-By: Express</div><div class="line">set-cookie: example=0.6767570391231008; Max-Age=86; Path=/; Expires=Thu, 23 Mar 2017 13:49:13 GMT; HttpOnly</div><div class="line">set-cookie: connect.sid=s%3AebdnoA5XfiJBSma9g9i-PMzsTbTzHH16.dlGmLYU26FIAgP8SYyhV9cOWJ%2FP0caflOexh5%2FmkZkk; Path=/; HttpOnly</div><div class="line">Access-Control-Allow-Origin: https://127.0.0.1:3001</div><div class="line">Access-Control-Max-Age:86400</div><div class="line">Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS</div><div class="line">Access-Control-Allow-Headers: Content-type,Accept,X-Custom-Header</div><div class="line">Content-Type: text/plain; charset=utf-8</div><div class="line">Content-Length: 2</div><div class="line">ETag: W/&quot;2-nOO9QiTIwXgNtWtBJezz8kv3SLc&quot;</div><div class="line">Date: Thu, 23 Mar 2017 13:47:47 GMT</div><div class="line">Connection: keep-alive</div></pre></td></tr></table></figure>
+<p>ということで、エラーもなく成功する。</p>
+<p>HTTPヘッダを眺めてみると、リクエストHeaderはHTTP OPTINSメソッドが投げられている。<br>これは、プリフライトリクエストとなる。<br>プリフライトリクエストは一般的なシンプルなリクエストと異なり、CORSなどのリクエストを行う前に先行して送信される。<br>これによりリクエスト先のリソースにアクセス可能か、リクエストメソッドが実装されいるかを検証する。</p>
+<p>ここでエラーとなった場合は実際にはリクエストしないことになる。</p>
+<p>ちなみにプリフライトリクエストが送信される条件は以下となる。</p>
+<ul>
+<li>GET、HEAD、POST 以外のHTTPメソッドでリクエストした場合</li>
+<li>Content-Typeがapplication/x-www-form-urlencoded、multipart/form-data、text/plainのPOSTリクエストをした場合</li>
+<li>カスタムヘッダをリクエストをした場合</li>
+</ul>
+<p>ということで、CORSに対応する場合は、サーバー側では必ずOPTIONSメソッドを正しく返却ししないと、<br>本来のリクエストも失敗することになる。</p>
+<p>つづいてレスポンスヘッダを眺めてみる。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Origin: https://127.0.0.1:3001</div><div class="line">Access-Control-Max-Age:86400</div><div class="line">Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS</div><div class="line">Access-Control-Allow-Headers: Content-type,Accept,X-Custom-Header</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>http レスポンスヘッダ</th>
+<th>content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Access-Control-Allow-Origin</td>
+<td>アクセスを許可するURI (* でワイルドカードとなる)</td>
+</tr>
+<tr>
+<td>Access-Control-Allow-Methods</td>
+<td>許可するHTTPメソッドを指定</td>
+</tr>
+<tr>
+<td>Access-Control-Allow-Headers</td>
+<td>実際のリクエストで使用できるHTTPヘッダを明示</td>
+</tr>
+<tr>
+<td>Access-Control-Max-Age</td>
+<td>プリフライトの結果をキャッシュ時間</td>
+</tr>
+<tr>
+<td>Access-Control-Expose-Headers</td>
+<td>利用できるヘッダのホワイトリストを明示</td>
+</tr>
+<tr>
+<td>Access-Control-Allow-Credentials</td>
+<td>Credentialsを含めたリクエストを取り扱えるか</td>
+</tr>
+</tbody>
+</table>
+<p>ということで取得したリソースにアクセスできる。</p>
+<h3 id="CredentialsとCORS"><a href="#CredentialsとCORS" class="headerlink" title="CredentialsとCORS"></a>CredentialsとCORS</h3><p>認証情報やcookieなどを含むリクエストの場合のHTTP headerは以下の通り</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"># Request</div><div class="line">OPTIONS /cros-with-credentials/ HTTP/1.1</div><div class="line">Host: 127.0.0.1:3000</div><div class="line">Connection: keep-alive</div><div class="line">Access-Control-Request-Method: GET</div><div class="line">Origin: https://127.0.0.1:3001</div><div class="line">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36</div><div class="line">Access-Control-Request-Headers: x-custom-header</div><div class="line">Accept: */*</div><div class="line">DNT: 1</div><div class="line">Referer: https://127.0.0.1:3001/cros-with-credentials/</div><div class="line">Accept-Encoding: gzip, deflate, sdch, br</div><div class="line">Accept-Language: ja,en-US;q=0.8,en;q=0.6</div><div class="line"></div><div class="line"># Response</div><div class="line">HTTP/1.1 200 OK</div><div class="line">X-Powered-By: Express</div><div class="line">set-cookie: example=0.654153584678103; Max-Age=86; Path=/; Expires=Thu, 23 Mar 2017 16:10:43 GMT; HttpOnly</div><div class="line">set-cookie: connect.sid=s%3AM9NQy3hz5cLb3kW6htuybWE6nEX1_iL6.ENXqiTfVPMQVyP%2FGFZ9pshnC87D7rX5%2BM48mjVqwR7s; Path=/; HttpOnly</div><div class="line">Access-Control-Allow-Origin: https://127.0.0.1:3001</div><div class="line">Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS</div><div class="line">Access-Control-Max-Age: 86400</div><div class="line">Access-Control-Allow-Headers: Content-type,Accept,X-Custom-Header</div><div class="line">Access-Control-Allow-Credentials: true</div><div class="line">Content-Type: text/plain; charset=utf-8</div><div class="line">Content-Length: 2</div><div class="line">ETag: W/&quot;2-nOO9QiTIwXgNtWtBJezz8kv3SLc&quot;</div><div class="line">Date: Thu, 23 Mar 2017 16:09:17 GMT</div><div class="line">Connection: keep-alive</div></pre></td></tr></table></figure>
+<p>ここではヘッダに以下を含まれるようにする必要がある。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Access-Control-Allow-Credentials: true</div></pre></td></tr></table></figure>
+<p>また、Credentialsを含めたリクエストの場合は、Access-Control-Allow-Originがワイルドカード(*を指定している)場合はリクエストが失敗する。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Fetch API cannot load https://127.0.0.1:3000/cros-with-credentials/.</div><div class="line">The value of the &apos;Access-Control-Allow-Origin&apos; header in the response must not be the wildcard &apos;*&apos; when the request&apos;s credentials mode is &apos;include&apos;.</div><div class="line">Origin &apos;https://127.0.0.1:3001&apos; is therefore not allowed access.</div></pre></td></tr></table></figure>
+<p>とうことで、CORSでのリクエストとその概要を改めて眺めた。<br>プリフライトリクエストの存在とその役割、若干曖昧だったCORSの正しい対応方法を理解することができた。</p>
+<h3 id="今回使ったサンプル"><a href="#今回使ったサンプル" class="headerlink" title="今回使ったサンプル"></a>今回使ったサンプル</h3><p><a href="https://github.com/kazu69/cross-origin-resource-sharing-exmpress-example" target="_blank" rel="external">kazu69/cross-origin-resource-sharing-exmpress-example</a></p>
+<h3 id="参考しにしたページ"><a href="#参考しにしたページ" class="headerlink" title="参考しにしたページ"></a>参考しにしたページ</h3><p><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/HTTP_access_control#Access-Control-Request-Method" target="_blank" rel="external">HTTP アクセス制御 (CORS)</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Webブラウザで異なるWebサイトのリソースを取り扱う際には、HTTPリクエストは&lt;a href=&quot;http://www.w3.org/TR/cors/&quot;&gt;Cross-Origin Resource Sharing (CORS)&lt;/a&gt;が適用される。&lt;/p&gt;
+&lt;p&gt;ということは知っている話ですが、詳細まで追えてなかったので改めて眺めてみた。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="memo" scheme="http://blog.kazu69.net/categories/memo/"/>
+    
+      <category term="web" scheme="http://blog.kazu69.net/categories/memo/web/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>Consulを再度学んだ</title>
@@ -2096,164 +2228,6 @@
     
     
       <category term="web" scheme="http://blog.kazu69.net/tags/web/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>mysqlのバイナリログのフォーマットを調べた</title>
-    <link href="http://blog.kazu69.net/2015/12/01/examined-mysql-binlog-format/"/>
-    <id>http://blog.kazu69.net/2015/12/01/examined-mysql-binlog-format/</id>
-    <published>2015-12-01T10:19:09.000Z</published>
-    <updated>2015-12-08T13:45:56.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/" target="_blank" rel="external">MariaDB</a>が以下のようなエラーを吐いていた。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Unsafe statement written to the binary log using statement format</div><div class="line">since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it</div><div class="line">invokes a trigger or a stored function that inserts into an</div><div class="line">AUTO_INCREMENT column. Inserted values cannot be logged correctly.</div></pre></td></tr></table></figure>
-<p>バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。<br>STATEMENTだと安全でないということはどういうことか。少し試してみた。</p>
-<a id="more"></a>
-<h2 id="バイナリログについて"><a href="#バイナリログについて" class="headerlink" title="バイナリログについて"></a>バイナリログについて</h2><p>RDBMSでいうところのトランザクションログをMySQLではバイナリログという。</p>
-<p>バイナリログにはMySQLにおいてデータベースに対して</p>
-<ul>
-<li>トランザクションの開始および終了</li>
-<li>値の挿入(INSERT)、値の更新(UPDATE)、削除(DELETE)</li>
-<li>テーブル、インデックスの作成削除</li>
-</ul>
-<p>の履歴が保持されている。</p>
-<p>トランザクションログはRDBMSによって異なり、以下に大別される。</p>
-<table>
-<thead>
-<tr>
-<th>トランザクションログ</th>
-<th>概要</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>論理ロギング</td>
-<td>データベースに対する論理動作(SQL文)の変更履歴を管理</td>
-</tr>
-<tr>
-<td>物理ロギング</td>
-<td>変更があったデータの変更前のイメージを管理</td>
-</tr>
-</tbody>
-</table>
-<p>バイナリログはデフォルトでは生成されないのでmy.cnfに設定を追加する必要がある。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># grep my.cnf</span></div><div class="line">mysql --help | grep my.cnf</div><div class="line">touch /usr/<span class="built_in">local</span>/etc/my.cnf</div><div class="line"></div><div class="line">cat /usr/<span class="built_in">local</span>/etc/my.cnf</div></pre></td></tr></table></figure>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="section">[mysqld]</span></div><div class="line"><span class="attr">log-bin</span>=mysql-bin</div></pre></td></tr></table></figure>
-<p>設定することにより、/usr/local/var/mysql/mysql-bin.000001 のようにログファイルが生成される。<br>再起動などすると /usr/local/var/mysql/mysql-bin.000002 と新たなログファイルが生成される。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">ls /usr/<span class="built_in">local</span>/var/mysql/</div><div class="line"></div><div class="line">mysql-bin.000001</div><div class="line"></div><div class="line">mysql.server restart</div><div class="line">Shutting down MySQL</div><div class="line">. SUCCESS!</div><div class="line">Starting MySQL</div><div class="line">. SUCCESS!</div><div class="line"></div><div class="line">ls /usr/<span class="built_in">local</span>/var/mysql/</div><div class="line"></div><div class="line">mysql-bin.000001</div><div class="line">mysql-bin.000002</div></pre></td></tr></table></figure>
-<p>存在するログファイルは /usr/local/var/mysql/mysql-bin.index にリストアップされている。<br>ということで rm などでログだけ消すと次回起動時にエラーになる。mysql-bin.indexからも削除する必要が有る。</p>
-<p>また、ログファイルは溜まっていく一方なので自動削除するためにmy.cnfに設定を追加。<br>expire_log_days でログを保持する期間を追加。(初期値は0で削除しない)<br>7日間保持するなら、以下のような感じ。</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="section">[mysqld]</span></div><div class="line"><span class="attr">log-bin</span>=mysql-bin</div><div class="line"><span class="attr">expire_log_days</span> = <span class="number">7</span></div></pre></td></tr></table></figure>
-<h2 id="バイナリログのフォーマット"><a href="#バイナリログのフォーマット" class="headerlink" title="バイナリログのフォーマット"></a>バイナリログのフォーマット</h2><p>バイナリログのフォーマットは3種類あり、それぞれ以下のようになっている。</p>
-<table>
-<thead>
-<tr>
-<th>フォーマット</th>
-<th>特徴</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>STATEMENT</td>
-<td>実行されたSQLに基づいてロギング</td>
-</tr>
-<tr>
-<td>ROW</td>
-<td>行ベースに基づきロギング</td>
-</tr>
-<tr>
-<td>MIXED</td>
-<td>基本はSTATEMENTだが特定の条件では行ベースでロギングする</td>
-</tr>
-</tbody>
-</table>
-<p>おそらくレンタルサーバーとかだと、STATEMENTに設定されていることが多いんじゃないかなと思う。</p>
-<p>それぞれの挙動を適当なテーブルを作り試してみる。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">create database <span class="built_in">test</span>;</div><div class="line">create table personal(id int auto_increment, name varchar(10),index(id));</div><div class="line">SHOW FULL COLUMNS FROM personal;</div><div class="line">+-------+-------------+-----------------+------+-----+---------+----------------+---------------------------------+---------+</div><div class="line">| Field | Type        | Collation       | Null | Key | Default | Extra          | Privileges                      | Comment |</div><div class="line">+-------+-------------+-----------------+------+-----+---------+----------------+---------------------------------+---------+</div><div class="line">| id    | int(11)     | NULL            | NO   | MUL | NULL    | auto_increment | select,insert,update,references |         |</div><div class="line">| name  | varchar(10) | utf8_general_ci | YES  |     | NULL    |                | select,insert,update,references |         |</div><div class="line">+-------+-------------+-----------------+------+-----+---------+----------------+---------------------------------+---------+</div></pre></td></tr></table></figure>
-<h3 id="Statement-base"><a href="#Statement-base" class="headerlink" title="Statement base"></a>Statement base</h3><p>デフォルトのフォーマット(MySQL5.6まで)。データやテーブル変更の実際に実行されたSQL文をログとして記録する。<br>Non-Deterministicということで、Unsafeとなる。<br>つまりレプリケーションのスレーブ側のサーバーでログを元に同じSQLを実行しても<br>同じになるとは限らないため。</p>
-<p><a href="https://dev.mysql.com/doc/refman/5.6/ja/replication-sbr-rbr.html" target="_blank" rel="external">https://dev.mysql.com/doc/refman/5.6/ja/replication-sbr-rbr.html</a></p>
-<p>実際にtableに値を追加してバイナリログを確認していく。</p>
-<p>insertしてみる</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># set statement</span></div><div class="line">SET binlog_format = <span class="string">'STATEMENT'</span>;</div><div class="line"></div><div class="line">SHOW variables LIKE <span class="string">"binlog_format"</span>;</div><div class="line">+---------------+-----------+</div><div class="line">| Variable_name | Value     |</div><div class="line">+---------------+-----------+</div><div class="line">| binlog_format | STATEMENT |</div><div class="line">+---------------+-----------+</div><div class="line"></div><div class="line">FLUSH LOGS;</div><div class="line">Query OK, 0 rows affected (0.07 sec)</div><div class="line"></div><div class="line"> SHOW MASTER STATUS;</div><div class="line">+------------------+----------+--------------+------------------+-------------------+</div><div class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |</div><div class="line">+------------------+----------+--------------+------------------+-------------------+</div><div class="line">| mysql-bin.000001 |      120 |              |                  |                   |</div><div class="line">+------------------+----------+--------------+------------------+-------------------+</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># insert</span></div><div class="line">INSERT INTO personal(name) VALUES(<span class="string">'tom'</span>);</div><div class="line"></div><div class="line"><span class="comment"># show binlog</span></div><div class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.000001</div><div class="line"></div><div class="line">BEGIN</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 199</span></div><div class="line"><span class="comment"># at 231</span></div><div class="line"><span class="comment">#151205 20:54:19 server id 1  end_log_pos 231 CRC32 0x40b495c3  Intvar</span></div><div class="line">SET INSERT_ID=1/*!*/;</div><div class="line"><span class="comment">#151205 20:54:19 server id 1  end_log_pos 345 CRC32 0x9668f30b  Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">use `<span class="built_in">test</span>`/*!*/;</div><div class="line">SET TIMESTAMP=1449316459/*!*/;</div><div class="line">INSERT INTO personal(name) VALUES(<span class="string">'tom'</span>)</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 345</span></div><div class="line"><span class="comment">#151205 20:54:19 server id 1  end_log_pos 376 CRC32 0x2247f106  Xid = 8</span></div><div class="line">COMMIT/*!*/;</div></pre></td></tr></table></figure>
-<p>ログファイルはそれぞれ以下のような項目がある。</p>
-<table>
-<thead>
-<tr>
-<th>項目</th>
-<th>内容</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>at</td>
-<td>バイナリファイル内でのオフセット</td>
-</tr>
-<tr>
-<td>server id</td>
-<td>ステートメントが実行されたサーバー</td>
-</tr>
-<tr>
-<td>end_log_pos</td>
-<td>次のイベントが開始される位置</td>
-</tr>
-<tr>
-<td>thread_id</td>
-<td>実行したスレッド</td>
-</tr>
-<tr>
-<td>exec_time</td>
-<td>実行時間</td>
-</tr>
-<tr>
-<td>error_code</td>
-<td>イベントの実行結果(0はエラーなし)</td>
-</tr>
-</tbody>
-</table>
-<p>続いてupdateしてみる</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># update</span></div><div class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = 1;</div><div class="line"></div><div class="line"><span class="comment"># show binlog</span></div><div class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.000001</div><div class="line"></div><div class="line"><span class="comment"># at 376</span></div><div class="line"><span class="comment">#151205 20:56:39 server id 1  end_log_pos 455 CRC32 0x852a4061  Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449319780/*!*/;</div><div class="line">BEGIN</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 455</span></div><div class="line"><span class="comment">#151205 20:56:39 server id 1  end_log_pos 574 CRC32 0xc5128701  Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449319780/*!*/;</div><div class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = 1</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 574</span></div><div class="line"><span class="comment">#151205 20:56:39 server id 1  end_log_pos 605 CRC32 0x9217061a  Xid = 9</span></div><div class="line">COMMIT/*!*/;</div></pre></td></tr></table></figure>
-<p>変更のないように同じ値でupdateを試してみると</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># update</span></div><div class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = 1;</div><div class="line"></div><div class="line"><span class="comment"># at 605</span></div><div class="line"><span class="comment">#151205 20:58:12 server id 1  end_log_pos 684 CRC32 0x7bcd8a62  Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449319820/*!*/;</div><div class="line">BEGIN</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 684</span></div><div class="line"><span class="comment">#151205 20:58:12 server id 1  end_log_pos 803 CRC32 0x132e24fc  Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449319820/*!*/;</div><div class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = 1</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 803</span></div><div class="line"><span class="comment">#151205 20:58:12 server id 1  end_log_pos 834 CRC32 0xb3d62bb8  Xid = 10</span></div><div class="line">COMMIT/*!*/;</div></pre></td></tr></table></figure>
-<p>STATEMENTは実行されたSQL文をロギングするので、値に変更がなくてもログが出力される。</p>
-<h3 id="Row-base"><a href="#Row-base" class="headerlink" title="Row base"></a>Row base</h3><p>つづいてROWフォーマットで同じように試してみる。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">SET binlog_format = <span class="string">'ROW'</span>;</div><div class="line">SHOW variables LIKE <span class="string">"binlog_format"</span>;</div><div class="line">+---------------+-------+</div><div class="line">| Variable_name | Value |</div><div class="line">+---------------+-------+</div><div class="line">| binlog_format | ROW   |</div><div class="line">+---------------+-------+</div><div class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
-<p>データをinsertする。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># insert</span></div><div class="line">INSERT INTO personal(name) VALUES(<span class="string">'tom'</span>);</div><div class="line"></div><div class="line"><span class="comment"># show binlog</span></div><div class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.000001</div><div class="line"></div><div class="line"><span class="comment"># at 580</span></div><div class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 652 CRC32 0x629d7346  Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449321070/*!*/;</div><div class="line">BEGIN</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 652</span></div><div class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 706 CRC32 0xb60de956  Table_map: `test`.`personal` mapped to number 70</span></div><div class="line"><span class="comment"># at 706</span></div><div class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 750 CRC32 0x5af605af  Write_rows: table id 70 flags: STMT_END_F</span></div><div class="line"></div><div class="line">BINLOG <span class="string">'</span></div><div class="line">buJiVhMBAAAANgAAAMICAAAAAEYAAAAAAAEABHRlc3QACHBlcnNvbmFsAAIDDwIeAAJW6Q22</div><div class="line">buJiVh4BAAAALAAAAO4CAAAAAEYAAAAAAAEAAgAC//wCAAAAA3Rvba8F9lo=</div><div class="line">'/*!*/;</div><div class="line"><span class="comment"># at 750</span></div><div class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 781 CRC32 0x979d473d  Xid = 12</span></div><div class="line">COMMIT/*!*/;</div></pre></td></tr></table></figure>
-<p>出力されるログはbase64エンコードされている。<br>オプションをつけて実行する。</p>
-<p><strong>–base64-output</strong>でバイナリログのエントリを base-64 エンコードで出力できる。<br>DECODE-ROWSを指定して、-vオプションもつけることで行イベントをSQLステートメントとしてデコードできる。</p>
-<p>詳細は<a href="http://dev.mysql.com/doc/refman/5.6/ja/mysqlbinlog.html#option_mysqlbinlog_base64-output" target="_blank" rel="external">このあたりを参考</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># show binlog</span></div><div class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.000001 --base64-output=DECODE-ROWS -v</div><div class="line"></div><div class="line"><span class="comment"># at 580</span></div><div class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 652 CRC32 0x629d7346  Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449321070/*!*/;</div><div class="line">BEGIN</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 652</span></div><div class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 706 CRC32 0xb60de956  Table_map: `test`.`personal` mapped to number 70</span></div><div class="line"><span class="comment"># at 706</span></div><div class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 750 CRC32 0x5af605af  Write_rows: table id 70 flags: STMT_END_F</span></div><div class="line"><span class="comment">### INSERT INTO `test`.`personal`</span></div><div class="line"><span class="comment">### SET</span></div><div class="line"><span class="comment">###   @1=2</span></div><div class="line"><span class="comment">###   @2='tom'</span></div><div class="line"><span class="comment"># at 750</span></div><div class="line"><span class="comment">#151205 21:08:25 server id 1  end_log_pos 781 CRC32 0x979d473d  Xid = 12</span></div><div class="line">COMMIT/*!*/;</div></pre></td></tr></table></figure>
-<p>updateしてみる</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># update</span></div><div class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = 1;</div><div class="line"></div><div class="line"><span class="comment"># show binlog</span></div><div class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.000001 --base64-output=DECODE-ROWS -v</div><div class="line"></div><div class="line"><span class="comment"># at 781</span></div><div class="line"><span class="comment">#151206 21:12:11 server id 1  end_log_pos 853 CRC32 0xf1228fc3  Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449368345/*!*/;</div><div class="line">BEGIN</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 853</span></div><div class="line"><span class="comment">#151206 21:12:11 server id 1  end_log_pos 907 CRC32 0xa2ca1af1  Table_map: `test`.`personal` mapped to number 70</span></div><div class="line"><span class="comment"># at 907</span></div><div class="line"><span class="comment">#151206 21:12:11 server id 1  end_log_pos 963 CRC32 0xdfe4919c  Update_rows: table id 70 flags: STMT_END_F</span></div><div class="line"><span class="comment">### UPDATE `test`.`personal`</span></div><div class="line"><span class="comment">### WHERE</span></div><div class="line"><span class="comment">###   @1=1</span></div><div class="line"><span class="comment">###   @2='tom'</span></div><div class="line"><span class="comment">### SET</span></div><div class="line"><span class="comment">###   @1=1</span></div><div class="line"><span class="comment">###   @2='tommy'</span></div><div class="line"><span class="comment"># at 963</span></div><div class="line"><span class="comment">#151206 21:12:11 server id 1  end_log_pos 994 CRC32 0x81ba30c7  Xid = 16</span></div><div class="line">COMMIT/*!*/;</div></pre></td></tr></table></figure>
-<p>同じ値でupdateする。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># update</span></div><div class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = 1;</div></pre></td></tr></table></figure>
-<p>更新が発生してないのでログは出力されてない。</p>
-<h3 id="Mixed-base"><a href="#Mixed-base" class="headerlink" title="Mixed base"></a>Mixed base</h3><p>最後にMIXEDを試してみる。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">SET binlog_format = <span class="string">'MIXED'</span>;</div><div class="line">Query OK, 0 rows affected (0.01 sec)</div><div class="line"></div><div class="line">SHOW variables LIKE <span class="string">"binlog_format"</span>;</div><div class="line">+---------------+-------+</div><div class="line">| Variable_name | Value |</div><div class="line">+---------------+-------+</div><div class="line">| binlog_format | MIXED |</div><div class="line">+---------------+-------+</div><div class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</div></pre></td></tr></table></figure>
-<p>データをinsertする。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># insert</span></div><div class="line">INSERT INTO personal(name) VALUES(<span class="string">'tom'</span>);</div><div class="line"></div><div class="line"><span class="comment"># show binlog</span></div><div class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.000001</div><div class="line"></div><div class="line"><span class="comment"># at 1198</span></div><div class="line"><span class="comment">#151206 21:14:35 server id 1  end_log_pos 1277 CRC32 0xe74bdeed     Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449374917/*!*/;</div><div class="line">BEGIN</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 1277</span></div><div class="line"><span class="comment"># at 1309</span></div><div class="line"><span class="comment">#151206 21:14:35 server id 1  end_log_pos 1309 CRC32 0xd5a25039     Intvar</span></div><div class="line">SET INSERT_ID=3/*!*/;</div><div class="line"><span class="comment">#151206 21:14:35 server id 1  end_log_pos 1423 CRC32 0x2a2b7771     Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449374917/*!*/;</div><div class="line">INSERT INTO personal(name) VALUES(<span class="string">'tom'</span>)</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 1423</span></div><div class="line"><span class="comment">#151206 21:14:35 server id 1  end_log_pos 1454 CRC32 0x83cb8b10     Xid = 23</span></div><div class="line">COMMIT/*!*/;</div></pre></td></tr></table></figure>
-<p>STATEMENTと同様で実行したSQLの履歴がログに出力される。<br>updateする。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># update</span></div><div class="line">UPDATE personal SET name=<span class="string">'tommy'</span> WHERE id = 1;</div><div class="line"></div><div class="line"><span class="comment"># show binlog</span></div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 1732</span></div><div class="line"><span class="comment">#151206 21:16:48 server id 1  end_log_pos 1811 CRC32 0xd0ddade4     Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449375744/*!*/;</div><div class="line">BEGIN</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 1811</span></div><div class="line"><span class="comment">#151206 21:16:48 server id 1  end_log_pos 1930 CRC32 0xb27b4345     Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449375744/*!*/;</div><div class="line">update personal <span class="built_in">set</span> name=<span class="string">'tommy'</span> <span class="built_in">where</span> id = 1</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 1930</span></div><div class="line"><span class="comment">#151206 21:16:48 server id 1  end_log_pos 1961 CRC32 0x51bab152     Xid = 26</span></div><div class="line">COMMIT/*!*/;</div></pre></td></tr></table></figure>
-<p>一部の関数を使った場合はROWフォーマットで出力される。<br>CURRENT_USER() を使って更新してみる。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># update</span></div><div class="line">UPDATE personal SET name=CURRENT_USER() WHERE id = 1;</div><div class="line"></div><div class="line"><span class="comment"># show binlog</span></div><div class="line">mysqlbinlog /usr/<span class="built_in">local</span>/var/mysql/mysql-bin.000006</div><div class="line"><span class="comment"># at 1961</span></div><div class="line"><span class="comment">#151206 21:18:04 server id 1  end_log_pos 2033 CRC32 0x62cb65dd     Query   thread_id=1 exec_time=0 error_code=0</span></div><div class="line">SET TIMESTAMP=1449376039/*!*/;</div><div class="line">BEGIN</div><div class="line">/*!*/;</div><div class="line"><span class="comment"># at 2033</span></div><div class="line"><span class="comment">#151206 21:18:04 server id 1  end_log_pos 2087 CRC32 0x6e57c961     Table_map: `test`.`personal` mapped to number 70</span></div><div class="line"><span class="comment"># at 2087</span></div><div class="line"><span class="comment">#151206 21:18:04 server id 1  end_log_pos 2150 CRC32 0x6a1d8b78     Update_rows: table id 70 flags: STMT_END_F</span></div><div class="line"></div><div class="line">BINLOG</div><div class="line">J7ljVhMBAAAANgAAACcIAAAAAEYAAAAAAAEABHRlc3QACHBlcnNvbmFsAAIDDwIeAAJhyVdu</div><div class="line">J7ljVh8BAAAAPwAAAGYIAAAAAEYAAAAAAAEAAgAC///8AwAAAAV0b21tefwDAAAACnJvb3RAbG9j</div><div class="line">YWx4ix1q</div><div class="line"><span class="string">'/*!*/;</span></div><div class="line"># at 2150</div><div class="line">#151206 21:18:04 server id 1  end_log_pos 2181 CRC32 0x12bf3230     Xid = 29</div><div class="line">COMMIT/*!*/;</div><div class="line"></div><div class="line"># decode base64 binlog</div><div class="line">mysqlbinlog /usr/local/var/mysql/mysql-bin.000001 --base64-output=DECODE-ROWS -v</div><div class="line"></div><div class="line"># at 1961</div><div class="line">#151206 21:18:04 server id 1  end_log_pos 2033 CRC32 0x62cb65dd     Query   thread_id=1 exec_time=0 error_code=0</div><div class="line">SET TIMESTAMP=1449376039/*!*/;</div><div class="line">BEGIN</div><div class="line">/*!*/;</div><div class="line"># at 2033</div><div class="line">#151206 21:18:04 server id 1  end_log_pos 2087 CRC32 0x6e57c961     Table_map: `test`.`personal` mapped to number 70</div><div class="line"># at 2087</div><div class="line">#151206 21:18:04 server id 1  end_log_pos 2150 CRC32 0x6a1d8b78     Update_rows: table id 70 flags: STMT_END_F</div><div class="line">### UPDATE `test`.`personal`</div><div class="line">### WHERE</div><div class="line">###   @1=1</div><div class="line">###   @2='tommy<span class="string">'</span></div><div class="line">### SET</div><div class="line">###   @1=1</div><div class="line">###   @2='root@<span class="built_in">local</span><span class="string">'</span></div><div class="line"># at 2150</div><div class="line">#151206 21:18:04 server id 1  end_log_pos 2181 CRC32 0x12bf3230     Xid = 29</div><div class="line">COMMIT/*!*/;</div></pre></td></tr></table></figure>
-<p>となりROWベースとなっていることがわかる。</p>
-<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>STATEMENTは実行したSQL文がログに記載され、エンコードされていないためサイズも小さく、ログも読みづらい。<br>反面 Non-Deterministic なので、必ずしも同じクエリを実行しても同じ結果が得られるわけでない。<br>それに対してMIXED、ROWはサイズは大きくなるが、結果が異なってくるということはなく安全である。</p>
-<p>デフォルトでMIXEDとかROWとかにした方がいいのじゃないかと思ってたけど、<br><a href="http://dev.mysql.com/doc/refman/5.7/en/replication-options-binary-log.html#sysvar_binlog_format" target="_blank" rel="external">MySQL 5.7.7からはdefaultがROW</a>になったようだった。</p>
-<h4 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h4><p><a href="http://dev.mysql.com/doc/refman/5.6/ja/mysqlbinlog.html" target="_blank" rel="external">4.6.8 mysqlbinlog — バイナリログファイルを処理するためのユーティリティー</a><br><a href="https://mariadb.com/kb/en/mariadb/binary-log-formats/" target="_blank" rel="external">MariaDB Binary Log Formats</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;とあるアプリケーションをレンタルサーバーに設置しようとした際に、&lt;br&gt;&lt;a href=&quot;https://mariadb.com/&quot;&gt;MariaDB&lt;/a&gt;が以下のようなエラーを吐いていた。&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;Unsafe statement written to the binary log using statement format&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;invokes a trigger or a stored function that inserts into an&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;AUTO_INCREMENT column. Inserted values cannot be logged correctly.&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。&lt;br&gt;STATEMENTだと安全でないということはどういうことか。少し試してみた。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="memo" scheme="http://blog.kazu69.net/categories/memo/"/>
-    
     
   </entry>
   
