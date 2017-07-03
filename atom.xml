@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.kazu69.net/"/>
-  <updated>2017-07-03T16:05:55.000Z</updated>
+  <updated>2017-07-03T16:12:16.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Browser Native な ECMAScript modules について</title>
+    <title>ブラウザに実装されている ECMAScript modules について</title>
     <link href="http://blog.kazu69.net/2017/06/09/es6-modules-in-browser/"/>
     <id>http://blog.kazu69.net/2017/06/09/es6-modules-in-browser/</id>
     <published>2017-06-09T02:49:52.000Z</published>
-    <updated>2017-07-03T16:05:55.000Z</updated>
+    <updated>2017-07-03T16:12:16.000Z</updated>
     
     <content type="html"><![CDATA[<p>ECMAScriptのモジュールシステムのブラウザへの実装が始まってるということで、これらを試用してみる。</p>
 <a id="more"></a>
