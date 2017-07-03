@@ -123,10 +123,12 @@ a:hover {
   border-radius: 2px;
 }
 .article-entry blockquote {
+  font-size: smaller;
   margin-left: 0;
   margin-bottom: 2em;
-  padding: 0.2em 0.6em;
+  padding: 0 15px;
   color: #999;
+  text-align: right;
 }
 .article-entry a.fancybox {
   display: inline-block;
@@ -134,7 +136,7 @@ a:hover {
   text-align: center;
 }
 .article-entry a.fancybox img {
-  width: 80%;
+  width: 50%;
 }
 .article-entry > table {
   display: block;
