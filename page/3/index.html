@@ -64,7 +64,7 @@ ga('send', 'pageview');
         
       </nav>
       <div class="header-search">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
       </div>
     </div>
   </div>
@@ -72,6 +72,43 @@ ga('send', 'pageview');
 
     <main role="main" id="main">
       <section>
+  
+    <article id="post-looking-css-regression-testing-tool" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/02/looking-css-regression-testing-tool/">ビジュアルのRegression Test(回帰テスト)ツールを試してみた</a>
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2016-01-01T15:18:43.000Z" itemprop="datePublished">2016-01-02</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>運用年数の長いウェブサービスでcssやhtmlのリファクタリングをするにあたって、ビジュアルのRegression test(回帰テスト)が必要となってきたので、導入するにあたりいくつかのツールを眺めてみた。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
   
     <article id="post-examined-mysql-binlog-format" class="article article-type-post" itemscope itemprop="blogPost">
   <header class="article-header">
@@ -101,7 +138,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/">MariaDB</a>が以下のようなエラーを吐いていた。</p>
+      <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/" target="_blank" rel="external">MariaDB</a>が以下のようなエラーを吐いていた。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Unsafe statement written to the binary log using statement format</div><div class="line">since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it</div><div class="line">invokes a trigger or a stored function that inserts into an</div><div class="line">AUTO_INCREMENT column. Inserted values cannot be logged correctly.</div></pre></td></tr></table></figure>
 <p>バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。<br>STATEMENTだと安全でないということはどういうことか。少し試してみた。</p>
       
@@ -144,7 +181,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。<br>Docker 1.8 から<a href="http://docs.docker.com/engine/reference/logging/fluentd/">Fluentdもlog driver</a>に追加されているので、これを使って簡単なサンプルを構築した。</p>
+      <p>なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。<br>Docker 1.8 から<a href="http://docs.docker.com/engine/reference/logging/fluentd/" target="_blank" rel="external">Fluentdもlog driver</a>に追加されているので、これを使って簡単なサンプルを構築した。</p>
       
     
   </div>
@@ -226,7 +263,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="https://github.com/tmm1/stackprof">stackprof</a> を使えばrspecのプロファイリングが出来る戸言うことを知ったので、<br>早速テストでためしてみた。</p>
+      <p><a href="https://github.com/tmm1/stackprof" target="_blank" rel="external">stackprof</a> を使えばrspecのプロファイリングが出来る戸言うことを知ったので、<br>早速テストでためしてみた。</p>
       
     
   </div>
@@ -267,9 +304,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
+      <p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/" target="_blank" rel="external">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
 <p>これはリクエスト処理の実行時に評価され、特定のリクエストに対してnginxの内部処理をを調整することが可能になる。っぽい。</p>
-<p><a href="https://www.nginx.com/resources/wiki/modules/lua/">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
+<p><a href="https://www.nginx.com/resources/wiki/modules/lua/" target="_blank" rel="external">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
       
     
   </div>
@@ -310,7 +347,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://githubengineering.com/subresource-integrity/">Subresource Integrity</a> という記事をみて、<br>ちょっと興味深かったのでSubresource Integrityについて、軽く見てみた。</p>
+      <p><a href="http://githubengineering.com/subresource-integrity/" target="_blank" rel="external">Subresource Integrity</a> という記事をみて、<br>ちょっと興味深かったのでSubresource Integrityについて、軽く見てみた。</p>
       
     
   </div>
@@ -351,7 +388,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>最近、時間のあるときにすこしだけ<a href="https://www.haskell.org/">Haskell</a>を触ったりもしていて、<br>Monadなるものに触れた。</p>
+      <p>最近、時間のあるときにすこしだけ<a href="https://www.haskell.org/" target="_blank" rel="external">Haskell</a>を触ったりもしていて、<br>Monadなるものに触れた。</p>
 <p>そこで、それっぽいものをJavaScriptで試してみた。</p>
       
     
@@ -426,44 +463,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>ここ最近結構cssを弄っていたけど、その時に見つけた<a href="http://www.basscss.com/">Basscss</a>というcss Frameworkが良さそうだった。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-try-http2-with-h2o-and-mruby" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/08/05/try-http2-with-h2o-and-mruby/">HTTP/2サーバーh2oでサーバプッシュを試してみた</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2015-08-05T07:56:14.000Z" itemprop="datePublished">2015-08-05</time>
-
-      
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>HTTP/2 serverである<a href="https://github.com/h2o/h2o">h2o</a>で初めてのサーバプッシュを試してみた。</p>
+      <p>ここ最近結構cssを弄っていたけど、その時に見つけた<a href="http://www.basscss.com/" target="_blank" rel="external">Basscss</a>というcss Frameworkが良さそうだった。</p>
       
     
   </div>

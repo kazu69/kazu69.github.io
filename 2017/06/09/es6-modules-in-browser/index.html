@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Browser Native な ECMAScript modules について | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ECMAScriptのモジュールシステムのブラウザへの実装が始まってるということで、これらを試用してみる。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Browser Native な ECMAScript modules について">
+<meta property="og:url" content="http://blog.kazu69.net/2017/06/09/es6-modules-in-browser/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="ECMAScriptのモジュールシステムのブラウザへの実装が始まってるということで、これらを試用してみる。">
+<meta property="og:updated_time" content="2017-07-03T05:01:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Browser Native な ECMAScript modules について">
+<meta name="twitter:description" content="ECMAScriptのモジュールシステムのブラウザへの実装が始まってるということで、これらを試用してみる。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-es6-modules-in-browser" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Browser Native な ECMAScript modules について
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2017-06-09T02:49:52.000Z" itemprop="datePublished">2017-06-09</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>ECMAScriptのモジュールシステムのブラウザへの実装が始まってるということで、これらを試用してみる。</p>
+<a id="more"></a>
+<h3 id="従来のECMAScript-modulesのセットアップ"><a href="#従来のECMAScript-modulesのセットアップ" class="headerlink" title="従来のECMAScript modulesのセットアップ"></a>従来のECMAScript modulesのセットアップ</h3><p>まずは従来のモジュールのセットアップ方法。<br>下記のようにシンプルな依存関係のあるファイルが存在する場合</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// app/someone.js</span></div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Someone</span> </span>&#123;</div><div class="line">    <span class="keyword">constructor</span>(name) &#123;</div><div class="line">       <span class="keyword">this</span>.name = name || <span class="string">'bob'</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    callme() &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.name;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// app/entry.js</span></div><div class="line"><span class="keyword">import</span> Someon <span class="keyword">from</span> <span class="string">'./someon'</span>;</div><div class="line"><span class="keyword">const</span> someone = <span class="keyword">new</span> Someon(<span class="string">'Joe'</span>);</div><div class="line"></div><div class="line"><span class="built_in">document</span>.addEventListener(<span class="string">"DOMContentLoaded"</span>, event =&gt; &#123;</div><div class="line">    <span class="built_in">document</span>.body.innerHTML(someone.callme());</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>依存性の解決のために <a href="">browserify</a> または <a href="">webpack</a> などを使って、依存ファイルをbundle(一つに結合して)する。<br>ここでは、上記の依存関係のあるファイルを <code>dist/bundle.js</code> という形でbundleする。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// webpack.config.js</span></div><div class="line"><span class="meta">'use strict'</span>;</div><div class="line"></div><div class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</div><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">  <span class="attr">entry</span>: <span class="string">'./app/entry.js'</span>,</div><div class="line">  <span class="attr">output</span>: &#123;</div><div class="line">    <span class="attr">filename</span>: <span class="string">'bundle.js'</span>,</div><div class="line">    <span class="attr">path</span>: path.resolve(__dirname, <span class="string">'dist'</span>)</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">module</span>: &#123;</div><div class="line">    <span class="attr">loaders</span>: [</div><div class="line">      &#123;</div><div class="line">        <span class="attr">test</span>: <span class="regexp">/\.js$/</span>,</div><div class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</div><div class="line">        <span class="attr">loader</span>: <span class="string">'babel-loader'</span>,</div><div class="line">        <span class="attr">query</span>: &#123;</div><div class="line">          <span class="attr">presets</span>: [<span class="string">'env'</span>]</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    ]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>これらをhtmlから参照する必要があった。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Someone Class module depends<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"/dist/bundle.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    ...</div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="ブラウザネイティブのECMAScript-modulesのセットアップ"><a href="#ブラウザネイティブのECMAScript-modulesのセットアップ" class="headerlink" title="ブラウザネイティブのECMAScript modulesのセットアップ"></a>ブラウザネイティブのECMAScript modulesのセットアップ</h3><p>現在実装中のECMAScript modulesを試すには以下の条件が必要</p>
+<table>
+<thead>
+<tr>
+<th>browser</th>
+<th>version</th>
+<th>config setting</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Safari</td>
+<td>10.1</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Chrome Canary</td>
+<td>60</td>
+<td>chrome:flags</td>
+</tr>
+<tr>
+<td>Firefox</td>
+<td>54</td>
+<td>about:config</td>
+</tr>
+<tr>
+<td>Edge</td>
+<td>15</td>
+<td>about:flags</td>
+</tr>
+</tbody>
+</table>
+<p>次のようなhtmlファイルを作成</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Someone Class module depends<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span> <span class="attr">src</span>=<span class="string">"app/entry.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    ...</div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>import する際は ファイルの拡張子まで含む必要がある。</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="deletion">- import Someon from './someon';</span></div><div class="line"><span class="addition">+ import Someon from './someon.js';</span></div></pre></td></tr></table></figure>
+<p>ローカルのサーバーを立ててアクセスすると、moduleがimportされている(依存性の解決ができてること)がわかる。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[Sun Fri 02 2017 18:56:58 GMT+0900 (JST)] &quot;GET /&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3147.0 Safari/537.36&quot;</div><div class="line">[Sun Jul 02 2017 18:56:58 GMT+0900 (JST)] &quot;GET /app/entry.js&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3147.0 Safari/537.36&quot;</div><div class="line">[Sun Fri 02 2017 18:56:58 GMT+0900 (JST)] &quot;GET /app/someone.js&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3147.0 Safari/537.36&quot;</div><div class="line">[Sun Fri 02 2017 18:56:58 GMT+0900 (JST)] &quot;GET /favicon.ico&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3147.0 Safari/537.36&quot;</div><div class="line">[Sun Fri 02 2017 18:56:58 GMT+0900 (JST)] &quot;GET /favicon.ico&quot; Error (404): &quot;Not found&quot;</div></pre></td></tr></table></figure>
+<p>type属性の<strong>module</strong>を指定することでブラウザが内部的にES6 moduleとして依存解決してくれる。<br>もちろんインラインスクリプトでも実現出来る。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span>&gt;</span><span class="javascript"></span></div><div class="line">    <span class="keyword">import</span> Someone <span class="keyword">from</span> <span class="string">'./app/someone.js'</span>;</div><div class="line">    <span class="keyword">const</span> someone = <span class="keyword">new</span> Someone(<span class="string">'Joe'</span>);</div><div class="line"></div><div class="line">    <span class="built_in">document</span>.addEventListener(<span class="string">"DOMContentLoaded"</span>, event =&gt; &#123;</div><div class="line">        <span class="built_in">document</span>.body.innerHTML = someone.callme();</div><div class="line">    &#125;);</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="未サポートブラウザへの対応"><a href="#未サポートブラウザへの対応" class="headerlink" title="未サポートブラウザへの対応"></a>未サポートブラウザへの対応</h3><p>ブラウザが ECMAScript module をサポートしてない場合、下位互換としてtype属性の<strong>nomodule</strong>が提供されてます。<br>これを使ってfallbackスクリプトを追加して動作を保証できます。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- Support browser es6 modules --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span> <span class="attr">src</span>=<span class="string">"app/entry.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- Unsupport browser es6 modules --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"nomodule"</span> <span class="attr">src</span>=<span class="string">"dis/bundle.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>今回の場合は、nomoduleでbundleしたファイルを読込むことで期待した動きが担保できます。</p>
+<h3 id="モジュールのロードと実行タイミング"><a href="#モジュールのロードと実行タイミング" class="headerlink" title="モジュールのロードと実行タイミング"></a>モジュールのロードと実行タイミング</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'inline script'</span>)</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">deferd</span> <span class="attr">src</span>=<span class="string">"app/deferd.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">async</span> <span class="attr">src</span>=<span class="string">"app/async.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span> <span class="attr">src</span>=<span class="string">"app/module.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span>&gt;</span><span class="javascript"></span></div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'js module'</span>)</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>この場合の実行順序は</p>
+<ol>
+<li>script</li>
+<li>deferd (html解析後まで実行遅延)</li>
+<li>async (非同期実行)</li>
+<li>type=”module”の外部ファイル</li>
+<li>type=”module”のインラインスクリプト</li>
+</ol>
+<p>となる。</p>
+<p>type属性に<strong>module</strong>を指定した場合、scriptの実行は<strong>defer</strong>属性が与えられたものと同じように振る舞う。<br>つまりhtmlの解析後まで実行がキューイングされ、解析後に直ちに実行される。</p>
+<h3 id="モジュールの複数ロード"><a href="#モジュールの複数ロード" class="headerlink" title="モジュールの複数ロード"></a>モジュールの複数ロード</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span> <span class="attr">src</span>=<span class="string">"app/module.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span> <span class="attr">src</span>=<span class="string">"app/module.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>複数回のmoduleの読込もmoduleの仕様に従い、一度しか実行されない。</p>
+<h3 id="トップレベルのthis"><a href="#トップレベルのthis" class="headerlink" title="トップレベルのthis"></a>トップレベルのthis</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span> <span class="attr">src</span>=<span class="string">"app/this.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span>&gt;</span><span class="javascript"></span></div><div class="line"><span class="built_in">console</span>.log(<span class="keyword">this</span>)</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>type属性に<strong>module</strong>を指定した場合、トップレベルのthisは<strong>undefined</strong>になる。<br>これは通常のブラウザでのトップレベルのthisが<strong>window</strong>となる点と異なる。</p>
+<h3 id="トップレベルの変数"><a href="#トップレベルの変数" class="headerlink" title="トップレベルの変数"></a>トップレベルの変数</h3><p>変数に関してもECMAScriptのモジュールの仕様の通りで、<br>モジュールでのトップレベル変数はローカル変数として扱われる。<br>ブラウザ側のトップレベル変数はモジュール側で参照できる。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></div><div class="line">    global_variables = <span class="string">'script'</span>;</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- </span></div><div class="line">global_variables は app/variables.js から参照できるが、</div><div class="line">モジュール内の変数はブラウザ側から参照でいない</div><div class="line"> --&gt;</div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span> <span class="attr">src</span>=<span class="string">"app/variables.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"module"</span>&gt;</span><span class="javascript"></span></div><div class="line"><span class="built_in">console</span>.log(global_variables) <span class="comment">// script</span></div><div class="line"><span class="built_in">console</span>.log(module_variables) <span class="comment">// ReferenceError</span></div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></div><div class="line"><span class="built_in">console</span>.log(global_variables) <span class="comment">// script</span></div><div class="line"><span class="built_in">console</span>.log(module_variables) <span class="comment">// ReferenceError</span></div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>ECMAScript moduleのブラウザ実装が進めば、複雑なビルドシステムなどを利用することがなくなり、<br>より開発者にとって受け入れやすいものになるとおもわれる。<br>ただし、すべてを分割するという運用はやはりパフォーマンス的な問題もあるので、この辺りはノウハウの蓄積とか必要なのかな。</p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3>
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2017/06/09/es6-modules-in-browser/" class="hatena-bookmark-button" data-hatena-bookmark-title="Browser Native な ECMAScript modules について" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2017/06/09/es6-modules-in-browser/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2017/03/23/http-request-using-cors/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            Cross-Origin Resource Sharing(CORS)を使用したHTTPリクエスト
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2017 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2017/06/09/es6-modules-in-browser/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>

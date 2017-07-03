@@ -64,7 +64,7 @@ ga('send', 'pageview');
         
       </nav>
       <div class="header-search">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
       </div>
     </div>
   </div>
@@ -101,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/">MariaDB</a>が以下のようなエラーを吐いていた。</p>
+      <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/" target="_blank" rel="external">MariaDB</a>が以下のようなエラーを吐いていた。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Unsafe statement written to the binary log using statement format</div><div class="line">since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it</div><div class="line">invokes a trigger or a stored function that inserts into an</div><div class="line">AUTO_INCREMENT column. Inserted values cannot be logged correctly.</div></pre></td></tr></table></figure>
 <p>バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。<br>STATEMENTだと安全でないということはどういうことか。少し試してみた。</p>
       

@@ -67,7 +67,7 @@ ga('send', 'pageview');
         
       </nav>
       <div class="header-search">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
       </div>
     </div>
   </div>
@@ -164,17 +164,17 @@ ga('send', 'pageview');
 <p>ImmutableJSを使用することにより、深い構造のObjectデータ操作が容易にできるほか、<br>パフォーマンス向上の為の<a href="https://facebook.github.io/react/docs/pure-render-mixin.html" target="_blank" rel="external">PureRenderMixin</a>などを使っている場合に起こる予期せぬ状態を避けることができるようだ。</p>
 <p>ReactのコンポーネントライフサイクルではStoreからのイベントを受けて、差分があるコンポーネントを再描画する。<br>その際に呼ばれる<a href="http://facebook.github.io/react/docs/component-specs.html#updating-shouldcomponentupdate" target="_blank" rel="external">shouldComponentUpdate</a>の値がtrueとならない限りそれ以降が実行されない為、再描画されない(renderが実行されない)。</p>
 <p>簡単な例としてカウントアップをする場合、</p>
-<iframe scrolling="no" width="100%" height="300" src="http://jsfiddle.net/kazu69/0rmf6tcn/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
+<iframe scrolling="no" width="100%" height="300" src="//jsfiddle.net/kazu69/0rmf6tcn/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
 <p>shouldComponentUpdateがfalseを返すようにするとカウントアップされない。</p>
-<iframe scrolling="no" width="100%" height="300" src="http://jsfiddle.net/kazu69/puvwov20/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
+<iframe scrolling="no" width="100%" height="300" src="//jsfiddle.net/kazu69/puvwov20/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
 <p>PureRenderMixinはshouldcomponentupdateを利用して、変更前後のオブジェクトの値と参照をチェックし、変更がない場合はfalseを返す。<br>これにより変更がないとされ、無駄な再描画されないためパフォーマンスが向上する。</p>
 <p>しかし、PureRenderMixinにも説明がにあるように、深い構造を持つObjectだと予期しないことになる。</p>
-<iframe scrolling="no" width="100%" height="300" src="http://jsfiddle.net/kazu69/zp9L4oxo/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
+<iframe scrolling="no" width="100%" height="300" src="//jsfiddle.net/kazu69/zp9L4oxo/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
 <p>また、自前でshouldComponentUpdateに差分チェック機能を実装することもできるが、深い構造のオブジェクトのチェックが頻繁に呼び出されるshouldComponentUpdateで行うのはパフォーマンス的にもよろしくない。</p>
 <p>ImmutableJSを使うと、以下のように単純な比較でも予期した通りの結果を得られる</p>
 <script src="//gist.github.com/kazu69/4f29d802a38ee478007b.js?file=Immutable.js"></script>
 <p>よってをPureRenderMixinでの予期せぬ結果を回避できるということのようだ。</p>
-<iframe scrolling="no" width="100%" height="300" src="http://jsfiddle.net/kazu69/1z2d98z4/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
+<iframe scrolling="no" width="100%" height="300" src="//jsfiddle.net/kazu69/1z2d98z4/embedded/js,resources,html,css,result/light" frameborder="0" allowfullscreen></iframe>
 <p>ということで、<br>Fluxのアーキテクチャは単一方向性のオブザーバーパターンなので、これに従って、<br>BackboneやAngulerなどのフレームワークを組み合わせることである程度の規模でも煩雑さの少ない<br>アプリケーションができそう。</p>
 <p>今回作成したTodoMVC <a href="https://github.com/kazu69/todomvc-with-flux-immutable" target="_blank" rel="external">kazu69/todomvc-with-flux-immutable</a></p>
 <h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://facebook.github.io/react/docs/advanced-performance.html" target="_blank" rel="external">Advanced Performance</a><br><a href="http://blog.risingstack.com/the-react-js-way-flux-architecture-with-immutable-js/" target="_blank" rel="external">The React.js Way: Flux Architecture with Immutable.js</a><br><a href="http://kenev.net/2015/03/08/react-purerendermixin%E3%81%AE%E6%A4%9C%E8%A8%BC/" target="_blank" rel="external">React – PureRenderMixinの検証</a></p>

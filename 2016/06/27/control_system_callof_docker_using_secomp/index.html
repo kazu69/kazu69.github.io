@@ -65,7 +65,7 @@ ga('send', 'pageview');
         
       </nav>
       <div class="header-search">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
       </div>
     </div>
   </div>
@@ -102,7 +102,7 @@ ga('send', 'pageview');
     
       <p>Dockerコンテナでアプリケーションのプロセスをdebugするためにstraceをすると<br>Operation not permittedで怒られた。</p>
 <a id="more"></a>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">strace <span class="_">-f</span> -p 1</div><div class="line">strace: attach: ptrace(PTRACE_ATTACH, ...): Operation not permitted</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">strace -f -p 1</div><div class="line">strace: attach: ptrace(PTRACE_ATTACH, ...): Operation not permitted</div></pre></td></tr></table></figure>
 <p>エラー内容から調べてみると、どうやらセキュリティ的にコンテナ内のシステムコールへのアクセスが制限されていると思われる。<br>dockerのリポジトリのdocumentを見ると<a href="https://github.com/docker/docker/blob/master/docs/security/seccomp.md" target="_blank" rel="external">Seccomp security profiles for Docker</a>という項目がある。<br>どうやら<a href="https://github.com/docker/docker/pull/17989" target="_blank" rel="external">このPR(#17989)</a>で追加されてるようだ。</p>
 <p>seccompを設定しているprofileがあるようで、これを変更することでシステムコールを制御できるようす。</p>
 <h2 id="seccomp"><a href="#seccomp" class="headerlink" title="seccomp"></a>seccomp</h2><p>そもそもseccomp(secure computing mode)はプロセスのexit, sigreturn, read, writeを行うシステムコールを制御する。<br>また、seccomp-bpf(seccomp mode filter)は、システムコールのフィルタにBPFを実装しており、<br>システムコールの番号と引数をフィルタリングすることでより柔軟に扱うことができる。</p>

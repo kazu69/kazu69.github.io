@@ -5,19 +5,16 @@
   
   <title>mysqlのバイナリログのフォーマットを調べた | 69log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="とあるアプリケーションをレンタルサーバーに設置しようとした際に、MariaDBが以下のようなエラーを吐いていた。
-1234Unsafe statement written to the binary log using statement formatsince BINLOG_FORMAT = STATEMENT. Statement is unsafe because itinvokes a t">
+  <meta name="description" content="とあるアプリケーションをレンタルサーバーに設置しようとした際に、MariaDBが以下のようなエラーを吐いていた。 1234Unsafe statement written to the binary log using statement formatsince BINLOG_FORMAT = STATEMENT. Statement is unsafe because itinvokes a t">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mysqlのバイナリログのフォーマットを調べた">
 <meta property="og:url" content="http://blog.kazu69.net/2015/12/01/examined-mysql-binlog-format/index.html">
 <meta property="og:site_name" content="69log">
-<meta property="og:description" content="とあるアプリケーションをレンタルサーバーに設置しようとした際に、MariaDBが以下のようなエラーを吐いていた。
-1234Unsafe statement written to the binary log using statement formatsince BINLOG_FORMAT = STATEMENT. Statement is unsafe because itinvokes a t">
-<meta property="og:updated_time" content="2015-12-08T13:45:56.000Z">
+<meta property="og:description" content="とあるアプリケーションをレンタルサーバーに設置しようとした際に、MariaDBが以下のようなエラーを吐いていた。 1234Unsafe statement written to the binary log using statement formatsince BINLOG_FORMAT = STATEMENT. Statement is unsafe because itinvokes a t">
+<meta property="og:updated_time" content="2015-12-09T04:48:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysqlのバイナリログのフォーマットを調べた">
-<meta name="twitter:description" content="とあるアプリケーションをレンタルサーバーに設置しようとした際に、MariaDBが以下のようなエラーを吐いていた。
-1234Unsafe statement written to the binary log using statement formatsince BINLOG_FORMAT = STATEMENT. Statement is unsafe because itinvokes a t">
+<meta name="twitter:description" content="とあるアプリケーションをレンタルサーバーに設置しようとした際に、MariaDBが以下のようなエラーを吐いていた。 1234Unsafe statement written to the binary log using statement formatsince BINLOG_FORMAT = STATEMENT. Statement is unsafe because itinvokes a t">
   
     <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
   
@@ -68,7 +65,7 @@ ga('send', 'pageview');
         
       </nav>
       <div class="header-search">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
       </div>
     </div>
   </div>
@@ -135,7 +132,7 @@ ga('send', 'pageview');
 </tbody>
 </table>
 <p>バイナリログはデフォルトでは生成されないのでmy.cnfに設定を追加する必要がある。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># grep my.cnf</span></div><div class="line">mysql --help | grep my.cnf</div><div class="line">touch /usr/<span class="built_in">local</span>/etc/my.cnf</div><div class="line"></div><div class="line">cat /usr/<span class="built_in">local</span>/etc/my.cnf</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># grep my.cnf</span></div><div class="line">mysql --<span class="built_in">help</span> | grep my.cnf</div><div class="line">touch /usr/<span class="built_in">local</span>/etc/my.cnf</div><div class="line"></div><div class="line">cat /usr/<span class="built_in">local</span>/etc/my.cnf</div></pre></td></tr></table></figure>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="section">[mysqld]</span></div><div class="line"><span class="attr">log-bin</span>=mysql-bin</div></pre></td></tr></table></figure>
 <p>設定することにより、/usr/local/var/mysql/mysql-bin.000001 のようにログファイルが生成される。<br>再起動などすると /usr/local/var/mysql/mysql-bin.000002 と新たなログファイルが生成される。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">ls /usr/<span class="built_in">local</span>/var/mysql/</div><div class="line"></div><div class="line">mysql-bin.000001</div><div class="line"></div><div class="line">mysql.server restart</div><div class="line">Shutting down MySQL</div><div class="line">. SUCCESS!</div><div class="line">Starting MySQL</div><div class="line">. SUCCESS!</div><div class="line"></div><div class="line">ls /usr/<span class="built_in">local</span>/var/mysql/</div><div class="line"></div><div class="line">mysql-bin.000001</div><div class="line">mysql-bin.000002</div></pre></td></tr></table></figure>
