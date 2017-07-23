@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>whoisコマンドでdns spamの結果を拾わないようにする | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="whoisコマンドが正しい情報を返してくれないで、ノイズのある結果が得られるなと思って調べたら、ただしくwhoisを理解していないだけでした。 1whois help でわかる話ではありますが、whois spamの話です。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="whoisコマンドでdns spamの結果を拾わないようにする">
+<meta property="og:url" content="http://blog.kazu69.net/2017/07/08/dont-pickup-dns-spam-with-whois-command/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="whoisコマンドが正しい情報を返してくれないで、ノイズのある結果が得られるなと思って調べたら、ただしくwhoisを理解していないだけでした。 1whois help でわかる話ではありますが、whois spamの話です。">
+<meta property="og:updated_time" content="2017-07-23T02:40:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="whoisコマンドでdns spamの結果を拾わないようにする">
+<meta name="twitter:description" content="whoisコマンドが正しい情報を返してくれないで、ノイズのある結果が得られるなと思って調べたら、ただしくwhoisを理解していないだけでした。 1whois help でわかる話ではありますが、whois spamの話です。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-dont-pickup-dns-spam-with-whois-command" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      whoisコマンドでdns spamの結果を拾わないようにする
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2017-07-08T12:23:52.000Z" itemprop="datePublished">2017-07-08</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/memo/">memo</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>whoisコマンドが正しい情報を返してくれないで、ノイズのある結果が得られるなと思って調べたら、<br>ただしくwhoisを理解していないだけでした。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">whois <span class="built_in">help</span></div></pre></td></tr></table></figure>
+<p>でわかる話ではありますが、whois spamの話です。</p>
+<a id="more"></a>
+<p>whois helpでみると</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">whois <span class="built_in">help</span></div><div class="line"></div><div class="line">...</div><div class="line">&lt;KEYWORD overview&gt;</div><div class="line"></div><div class="line">WHOIS keywords fall into categories: those that specify the TYPE of</div><div class="line">records to search, those that modify the interpretation of the input or</div><div class="line">tell the <span class="built_in">type</span> of output to produce, and those that are commands such as</div><div class="line">HELP or QUIT.</div><div class="line"></div><div class="line">The following keywords restrict a search to a certain TYPE of field <span class="keyword">in</span> the</div><div class="line">database:</div><div class="line"></div><div class="line">    domain</div><div class="line">        Finds a domain record. Find out domain name, registrar name,</div><div class="line">        whois server and URL, Nameserver name and IP Addresses, and updated</div><div class="line">        date.  For example, <span class="string">"domain netsol.com"</span>.</div><div class="line"></div><div class="line">    nameserver</div><div class="line">        Finds nameserver records. Find out nameserver name, registrar name,</div><div class="line">        IP addresses, Whois Server name and URL.  For example,</div><div class="line">        <span class="string">'nameserver DNS.SPRINTLINK.COM'</span> or <span class="string">'nameserver 101.198.1.101'</span>.</div><div class="line"></div><div class="line">    registrar</div><div class="line">        Finds records <span class="keyword">for</span> <span class="string">"registrar"</span>. Find out Registrar name, mail</div><div class="line">        address, phone number and contact information. For example,</div><div class="line">        <span class="string">'registrar Network Solutions, Inc.'</span></div><div class="line"></div><div class="line">...</div></pre></td></tr></table></figure>
+<p>とあるように whois domain でコマンドを実行すると、取得できるドメイン名、レジストラ名、ネームサーバーなどの文字列からドメイン名を検索する。</p>
+<p>ということで意図しない結果を返すことがある。</p>
+<p>たとえば、 google.com の場合</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line">whois google.com</div><div class="line"></div><div class="line">Whois Server Version 2.0</div><div class="line"></div><div class="line">Domain names <span class="keyword">in</span> the .com and .net domains can now be registered</div><div class="line">with many different competing registrars. Go to http://www.internic.net</div><div class="line"><span class="keyword">for</span> detailed information.</div><div class="line"></div><div class="line">GOOGLE.COM.ACKNOWLEDGES.NON-FREE.COM.NAMESILO.COM</div><div class="line">GOOGLE.COM.AFRICANBATS.ORG</div><div class="line">GOOGLE.COM.ANGRYPIRATES.COM</div><div class="line">GOOGLE.COM.AR</div><div class="line">GOOGLE.COM.AU</div><div class="line">GOOGLE.COM.BAISAD.COM</div><div class="line">GOOGLE.COM.BD</div><div class="line">GOOGLE.COM.BEYONDWHOIS.COM</div><div class="line">GOOGLE.COM.BR</div><div class="line">GOOGLE.COM.BUGBOUNTY.TEST.AT.CIPRI.COM</div><div class="line">GOOGLE.COM.CN</div><div class="line">GOOGLE.COM.CO</div><div class="line">GOOGLE.COM.DEADKNIFERECORDS.COM</div><div class="line">GOOGLE.COM.DGJTEST028-PP-QM-STG.COM</div><div class="line">GOOGLE.COM.DO</div><div class="line">GOOGLE.COM.EG</div><div class="line">GOOGLE.COM.FORSALE</div><div class="line">GOOGLE.COM.HACKED.BY.JAPTRON.ES</div><div class="line">GOOGLE.COM.HAS.LESS.FREE.PORN.IN.ITS.SEARCH.ENGINE.THAN.SECZY.COM</div><div class="line">GOOGLE.COM.HK</div><div class="line">GOOGLE.COM.HOUDA.DO.YOU.WANT.TO.MARRY.ME.JEN.RE</div><div class="line">GOOGLE.COM.IS.APPROVED.BY.NUMEA.COM</div><div class="line">GOOGLE.COM.IS.NOT.HOSTED.BY.ACTIVEDOMAINDNS.NET</div><div class="line">GOOGLE.COM.LASERPIPE.COM.DOMAINPENDINGDELETE.COM</div><div class="line">GOOGLE.COM.LOLOLOLOLOL.SHTHEAD.COM</div><div class="line">GOOGLE.COM.MAIKO.BE</div><div class="line">GOOGLE.COM.MX</div><div class="line">GOOGLE.COM.MY</div><div class="line">GOOGLE.COM.NS1.CHALESHGAR.COM</div><div class="line">GOOGLE.COM.NS2.CHALESHGAR.COM</div><div class="line">GOOGLE.COM.PE</div><div class="line">GOOGLE.COM.PK</div><div class="line">GOOGLE.COM.SA</div><div class="line">GOOGLE.COM.SG</div><div class="line">GOOGLE.COM.SHQIPERIA.COM</div><div class="line">GOOGLE.COM.SOUTHBEACHNEEDLEARTISTRY.COM</div><div class="line">GOOGLE.COM.SPAMMING.IS.UNETHICAL.PLEASE.STOP.THEM.HUAXUEERBAN.COM</div><div class="line">GOOGLE.COM.SPROSIUYANDEKSA.RU</div><div class="line">GOOGLE.COM.SUCKS.FIND.CRACKZ.WITH.SEARCH.GULLI.COM</div><div class="line">GOOGLE.COM.TESTZZZZ.3000-RI.COM.DELETE-DNS.COM</div><div class="line">GOOGLE.COM.TR</div><div class="line">GOOGLE.COM.TW</div><div class="line">GOOGLE.COM.UA</div><div class="line">GOOGLE.COM.UK</div><div class="line">GOOGLE.COM.UY</div><div class="line">GOOGLE.COM.VABDAYOFF.COM</div><div class="line">GOOGLE.COM.VN</div><div class="line">GOOGLE.COM.YUCEHOCA.COM</div><div class="line">GOOGLE.COM.ZNAET.PRODOMEN.COM</div><div class="line">GOOGLE.COM</div><div class="line"></div><div class="line">...</div></pre></td></tr></table></figure>
+<p>と全く見当違いのホストも帰ってくる。<br>ということで、helpにあるようにキーワードでクエリを絞り込む必要があるらしい。</p>
+<p>ドメインのレコードだけを検索する場合は</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">whois <span class="string">'domain google.com'</span></div><div class="line"></div><div class="line">Whois Server Version 2.0</div><div class="line"></div><div class="line">Domain names <span class="keyword">in</span> the .com and .net domains can now be registered</div><div class="line">with many different competing registrars. Go to http://www.internic.net</div><div class="line"><span class="keyword">for</span> detailed information.</div><div class="line"></div><div class="line">   Domain Name: GOOGLE.COM</div><div class="line">   Registrar: MARKMONITOR INC.</div><div class="line">   Sponsoring Registrar IANA ID: 292</div><div class="line">   Whois Server: whois.markmonitor.com</div><div class="line">   Referral URL: http://www.markmonitor.com</div><div class="line">   Name Server: NS1.GOOGLE.COM</div><div class="line">   Name Server: NS2.GOOGLE.COM</div><div class="line">   Name Server: NS3.GOOGLE.COM</div><div class="line">   Name Server: NS4.GOOGLE.COM</div><div class="line">   Status: clientDeleteProhibited https://icann.org/epp<span class="comment">#clientDeleteProhibited</span></div><div class="line">   Status: clientTransferProhibited https://icann.org/epp<span class="comment">#clientTransferProhibited</span></div><div class="line">   Status: clientUpdateProhibited https://icann.org/epp<span class="comment">#clientUpdateProhibited</span></div><div class="line">   Status: serverDeleteProhibited https://icann.org/epp<span class="comment">#serverDeleteProhibited</span></div><div class="line">   Status: serverTransferProhibited https://icann.org/epp<span class="comment">#serverTransferProhibited</span></div><div class="line">   Status: serverUpdateProhibited https://icann.org/epp<span class="comment">#serverUpdateProhibited</span></div><div class="line">   Updated Date: 20-jul-2011</div><div class="line">   Creation Date: 15-sep-1997</div><div class="line">   Expiration Date: 14-sep-2020</div><div class="line"></div><div class="line">&gt;&gt;&gt; Last update of whois database: 2017-07-23T02:10:56Z &lt;&lt;&lt;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>と意図した結果を取得できる。</p>
+<p>フィールドは <strong>domain</strong>, <strong>nameserver</strong>, <strong>registrar</strong>で絞り込むことができる。</p>
+<p>ちなみに、google.comで全てのフィールドを検索した際に返される結果はshortタイプのため詳細を出したいのであれば <strong>=</strong> をつけるといい。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div><div class="line">228</div><div class="line">229</div><div class="line">230</div><div class="line">231</div><div class="line">232</div><div class="line">233</div><div class="line">234</div><div class="line">235</div><div class="line">236</div><div class="line">237</div><div class="line">238</div><div class="line">239</div><div class="line">240</div><div class="line">241</div><div class="line">242</div><div class="line">243</div><div class="line">244</div><div class="line">245</div><div class="line">246</div><div class="line">247</div><div class="line">248</div><div class="line">249</div><div class="line">250</div><div class="line">251</div><div class="line">252</div><div class="line">253</div><div class="line">254</div><div class="line">255</div><div class="line">256</div><div class="line">257</div><div class="line">258</div><div class="line">259</div><div class="line">260</div><div class="line">261</div><div class="line">262</div><div class="line">263</div><div class="line">264</div><div class="line">265</div><div class="line">266</div><div class="line">267</div><div class="line">268</div><div class="line">269</div><div class="line">270</div><div class="line">271</div><div class="line">272</div><div class="line">273</div><div class="line">274</div><div class="line">275</div><div class="line">276</div><div class="line">277</div><div class="line">278</div><div class="line">279</div><div class="line">280</div><div class="line">281</div><div class="line">282</div><div class="line">283</div><div class="line">284</div><div class="line">285</div><div class="line">286</div><div class="line">287</div><div class="line">288</div><div class="line">289</div><div class="line">290</div><div class="line">291</div><div class="line">292</div><div class="line">293</div><div class="line">294</div><div class="line">295</div><div class="line">296</div><div class="line">297</div><div class="line">298</div><div class="line">299</div><div class="line">300</div><div class="line">301</div><div class="line">302</div><div class="line">303</div><div class="line">304</div><div class="line">305</div><div class="line">306</div><div class="line">307</div><div class="line">308</div><div class="line">309</div><div class="line">310</div><div class="line">311</div><div class="line">312</div><div class="line">313</div><div class="line">314</div><div class="line">315</div><div class="line">316</div><div class="line">317</div><div class="line">318</div><div class="line">319</div><div class="line">320</div><div class="line">321</div><div class="line">322</div><div class="line">323</div><div class="line">324</div><div class="line">325</div><div class="line">326</div><div class="line">327</div><div class="line">328</div><div class="line">329</div><div class="line">330</div><div class="line">331</div><div class="line">332</div><div class="line">333</div><div class="line">334</div><div class="line">335</div><div class="line">336</div><div class="line">337</div><div class="line">338</div><div class="line">339</div><div class="line">340</div><div class="line">341</div><div class="line">342</div><div class="line">343</div><div class="line">344</div><div class="line">345</div><div class="line">346</div><div class="line">347</div><div class="line">348</div><div class="line">349</div><div class="line">350</div><div class="line">351</div><div class="line">352</div></pre></td><td class="code"><pre><div class="line">whois =google.com</div><div class="line"></div><div class="line">Whois Server Version 2.0</div><div class="line"></div><div class="line">Domain names <span class="keyword">in</span> the .com and .net domains can now be registered</div><div class="line">with many different competing registrars. Go to http://www.internic.net</div><div class="line"><span class="keyword">for</span> detailed information.</div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.ACKNOWLEDGES.NON-FREE.COM.NAMESILO.COM</div><div class="line">   IP Address: 1.1.1.1</div><div class="line">   Registrar: NAMESILO, LLC</div><div class="line">   Whois Server: whois.namesilo.com</div><div class="line">   Referral URL: http://www.namesilo.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.AFRICANBATS.ORG</div><div class="line">   Registrar: TUCOWS DOMAINS INC.</div><div class="line">   Whois Server: whois.tucows.com</div><div class="line">   Referral URL: http://www.tucowsdomains.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.ANGRYPIRATES.COM</div><div class="line">   IP Address: 8.8.8.8</div><div class="line">   Registrar: NAME.COM, INC.</div><div class="line">   Whois Server: whois.name.com</div><div class="line">   Referral URL: http://www.name.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.AR</div><div class="line">   Registrar: ENOM, INC.</div><div class="line">   Whois Server: whois.enom.com</div><div class="line">   Referral URL: http://www.enom.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.AU</div><div class="line">   Registrar: PLANETDOMAIN PTY LTD.</div><div class="line">   Whois Server: whois.planetdomain.com</div><div class="line">   Referral URL: http://www.planetdomain.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.BAISAD.COM</div><div class="line">   IP Address: 91.218.229.20</div><div class="line">   IP Address: 92.53.96.24</div><div class="line">   Registrar: REGISTRAR OF DOMAIN NAMES REG.RU LLC</div><div class="line">   Whois Server: whois.reg.com</div><div class="line">   Referral URL: http://www.reg.ru</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.BD</div><div class="line">   Registrar: LIQUIDNET LTD.</div><div class="line">   Whois Server: whois.liquidnetlimited.com</div><div class="line">   Referral URL: http://www.liquidnetlimited.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.BEYONDWHOIS.COM</div><div class="line">   IP Address: 203.36.226.2</div><div class="line">   Registrar: INSTRA CORPORATION PTY, LTD.</div><div class="line">   Whois Server: whois.instra.net</div><div class="line">   Referral URL: http://www.instra.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.BR</div><div class="line">   Registrar: ENOM, INC.</div><div class="line">   Whois Server: whois.enom.com</div><div class="line">   Referral URL: http://www.enom.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.BUGBOUNTY.TEST.AT.CIPRI.COM</div><div class="line">   IP Address: 8.8.4.4</div><div class="line">   IP Address: 8.8.8.8</div><div class="line">   IP Address: 80.69.82.4</div><div class="line">   Registrar: KEY-SYSTEMS GMBH</div><div class="line">   Whois Server: whois.rrpproxy.net</div><div class="line">   Referral URL: http://www.key-systems.net</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.CN</div><div class="line">   Registrar: XIN NET TECHNOLOGY CORPORATION</div><div class="line">   Whois Server: whois.paycenter.com.cn</div><div class="line">   Referral URL: http://www.xinnet.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.CO</div><div class="line">   Registrar: NAMESECURE.COM</div><div class="line">   Whois Server: whois.namesecure.com</div><div class="line">   Referral URL: http://www.namesecure.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.DEADKNIFERECORDS.COM</div><div class="line">   IP Address: 216.58.208.132</div><div class="line">   IP Address: 172.217.21.206</div><div class="line">   IP Address: 2A00:1450:4001:818:0:0:0:200E</div><div class="line">   IP Address: 2A00:1450:4009:803:0:0:0:2004</div><div class="line">   Registrar: GOOGLE INC.</div><div class="line">   Whois Server: whois.google.com</div><div class="line">   Referral URL: http://domains.google.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.DGJTEST028-PP-QM-STG.COM</div><div class="line">   IP Address: 8.8.8.8</div><div class="line">   Registrar: JAPAN REGISTRY SERVICES CO., LTD.</div><div class="line">   Whois Server: whois2016.jprs.jp</div><div class="line">   Referral URL: http://jprs.jp/registrar/</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.DO</div><div class="line">   Registrar: GODADDY.COM, LLC</div><div class="line">   Whois Server: whois.godaddy.com</div><div class="line">   Referral URL: http://www.godaddy.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.EG</div><div class="line">   Registrar: GODADDY.COM, LLC</div><div class="line">   Whois Server: whois.godaddy.com</div><div class="line">   Referral URL: http://www.godaddy.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.FORSALE</div><div class="line">   Registrar: NAMESILO, LLC</div><div class="line">   Whois Server: whois.namesilo.com</div><div class="line">   Referral URL: http://www.namesilo.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.HACKED.BY.JAPTRON.ES</div><div class="line">   Registrar: GODADDY.COM, LLC</div><div class="line">   Whois Server: whois.godaddy.com</div><div class="line">   Referral URL: http://www.godaddy.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.HAS.LESS.FREE.PORN.IN.ITS.SEARCH.ENGINE.THAN.SECZY.COM</div><div class="line">   IP Address: 209.187.114.130</div><div class="line">   Registrar: ENOM, INC.</div><div class="line">   Whois Server: whois.enom.com</div><div class="line">   Referral URL: http://www.enom.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.HK</div><div class="line">   Registrar: UK-2 LIMITED</div><div class="line">   Whois Server: whois.hostingservicesinc.net</div><div class="line">   Referral URL: http://www.uk2group.com/</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.HOUDA.DO.YOU.WANT.TO.MARRY.ME.JEN.RE</div><div class="line">   Registrar: OVH</div><div class="line">   Whois Server: whois.ovh.com</div><div class="line">   Referral URL: http://www.ovh.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.IS.APPROVED.BY.NUMEA.COM</div><div class="line">   IP Address: 213.228.0.43</div><div class="line">   Registrar: GANDI SAS</div><div class="line">   Whois Server: whois.gandi.net</div><div class="line">   Referral URL: http://www.gandi.net</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.IS.NOT.HOSTED.BY.ACTIVEDOMAINDNS.NET</div><div class="line">   IP Address: 217.148.161.5</div><div class="line">   Registrar: HOSTING CONCEPTS B.V. D/B/A OPENPROVIDER</div><div class="line">   Whois Server: whois.registrar.eu</div><div class="line">   Referral URL: http://www.openprovider.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.LASERPIPE.COM.DOMAINPENDINGDELETE.COM</div><div class="line">   IP Address: 209.85.227.106</div><div class="line">   Registrar: REALTIME REGISTER BV</div><div class="line">   Whois Server: whois.yoursrs.com</div><div class="line">   Referral URL: http://www.realtimeregister.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.LOLOLOLOLOL.SHTHEAD.COM</div><div class="line">   IP Address: 123.123.123.123</div><div class="line">   Registrar: CRAZY DOMAINS FZ-LLC</div><div class="line">   Whois Server: whois.crazydomains.com</div><div class="line">   Referral URL: http://www.crazydomains.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.MAIKO.BE</div><div class="line">   Registrar: OVH</div><div class="line">   Whois Server: whois.ovh.com</div><div class="line">   Referral URL: http://www.ovh.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.MX</div><div class="line">   Registrar: PDR LTD. D/B/A PUBLICDOMAINREGISTRY.COM</div><div class="line">   Whois Server: whois.PublicDomainRegistry.com</div><div class="line">   Referral URL: http://www.publicdomainregistry.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.MY</div><div class="line">   Registrar: WILD WEST DOMAINS, LLC</div><div class="line">   Whois Server: whois.wildwestdomains.com</div><div class="line">   Referral URL: http://www.wildwestdomains.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.NS1.CHALESHGAR.COM</div><div class="line">   IP Address: 8.8.8.8</div><div class="line">   Registrar: ENOM, INC.</div><div class="line">   Whois Server: whois.enom.com</div><div class="line">   Referral URL: http://www.enom.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.NS2.CHALESHGAR.COM</div><div class="line">   IP Address: 8.8.8.8</div><div class="line">   Registrar: ENOM, INC.</div><div class="line">   Whois Server: whois.enom.com</div><div class="line">   Referral URL: http://www.enom.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.PE</div><div class="line">   Registrar: PDR LTD. D/B/A PUBLICDOMAINREGISTRY.COM</div><div class="line">   Whois Server: whois.PublicDomainRegistry.com</div><div class="line">   Referral URL: http://www.publicdomainregistry.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.PK</div><div class="line">   Registrar: BIGROCK SOLUTIONS LIMITED</div><div class="line">   Whois Server: Whois.bigrock.com</div><div class="line">   Referral URL: http://www.bigrock.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.SA</div><div class="line">   Registrar: OMNIS NETWORK, LLC</div><div class="line">   Whois Server: whois.omnis.com</div><div class="line">   Referral URL: http://www.omnis.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.SG</div><div class="line">   Registrar: GODADDY.COM, LLC</div><div class="line">   Whois Server: whois.godaddy.com</div><div class="line">   Referral URL: http://www.godaddy.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.SHQIPERIA.COM</div><div class="line">   IP Address: 70.84.145.107</div><div class="line">   Registrar: ENOM, INC.</div><div class="line">   Whois Server: whois.enom.com</div><div class="line">   Referral URL: http://www.enom.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.SOUTHBEACHNEEDLEARTISTRY.COM</div><div class="line">   IP Address: 74.125.229.52</div><div class="line">   Registrar: GODADDY.COM, LLC</div><div class="line">   Whois Server: whois.godaddy.com</div><div class="line">   Referral URL: http://www.godaddy.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.SPAMMING.IS.UNETHICAL.PLEASE.STOP.THEM.HUAXUEERBAN.COM</div><div class="line">   IP Address: 211.64.175.67</div><div class="line">   IP Address: 211.64.175.66</div><div class="line">   Registrar: GOOGLE INC.</div><div class="line">   Whois Server: whois.google.com</div><div class="line">   Referral URL: http://domains.google.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.SPROSIUYANDEKSA.RU</div><div class="line">   Registrar: MELBOURNE IT, LTD. D/B/A INTERNET NAMES WORLDWIDE</div><div class="line">   Whois Server: whois.melbourneit.com</div><div class="line">   Referral URL: http://www.melbourneit.com.au</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.SUCKS.FIND.CRACKZ.WITH.SEARCH.GULLI.COM</div><div class="line">   IP Address: 80.190.192.24</div><div class="line">   Registrar: COREHUB, S.R.L.</div><div class="line">   Whois Server: whois.corehub.net</div><div class="line">   Referral URL: http://corehub.net</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.TESTZZZZ.3000-RI.COM.DELETE-DNS.COM</div><div class="line">   IP Address: 8.8.8.8</div><div class="line">   Registrar: MEGAZONE CORP. DBA HOSTING.KR</div><div class="line">   Whois Server: whois.hosting.kr</div><div class="line">   Referral URL: http://HOSTING.KR</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.TR</div><div class="line">   Registrar: PDR LTD. D/B/A PUBLICDOMAINREGISTRY.COM</div><div class="line">   Whois Server: whois.PublicDomainRegistry.com</div><div class="line">   Referral URL: http://www.publicdomainregistry.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.TW</div><div class="line">   Registrar: WEB COMMERCE COMMUNICATIONS LIMITED DBA WEBNIC.CC</div><div class="line">   Whois Server: whois.webnic.cc</div><div class="line">   Referral URL: http://www.webnic.cc</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.UA</div><div class="line">   Registrar: PDR LTD. D/B/A PUBLICDOMAINREGISTRY.COM</div><div class="line">   Whois Server: whois.PublicDomainRegistry.com</div><div class="line">   Referral URL: http://www.publicdomainregistry.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.UK</div><div class="line">   Registrar: 123-REG LIMITED</div><div class="line">   Whois Server: whois.123-reg.co.uk</div><div class="line">   Referral URL: http://www.meshdigital.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.UY</div><div class="line">   Registrar: PDR LTD. D/B/A PUBLICDOMAINREGISTRY.COM</div><div class="line">   Whois Server: whois.PublicDomainRegistry.com</div><div class="line">   Referral URL: http://www.publicdomainregistry.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.VABDAYOFF.COM</div><div class="line">   IP Address: 8.8.8.8</div><div class="line">   Registrar: DOMAIN.COM, LLC</div><div class="line">   Whois Server: whois.domain.com</div><div class="line">   Referral URL: http://www.domain.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.VN</div><div class="line">   Registrar: ONLINENIC, INC.</div><div class="line">   Whois Server: whois.onlinenic.com</div><div class="line">   Referral URL: http://www.onlinenic.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.YUCEHOCA.COM</div><div class="line">   IP Address: 88.246.115.134</div><div class="line">   Registrar: PDR LTD. D/B/A PUBLICDOMAINREGISTRY.COM</div><div class="line">   Whois Server: whois.PublicDomainRegistry.com</div><div class="line">   Referral URL: http://www.publicdomainregistry.com</div><div class="line"></div><div class="line"></div><div class="line">   Server Name: GOOGLE.COM.ZNAET.PRODOMEN.COM</div><div class="line">   IP Address: 62.149.23.126</div><div class="line">   Registrar: GODADDY.COM, LLC</div><div class="line">   Whois Server: whois.godaddy.com</div><div class="line">   Referral URL: http://www.godaddy.com</div><div class="line"></div><div class="line"></div><div class="line">   Domain Name: GOOGLE.COM</div><div class="line">   Registrar: MARKMONITOR INC.</div><div class="line">   Sponsoring Registrar IANA ID: 292</div><div class="line">   Whois Server: whois.markmonitor.com</div><div class="line">   Referral URL: http://www.markmonitor.com</div><div class="line">   Name Server: NS1.GOOGLE.COM</div><div class="line">   Name Server: NS2.GOOGLE.COM</div><div class="line">   Name Server: NS3.GOOGLE.COM</div><div class="line">   Name Server: NS4.GOOGLE.COM</div><div class="line">   Status: clientDeleteProhibited https://icann.org/epp<span class="comment">#clientDeleteProhibited</span></div><div class="line">   Status: clientTransferProhibited https://icann.org/epp<span class="comment">#clientTransferProhibited</span></div><div class="line">   Status: clientUpdateProhibited https://icann.org/epp<span class="comment">#clientUpdateProhibited</span></div><div class="line">   Status: serverDeleteProhibited https://icann.org/epp<span class="comment">#serverDeleteProhibited</span></div><div class="line">   Status: serverTransferProhibited https://icann.org/epp<span class="comment">#serverTransferProhibited</span></div><div class="line">   Status: serverUpdateProhibited https://icann.org/epp<span class="comment">#serverUpdateProhibited</span></div><div class="line">   Updated Date: 20-jul-2011</div><div class="line">   Creation Date: 15-sep-1997</div><div class="line">   Expiration Date: 14-sep-2020</div><div class="line"></div><div class="line">&gt;&gt;&gt; Last update of whois database: 2017-07-23T02:12:11Z &lt;&lt;&lt;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>検索クエリを絞り込まないでwhosiコマンドを実施しすることで意図しないホストが得られるのは<strong>whois spam(dns spam)</strong> というらしい。</p>
+<p>ということで、<a href="https://github.com/kazu69/domain-info" target="_blank" rel="external">自前のツール</a>もここに対応してspam結果を拾わないようにした。</p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://www.nic.ad.jp/ja/newsletter/No34/0800.html" target="_blank" rel="external">インターネット10分講座：WHOIS</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2017/07/08/dont-pickup-dns-spam-with-whois-command/" class="hatena-bookmark-button" data-hatena-bookmark-title="whoisコマンドでdns spamの結果を拾わないようにする" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2017/07/08/dont-pickup-dns-spam-with-whois-command/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2017/06/09/es6-modules-in-browser/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            ブラウザに実装されている ECMAScript modules について
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2017 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2017/07/08/dont-pickup-dns-spam-with-whois-command/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
