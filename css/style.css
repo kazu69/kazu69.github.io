@@ -292,6 +292,9 @@ a:hover {
   width: 92%;
   overflow: auto;
 }
+.highlight .code pre .line {
+  min-height: 1.3em;
+}
 @media screen and (min-width: 800px) {
   .highlight .code pre {
     max-width: 790px;
