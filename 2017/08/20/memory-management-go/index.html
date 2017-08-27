@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Goのメモリ管理を眺めてみた | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Golangでツールやアプリケーションを作ったりしてるが、メモリ管理がどのようになっているのか気になったので、眺めてみた。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Goのメモリ管理を眺めてみた">
+<meta property="og:url" content="http://blog.kazu69.net/2017/08/20/memory-management-go/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="Golangでツールやアプリケーションを作ったりしてるが、メモリ管理がどのようになっているのか気になったので、眺めてみた。">
+<meta property="og:updated_time" content="2017-08-27T15:49:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Goのメモリ管理を眺めてみた">
+<meta name="twitter:description" content="Golangでツールやアプリケーションを作ったりしてるが、メモリ管理がどのようになっているのか気になったので、眺めてみた。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-memory-management-go" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Goのメモリ管理を眺めてみた
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2017-08-19T15:28:05.000Z" itemprop="datePublished">2017-08-20</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/memo/">memo</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Golangでツールやアプリケーションを作ったりしてるが、<br>メモリ管理がどのようになっているのか気になったので、眺めてみた。</p>
+<a id="more"></a>
+<h3 id="メモリ領域"><a href="#メモリ領域" class="headerlink" title="メモリ領域"></a>メモリ領域</h3><p>ざっくり復習のためメモリ領域についてまとめる。</p>
+<p>メモリ領域は</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>メモリ領域</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>プログラム領域</td>
+<td>マシン語に変換されたプログラムが格納される。この機械語を1行ずつ実行することで、プログラムが実行される。</td>
+</tr>
+<tr>
+<td>静的領域</td>
+<td>グローバル変数や静的変数などが入る。プログラム実行時にメモリ領域が確保される。メモリサイズは固定される。</td>
+</tr>
+<tr>
+<td>ヒープ領域</td>
+<td>塊という意味。プログラム実行時に確保されるが、実行時にしかメモリサイズがわからないので任意のサイズとなる。C言語のmalloc関数やnew演算子などで確保・管理される。新たにデータ猟奇が必要になると、未使用のメモリ領域を(飛び飛びになってしまうこともある)統合し、ノードに還元する。あらかじめ大きな確保する場合などに使われる。</td>
+</tr>
+<tr>
+<td>スタック領域</td>
+<td>積み重ねるという意味。一時変数、関数の引数、返り値などが一時的に格納される。メモリのサイズは固定で最後に積まれたメモリから最初に解放される(後入れ先だし: FILO)に則る。変数を定義しすぎたりするとメモリ領域を超えてオーバーフローする(スタックオーバーフロー)。現在のスコープで必要としている領域だけ確保できれば良い。</td>
+</tr>
+</tbody>
+</table>
+<p>ヒープで確保されたメモリが不要になった場合、プログラム側で開放できてないと猟奇が確保されたままになる(メモリリーク)。プログラムで開放するのではなく自動で開放する仕組みを持っているものもある。<br>この機能をガベージ・コレクトという。</p>
+<h3 id="Golangのメモリ管理"><a href="#Golangのメモリ管理" class="headerlink" title="Golangのメモリ管理"></a>Golangのメモリ管理</h3><p>Golangのメモリ管理を見てみる。</p>
+<p>goではビルド時に <a href="https://github.com/golang/go/wiki/CompilerOptimizations#escape-analysis-and-inlining" target="_blank" rel="external">-gcflags -mフラグを渡すことでコードを解析</a>できる。</p>
+<p>ということで試してみる。</p>
+<p>まずローカル変数を返すだけ</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    Test()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test</span><span class="params">()</span> <span class="title">int</span></span> &#123;</div><div class="line">	v := <span class="number">1</span></div><div class="line">	<span class="keyword">return</span> v</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># command-line-arguments</span></div><div class="line">./main.go:7: can inline Test</div><div class="line">./main.go:3: can inline main</div><div class="line">./main.go:4: inlining call to Test</div></pre></td></tr></table></figure>
+<p>この場合はスタックを使っている。</p>
+<p>つづいてメモリのアドレスを返してみる。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	Test()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test</span><span class="params">()</span> *<span class="title">int</span></span> &#123;</div><div class="line">	v := <span class="number">1</span></div><div class="line">	<span class="keyword">return</span> &amp;v</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># command-line-arguments</span></div><div class="line">./main.go:7: can inline Test</div><div class="line">./main.go:3: can inline main</div><div class="line">./main.go:4: inlining call to Test</div><div class="line">./main.go:4: main &amp;v does not escape</div><div class="line">./main.go:9: &amp;v escapes to heap</div><div class="line">./main.go:8: moved to heap: v</div></pre></td></tr></table></figure>
+<p>この場合は、ヒープに置かれた。<br>アドレスからポインタの中身にアクセスする場合</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	Test()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test</span><span class="params">()</span> <span class="title">int</span></span> &#123;</div><div class="line">	v := <span class="number">1</span></div><div class="line">	p := &amp;v</div><div class="line">	<span class="keyword">return</span> *p</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># command-line-arguments</span></div><div class="line">./main.go:7: can inline Test</div><div class="line">./main.go:3: can inline main</div><div class="line">./main.go:4: inlining call to Test</div><div class="line">./main.go:4: main &amp;v does not escape</div><div class="line">./main.go:9: Test &amp;v does not escape</div></pre></td></tr></table></figure>
+<p>この場合はスタックに置かれる。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	Test()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test</span><span class="params">()</span> *<span class="title">int</span></span> &#123;</div><div class="line">	v := <span class="built_in">new</span>(<span class="keyword">int</span>)</div><div class="line"></div><div class="line">	<span class="keyword">return</span> v</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># command-line-arguments</span></div><div class="line">./main.go:11: can inline Test</div><div class="line">./main.go:7: can inline main</div><div class="line">./main.go:8: inlining call to Test</div><div class="line">./main.go:8: main new(int) does not escape</div><div class="line">./main.go:12: new(int) escapes to heap</div></pre></td></tr></table></figure>
+<p>ポインタを返すのでヒープに置かれる。<br>new演算子でメモリを確保してポインタを返さない場合</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	Test()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test</span><span class="params">()</span></span> &#123;</div><div class="line">	v := <span class="built_in">new</span>(<span class="keyword">int</span>)</div><div class="line"></div><div class="line">	<span class="keyword">if</span> v == <span class="literal">nil</span> &#123;</div><div class="line">		<span class="keyword">return</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># command-line-arguments</span></div><div class="line">./main.go:11: can inline Test</div><div class="line">./main.go:7: can inline main</div><div class="line">./main.go:8: inlining call to Test</div><div class="line">./main.go:8: main new(int) does not escape</div><div class="line">./main.go:12: Test new(int) does not escape</div></pre></td></tr></table></figure>
+<p>関数内でのみ使われるだけなので、スタックに置かれている。<br>ローカル変数でも他の関数に渡すと</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	Test()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test</span><span class="params">()</span></span> &#123;</div><div class="line">	v := <span class="number">1</span></div><div class="line">	fmt.Println(v)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># command-line-arguments</span></div><div class="line">./main.go:11: v escapes to heap</div><div class="line">./main.go:11: Test ... argument does not escape</div></pre></td></tr></table></figure>
+<p>ヒープに置かれている。</p>
+<p>続いて構造体を使ってみる。<br>シンプルに構造体を返すだけ</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Human <span class="keyword">struct</span> &#123;</div><div class="line">	Name <span class="keyword">string</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	Test()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test</span><span class="params">()</span> <span class="title">Human</span></span> &#123;</div><div class="line">	human := Human&#123;</div><div class="line">		Name: <span class="string">"Bob"</span>,</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">return</span> human</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># command-line-arguments</span></div><div class="line">./main.go:11: can inline Test</div><div class="line">./main.go:7: can inline main</div><div class="line">./main.go:8: inlining call to Test</div></pre></td></tr></table></figure>
+<p>スタックに置かれている。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	Test()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test</span><span class="params">()</span> *<span class="title">Human</span></span> &#123;</div><div class="line">	human := <span class="built_in">new</span>(Human)</div><div class="line">	human.Name = <span class="string">"Bob"</span></div><div class="line"></div><div class="line">	<span class="keyword">return</span> human</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># command-line-arguments</span></div><div class="line">./main.go:11: can inline Test</div><div class="line">./main.go:7: can inline main</div><div class="line">./main.go:8: inlining call to Test</div><div class="line">./main.go:8: main new(Human) does not escape</div><div class="line">./main.go:12: new(Human) escapes to heap</div></pre></td></tr></table></figure>
+<p>ポインタを返すのでヒープに置かれている。<br>new演算子を使っても関数内で処理が終わってる場合</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	Test()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test</span><span class="params">()</span></span> &#123;</div><div class="line">	human := <span class="built_in">new</span>(Human)</div><div class="line">	human.Name = <span class="string">"Bob"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># command-line-arguments</span></div><div class="line">./main.go:11: can inline Test</div><div class="line">./main.go:7: can inline main</div><div class="line">./main.go:8: inlining call to Test</div><div class="line">./main.go:8: main new(Human) does not escape</div><div class="line">./main.go:12: Test new(Human) does not escape</div></pre></td></tr></table></figure>
+<p>変数はスタックに置かれている。<br>ポインタを保存した変数を返す場合</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	Test()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test</span><span class="params">()</span> *<span class="title">Human</span></span> &#123;</div><div class="line">	human := &amp;Human&#123;<span class="string">"Tom"</span>&#125;</div><div class="line">	<span class="keyword">return</span> human</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># command-line-arguments</span></div><div class="line">./main.go:11: can inline Test</div><div class="line">./main.go:7: can inline main</div><div class="line">./main.go:8: inlining call to Test</div><div class="line">./main.go:8: main &amp;Human literal does not escape</div><div class="line">./main.go:12: &amp;Human literal escapes to heap</div></pre></td></tr></table></figure>
+<p>ヒープに置かれる。</p>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>Goの場合は、基本的にスタック領域を使うよう試みる。<br>ローカルの変数でも外部関数に渡されたり、ポインタを返す場合はヒープ領域が使われる。<br>これはローカル変数がスコープとなる関数の処理終了後も参照される可能性があるためらしい。</p>
+<p>new演算子によるメモリの割り当ては必ずしもヒープを使うわけではない。</p>
+<p>ということで、関数内で参照のみされる変数は実態を渡すことで、<br>アプリケーションとしてのパフォーマンスが良くなるということがわかった。</p>
+<p>GCに関してはまた別で調べてみたい。</p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="http://golang.jp/effective_go#allocation_new" target="_blank" rel="external">実践Go言語 - golang.jp</a><br><a href="http://ascii.jp/elem/000/001/496/1496211/" target="_blank" rel="external">Go言語のメモリ管理</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2017/08/20/memory-management-go/" class="hatena-bookmark-button" data-hatena-bookmark-title="Goのメモリ管理を眺めてみた" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2017/08/20/memory-management-go/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2017/08/10/using-react-router-v4/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            React Roter v4 (RRv4) を使用した時の備忘録
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2017 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2017/08/20/memory-management-go/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
