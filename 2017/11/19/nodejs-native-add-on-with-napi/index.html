@@ -5,16 +5,16 @@
   
   <title>Node.jsのアドオンをN-APIで実装する | 69log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Node.js 8.0からはN-APIというものが試験的にサポートされている。これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的にになる。">
+  <meta name="description" content="Node.js 8.0からはN-APIというものが試験的にサポートされている。これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的になる。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Node.jsのアドオンをN-APIで実装する">
 <meta property="og:url" content="http://blog.kazu69.net/2017/11/19/nodejs-native-add-on-with-napi/index.html">
 <meta property="og:site_name" content="69log">
-<meta property="og:description" content="Node.js 8.0からはN-APIというものが試験的にサポートされている。これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的にになる。">
-<meta property="og:updated_time" content="2017-11-26T12:49:58.000Z">
+<meta property="og:description" content="Node.js 8.0からはN-APIというものが試験的にサポートされている。これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的になる。">
+<meta property="og:updated_time" content="2017-11-26T12:56:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node.jsのアドオンをN-APIで実装する">
-<meta name="twitter:description" content="Node.js 8.0からはN-APIというものが試験的にサポートされている。これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的にになる。">
+<meta name="twitter:description" content="Node.js 8.0からはN-APIというものが試験的にサポートされている。これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的になる。">
   
     <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
   
@@ -96,7 +96,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Node.js 8.0からは<a href="https://nodejs.org/api/n-api.html" target="_blank" rel="external">N-API</a>というものが試験的にサポートされている。<br>これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的にになる。</p>
+      <p>Node.js 8.0からは<a href="https://nodejs.org/api/n-api.html" target="_blank" rel="external">N-API</a>というものが試験的にサポートされている。<br>これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的になる。</p>
 <a id="more"></a>
 <h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>Node.jsをネイティブ拡張するには<a href="https://github.com/nodejs/nan" target="_blank" rel="external">NAN</a>や<a href="https://github.com/v8/v8" target="_blank" rel="external">V8</a>に依存しているため、<br>その内部実装に関しての知識が少なからず必要になってくるということが問題となっている。</p>
 <p>また、これらはバージョンごとでAPIは安定性が保証されてないので、<br>ネイティブな機能のリリースには各バージョンでのコンパイルが必要となり、<br>開発者の負担のかかる状況とのこと。</p>

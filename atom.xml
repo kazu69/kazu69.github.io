@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.kazu69.net/"/>
-  <updated>2017-11-26T12:49:58.000Z</updated>
+  <updated>2017-11-26T12:56:36.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="http://blog.kazu69.net/2017/11/19/nodejs-native-add-on-with-napi/"/>
     <id>http://blog.kazu69.net/2017/11/19/nodejs-native-add-on-with-napi/</id>
     <published>2017-11-19T10:53:35.000Z</published>
-    <updated>2017-11-26T12:49:58.000Z</updated>
+    <updated>2017-11-26T12:56:36.000Z</updated>
     
-    <content type="html"><![CDATA[<p>Node.js 8.0からは<a href="https://nodejs.org/api/n-api.html" target="_blank" rel="external">N-API</a>というものが試験的にサポートされている。<br>これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的にになる。</p>
+    <content type="html"><![CDATA[<p>Node.js 8.0からは<a href="https://nodejs.org/api/n-api.html" target="_blank" rel="external">N-API</a>というものが試験的にサポートされている。<br>これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的になる。</p>
 <a id="more"></a>
 <h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>Node.jsをネイティブ拡張するには<a href="https://github.com/nodejs/nan" target="_blank" rel="external">NAN</a>や<a href="https://github.com/v8/v8" target="_blank" rel="external">V8</a>に依存しているため、<br>その内部実装に関しての知識が少なからず必要になってくるということが問題となっている。</p>
 <p>また、これらはバージョンごとでAPIは安定性が保証されてないので、<br>ネイティブな機能のリリースには各バージョンでのコンパイルが必要となり、<br>開発者の負担のかかる状況とのこと。</p>
@@ -60,7 +60,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;Node.js 8.0からは&lt;a href=&quot;https://nodejs.org/api/n-api.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;N-API&lt;/a&gt;というものが試験的にサポートされている。&lt;br&gt;これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的にになる。&lt;/p&gt;
+      &lt;p&gt;Node.js 8.0からは&lt;a href=&quot;https://nodejs.org/api/n-api.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;N-API&lt;/a&gt;というものが試験的にサポートされている。&lt;br&gt;これはNode.js APIのABI(Application Binary Interface)-stableな中間レイヤでこれを使うことでネティブアドオンの開発が効率的になる。&lt;/p&gt;
     
     </summary>
     
