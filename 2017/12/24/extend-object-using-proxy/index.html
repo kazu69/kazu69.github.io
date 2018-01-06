@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Proxyを使ってオブジェクトを拡張する | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Proxyオブジェクトがサポートされたことで、JavaScriptにでもオブジェクト操作が柔軟に拡張できるようになった。 これにより処理を動的に拡張するメタプログラミングできる。ということで、参考になりそうな事例があったので試してみた。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Proxyを使ってオブジェクトを拡張する">
+<meta property="og:url" content="http://blog.kazu69.net/2017/12/24/extend-object-using-proxy/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="Proxyオブジェクトがサポートされたことで、JavaScriptにでもオブジェクト操作が柔軟に拡張できるようになった。 これにより処理を動的に拡張するメタプログラミングできる。ということで、参考になりそうな事例があったので試してみた。">
+<meta property="og:updated_time" content="2018-01-06T02:12:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Proxyを使ってオブジェクトを拡張する">
+<meta name="twitter:description" content="Proxyオブジェクトがサポートされたことで、JavaScriptにでもオブジェクト操作が柔軟に拡張できるようになった。 これにより処理を動的に拡張するメタプログラミングできる。ということで、参考になりそうな事例があったので試してみた。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-extend-object-using-proxy" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Proxyを使ってオブジェクトを拡張する
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2017-12-24T10:24:30.000Z" itemprop="datePublished">2017-12-24</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/web/">web</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Proxyオブジェクトがサポートされたことで、<br>JavaScriptにでもオブジェクト操作が柔軟に拡張できるようになった。</p>
+<p>これにより処理を動的に拡張するメタプログラミングできる。<br>ということで、<a href="https://github.com/gergob/jsProxy" target="_blank" rel="external">参考になりそうな事例</a>があったので試してみた。</p>
+<a id="more"></a>
+<p><a href="https://caniuse.com/#search=proxy" target="_blank" rel="external">caniuseでProxyのサポート</a>を見るとモダンブラウザでは実装済である。<br>まず、Proxyオブジェクトをおさらいする。</p>
+<h3 id="Proxyオブジェクト"><a href="#Proxyオブジェクト" class="headerlink" title="Proxyオブジェクト"></a>Proxyオブジェクト</h3><p>基本構文は次の通り</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// target</span></div><div class="line"><span class="keyword">const</span> target = &#123;&#125;;</div><div class="line"></div><div class="line"><span class="comment">// handler</span></div><div class="line"><span class="keyword">const</span> handler = &#123;</div><div class="line">    <span class="comment">// trap</span></div><div class="line">    get(target, property) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="built_in">Reflect</span>.get(target, property);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div></pre></td></tr></table></figure>
+<p>targetはProxyで拡張するオブジェクト。<br>handlerはtrapを含んだオブジェクトとなる。<br>trapとはオブジェクトのプロパティへのアクセスを提供するメソッド。<br>上記の構文例だとgetとなる。<br>getの中ででてくるReflectオブジェクトはトラップされるビルトインメソッド(処理)を提供する。</p>
+<p>ちなみにtrapが設定されてない場合は、デフォルトのメソッドが実行される。</p>
+<h3 id="handlerとtrap一覧"><a href="#handlerとtrap一覧" class="headerlink" title="handlerとtrap一覧"></a>handlerとtrap一覧</h3><p>ブラウザへの実装が未対応のものもあるが、handlerとtrapとの関係は以下のようになっている。</p>
+<table>
+<thead>
+<tr>
+<th>handler / trap</th>
+<th>proxyされるビルトインメソッド</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>handler.getPrototypeOf()</td>
+<td>Object.getPrototypeOf()</td>
+</tr>
+<tr>
+<td>handler.setPrototypeOf()</td>
+<td>Object.setPrototypeOf()</td>
+</tr>
+<tr>
+<td>handler.isExtensible()</td>
+<td>Object.isExtensible()</td>
+</tr>
+<tr>
+<td>handler.preventExtensions()</td>
+<td>Object.preventExtensions()</td>
+</tr>
+<tr>
+<td>handler.getOwnPropertyDescriptor()</td>
+<td>Object.getOwnPropertyDescriptor()</td>
+</tr>
+<tr>
+<td>handler.defineProperty()</td>
+<td>Object.defineProperty()</td>
+</tr>
+<tr>
+<td>handler.has()</td>
+<td>in 演算子 (ロパティが指定されたオブジェクトにある) <br> prop in Object</td>
+</tr>
+<tr>
+<td>handler.get()</td>
+<td>プロパティ値を取得</td>
+</tr>
+<tr>
+<td>handler.set()</td>
+<td>プロパティ値を設定</td>
+</tr>
+<tr>
+<td>handler.deleteProperty()</td>
+<td>delete 演算子 <br> delete Object.prop</td>
+</tr>
+<tr>
+<td>handler.ownKeys()</td>
+<td>Object.getOwnPropertyNames()<br>Object.getOwnPropertySymbols()</td>
+</tr>
+<tr>
+<td>handler.apply()</td>
+<td>関数呼び出し</td>
+</tr>
+<tr>
+<td>handler.construct()</td>
+<td>new 演算子 <br> new Object()</td>
+</tr>
+</tbody>
+</table>
+<h3 id="いくつか試す"><a href="#いくつか試す" class="headerlink" title="いくつか試す"></a>いくつか試す</h3><h4 id="objectのプロパティ変更イベント"><a href="#objectのプロパティ変更イベント" class="headerlink" title="objectのプロパティ変更イベント"></a>objectのプロパティ変更イベント</h4><p>プロパティ変更するメソッドのtrapすることで変更イベントを検知して特定の処理を実施できる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> onChangeObject = <span class="function">(<span class="params">target, func</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">const</span> handler = &#123;</div><div class="line">        set(target, property, value) &#123;</div><div class="line">            <span class="keyword">const</span> currentValue = target[property];</div><div class="line">            func(target, property, value, currentValue);</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Reflect</span>.set(target, property, value);</div><div class="line">        &#125;,</div><div class="line">        defineProperty(target, property, descriptor) &#123;</div><div class="line">			func(target, property, descriptor, <span class="literal">undefined</span>);</div><div class="line">			<span class="keyword">return</span> <span class="built_in">Reflect</span>.defineProperty(target, property, descriptor);</div><div class="line">        &#125;,</div><div class="line">        deleteProperty(target, property) &#123;</div><div class="line">            <span class="keyword">const</span> currentValue = target[property];</div><div class="line">            func(target, property, <span class="literal">undefined</span>, currentValue);</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Reflect</span>.deleteProperty(target, property);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> Animal = &#123;</div><div class="line">    <span class="attr">name</span>: <span class="string">'Pochi'</span>,</div><div class="line">    <span class="attr">kind</span>: <span class="string">'dog'</span>,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> handle = <span class="function">(<span class="params">target, property, value, currentValue</span>) =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log(target);</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">`property - <span class="subst">$&#123;property&#125;</span>, new value - <span class="subst">$&#123;value&#125;</span>, current value - <span class="subst">$&#123;currentValue&#125;</span>`</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> watchedObject = onChangeObject.apply(<span class="literal">null</span>, [Animal, handle]);</div><div class="line">watchedObject.name = <span class="string">'Taro'</span>; <span class="comment">// property - name, new value - Taro, current value - Pochi</span></div><div class="line"><span class="keyword">delete</span> watchedObject.name; <span class="comment">// property - name, new value - undefined, current value - Taro</span></div></pre></td></tr></table></figure>
+<h4 id="enum"><a href="#enum" class="headerlink" title="enum"></a>enum</h4><p>enumもできる</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> createEnum = <span class="function"><span class="params">target</span> =&gt;</span>&#123;</div><div class="line">    <span class="keyword">const</span> handler = &#123;</div><div class="line">        set() &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Enum is read only'</span>);</div><div class="line">        &#125;,</div><div class="line">        setPrototypeOf() &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Enum is read only'</span>);</div><div class="line">        &#125;,</div><div class="line">        defineProperty() &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Enum is read only'</span>);</div><div class="line">        &#125;,</div><div class="line">        deleteProperty() &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Enum is read only'</span>);</div><div class="line">        &#125;,</div><div class="line">        get(target, property) &#123;</div><div class="line">            <span class="keyword">if</span> (!target.hasOwnProperty(property)) &#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">ReferenceError</span>(<span class="string">`Unknown enum key "<span class="subst">$&#123;property&#125;</span>"`</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Reflect</span>.get(target, property);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> object = &#123;</div><div class="line">    <span class="attr">ja</span>: <span class="string">'Japan'</span>,</div><div class="line">    <span class="attr">us</span>: <span class="string">'United States of America'</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> customEnum = createEnum.apply(<span class="literal">null</span>, [object]);</div><div class="line"><span class="built_in">console</span>.log(customEnum.ja); <span class="comment">// Japan</span></div><div class="line"><span class="built_in">console</span>.log(customEnum.us); <span class="comment">// United States of America</span></div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    customEnum.uk</div><div class="line">&#125; <span class="keyword">catch</span>(error) &#123;</div><div class="line">    <span class="built_in">console</span>.log(error.message); <span class="comment">// Unknown enum key "uk"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    customEnum.uk = <span class="string">'United Kingdom'</span>;</div><div class="line">&#125; <span class="keyword">catch</span>(error) &#123;</div><div class="line">    <span class="built_in">console</span>.log(error.message); <span class="comment">// Enum is read only</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Object.freeze を使う</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> freesedObject = <span class="built_in">Object</span>.freeze(object);</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(freesedObject.ja); <span class="comment">// Japan</span></div><div class="line"><span class="built_in">console</span>.log(freesedObject.us); <span class="comment">// United States of America</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> fail = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line"><span class="meta">    'use strict'</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        freesedObject.uk = <span class="string">'United Kingdom'</span>;</div><div class="line">    &#125; <span class="keyword">catch</span>(error) &#123;</div><div class="line">        <span class="built_in">console</span>.log(error.message); <span class="comment">// Cannot add property uk, object is not extensible</span></div><div class="line">    &#125;</div><div class="line">&#125;)();</div></pre></td></tr></table></figure>
+<h4 id="cached-object"><a href="#cached-object" class="headerlink" title="cached object"></a>cached object</h4><p>一定時間キャッシュ可能なオブジェクト</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> objectCache = <span class="function">(<span class="params">target, ttl</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">const</span> data = &#123;&#125;;</div><div class="line">    <span class="keyword">const</span> handler = &#123;</div><div class="line">        set(target, property, value) &#123;</div><div class="line">            data[property] = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime() + ttl;</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Reflect</span>.set(target, property, value);</div><div class="line">        &#125;,</div><div class="line">        get(target, property) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Reflect</span>.get(target, property);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">deleteCache</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">for</span>(key <span class="keyword">in</span> data) &#123;</div><div class="line">            <span class="keyword">if</span> (data[key] &lt; <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()) &#123;</div><div class="line">                <span class="keyword">delete</span> target[key];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    setInterval(deleteCache, ttl);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> cachedPbject = objectCache.apply(<span class="literal">null</span>, [&#123;&#125;, <span class="number">1000</span>]);</div><div class="line"></div><div class="line">cachedPbject.test = <span class="number">1</span>;</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(cachedPbject); <span class="comment">// &#123;test: 1&#125;</span></div><div class="line"></div><div class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(cachedPbject.test);</div><div class="line">&#125;, <span class="number">1001</span>); <span class="comment">// undefined</span></div></pre></td></tr></table></figure>
+<h4 id="object-property-validation"><a href="#object-property-validation" class="headerlink" title="object property validation"></a>object property validation</h4><p>objectのプロパティ設定値をvalidateする。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> withValidate = <span class="function"><span class="params">target</span> =&gt;</span> &#123;</div><div class="line">    <span class="keyword">const</span> regexp = <span class="built_in">RegExp</span>(<span class="string">'[0-9]'</span>);</div><div class="line">    <span class="keyword">const</span> handler = &#123;</div><div class="line">        set(target, property, value) &#123;</div><div class="line">            <span class="keyword">if</span> (regexp.test(value)) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="built_in">Reflect</span>.set(target, property, value);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">`<span class="subst">$&#123;value&#125;</span> is not correct type`</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> withValidationObject = withValidate.apply(<span class="literal">null</span>, [&#123;&#125;]);</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    withValidationObject.int = <span class="string">'a'</span>;</div><div class="line">    <span class="built_in">console</span>.log(withValidationObject.int);</div><div class="line">&#125; <span class="keyword">catch</span>(error) &#123;</div><div class="line">    <span class="built_in">console</span>.log(error.message); <span class="comment">// a is not correct type</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    withValidationObject.int = <span class="number">1</span>;</div><div class="line">    <span class="built_in">console</span>.log(withValidationObject.int);</div><div class="line">&#125; <span class="keyword">catch</span>(error) &#123;</div><div class="line">    <span class="built_in">console</span>.log(error.message);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="singleton"><a href="#singleton" class="headerlink" title="singleton"></a>singleton</h4><p>シングルトンパターンを実現する</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> createSingleton = <span class="function"><span class="params">target</span> =&gt;</span> &#123;</div><div class="line">    <span class="keyword">let</span> instance;</div><div class="line">    <span class="keyword">const</span> handler = &#123;</div><div class="line">        construct(target, argumentsList) &#123;</div><div class="line">            <span class="keyword">if</span> (!instance) &#123;</div><div class="line">                instance = <span class="built_in">Reflect</span>.construct(target, argumentsList);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">return</span> instance;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> Person = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.name = <span class="string">''</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> person1 = <span class="keyword">new</span> Person();</div><div class="line"><span class="keyword">const</span> person2 = <span class="keyword">new</span> Person();</div><div class="line"></div><div class="line">person1.name = <span class="string">'Taro'</span>;</div><div class="line">person2.name = <span class="string">'Jiro'</span>;</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(person1.name); <span class="comment">// Taro</span></div><div class="line"><span class="built_in">console</span>.log(person2.name); <span class="comment">// Jiro</span></div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="string">`Not singleton <span class="subst">$&#123;person1.name == person2.name&#125;</span>`</span>);</div><div class="line"></div><div class="line"><span class="keyword">const</span> SingletonPerson = createSingleton.apply(<span class="literal">null</span>, [Person])</div><div class="line"><span class="keyword">const</span> person3 = <span class="keyword">new</span> SingletonPerson();</div><div class="line">person3.name = <span class="string">'Taro'</span>;</div><div class="line"><span class="keyword">const</span> person4 = <span class="keyword">new</span> SingletonPerson();</div><div class="line">person3.name = <span class="string">'Jiro'</span>;</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(person3.name); <span class="comment">// Jiro</span></div><div class="line"><span class="built_in">console</span>.log(person4.name); <span class="comment">// Jiro</span></div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="string">`Is singleton <span class="subst">$&#123;person3.name == person4.name&#125;</span>`</span>);</div></pre></td></tr></table></figure>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://github.com/gergob/jsProxy" target="_blank" rel="external">jsProxy</a><br><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Proxy" target="_blank" rel="external">Proxy</a><br><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Reflect" target="_blank" rel="external">Reflect</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2017/12/24/extend-object-using-proxy/" class="hatena-bookmark-button" data-hatena-bookmark-title="Proxyを使ってオブジェクトを拡張する" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2017/12/24/extend-object-using-proxy/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2017/11/19/nodejs-native-add-on-with-napi/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            Node.jsのアドオンをN-APIで実装する
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2018 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2017/12/24/extend-object-using-proxy/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>

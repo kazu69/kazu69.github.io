@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.kazu69.net/"/>
-  <updated>2017-11-26T12:56:36.000Z</updated>
+  <updated>2018-01-06T02:12:50.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -14,6 +14,109 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Proxyを使ってオブジェクトを拡張する</title>
+    <link href="http://blog.kazu69.net/2017/12/24/extend-object-using-proxy/"/>
+    <id>http://blog.kazu69.net/2017/12/24/extend-object-using-proxy/</id>
+    <published>2017-12-24T10:24:30.000Z</published>
+    <updated>2018-01-06T02:12:50.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Proxyオブジェクトがサポートされたことで、<br>JavaScriptにでもオブジェクト操作が柔軟に拡張できるようになった。</p>
+<p>これにより処理を動的に拡張するメタプログラミングできる。<br>ということで、<a href="https://github.com/gergob/jsProxy" target="_blank" rel="external">参考になりそうな事例</a>があったので試してみた。</p>
+<a id="more"></a>
+<p><a href="https://caniuse.com/#search=proxy" target="_blank" rel="external">caniuseでProxyのサポート</a>を見るとモダンブラウザでは実装済である。<br>まず、Proxyオブジェクトをおさらいする。</p>
+<h3 id="Proxyオブジェクト"><a href="#Proxyオブジェクト" class="headerlink" title="Proxyオブジェクト"></a>Proxyオブジェクト</h3><p>基本構文は次の通り</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// target</span></div><div class="line"><span class="keyword">const</span> target = &#123;&#125;;</div><div class="line"></div><div class="line"><span class="comment">// handler</span></div><div class="line"><span class="keyword">const</span> handler = &#123;</div><div class="line">    <span class="comment">// trap</span></div><div class="line">    get(target, property) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="built_in">Reflect</span>.get(target, property);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div></pre></td></tr></table></figure>
+<p>targetはProxyで拡張するオブジェクト。<br>handlerはtrapを含んだオブジェクトとなる。<br>trapとはオブジェクトのプロパティへのアクセスを提供するメソッド。<br>上記の構文例だとgetとなる。<br>getの中ででてくるReflectオブジェクトはトラップされるビルトインメソッド(処理)を提供する。</p>
+<p>ちなみにtrapが設定されてない場合は、デフォルトのメソッドが実行される。</p>
+<h3 id="handlerとtrap一覧"><a href="#handlerとtrap一覧" class="headerlink" title="handlerとtrap一覧"></a>handlerとtrap一覧</h3><p>ブラウザへの実装が未対応のものもあるが、handlerとtrapとの関係は以下のようになっている。</p>
+<table>
+<thead>
+<tr>
+<th>handler / trap</th>
+<th>proxyされるビルトインメソッド</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>handler.getPrototypeOf()</td>
+<td>Object.getPrototypeOf()</td>
+</tr>
+<tr>
+<td>handler.setPrototypeOf()</td>
+<td>Object.setPrototypeOf()</td>
+</tr>
+<tr>
+<td>handler.isExtensible()</td>
+<td>Object.isExtensible()</td>
+</tr>
+<tr>
+<td>handler.preventExtensions()</td>
+<td>Object.preventExtensions()</td>
+</tr>
+<tr>
+<td>handler.getOwnPropertyDescriptor()</td>
+<td>Object.getOwnPropertyDescriptor()</td>
+</tr>
+<tr>
+<td>handler.defineProperty()</td>
+<td>Object.defineProperty()</td>
+</tr>
+<tr>
+<td>handler.has()</td>
+<td>in 演算子 (ロパティが指定されたオブジェクトにある) <br> prop in Object</td>
+</tr>
+<tr>
+<td>handler.get()</td>
+<td>プロパティ値を取得</td>
+</tr>
+<tr>
+<td>handler.set()</td>
+<td>プロパティ値を設定</td>
+</tr>
+<tr>
+<td>handler.deleteProperty()</td>
+<td>delete 演算子 <br> delete Object.prop</td>
+</tr>
+<tr>
+<td>handler.ownKeys()</td>
+<td>Object.getOwnPropertyNames()<br>Object.getOwnPropertySymbols()</td>
+</tr>
+<tr>
+<td>handler.apply()</td>
+<td>関数呼び出し</td>
+</tr>
+<tr>
+<td>handler.construct()</td>
+<td>new 演算子 <br> new Object()</td>
+</tr>
+</tbody>
+</table>
+<h3 id="いくつか試す"><a href="#いくつか試す" class="headerlink" title="いくつか試す"></a>いくつか試す</h3><h4 id="objectのプロパティ変更イベント"><a href="#objectのプロパティ変更イベント" class="headerlink" title="objectのプロパティ変更イベント"></a>objectのプロパティ変更イベント</h4><p>プロパティ変更するメソッドのtrapすることで変更イベントを検知して特定の処理を実施できる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> onChangeObject = <span class="function">(<span class="params">target, func</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">const</span> handler = &#123;</div><div class="line">        set(target, property, value) &#123;</div><div class="line">            <span class="keyword">const</span> currentValue = target[property];</div><div class="line">            func(target, property, value, currentValue);</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Reflect</span>.set(target, property, value);</div><div class="line">        &#125;,</div><div class="line">        defineProperty(target, property, descriptor) &#123;</div><div class="line">			func(target, property, descriptor, <span class="literal">undefined</span>);</div><div class="line">			<span class="keyword">return</span> <span class="built_in">Reflect</span>.defineProperty(target, property, descriptor);</div><div class="line">        &#125;,</div><div class="line">        deleteProperty(target, property) &#123;</div><div class="line">            <span class="keyword">const</span> currentValue = target[property];</div><div class="line">            func(target, property, <span class="literal">undefined</span>, currentValue);</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Reflect</span>.deleteProperty(target, property);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> Animal = &#123;</div><div class="line">    <span class="attr">name</span>: <span class="string">'Pochi'</span>,</div><div class="line">    <span class="attr">kind</span>: <span class="string">'dog'</span>,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> handle = <span class="function">(<span class="params">target, property, value, currentValue</span>) =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log(target);</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">`property - <span class="subst">$&#123;property&#125;</span>, new value - <span class="subst">$&#123;value&#125;</span>, current value - <span class="subst">$&#123;currentValue&#125;</span>`</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> watchedObject = onChangeObject.apply(<span class="literal">null</span>, [Animal, handle]);</div><div class="line">watchedObject.name = <span class="string">'Taro'</span>; <span class="comment">// property - name, new value - Taro, current value - Pochi</span></div><div class="line"><span class="keyword">delete</span> watchedObject.name; <span class="comment">// property - name, new value - undefined, current value - Taro</span></div></pre></td></tr></table></figure>
+<h4 id="enum"><a href="#enum" class="headerlink" title="enum"></a>enum</h4><p>enumもできる</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> createEnum = <span class="function"><span class="params">target</span> =&gt;</span>&#123;</div><div class="line">    <span class="keyword">const</span> handler = &#123;</div><div class="line">        set() &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Enum is read only'</span>);</div><div class="line">        &#125;,</div><div class="line">        setPrototypeOf() &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Enum is read only'</span>);</div><div class="line">        &#125;,</div><div class="line">        defineProperty() &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Enum is read only'</span>);</div><div class="line">        &#125;,</div><div class="line">        deleteProperty() &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Enum is read only'</span>);</div><div class="line">        &#125;,</div><div class="line">        get(target, property) &#123;</div><div class="line">            <span class="keyword">if</span> (!target.hasOwnProperty(property)) &#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">ReferenceError</span>(<span class="string">`Unknown enum key "<span class="subst">$&#123;property&#125;</span>"`</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Reflect</span>.get(target, property);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> object = &#123;</div><div class="line">    <span class="attr">ja</span>: <span class="string">'Japan'</span>,</div><div class="line">    <span class="attr">us</span>: <span class="string">'United States of America'</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> customEnum = createEnum.apply(<span class="literal">null</span>, [object]);</div><div class="line"><span class="built_in">console</span>.log(customEnum.ja); <span class="comment">// Japan</span></div><div class="line"><span class="built_in">console</span>.log(customEnum.us); <span class="comment">// United States of America</span></div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    customEnum.uk</div><div class="line">&#125; <span class="keyword">catch</span>(error) &#123;</div><div class="line">    <span class="built_in">console</span>.log(error.message); <span class="comment">// Unknown enum key "uk"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    customEnum.uk = <span class="string">'United Kingdom'</span>;</div><div class="line">&#125; <span class="keyword">catch</span>(error) &#123;</div><div class="line">    <span class="built_in">console</span>.log(error.message); <span class="comment">// Enum is read only</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Object.freeze を使う</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> freesedObject = <span class="built_in">Object</span>.freeze(object);</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(freesedObject.ja); <span class="comment">// Japan</span></div><div class="line"><span class="built_in">console</span>.log(freesedObject.us); <span class="comment">// United States of America</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> fail = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line"><span class="meta">    'use strict'</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        freesedObject.uk = <span class="string">'United Kingdom'</span>;</div><div class="line">    &#125; <span class="keyword">catch</span>(error) &#123;</div><div class="line">        <span class="built_in">console</span>.log(error.message); <span class="comment">// Cannot add property uk, object is not extensible</span></div><div class="line">    &#125;</div><div class="line">&#125;)();</div></pre></td></tr></table></figure>
+<h4 id="cached-object"><a href="#cached-object" class="headerlink" title="cached object"></a>cached object</h4><p>一定時間キャッシュ可能なオブジェクト</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> objectCache = <span class="function">(<span class="params">target, ttl</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">const</span> data = &#123;&#125;;</div><div class="line">    <span class="keyword">const</span> handler = &#123;</div><div class="line">        set(target, property, value) &#123;</div><div class="line">            data[property] = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime() + ttl;</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Reflect</span>.set(target, property, value);</div><div class="line">        &#125;,</div><div class="line">        get(target, property) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Reflect</span>.get(target, property);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">deleteCache</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">for</span>(key <span class="keyword">in</span> data) &#123;</div><div class="line">            <span class="keyword">if</span> (data[key] &lt; <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()) &#123;</div><div class="line">                <span class="keyword">delete</span> target[key];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    setInterval(deleteCache, ttl);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> cachedPbject = objectCache.apply(<span class="literal">null</span>, [&#123;&#125;, <span class="number">1000</span>]);</div><div class="line"></div><div class="line">cachedPbject.test = <span class="number">1</span>;</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(cachedPbject); <span class="comment">// &#123;test: 1&#125;</span></div><div class="line"></div><div class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(cachedPbject.test);</div><div class="line">&#125;, <span class="number">1001</span>); <span class="comment">// undefined</span></div></pre></td></tr></table></figure>
+<h4 id="object-property-validation"><a href="#object-property-validation" class="headerlink" title="object property validation"></a>object property validation</h4><p>objectのプロパティ設定値をvalidateする。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> withValidate = <span class="function"><span class="params">target</span> =&gt;</span> &#123;</div><div class="line">    <span class="keyword">const</span> regexp = <span class="built_in">RegExp</span>(<span class="string">'[0-9]'</span>);</div><div class="line">    <span class="keyword">const</span> handler = &#123;</div><div class="line">        set(target, property, value) &#123;</div><div class="line">            <span class="keyword">if</span> (regexp.test(value)) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="built_in">Reflect</span>.set(target, property, value);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">`<span class="subst">$&#123;value&#125;</span> is not correct type`</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> withValidationObject = withValidate.apply(<span class="literal">null</span>, [&#123;&#125;]);</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    withValidationObject.int = <span class="string">'a'</span>;</div><div class="line">    <span class="built_in">console</span>.log(withValidationObject.int);</div><div class="line">&#125; <span class="keyword">catch</span>(error) &#123;</div><div class="line">    <span class="built_in">console</span>.log(error.message); <span class="comment">// a is not correct type</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    withValidationObject.int = <span class="number">1</span>;</div><div class="line">    <span class="built_in">console</span>.log(withValidationObject.int);</div><div class="line">&#125; <span class="keyword">catch</span>(error) &#123;</div><div class="line">    <span class="built_in">console</span>.log(error.message);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="singleton"><a href="#singleton" class="headerlink" title="singleton"></a>singleton</h4><p>シングルトンパターンを実現する</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> createSingleton = <span class="function"><span class="params">target</span> =&gt;</span> &#123;</div><div class="line">    <span class="keyword">let</span> instance;</div><div class="line">    <span class="keyword">const</span> handler = &#123;</div><div class="line">        construct(target, argumentsList) &#123;</div><div class="line">            <span class="keyword">if</span> (!instance) &#123;</div><div class="line">                instance = <span class="built_in">Reflect</span>.construct(target, argumentsList);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">return</span> instance;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> Person = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.name = <span class="string">''</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> person1 = <span class="keyword">new</span> Person();</div><div class="line"><span class="keyword">const</span> person2 = <span class="keyword">new</span> Person();</div><div class="line"></div><div class="line">person1.name = <span class="string">'Taro'</span>;</div><div class="line">person2.name = <span class="string">'Jiro'</span>;</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(person1.name); <span class="comment">// Taro</span></div><div class="line"><span class="built_in">console</span>.log(person2.name); <span class="comment">// Jiro</span></div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="string">`Not singleton <span class="subst">$&#123;person1.name == person2.name&#125;</span>`</span>);</div><div class="line"></div><div class="line"><span class="keyword">const</span> SingletonPerson = createSingleton.apply(<span class="literal">null</span>, [Person])</div><div class="line"><span class="keyword">const</span> person3 = <span class="keyword">new</span> SingletonPerson();</div><div class="line">person3.name = <span class="string">'Taro'</span>;</div><div class="line"><span class="keyword">const</span> person4 = <span class="keyword">new</span> SingletonPerson();</div><div class="line">person3.name = <span class="string">'Jiro'</span>;</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(person3.name); <span class="comment">// Jiro</span></div><div class="line"><span class="built_in">console</span>.log(person4.name); <span class="comment">// Jiro</span></div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="string">`Is singleton <span class="subst">$&#123;person3.name == person4.name&#125;</span>`</span>);</div></pre></td></tr></table></figure>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://github.com/gergob/jsProxy" target="_blank" rel="external">jsProxy</a><br><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Proxy" target="_blank" rel="external">Proxy</a><br><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Reflect" target="_blank" rel="external">Reflect</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Proxyオブジェクトがサポートされたことで、&lt;br&gt;JavaScriptにでもオブジェクト操作が柔軟に拡張できるようになった。&lt;/p&gt;
+&lt;p&gt;これにより処理を動的に拡張するメタプログラミングできる。&lt;br&gt;ということで、&lt;a href=&quot;https://github.com/gergob/jsProxy&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;参考になりそうな事例&lt;/a&gt;があったので試してみた。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="web" scheme="http://blog.kazu69.net/categories/web/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>Node.jsのアドオンをN-APIで実装する</title>
@@ -1452,164 +1555,6 @@
     </summary>
     
       <category term="memo" scheme="http://blog.kazu69.net/categories/memo/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>systemdを使ってnodejsサーバー起動する</title>
-    <link href="http://blog.kazu69.net/2016/06/06/start-node-server-with-systemd/"/>
-    <id>http://blog.kazu69.net/2016/06/06/start-node-server-with-systemd/</id>
-    <published>2016-06-06T10:26:02.000Z</published>
-    <updated>2016-06-06T23:29:11.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>nodejsのプロセスバックグラウンドで実行する(デーモン化)する場合、だいたい<a href="https://www.npmjs.com/package/forever" target="_blank" rel="external">forever</a>などが選択されると思う。<br>今回は、Fedora、CentOS 7のデーモンとなるsystemdを使ってデーモン化してみた。<br><a id="more"></a></p>
-<p>まずforeverでプロセスをバックグランドで実行させる。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">npm i -g forever</div><div class="line">forever start server.js</div><div class="line">info:    Forever processing file: server.js</div><div class="line"></div><div class="line">node]<span class="comment"># forever list</span></div><div class="line">info:    Forever processes running</div><div class="line">data:        uid  <span class="built_in">command</span>       script    forever pid id logfile                 uptime</div><div class="line">data:    [0] OhQD /usr/bin/node server.js 97      102    /root/.forever/OhQD.log 0:0:0:19.532</div></pre></td></tr></table></figure>
-<p>実際はこのようにforeverを実行する起動ファイルを作成し、自動起動できるようにしないといけない。<br>場合によっては、起動順序やプロセスの依存関係などを考慮しないといけないため、起動スクリプトは複雑になることが考えられる。</p>
-<p>これをsystemdに置き換えることで、</p>
-<ul>
-<li>起動スクリプトを設定ファイルで記述できる</li>
-<li>依存関係や起動順序など複雑さを回避できる</li>
-<li>起動処理をできる限り並列化するとのことで起動にかかk流時間が短縮できる</li>
-</ul>
-<p>などが実現する様子。</p>
-<p>さっそく適当なDocker環境でsystemdを使ってnodejsサーバーのデーモン化を試してみた。</p>
-<h2 id="NodeJsサーバー作成"><a href="#NodeJsサーバー作成" class="headerlink" title="NodeJsサーバー作成"></a>NodeJsサーバー作成</h2><p>ミニマムなサーバーを作成</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</div><div class="line"></div><div class="line"><span class="keyword">const</span> hostname = <span class="string">'0.0.0.0'</span>;</div><div class="line"><span class="keyword">const</span> port = <span class="number">3000</span>;</div><div class="line"></div><div class="line"><span class="keyword">const</span> server = http.createServer(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</div><div class="line">    res.statusCode = <span class="number">200</span>;</div><div class="line">    res.setHeader(<span class="string">'Content-Type'</span>, <span class="string">'text/plain'</span>);</div><div class="line">    res.end(<span class="string">'Hello World\n'</span>);</div><div class="line">&#125;)</div><div class="line"></div><div class="line">server.listen(port, hostname, () =&gt; &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">`Server running at http://<span class="subst">$&#123;hostname&#125;</span>:<span class="subst">$&#123;port&#125;</span>/`</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h2 id="systemd-の設定ファイル"><a href="#systemd-の設定ファイル" class="headerlink" title="systemd の設定ファイル"></a>systemd の設定ファイル</h2><p>systemdでは起動処理を<strong>Unit</strong>という単位で管理している。<br>Unitには幾つかのタイプ(service, socketやdebviceなど）が存在するが、それらはすべてファイルの拡張子で判別されている。</p>
-<p>設定ファイルにはUnit, Install, Service(serviceであれば)セクションで構成される。</p>
-<p>それぞれの設定項目に関しては<a href="https://www.freedesktop.org/software/systemd/man/systemd.html" target="_blank" rel="external">manページ</a>に詳しくあるので、必要そうなものをかいつまんでみる。</p>
-<h3 id="Unitセクション"><a href="#Unitセクション" class="headerlink" title="Unitセクション"></a>Unitセクション</h3><p>起動サービスの依存・順序関係を解決する。</p>
-<table>
-<thead>
-<tr>
-<th>ディレクティブ</th>
-<th>内容</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Description</td>
-<td>ユニットの説明</td>
-</tr>
-<tr>
-<td>Documentation</td>
-<td>ドキュメントのURI</td>
-</tr>
-<tr>
-<td>After/Before</td>
-<td>実行順番の設定</td>
-</tr>
-<tr>
-<td>Requires/Wants</td>
-<td>依存関係の定義。(順序は関係なく並列起動されるべきサービス)<br>RequiresとWantsの違い。Requiresは依存するサービス起動失敗した時は、サービスの起動を中断とする</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Serviceセクション"><a href="#Serviceセクション" class="headerlink" title="Serviceセクション"></a>Serviceセクション</h3><p>起動サービスの設定</p>
-<table>
-<thead>
-<tr>
-<th>ディレクティブ</th>
-<th>内容</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ExecStart</td>
-<td>実行するサービスの起動コマンド</td>
-</tr>
-<tr>
-<td>ExecReload</td>
-<td>サービスのリロードコマンド</td>
-</tr>
-<tr>
-<td>ExecStop</td>
-<td>サービスの停止コマンド</td>
-</tr>
-<tr>
-<td>Restart</td>
-<td>プロセス停止時の再起動の有無<br>always 常に再起動<br>no 再起動しない<br>on-success 終了ステータスコード 0 (exit code 0) で終了時に再起動<br>on-failure 終了ステータスコード 0以外 (exit code 0以外) で終了時に再起動</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>プロセスの起動方法<br>フォアグラウンドで実行する場合はsimple<br>プロセスをforkして実行する場合はforking</td>
-</tr>
-<tr>
-<td>Environment</td>
-<td>環境変数</td>
-</tr>
-<tr>
-<td>RestartSec</td>
-<td>再起動までのスリープ時間</td>
-</tr>
-<tr>
-<td>StandardOutput,StandardError</td>
-<td>ログ、エラー出力の設定</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Installセクション"><a href="#Installセクション" class="headerlink" title="Installセクション"></a>Installセクション</h3><p>ユニットの自動起動に関する設定。</p>
-<table>
-<thead>
-<tr>
-<th>ディレクティブ</th>
-<th>内容</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>WantedBy</td>
-<td>systemctl enable でインストールされるとき、 .wants/にシンボリックを作成</td>
-</tr>
-<tr>
-<td>RequiredBy</td>
-<td>systemctl enable でインストールされるとき、 .requires/にシンボリックを作成</td>
-</tr>
-</tbody>
-</table>
-<p>wantsとrequiresはの違いは、wantsはUnitの依存関係のユニットが失敗すると起動を中断する。<br>requiresは依存関係のユニットが失敗すると起動を継続する。</p>
-<hr>
-<p>ということで、今回はサービスの起動を行うため<strong>.service</strong>を使う。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[Unit]</div><div class="line">Description=Node.js Server</div><div class="line"></div><div class="line">[Service]</div><div class="line">WorkingDirectory=/home/node</div><div class="line">Type=simple</div><div class="line">ExecStart=/usr/bin/node server.js</div><div class="line">Restart=always</div><div class="line">RestartSec=10</div><div class="line">StandardOutput=syslog</div><div class="line">StandardError=syslog</div><div class="line">SyslogIdentifier=node-server</div><div class="line">Environment=NODE_ENV=production PORT=3000</div><div class="line"></div><div class="line">[Install]</div><div class="line">WantedBy=multi-user.target</div></pre></td></tr></table></figure>
-<p>上記を使ってDockerfileを作成。<br>centos7でNodeJs 4.x を入れるのが大変だったので、<a href="https://nodesource.com/" target="_blank" rel="external">nodesource</a>からセットアップすることにした。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">FROM centos:7</div><div class="line"></div><div class="line">RUN yum -y update &amp;&amp; \</div><div class="line">    yum -y install epel-release.noarch curl make gcc gcc-c++ tree which &amp;&amp; \</div><div class="line">    yum repolist</div><div class="line"></div><div class="line">RUN curl -sL https://rpm.nodesource.com/setup_4.x | bash - &amp;&amp; \</div><div class="line">    yum -y install nodejs</div><div class="line"></div><div class="line">RUN mkdir /home/node/</div><div class="line">ADD server.js /home/node/server.js</div><div class="line"></div><div class="line">ADD node_server.service /etc/systemd/system/node_server.service</div></pre></td></tr></table></figure>
-<h2 id="systemdを試してみる"><a href="#systemdを試してみる" class="headerlink" title="systemdを試してみる"></a>systemdを試してみる</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build -t server .</div></pre></td></tr></table></figure>
-<p>Dockerコンテナ内でDocker daemonの起動はできないので、privilegedオプションで起動する。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">docker run --privileged -d -p 3000:3000 server:latest /sbin/init</div><div class="line">72956dbd3cdf37268a0fa9678922f116e48d1730dd5c69771fa7abffe4affd49</div><div class="line">docker ps</div><div class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                    NAMES</div><div class="line">72956dbd3cdf        server:latest       &quot;/sbin/init&quot;        10 seconds ago      Up 9 seconds        0.0.0.0:3000-&gt;3000/tcp   silly_pike</div><div class="line"></div><div class="line">docker exec -it silly_pike /bin/bash</div></pre></td></tr></table></figure>
-<p>色々と確認する</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"># 起動unitの確認</div><div class="line">systemctl list-units --type=service</div><div class="line"></div><div class="line">  UNIT                                   LOAD   ACTIVE SUB     DESCRIPTION</div><div class="line">  dbus.service                           loaded active running D-Bus System Message Bus</div><div class="line">  getty@tty1.service                     loaded active running Getty on tty1</div><div class="line">  ldconfig.service                       loaded active exited  Rebuild Dynamic Linker Cache</div><div class="line">  systemd-hwdb-update.service            loaded active exited  Rebuild Hardware Database</div><div class="line">  systemd-journal-catalog-update.service loaded active exited  Rebuild Journal Catalog</div><div class="line">  systemd-journal-flush.service          loaded active exited  Flush Journal to Persistent Storage</div><div class="line">  systemd-journald.service               loaded active running Journal Service</div><div class="line">  systemd-logind.service                 loaded active running Login Service</div><div class="line">  systemd-random-seed.service            loaded active exited  Load/Save Random Seed</div><div class="line">● systemd-remount-fs.service             loaded failed failed  Remount Root and Kernel File Systems</div><div class="line">  systemd-sysctl.service                 loaded active exited  Apply Kernel Variables</div><div class="line">  systemd-tmpfiles-setup-dev.service     loaded active exited  Create Static Device Nodes in /dev</div><div class="line">iles and Directoriesetup.service         loaded active exited  Create Volatile</div><div class="line">FDevicesd-udev-trigger.service           loaded active exited  udev Coldplug</div><div class="line">e Manager-udevd.service                  loaded active running udev Kernel Devic</div><div class="line">ed      d-update-done.service            loaded active exited  Update is Complet</div><div class="line"> System Boot/Shutdown.service            loaded active exited  Update UTMP about</div><div class="line">ons     d-user-sessions.service          loaded active exited  Permit User Sessi</div><div class="line">sole    d-vconsole-setup.service         loaded active exited  Setup Virtual Con</div><div class="line"></div><div class="line">LOAD   = Reflects whether the unit definition was properly loaded.</div><div class="line">ACTIVE = The high-level unit activation state, i.e. generalization of SUB.</div><div class="line">SUB    = The low-level unit activation state, values depend on unit type.</div><div class="line"></div><div class="line">o.      d units listed. Pass --all to see loaded but inactive units, to--More--</div><div class="line">To show all installed unit files use &apos;systemctl list-unit-files&apos;.</div><div class="line"></div><div class="line"># 起動の有無に関係なくunitの一覧表示する</div><div class="line">systemctl list-unit-files --type=service</div><div class="line"></div><div class="line">UNIT FILE                              STATE</div><div class="line">proc-sys-fs-binfmt_misc.automount      static</div><div class="line">dev-hugepages.mount                    static</div><div class="line">dev-mqueue.mount                       static</div><div class="line">proc-sys-fs-binfmt_misc.mount          static</div><div class="line">sys-fs-fuse-connections.mount          static</div><div class="line">sys-kernel-config.mount                static</div><div class="line">sys-kernel-debug.mount                 static</div><div class="line">tmp.mount                              disabled</div><div class="line">systemd-ask-password-console.path      static</div><div class="line">systemd-ask-password-wall.path         static</div><div class="line">autovt@.service                        disabled</div><div class="line">blk-availability.service               disabled</div><div class="line">console-getty.service                  disabled</div><div class="line">console-shell.service                  disabled</div><div class="line">container-getty@.service               static</div><div class="line">dbus-org.freedesktop.hostname1.service static</div><div class="line">dbus-org.freedesktop.locale1.service   static</div><div class="line">dbus-org.freedesktop.login1.service    static</div><div class="line">dbus-org.freedesktop.machine1.service  static</div><div class="line">dbus-org.freedesktop.network1.service  invalid</div><div class="line">dbus-org.freedesktop.timedate1.service static</div><div class="line">dbus.service                           static</div><div class="line">...</div><div class="line">...</div></pre></td></tr></table></figure>
-<p>staticはInstallを持たないので、単体で起動できない(他のUnitに依存)する。<br>enabled/disabled はシステム起動時の自動起動の有効/無効を意味する。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># 自動起動を有効にする</div><div class="line">systemctl enable node_server.service</div><div class="line">Created symlink from /etc/systemd/system/multi-user.target.wants/node_server.service to /etc/systemd/system/node_server.service.</div><div class="line"></div><div class="line"># 自動起動を無効にする</div><div class="line">systemctl disable node_server.service</div><div class="line">Removed symlink /etc/systemd/system/multi-user.target.wants/node_server.service.</div></pre></td></tr></table></figure>
-<p>systemd/system にシンボリックリンクを作ることがわかる。</p>
-<p>自動起動を有効にする</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">systemctl enable node_server.service</div><div class="line">Created symlink from /etc/systemd/system/multi-user.target.wants/node.service to /etc/systemd/system/node.service.</div><div class="line"></div><div class="line">systemctl list-unit-files --type=service | grep node_server.service</div><div class="line">node_server.service                    enabled</div></pre></td></tr></table></figure>
-<p>サービスをスタートする</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl start node_server.service</div></pre></td></tr></table></figure>
-<p>起動を確認する</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">systemctl status node_server.service</div><div class="line">● node_server.service - Node.js Server</div><div class="line">   Loaded: loaded (/etc/systemd/system/node_server.service; enabled; vendor preset: disabled)</div><div class="line">   Active: active (running) since Sun 2016-06-06 20:11:11 UTC; 4s ago</div><div class="line"> Main PID: 90 (node)</div><div class="line">   CGroup: /system.slice/node_server.service</div><div class="line">           └─90 /usr/bin/node /home/node/server.js</div><div class="line"></div><div class="line">Jun 06 20:11:11 5bb4328b5c84 systemd[1]: Started Node.js Server.</div><div class="line">Jun 06 20:11:11 5bb4328b5c84 systemd[1]: Starting Node.js Server...</div><div class="line">Jun 06 20:11:11 5bb4328b5c84 node-server[90]: Server running at http://0.0.0.0:3000/</div></pre></td></tr></table></figure>
-<p>アクセス確認する</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">curl http://$(docker-machine ip dev):3000/</div><div class="line">Hello World</div></pre></td></tr></table></figure>
-<p>.serveceファイルの再読み込み</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl daemon-reload</div></pre></td></tr></table></figure>
-<p>ついでに再起動</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl restart node_server.service</div></pre></td></tr></table></figure>
-<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>起動スクリプトの依存性や順序などは場合によっては複雑化するが、systemdを使うことで設定ファイルに落としこめることは、<br>メリットになるのではないだろうか。<br>ただ、systemdは全体像が大きいため把握できていないが、まだまだ落とし穴も多い様子。<br>iniからsystemdに置き換わっているのは事実なので、さらに使用して理解する必要がありそうだ。</p>
-<h2 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h2><ul>
-<li><a href="http://dev.classmethod.jp/cloud/aws/systemd-getting-started/" target="_blank" rel="external">systemd超入門</a></li>
-<li><a href="https://wiki.archlinuxjp.org/index.php/Systemd" target="_blank" rel="external">wiki.archlinuxjp.org systemd</a></li>
-<li><a href="https://blog.docker.com/2013/09/docker-can-now-run-within-docker/" target="_blank" rel="external">Docker can now run within Docker</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;nodejsのプロセスバックグラウンドで実行する(デーモン化)する場合、だいたい&lt;a href=&quot;https://www.npmjs.com/package/forever&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;forever&lt;/a&gt;などが選択されると思う。&lt;br&gt;今回は、Fedora、CentOS 7のデーモンとなるsystemdを使ってデーモン化してみた。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="tec" scheme="http://blog.kazu69.net/categories/tec/"/>
     
     
   </entry>
