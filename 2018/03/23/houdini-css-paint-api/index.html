@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>CSS APIを操作する (CSS Houdini) | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ここ最近のChromeのアップデートでHoudiniプロジェクトで進められている機能が試すことが可能となったということでざっと眺めてみた。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSS APIを操作する (CSS Houdini)">
+<meta property="og:url" content="http://blog.kazu69.net/2018/03/23/houdini-css-paint-api/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="ここ最近のChromeのアップデートでHoudiniプロジェクトで進められている機能が試すことが可能となったということでざっと眺めてみた。">
+<meta property="og:updated_time" content="2018-04-01T09:47:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CSS APIを操作する (CSS Houdini)">
+<meta name="twitter:description" content="ここ最近のChromeのアップデートでHoudiniプロジェクトで進められている機能が試すことが可能となったということでざっと眺めてみた。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-houdini-css-paint-api" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      CSS APIを操作する (CSS Houdini)
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2018-03-22T15:04:00.000Z" itemprop="datePublished">2018-03-23</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/web/">web</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>ここ最近のChromeのアップデートで<a href="https://github.com/w3c/css-houdini-drafts" target="_blank" rel="external">Houdini</a>プロジェクトで進められている機能が試すことが可能となったということでざっと眺めてみた。</p>
+<a id="more"></a>
+<p>HoudiniではブラウザのCSS APIを開発者に解放することを目的としている。<br>最終的にはW3Cでの標準化を目指しているプジジェクト。<br>APIを使うことで開発者はブラウザベンダーと同じく、<br>自由にブラウザのCSSレンダリングの低レベル部分を操作できるようになり、自由な表現が可能となる。</p>
+<h3 id="Houdiniの仕様"><a href="#Houdiniの仕様" class="headerlink" title="Houdiniの仕様"></a>Houdiniの仕様</h3><p>ドラフトによると以下のAPIで構成されている。</p>
+<ul>
+<li>Box Tree API 1</li>
+<li>CSS Layout API 1</li>
+<li>CSS Painting API 1</li>
+<li>CSS Parser API 1</li>
+<li>CSS Properties and Values API 1</li>
+<li>CSS Typed OM 1</li>
+<li>Font Metrics API 1</li>
+<li>Worklets 1</li>
+</ul>
+<p>API経由で開発者の書いたコードがブラウザのCSSエンジンのフックされ、カスタムCSSを作成し実行することができる。<br>カスタムCSS機能は<strong>Worklet</strong>と呼ばれ、JavaScriptで定義されている。<br>Workletはブラウザ実行時にJavaScriptとしてブラウザにロードされる。<br>ユーザーはあたかもブラウザ組み込まれたスタイルのようにスタムCSSを利用できる。</p>
+<p>WorkletはWebworkerに似ているが、次の部分が違う。</p>
+<ul>
+<li>メインスレッドの依存しないため特定のスレッドで実行するというようなことはできない</li>
+<li>並列化のためにグローバルに複数の重複するインスタンスを生成できる</li>
+<li>イベントAPIではなく、UserAgentに呼び出される</li>
+</ul>
+<h3 id="ブラウザのサポート状況-2018年3月現在"><a href="#ブラウザのサポート状況-2018年3月現在" class="headerlink" title="ブラウザのサポート状況 (2018年3月現在)"></a>ブラウザのサポート状況 (2018年3月現在)</h3><p>各ブラザベンダーの実装状況は<a href="https://ishoudinireadyyet.com/" target="_blank" rel="external">Is Houdini ready yet‽</a>で知ることができる。</p>
+<h3 id="Worklet"><a href="#Worklet" class="headerlink" title="Worklet"></a>Worklet</h3><p>Houdiniに関連するWorkletは次のものがある。</p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Worklet" target="_blank" rel="external">https://developer.mozilla.org/en-US/docs/Web/API/Worklet</a></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>name</th>
+<th>content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://drafts.css-houdini.org/css-paint-api-1/#paint-worklet" target="_blank" rel="external">PaintWorklet</a></td>
+<td>CSSのカスタムプロパティのレンダリングを定義</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://wicg.github.io/animation-worklet/" target="_blank" rel="external">AnimationWorklet</a></td>
+<td>カスタムのアニメーション、スクロールの定義</td>
+</tr>
+<tr>
+<td><a href="https://drafts.css-houdini.org/css-layout-api-1/#layout-worklet" target="_blank" rel="external">LayoutWorklet</a></td>
+<td>カスタムのレイアウトの定義</td>
+</tr>
+</tbody>
+</table>
+<p>指定されたURIにあるworkletを取得ための<strong>addModule</strong>メソッドが提供されている。</p>
+<p><credentials> =  ‘omit’ | ‘same-origin’ | ‘include’</credentials></p>
+<p><option> = ‘credentials’</option></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> option &#123;<span class="attr">credentials</span>:  <span class="string">'omit'</span>&#125;</div><div class="line"><span class="built_in">Promise</span> = Worklet.addModule(workletURI,  option);</div></pre></td></tr></table></figure>
+<p>それぞれに関してかいつまんで見る。<br>機能は <strong>chrome：// flags</strong> で<strong>Experimental Web Platform</strong>の機能を有効にすることが必要になる。</p>
+<h3 id="PaintWorklet"><a href="#PaintWorklet" class="headerlink" title="PaintWorklet"></a>PaintWorklet</h3><p>任意のboxに対して描画を行うAPI。CanvasのレンダリングAPIのサブセットを使い描画行う。</p>
+<h3 id="AnimationWorklet"><a href="#AnimationWorklet" class="headerlink" title="AnimationWorklet"></a>AnimationWorklet</h3><p>以前は<strong>CompositorWorker</strong>として提案されていたもので、<br>worklet内でカスタムのアニメーションの実行を行う。<br>こちらはアニメーションのサブクラスを使いアニメーションを行い、複数のタイムラインを持つことができる。</p>
+<h3 id="LayoutWorklet"><a href="#LayoutWorklet" class="headerlink" title="LayoutWorklet"></a>LayoutWorklet</h3><p>レイアウトやボックスモデルのサイズ、positionなどを開発者で計算ができるようになる。</p>
+<h3 id="CSS-Typed-OM"><a href="#CSS-Typed-OM" class="headerlink" title="CSS Typed OM"></a>CSS Typed OM</h3><p>workletではないが、JavaScriptからCSS単位付きの値(px, %など)演算を行う際に<br>オーバーヘッドが発生するため、CSSの値を型付きでAPIとして公開し開発者に提供するもの。</p>
+<p>例えばこのようなな感じで扱っていた値とユニットを</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> elem = docuemnt.queryselector(<span class="string">'#element'</span>)</div><div class="line"><span class="keyword">let</span> w = elem.style.width.slice(<span class="number">0</span>,<span class="number">-2</span>)</div><div class="line">w++</div><div class="line">elem.style.width = <span class="string">`<span class="subst">$&#123;w&#125;</span>px`</span>;</div></pre></td></tr></table></figure>
+<p>CSSStyleValueをもちいることで以下のように扱うことができる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> elem = docuemnt.queryselector(<span class="string">'#element'</span>)</div><div class="line"><span class="keyword">let</span> w = element.attributeStyleMap.get(<span class="string">'width'</span>);</div><div class="line">w.value++;</div><div class="line">element.attributeStyleMap.set(<span class="string">'width'</span>, w);</div></pre></td></tr></table></figure>
+<p>またユニットの違う場合の計算においても、cssのcalc関数のように取得できる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// like calc(1em + 5px)</span></div><div class="line"><span class="keyword">const</span> width = <span class="keyword">new</span> CSSMathSum(CSS.em(<span class="number">1</span>), CSS.px(<span class="number">5</span>));</div></pre></td></tr></table></figure>
+<h3 id="paint-apiを使ったデモ"><a href="#paint-apiを使ったデモ" class="headerlink" title="paint apiを使ったデモ"></a>paint apiを使ったデモ</h3><p>ボーダースタイルの動的変更</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"ja"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Houdini<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="css"></span></div><div class="line">        <span class="selector-class">.paint-button</span> &#123;</div><div class="line">            <span class="attribute">display</span>: flex;</div><div class="line">            <span class="attribute">margin</span>: <span class="number">2rem</span> auto;</div><div class="line">            <span class="attribute">font-size</span>: <span class="number">1.5rem</span>;</div><div class="line">            <span class="attribute">padding</span>: .<span class="number">8em</span>;</div><div class="line">            <span class="attribute">border-radius</span>: .<span class="number">25rem</span>;</div><div class="line">            <span class="attribute">border-style</span>: solid;</div><div class="line">            <span class="attribute">border-width</span>: <span class="number">3px</span>;</div><div class="line">            <span class="attribute">border-image-slice</span>: <span class="number">10</span>;</div><div class="line">            <span class="comment">/* paint api */</span></div><div class="line">            <span class="attribute">border-image-source</span>: <span class="built_in">paint</span>(paint-button, orange, 10);</div><div class="line">        &#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span>      </div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"paint-button"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">class</span>=<span class="string">"paint-button"</span>&gt;</span>button<span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></div><div class="line">        <span class="keyword">if</span> (</div><div class="line">            <span class="string">'paintWorklet'</span> <span class="keyword">in</span> CSS &amp;&amp; <span class="keyword">typeof</span> CSS.paintWorklet.addModule === <span class="string">'function'</span></div><div class="line">        ) &#123;</div><div class="line">            CSS.paintWorklet.addModule(<span class="string">'paint-button.js'</span>);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'Please enabled CSS property'</span>);</div><div class="line">        &#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// paint-button.js</span></div><div class="line">registerPaint(<span class="string">'paint-button'</span>, <span class="class"><span class="keyword">class</span> </span>&#123;</div><div class="line">    <span class="comment">// css paint apiに渡されるプロパティ</span></div><div class="line">    <span class="comment">// CSS Properties の syntax strings の type</span></div><div class="line">    <span class="keyword">static</span> get inputArguments() &#123;</div><div class="line">        <span class="keyword">return</span> [</div><div class="line">            <span class="string">'&lt;color&gt;'</span>,</div><div class="line">            <span class="string">'&lt;number&gt;'</span></div><div class="line">        ]</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    paint (context, geometory, properties, args) &#123;</div><div class="line">      <span class="keyword">const</span> color = args[<span class="number">0</span>].value;</div><div class="line">      <span class="keyword">const</span> lineWidth = args[<span class="number">1</span>].value</div><div class="line">      context.lineWidth = lineWidth;</div><div class="line">      context.strokeStyle = color;</div><div class="line">      context.strokeRect(<span class="number">0</span>, <span class="number">0</span>, geometory.width, geometory.height);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p><strong>paint(paint-button, orange, 10);</strong> でモジュール名と引数を渡す。<br>workletのcallbackはJavaScriptのclassとなり、引数は<strong>inputArguments</strong>で列挙される。<br>ここではタイプを指定して取得できる。指定できるタイプは<a href="https://www.w3.org/TR/css-properties-values-api-1/#supported-syntax-strings" target="_blank" rel="external">css-properties-valueのsupported-syntax-stringsにある</a></p>
+<p><strong>pain</strong>メソッドでカスタムの描画を行うことができる。</p>
+<p>ripple button</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Houdini<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="css"></span></div><div class="line">        <span class="selector-class">.ripple-button</span> &#123;</div><div class="line">            <span class="attribute">--circle-radius</span>: <span class="number">0</span>;</div><div class="line">            <span class="attribute">--circle-color</span>: <span class="number">#fff</span>;</div><div class="line">            <span class="attribute">--bgcolor</span>: <span class="number">#6eb9f7</span>;</div><div class="line">            <span class="attribute">background</span>: <span class="built_in">var</span>(--bgcolor);</div><div class="line">            <span class="attribute">margin</span>: <span class="number">2rem</span> auto;</div><div class="line">            <span class="attribute">display</span>: flex;</div><div class="line">            <span class="attribute">color</span>: <span class="number">#1b2e3d</span>;</div><div class="line">            <span class="attribute">cursor</span>: pointer;</div><div class="line">            <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#61a5dd</span>;</div><div class="line">            <span class="attribute">font-size</span>: <span class="number">1.5rem</span>;</div><div class="line">            <span class="attribute">padding</span>: .<span class="number">8em</span>;</div><div class="line">            <span class="attribute">border-radius</span>: .<span class="number">25rem</span>;</div><div class="line">            <span class="attribute">background-image</span>: <span class="built_in">paint</span>(circle-ripple);</div><div class="line">            <span class="attribute">outline</span>: none;</div><div class="line">        &#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span>      </div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"ripple"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">class</span>=<span class="string">"ripple-button"</span>&gt;</span>button<span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></div><div class="line">        <span class="keyword">if</span> (</div><div class="line">            (<span class="string">'paintWorklet'</span> <span class="keyword">in</span> CSS &amp;&amp; <span class="keyword">typeof</span> CSS.paintWorklet.addModule === <span class="string">'function'</span>) &amp;&amp;</div><div class="line">            (<span class="string">'registerProperty'</span> <span class="keyword">in</span> CSS &amp;&amp; <span class="keyword">typeof</span> CSS.registerProperty === <span class="string">'function'</span>)</div><div class="line">        ) &#123;</div><div class="line">            CSS.paintWorklet.addModule(<span class="string">'ripple.js'</span>);</div><div class="line">            <span class="comment">// &#123;</span></div><div class="line">            <span class="comment">//     name: 変数名,</span></div><div class="line">            <span class="comment">//     syntax: 型,</span></div><div class="line">            <span class="comment">//     inherits: 継承,</span></div><div class="line">            <span class="comment">//     initialValue: 初期値</span></div><div class="line">            <span class="comment">// &#125;</span></div><div class="line">            <span class="keyword">const</span> customProps = [</div><div class="line">                &#123;<span class="attr">name</span>: <span class="string">'--ripple-x'</span>, <span class="attr">syntax</span>: <span class="string">'&lt;number&gt;'</span>, <span class="attr">initialValue</span>: <span class="literal">false</span>,  <span class="attr">initialValue</span>: <span class="string">'0'</span>&#125;,</div><div class="line">                &#123;<span class="attr">name</span>: <span class="string">'--ripple-y'</span>, <span class="attr">syntax</span>: <span class="string">'&lt;number&gt;'</span>, <span class="attr">initialValue</span>: <span class="literal">false</span>,  <span class="attr">initialValue</span>: <span class="string">'0'</span>&#125;,</div><div class="line">                &#123;<span class="attr">name</span>: <span class="string">'--ripple-radius'</span>, <span class="attr">syntax</span>: <span class="string">'&lt;number&gt;'</span>, <span class="attr">initialValue</span>: <span class="literal">false</span>,  <span class="attr">initialValue</span>: <span class="string">'0'</span>&#125;,</div><div class="line">                &#123;<span class="attr">name</span>: <span class="string">'--ripple-color'</span>, <span class="attr">syntax</span>: <span class="string">'&lt;color&gt;'</span>, <span class="attr">initialValue</span>: <span class="literal">false</span>,  <span class="attr">initialValue</span>: <span class="string">'#6eb9f7'</span>&#125;</div><div class="line">            ];</div><div class="line">            </div><div class="line">            <span class="comment">// カスタムプロパティを適用</span></div><div class="line">            customProps.forEach(<span class="function"><span class="params">prop</span> =&gt;</span> &#123;</div><div class="line">                CSS.registerProperty(prop)</div><div class="line">            &#125;);</div><div class="line">    </div><div class="line">            <span class="keyword">const</span> button = ripple.querySelector(<span class="string">'.ripple-button'</span>);</div><div class="line"></div><div class="line">            button.addEventListener(<span class="string">'click'</span>, event =&gt; &#123;</div><div class="line">                button.classList.add(<span class="string">'animating'</span>);</div><div class="line">                button.style.setProperty(<span class="string">'--ripple-x'</span>, event.offsetX);</div><div class="line">                button.style.setProperty(<span class="string">'--ripple-y'</span>, event.offsetY);</div><div class="line">            &#125;);</div><div class="line"></div><div class="line">            <span class="comment">// transitoon終了後</span></div><div class="line">            button.addEventListener(<span class="string">'transitionend'</span>, () =&gt; &#123;</div><div class="line">                button.classList.remove(<span class="string">'animating'</span>);</div><div class="line">            &#125;);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'Please enabled CSS property'</span>);</div><div class="line">        &#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ripple.js</span></div><div class="line">registerPaint(<span class="string">'circle-ripple'</span>, <span class="class"><span class="keyword">class</span> </span>&#123;</div><div class="line">  <span class="comment">// アクセスできるプロパティの列挙</span></div><div class="line">  <span class="keyword">static</span> get inputProperties() &#123;</div><div class="line">    <span class="keyword">return</span> [</div><div class="line">      <span class="string">'--ripple-x'</span>,</div><div class="line">      <span class="string">'--ripple-y'</span>,</div><div class="line">      <span class="string">'--ripple-radius'</span>,</div><div class="line">      <span class="string">'--ripple-color'</span></div><div class="line">    ];</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">constructor</span>() &#123;</div><div class="line">    <span class="keyword">this</span>.prop = &#123;</div><div class="line">      <span class="attr">name</span>: <span class="string">'circle-riple'</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  paint(context, geometory, properties, args) &#123;</div><div class="line">    <span class="keyword">const</span> x = properties.get(<span class="string">'--ripple-x'</span>).toString();</div><div class="line">    <span class="keyword">const</span> y = properties.get(<span class="string">'--ripple-y'</span>).toString();</div><div class="line">    <span class="keyword">const</span> radius = properties.get(<span class="string">'--ripple-radius'</span>).toString();</div><div class="line">    <span class="keyword">const</span> color = properties.get(<span class="string">'--ripple-color'</span>).toString();</div><div class="line">    context.fillStyle = color;</div><div class="line">    context.arc(</div><div class="line">      x,</div><div class="line">      y,</div><div class="line">      radius,</div><div class="line">      <span class="number">0</span>,</div><div class="line">      <span class="number">2</span> * <span class="built_in">Math</span>.PI</div><div class="line">    );</div><div class="line">    context.fill();</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>イベントのcallbackと組み合わせることで、tansition効果をつけたエフェクトも可能。<br>cssのカスタム変数へのアクセスは<strong>inputProperties</strong>で列挙できる。</p>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><ul>
+<li>ブラウザベンダーが提供してないビジュアルやエフェクトを独自で実装可能となる</li>
+<li>複雑なDOMやCSSプロパティを使用することなく高度なビジュアルやエフェクトを実装可能</li>
+<li>ブラウザベンダーより先に実装するを実現することができる</li>
+<li>ビジュアルを抽象化してモジュールとして提供することができる</li>
+</ul>
+<p>ということで、これまでのCSSでのリッチUIの提供方法に変化がある未来がすぐそこまで来ている。<br>Webcomponentと同じようにビジュアルのモジュール化できるので、これまでのCSS開発手法が変わってきそう。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://www.w3.org/TR/css-properties-values-api-1/" target="_blank" rel="external">css-properties-values-api-1</a><br><a href="https://github.com/w3c/css-houdini-drafts" target="_blank" rel="external">ss-houdini-drafts</a><br><a href="https://developers.google.com/web/updates/2016/05/houdini" target="_blank" rel="external">Houdini – CSS の秘密を解き明かすもの</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2018/03/23/houdini-css-paint-api/" class="hatena-bookmark-button" data-hatena-bookmark-title="CSS APIを操作する (CSS Houdini)" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2018/03/23/houdini-css-paint-api/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2017/12/24/extend-object-using-proxy/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            ProxyとReflectを使ってオブジェクトを拡張する
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2018 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2018/03/23/houdini-css-paint-api/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
