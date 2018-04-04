@@ -115,9 +115,9 @@
     <link href="http://blog.kazu69.net/2018/02/22/golang-functional-options/"/>
     <id>http://blog.kazu69.net/2018/02/22/golang-functional-options/</id>
     <published>2018-02-22T10:53:35.000Z</published>
-    <updated>2018-04-04T16:34:09.000Z</updated>
+    <updated>2018-04-04T16:39:48.000Z</updated>
     
-    <content type="html"><![CDATA[<p>Gopherな方なら既にご存知なのだろうけど。<br>Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。<br>デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探して<strong>Functional Option Pattern</strong>ということを<br>知ったのでメモ。</p>
+    <content type="html"><![CDATA[<p>Gopherなら既にご存知なのだろうけど。<br>Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。<br>デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探して<strong>Functional Option Pattern</strong>ということを<br>知ったのでメモ。</p>
 <a id="more"></a>
 <p>簡単な例を示してみてみようと思う。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> client</div><div class="line"></div><div class="line"><span class="keyword">type</span> Configs <span class="keyword">struct</span> &#123;</div><div class="line">    Port      <span class="keyword">int</span></div><div class="line">    Tiemout   time.Duration</div><div class="line">    UserAgent <span class="keyword">string</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">type</span> Client <span class="keyword">interface</span> &#123;</div><div class="line">    Do(req *http.Request) (res *http.Response, err error)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -137,7 +137,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;Gopherな方なら既にご存知なのだろうけど。&lt;br&gt;Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。&lt;br&gt;デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探して&lt;strong&gt;Functional Option Pattern&lt;/strong&gt;ということを&lt;br&gt;知ったのでメモ。&lt;/p&gt;
+      &lt;p&gt;Gopherなら既にご存知なのだろうけど。&lt;br&gt;Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。&lt;br&gt;デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探して&lt;strong&gt;Functional Option Pattern&lt;/strong&gt;ということを&lt;br&gt;知ったのでメモ。&lt;/p&gt;
     
     </summary>
     

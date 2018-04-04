@@ -5,16 +5,16 @@
   
   <title>golangの関数のオプション引数を実現する | 69log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Gopherな方なら既にご存知なのだろうけど。Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探してFunctional Option Patternということを知ったのでメモ。">
+  <meta name="description" content="Gopherなら既にご存知なのだろうけど。Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探してFunctional Option Patternということを知ったのでメモ。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="golangの関数のオプション引数を実現する">
 <meta property="og:url" content="http://blog.kazu69.net/2018/02/22/golang-functional-options/index.html">
 <meta property="og:site_name" content="69log">
-<meta property="og:description" content="Gopherな方なら既にご存知なのだろうけど。Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探してFunctional Option Patternということを知ったのでメモ。">
-<meta property="og:updated_time" content="2018-04-04T16:34:09.000Z">
+<meta property="og:description" content="Gopherなら既にご存知なのだろうけど。Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探してFunctional Option Patternということを知ったのでメモ。">
+<meta property="og:updated_time" content="2018-04-04T16:39:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="golangの関数のオプション引数を実現する">
-<meta name="twitter:description" content="Gopherな方なら既にご存知なのだろうけど。Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探してFunctional Option Patternということを知ったのでメモ。">
+<meta name="twitter:description" content="Gopherなら既にご存知なのだろうけど。Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探してFunctional Option Patternということを知ったのでメモ。">
   
     <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
   
@@ -96,7 +96,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Gopherな方なら既にご存知なのだろうけど。<br>Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。<br>デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探して<strong>Functional Option Pattern</strong>ということを<br>知ったのでメモ。</p>
+      <p>Gopherなら既にご存知なのだろうけど。<br>Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。<br>デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探して<strong>Functional Option Pattern</strong>ということを<br>知ったのでメモ。</p>
 <a id="more"></a>
 <p>簡単な例を示してみてみようと思う。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> client</div><div class="line"></div><div class="line"><span class="keyword">type</span> Configs <span class="keyword">struct</span> &#123;</div><div class="line">    Port      <span class="keyword">int</span></div><div class="line">    Tiemout   time.Duration</div><div class="line">    UserAgent <span class="keyword">string</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">type</span> Client <span class="keyword">interface</span> &#123;</div><div class="line">    Do(req *http.Request) (res *http.Response, err error)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
