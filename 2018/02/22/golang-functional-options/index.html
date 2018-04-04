@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>golangの関数のオプション引数を実現する | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Gopherな方なら既にご存知なのだろうけど。Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探してFunctional Option Patternということを知ったのでメモ。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golangの関数のオプション引数を実現する">
+<meta property="og:url" content="http://blog.kazu69.net/2018/02/22/golang-functional-options/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="Gopherな方なら既にご存知なのだろうけど。Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探してFunctional Option Patternということを知ったのでメモ。">
+<meta property="og:updated_time" content="2018-04-04T16:34:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="golangの関数のオプション引数を実現する">
+<meta name="twitter:description" content="Gopherな方なら既にご存知なのだろうけど。Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探してFunctional Option Patternということを知ったのでメモ。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-golang-functional-options" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      golangの関数のオプション引数を実現する
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2018-02-22T10:53:35.000Z" itemprop="datePublished">2018-02-22</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Gopherな方なら既にご存知なのだろうけど。<br>Golangでインスタンスを作成する際に可変長引数を受け付けつつ、拡張を考慮した設計をしたかった。<br>デフォルト引数を使えればいいけど、Golangにデフォルト引数はないので、色々と探して<strong>Functional Option Pattern</strong>ということを<br>知ったのでメモ。</p>
+<a id="more"></a>
+<p>簡単な例を示してみてみようと思う。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> client</div><div class="line"></div><div class="line"><span class="keyword">type</span> Configs <span class="keyword">struct</span> &#123;</div><div class="line">    Port      <span class="keyword">int</span></div><div class="line">    Tiemout   time.Duration</div><div class="line">    UserAgent <span class="keyword">string</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">type</span> Client <span class="keyword">interface</span> &#123;</div><div class="line">    Do(req *http.Request) (res *http.Response, err error)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>のような場合、コンストラクタは普通</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">fucn NewClient(port, timeout, ua) *Configs &#123;</div><div class="line">    <span class="keyword">return</span> &amp;Configs&#123;</div><div class="line">        Port:      port,</div><div class="line">        Tiemout:   timeout,</div><div class="line">        UserAgent: ua,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>とするの一般的。しかし毎回パラメーターを渡す必要がでてくる。<br>引数なしでインスタンス生成できにない。</p>
+<p>そこでコンストラクタを分けるということも考えられる。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">fucn NewClient() *Configs &#123;</div><div class="line">    <span class="keyword">return</span> &amp;Config&#123;</div><div class="line">        Port:      default_port,</div><div class="line">        Tiemout:   default_timeout,</div><div class="line">        UserAgent: default_ua,</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">fucn NewClientWithOption(port, timeout, ua) *Config s &#123;</div><div class="line">    <span class="keyword">return</span> &amp;Configs&#123;</div><div class="line">        Port:      port,</div><div class="line">        Tiemout:   timeout,</div><div class="line">        UserAgent: ua,</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewClientWithTPort</span><span class="params">(port)</span> *<span class="title">Configs</span></span> &#123;</div><div class="line">    <span class="keyword">return</span> &amp;Configs&#123;</div><div class="line">        Port:      port,</div><div class="line">        Tiemout:   default_timeout,</div><div class="line">        UserAgent: default_ua,</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewClientWithTimenout</span><span class="params">(timeout)</span> *<span class="title">Configs</span></span> &#123;</div><div class="line">    <span class="keyword">return</span> &amp;Configs&#123;</div><div class="line">        Port:      default_port,</div><div class="line">        Tiemout:   timeout,</div><div class="line">        UserAgent: default_ua,</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewClientWithTPort</span><span class="params">(ua)</span> *<span class="title">Configs</span></span> &#123;</div><div class="line">    <span class="keyword">return</span> &amp;Configs&#123;</div><div class="line">        Port:      default_port,</div><div class="line">        Tiemout:   default_timeout,</div><div class="line">        UserAgent: ua,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>オプションが増えることで煩雑になる。<br>他にはあらかじめ構造体を作って渡すという手法。<br>こちらは明示的で拡張もしやすい。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> clientConfigs <span class="keyword">struct</span> &#123;</div><div class="line">    Port      <span class="keyword">int</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewClient</span><span class="params">(configs clientConfigs)</span> *<span class="title">Configs</span></span> &#123;</div><div class="line">    <span class="keyword">return</span> &amp;Config&#123;</div><div class="line">        Port:      configs.port,</div><div class="line">        Tiemout:   configs.timeout,</div><div class="line">        UserAgent: default_ua,</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// optionが不要な場合</span></div><div class="line">conig := client.NewClient(&#123;&#125;)</div></pre></td></tr></table></figure>
+<p>一般的なやり方としてはこうなりそう。しかし、オプションを渡す必要な場合でも<br>構造体を渡す必要がある。</p>
+<p>そこで<strong>Functional Option Pattern</strong>を試す。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Configs <span class="keyword">struct</span> &#123;</div><div class="line">    Port      <span class="keyword">int</span></div><div class="line">    Tiemout   time.Duration</div><div class="line">    UserAgent <span class="keyword">string</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">type</span> Option <span class="function"><span class="keyword">func</span><span class="params">(*Configs)</span></span></div><div class="line"></div><div class="line"><span class="title">func</span> <span class="title">Port</span><span class="params">(port <span class="keyword">int</span>)</span> <span class="title">CoOptionnfig</span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(args *Configs)</span></span> &#123;</div><div class="line">        args.Port = port</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Timeout</span><span class="params">(time time.Duration)</span> <span class="title">Option</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(args *Configs)</span></span> &#123;</div><div class="line">        args.Tiemout = time</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">UserAgent</span><span class="params">(ua <span class="keyword">string</span>)</span> <span class="title">Option</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(args *Configs)</span></span> &#123;</div><div class="line">        args.UserAgent = ua</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(options ...Option)</span> *<span class="title">Configs</span></span> &#123;</div><div class="line">    args := &amp;Configs &#123;</div><div class="line">        Port:      default_port,</div><div class="line">        Tiemout:   default_timeout,</div><div class="line">        UserAgent: default_ua,</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> _, option := <span class="keyword">range</span> options &#123;</div><div class="line">        option(args)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ...</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Usage</span></div><div class="line">conig := client.NewClient(client.Port(port), client.UserAgent(ua))</div></pre></td></tr></table></figure>
+<p>オプションを設定する関数を作成し、コンストラクタに可変長引数として渡す。<br>オプション設定関数はいわゆるクロージャで、設定値を受け取り、オプションを設定するだけになる。<br>これで、可変長な引数で拡張性のあるオプション設計ができるようになりました。<br>勉強になりました。</p>
+<h3 id="参考ページ"><a href="#参考ページ" class="headerlink" title="参考ページ"></a>参考ページ</h3><p><a href="https://commandcenter.blogspot.jp/2014/01/self-referential-functions-and-design.html" target="_blank" rel="external">Self-referential functions and the design of options </a><br><a href="https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis" target="_blank" rel="external">Functional options for friendly APIs</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2018/02/22/golang-functional-options/" class="hatena-bookmark-button" data-hatena-bookmark-title="golangの関数のオプション引数を実現する" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2018/02/22/golang-functional-options/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+      <a href="/2018/03/23/houdini-css-paint-api/" id="article-nav-newer" class="article-nav-link article-nav-link-newer">
+        <span class="article-nav-caption">Newer - </span>
+        <span class="article-nav-title">
+          
+            CSS APIを操作する (CSS Houdini)
+          
+        </span>
+      </a>
+    
+    
+      <a href="/2017/12/24/extend-object-using-proxy/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            ProxyとReflectを使ってオブジェクトを拡張する
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2018 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2018/02/22/golang-functional-options/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
