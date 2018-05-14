@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>npm@6で追加されたnpm auditでpackageのセキュリティ意識する | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="npm@6で新たにnpm auditが追加されていた。これはliftsecurity.ioという企業が持っていたセキュリティノウハウをがnpm incが取得したことにより実現されたとのこと。 ということで自分のプロダクトでいかほどか見てみる。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="npm@6で追加されたnpm auditでpackageのセキュリティ意識する">
+<meta property="og:url" content="http://blog.kazu69.net/2018/05/13/package_security_aware_with_npm_audit_added_npm_v6/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="npm@6で新たにnpm auditが追加されていた。これはliftsecurity.ioという企業が持っていたセキュリティノウハウをがnpm incが取得したことにより実現されたとのこと。 ということで自分のプロダクトでいかほどか見てみる。">
+<meta property="og:updated_time" content="2018-05-14T15:01:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="npm@6で追加されたnpm auditでpackageのセキュリティ意識する">
+<meta name="twitter:description" content="npm@6で新たにnpm auditが追加されていた。これはliftsecurity.ioという企業が持っていたセキュリティノウハウをがnpm incが取得したことにより実現されたとのこと。 ということで自分のプロダクトでいかほどか見てみる。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-package_security_aware_with_npm_audit_added_npm_v6" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      npm@6で追加されたnpm auditでpackageのセキュリティ意識する
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2018-05-13T03:25:21.000Z" itemprop="datePublished">2018-05-13</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>npm@6で新たに<a href="https://github.com/npm/npm/pull/20389" target="_blank" rel="external">npm audit</a>が追加されていた。<br>これは<a href="https://liftsecurity.io" target="_blank" rel="external">liftsecurity.io</a>という企業が持っていたセキュリティノウハウをが<a href="https://blog.npmjs.org/post/172793182214/npm-acquires-lift-security-and-node-security" target="_blank" rel="external">npm incが取得した</a>ことにより実現されたとのこと。</p>
+<p>ということで自分のプロダクトでいかほどか見てみる。</p>
+<a id="more"></a>
+<p>ほとんど公式ドキュメントのななめ良いなんですが、ざっとまとめる。<br>npm installを実行することで自動的に実行され、セキュリティのレポートが出力される。<br>(//registry.npmjs.org/-/npm/v1/security/audits/quick あたりのAPIを実施してるんかな)</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># upgrade npm@6</span></div><div class="line">npm i -g npm@latest</div><div class="line"></div><div class="line">npm -v</div><div class="line">6.0.1</div><div class="line"></div><div class="line">npm i</div><div class="line">up to date <span class="keyword">in</span> 6.424s</div><div class="line">[!] 26 vulnerabilities found [2529 packages audited]</div><div class="line">    Severity: 16 Low | 8 Moderate | 2 High</div><div class="line">    Run `npm audit` <span class="keyword">for</span> more detail</div></pre></td></tr></table></figure>
+<p>npm auditはインストールした<code>node_module</code>に対してセキュリティチェックを行いレポートを出力します。</p>
+<p>詳細なレポートは<code>npm audit</code>を実施することで確認できます。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line">npm audit</div><div class="line"></div><div class="line"><span class="comment"># Run  npm install --dev nyc@11.7.3  to resolve 11 vulnerabilities</span></div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Low           │ Prototype Pollution                                          │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ lodash                                                       │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ nyc [dev]                                                    │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ nyc &gt; istanbul-lib-instrument &gt; babel-generator &gt;            │</div><div class="line">│               │ babel-types &gt; lodash                                         │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/577                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment"># Run  npm update fsevents --depth 3  to resolve 11 vulnerabilities</span></div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Low           │ Regular Expression Denial of Service                         │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ debug                                                        │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ ava [dev]                                                    │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ ava &gt; chokidar &gt; fsevents &gt; node-pre-gyp &gt; tar-pack &gt; debug  │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/534                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Moderate      │ Prototype pollution                                          │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ hoek                                                         │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ ava [dev]                                                    │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ ava &gt; chokidar &gt; fsevents &gt; node-pre-gyp &gt; hawk &gt; boom &gt;     │</div><div class="line">│               │ hoek                                                         │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/566                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">┌──────────────────────────────────────────────────────────────────────────────┐</div><div class="line">│                                Manual Review                                 │</div><div class="line">│            Some vulnerabilities require your attention to resolve            │</div><div class="line">│                                                                              │</div><div class="line">│         Visit https://go.npm.me/audit-guide <span class="keyword">for</span> additional guidance          │</div><div class="line">└──────────────────────────────────────────────────────────────────────────────┘</div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Low           │ Prototype Pollution                                          │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ deep-extend                                                  │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Patched <span class="keyword">in</span>    │ &gt;=0.5.1                                                      │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ b801b0cdd03e5b6e6c073421517282056f9d04c8220d55dfb4ca26be1e3… │</div><div class="line">│               │ [dev]                                                        │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ b801b0cdd03e5b6e6c073421517282056f9d04c8220d55dfb4ca26be1e3… │</div><div class="line">│               │ &gt; chokidar &gt; fsevents &gt; node-pre-gyp &gt; rc &gt; deep-extend      │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/612                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">[!] 26 vulnerabilities found - Packages audited: 2529 (2491 dev, 289 optional)</div><div class="line">    Severity: 16 Low | 8 Moderate | 2 High</div></pre></td></tr></table></figure>
+<p>という感じで、<br>npm auditでは脆弱性の深刻度とパッケージ、path情報などがレポートされる。</p>
+<h3 id="解決方法が提示されている場合"><a href="#解決方法が提示されている場合" class="headerlink" title="解決方法が提示されている場合"></a>解決方法が提示されている場合</h3><p>パッケージでの解決が可能な場合は解決方法が提示される。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Run  npm update fsevents --depth 3  to resolve 11 vulnerabilities</span></div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Low           │ Regular Expression Denial of Service                         │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ debug                                                        │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ ava [dev]                                                    │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ ava &gt; chokidar &gt; fsevents &gt; node-pre-gyp &gt; tar-pack &gt; debug  │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/534                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div></pre></td></tr></table></figure>
+<p>この場合は <code>npm update fsevents --depth 3</code> を実施する。</p>
+<h3 id="自動解決方法が提供されない場合"><a href="#自動解決方法が提供されない場合" class="headerlink" title="自動解決方法が提供されない場合"></a>自動解決方法が提供されない場合</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">┌──────────────────────────────────────────────────────────────────────────────┐</div><div class="line">│                                Manual Review                                 │</div><div class="line">│            Some vulnerabilities require your attention to resolve            │</div><div class="line">│                                                                              │</div><div class="line">│         Visit https://go.npm.me/audit-guide <span class="keyword">for</span> additional guidance          │</div><div class="line">└──────────────────────────────────────────────────────────────────────────────┘</div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Low           │ Prototype Pollution                                          │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ deep-extend                                                  │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Patched <span class="keyword">in</span>    │ &gt;=0.5.1                                                      │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ b801b0cdd03e5b6e6c073421517282056f9d04c8220d55dfb4ca26be1e3… │</div><div class="line">│               │ [dev]                                                        │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ b801b0cdd03e5b6e6c073421517282056f9d04c8220d55dfb4ca26be1e3… │</div><div class="line">│               │ &gt; chokidar &gt; fsevents &gt; node-pre-gyp &gt; rc &gt; deep-extend      │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/612                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div></pre></td></tr></table></figure>
+<p>自動で解決できない場合は、マニュアルで確認、調査することが可能。<br><a href="https://nodesecurity.io/" target="_blank" rel="external">nodesecurity.io</a>のリンクが提供されており、<br>CVE(Common Vulnerabilities and Exposures)情報があるので脆弱性の緩和・解決を図る。<br>該当するpackageのパスがあるので、必要に応じてパッケージの更新や修正を行う。</p>
+<p>例に挙げているレポートでは<a href="https://nodesecurity.io/advisories/612" target="_blank" rel="external">Prototype Pollution</a> として<code>deep-extend@0.5.1</code> 以前のバージョンがプロトタイプ汚染に関して脆弱なためv0.5.1以上にアップデートする必要があるので、該当のパッケージ更新を行う。</p>
+<p>またバージョンの更新ができなかったり、修正が存在してない場合は以下のいずれかの方法でた右往する。</p>
+<ul>
+<li>脆弱性に該当する箇所を改修し、mainteinerにプルリクエストを送り脆弱性を報告する</li>
+<li>脆弱性を修正できない場合は該当パッケージの<code>issue tracker</code>から脆弱性の情報を報告する</li>
+</ul>
+<h3 id="インストール時にauditを実施ない"><a href="#インストール時にauditを実施ない" class="headerlink" title="インストール時にauditを実施ない"></a>インストール時にauditを実施ない</h3><p>またインストール時にauditを実施しないときは<code>--no-audit</code>フラグを渡してあげる。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i &lt;PACKAGE&gt; --no-audit</div></pre></td></tr></table></figure>
+<p>または.npmrcで<code>audit</code>を<code>false</code>にしておくことで、すべてのインストールに対してauditは無効化できる。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm <span class="built_in">set</span> audit <span class="literal">false</span></div></pre></td></tr></table></figure>
+<p>ということで、自分のpackageに対しても結構でてきたので、<br>セキュリティの意識を高めて開発していきたい。</p>
+<h4 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h4><ul>
+<li><a href="https://blog.npmjs.org/post/173719309445/npm-audit-identify-and-fix-insecure" target="_blank" rel="external"><code>npm audit</code>: identify and fix insecure dependencies</a></li>
+<li><a href="https://docs.npmjs.com/getting-started/running-a-security-audit#check-for-mitigating-factors" target="_blank" rel="external">About security audits</a></li>
+</ul>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2018/05/13/package_security_aware_with_npm_audit_added_npm_v6/" class="hatena-bookmark-button" data-hatena-bookmark-title="npm@6で追加されたnpm auditでpackageのセキュリティ意識する" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2018/05/13/package_security_aware_with_npm_audit_added_npm_v6/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2018/03/23/houdini-css-paint-api/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            CSS APIを操作する (CSS Houdini)
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2018 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2018/05/13/package_security_aware_with_npm_audit_added_npm_v6/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>

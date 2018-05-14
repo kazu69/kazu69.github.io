@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.kazu69.net/"/>
-  <updated>2018-04-01T09:52:33.000Z</updated>
+  <updated>2018-05-14T15:01:59.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -14,6 +14,54 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>npm@6で追加されたnpm auditでpackageのセキュリティ意識する</title>
+    <link href="http://blog.kazu69.net/2018/05/13/package_security_aware_with_npm_audit_added_npm_v6/"/>
+    <id>http://blog.kazu69.net/2018/05/13/package_security_aware_with_npm_audit_added_npm_v6/</id>
+    <published>2018-05-13T03:25:21.000Z</published>
+    <updated>2018-05-14T15:01:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>npm@6で新たに<a href="https://github.com/npm/npm/pull/20389" target="_blank" rel="external">npm audit</a>が追加されていた。<br>これは<a href="https://liftsecurity.io" target="_blank" rel="external">liftsecurity.io</a>という企業が持っていたセキュリティノウハウをが<a href="https://blog.npmjs.org/post/172793182214/npm-acquires-lift-security-and-node-security" target="_blank" rel="external">npm incが取得した</a>ことにより実現されたとのこと。</p>
+<p>ということで自分のプロダクトでいかほどか見てみる。</p>
+<a id="more"></a>
+<p>ほとんど公式ドキュメントのななめ良いなんですが、ざっとまとめる。<br>npm installを実行することで自動的に実行され、セキュリティのレポートが出力される。<br>(//registry.npmjs.org/-/npm/v1/security/audits/quick あたりのAPIを実施してるんかな)</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># upgrade npm@6</span></div><div class="line">npm i -g npm@latest</div><div class="line"></div><div class="line">npm -v</div><div class="line">6.0.1</div><div class="line"></div><div class="line">npm i</div><div class="line">up to date <span class="keyword">in</span> 6.424s</div><div class="line">[!] 26 vulnerabilities found [2529 packages audited]</div><div class="line">    Severity: 16 Low | 8 Moderate | 2 High</div><div class="line">    Run `npm audit` <span class="keyword">for</span> more detail</div></pre></td></tr></table></figure>
+<p>npm auditはインストールした<code>node_module</code>に対してセキュリティチェックを行いレポートを出力します。</p>
+<p>詳細なレポートは<code>npm audit</code>を実施することで確認できます。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line">npm audit</div><div class="line"></div><div class="line"><span class="comment"># Run  npm install --dev nyc@11.7.3  to resolve 11 vulnerabilities</span></div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Low           │ Prototype Pollution                                          │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ lodash                                                       │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ nyc [dev]                                                    │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ nyc &gt; istanbul-lib-instrument &gt; babel-generator &gt;            │</div><div class="line">│               │ babel-types &gt; lodash                                         │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/577                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment"># Run  npm update fsevents --depth 3  to resolve 11 vulnerabilities</span></div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Low           │ Regular Expression Denial of Service                         │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ debug                                                        │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ ava [dev]                                                    │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ ava &gt; chokidar &gt; fsevents &gt; node-pre-gyp &gt; tar-pack &gt; debug  │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/534                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Moderate      │ Prototype pollution                                          │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ hoek                                                         │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ ava [dev]                                                    │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ ava &gt; chokidar &gt; fsevents &gt; node-pre-gyp &gt; hawk &gt; boom &gt;     │</div><div class="line">│               │ hoek                                                         │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/566                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">┌──────────────────────────────────────────────────────────────────────────────┐</div><div class="line">│                                Manual Review                                 │</div><div class="line">│            Some vulnerabilities require your attention to resolve            │</div><div class="line">│                                                                              │</div><div class="line">│         Visit https://go.npm.me/audit-guide <span class="keyword">for</span> additional guidance          │</div><div class="line">└──────────────────────────────────────────────────────────────────────────────┘</div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Low           │ Prototype Pollution                                          │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ deep-extend                                                  │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Patched <span class="keyword">in</span>    │ &gt;=0.5.1                                                      │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ b801b0cdd03e5b6e6c073421517282056f9d04c8220d55dfb4ca26be1e3… │</div><div class="line">│               │ [dev]                                                        │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ b801b0cdd03e5b6e6c073421517282056f9d04c8220d55dfb4ca26be1e3… │</div><div class="line">│               │ &gt; chokidar &gt; fsevents &gt; node-pre-gyp &gt; rc &gt; deep-extend      │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/612                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">[!] 26 vulnerabilities found - Packages audited: 2529 (2491 dev, 289 optional)</div><div class="line">    Severity: 16 Low | 8 Moderate | 2 High</div></pre></td></tr></table></figure>
+<p>という感じで、<br>npm auditでは脆弱性の深刻度とパッケージ、path情報などがレポートされる。</p>
+<h3 id="解決方法が提示されている場合"><a href="#解決方法が提示されている場合" class="headerlink" title="解決方法が提示されている場合"></a>解決方法が提示されている場合</h3><p>パッケージでの解決が可能な場合は解決方法が提示される。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Run  npm update fsevents --depth 3  to resolve 11 vulnerabilities</span></div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Low           │ Regular Expression Denial of Service                         │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ debug                                                        │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ ava [dev]                                                    │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ ava &gt; chokidar &gt; fsevents &gt; node-pre-gyp &gt; tar-pack &gt; debug  │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/534                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div></pre></td></tr></table></figure>
+<p>この場合は <code>npm update fsevents --depth 3</code> を実施する。</p>
+<h3 id="自動解決方法が提供されない場合"><a href="#自動解決方法が提供されない場合" class="headerlink" title="自動解決方法が提供されない場合"></a>自動解決方法が提供されない場合</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">┌──────────────────────────────────────────────────────────────────────────────┐</div><div class="line">│                                Manual Review                                 │</div><div class="line">│            Some vulnerabilities require your attention to resolve            │</div><div class="line">│                                                                              │</div><div class="line">│         Visit https://go.npm.me/audit-guide <span class="keyword">for</span> additional guidance          │</div><div class="line">└──────────────────────────────────────────────────────────────────────────────┘</div><div class="line">┌───────────────┬──────────────────────────────────────────────────────────────┐</div><div class="line">│ Low           │ Prototype Pollution                                          │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Package       │ deep-extend                                                  │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Patched <span class="keyword">in</span>    │ &gt;=0.5.1                                                      │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Dependency of │ b801b0cdd03e5b6e6c073421517282056f9d04c8220d55dfb4ca26be1e3… │</div><div class="line">│               │ [dev]                                                        │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ Path          │ b801b0cdd03e5b6e6c073421517282056f9d04c8220d55dfb4ca26be1e3… │</div><div class="line">│               │ &gt; chokidar &gt; fsevents &gt; node-pre-gyp &gt; rc &gt; deep-extend      │</div><div class="line">├───────────────┼──────────────────────────────────────────────────────────────┤</div><div class="line">│ More info     │ https://nodesecurity.io/advisories/612                       │</div><div class="line">└───────────────┴──────────────────────────────────────────────────────────────┘</div></pre></td></tr></table></figure>
+<p>自動で解決できない場合は、マニュアルで確認、調査することが可能。<br><a href="https://nodesecurity.io/" target="_blank" rel="external">nodesecurity.io</a>のリンクが提供されており、<br>CVE(Common Vulnerabilities and Exposures)情報があるので脆弱性の緩和・解決を図る。<br>該当するpackageのパスがあるので、必要に応じてパッケージの更新や修正を行う。</p>
+<p>例に挙げているレポートでは<a href="https://nodesecurity.io/advisories/612" target="_blank" rel="external">Prototype Pollution</a> として<code>deep-extend@0.5.1</code> 以前のバージョンがプロトタイプ汚染に関して脆弱なためv0.5.1以上にアップデートする必要があるので、該当のパッケージ更新を行う。</p>
+<p>またバージョンの更新ができなかったり、修正が存在してない場合は以下のいずれかの方法でた右往する。</p>
+<ul>
+<li>脆弱性に該当する箇所を改修し、mainteinerにプルリクエストを送り脆弱性を報告する</li>
+<li>脆弱性を修正できない場合は該当パッケージの<code>issue tracker</code>から脆弱性の情報を報告する</li>
+</ul>
+<h3 id="インストール時にauditを実施ない"><a href="#インストール時にauditを実施ない" class="headerlink" title="インストール時にauditを実施ない"></a>インストール時にauditを実施ない</h3><p>またインストール時にauditを実施しないときは<code>--no-audit</code>フラグを渡してあげる。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i &lt;PACKAGE&gt; --no-audit</div></pre></td></tr></table></figure>
+<p>または.npmrcで<code>audit</code>を<code>false</code>にしておくことで、すべてのインストールに対してauditは無効化できる。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm <span class="built_in">set</span> audit <span class="literal">false</span></div></pre></td></tr></table></figure>
+<p>ということで、自分のpackageに対しても結構でてきたので、<br>セキュリティの意識を高めて開発していきたい。</p>
+<h4 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h4><ul>
+<li><a href="https://blog.npmjs.org/post/173719309445/npm-audit-identify-and-fix-insecure" target="_blank" rel="external"><code>npm audit</code>: identify and fix insecure dependencies</a></li>
+<li><a href="https://docs.npmjs.com/getting-started/running-a-security-audit#check-for-mitigating-factors" target="_blank" rel="external">About security audits</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;npm@6で新たに&lt;a href=&quot;https://github.com/npm/npm/pull/20389&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;npm audit&lt;/a&gt;が追加されていた。&lt;br&gt;これは&lt;a href=&quot;https://liftsecurity.io&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;liftsecurity.io&lt;/a&gt;という企業が持っていたセキュリティノウハウをが&lt;a href=&quot;https://blog.npmjs.org/post/172793182214/npm-acquires-lift-security-and-node-security&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;npm incが取得した&lt;/a&gt;ことにより実現されたとのこと。&lt;/p&gt;
+&lt;p&gt;ということで自分のプロダクトでいかほどか見てみる。&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>CSS APIを操作する (CSS Houdini)</title>
@@ -1523,78 +1571,6 @@
     <summary type="html">
     
       &lt;p&gt;docker engine 1.12から標準で搭載されたswarm modeを試してみる。&lt;br&gt;swarm(群れ)という意味で、クラスタリング構成機構のこと。&lt;br&gt;swarm modeはdocker engine v1.12.0-rc1で統合された機能である。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="web" scheme="http://blog.kazu69.net/categories/web/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>JWT(JSON Web Token)を使った認証を試みる</title>
-    <link href="http://blog.kazu69.net/2016/07/30/authenticate_with_json_web_token/"/>
-    <id>http://blog.kazu69.net/2016/07/30/authenticate_with_json_web_token/</id>
-    <published>2016-07-30T09:17:13.000Z</published>
-    <updated>2016-08-06T02:51:54.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Oauth2やOpenID Connectなどすでに導入されているJWT(JSON Web Token)。<br>今後IoTとかを考えると認証手法としては結構有効な認証方法だということで、改めて眺めてみた。</p>
-<a id="more"></a>
-<h2 id="JSON-Web-Token"><a href="#JSON-Web-Token" class="headerlink" title="JSON Web Token"></a>JSON Web Token</h2><p>JSON Web Token(JWT) jot(ジョット)と発音する。<br>JSONを電子署名したurl-safe(URLで使用できない文字が含まれる)なclaimのことを指す。<a href="https://tools.ietf.org/html/rfc7519" target="_blank" rel="external">rfc7519</a><br>また同じような言葉もあるので一旦整理する。</p>
-<ul>
-<li>JWS は署名したもの</li>
-<li>JWE はEncryptしたもの</li>
-</ul>
-<p>一般的にJWTというとJWSのことをいう。</p>
-<p>電子署名(公開鍵+秘密鍵方式)をしているため、データの読み出し、書き込みができる。<br>しかし、その内容の改竄はチェックできる。<br>JSONの内容を秘匿化するわけではないので、内容は誰でも見ることはできるという点は注意が必要。</p>
-<p><a href="https://jwt.io/" target="_blank" rel="external">jwt.io</a>というサービスを使うことでdebugすることができるので、試してみると見ての通り、PAYLOADの内容は見ることができる。</p>
-<p>JWTの形式は</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[ HEADER ] . [ PAYLOAD ] . [ SIGNATURE ]</div></pre></td></tr></table></figure>
-<p>という形で構成され、HEADERとPAYLOADはbase64エンコードされている。</p>
-<hr>
-<p>使い方として、認証時にトークンを発行し、必要に応じて検証することで認証済みとして扱うようにするとか。<br>同じことはSessionを使うことでもできるが、sessionを使う場合との違いは、サーバーが状態(state)を持たないでいいので、<br>token発行ホストと認証ホストが異なっていても問題ない。(まさにステートレス)<br>JWTを使うと、CSRFの攻撃を考えなくて良くなる。</p>
-<p>また、JWTは</p>
-<ul>
-<li>Base64エンコーダー・デコーダー</li>
-<li>jsonパーサー</li>
-<li>署名検証機能</li>
-</ul>
-<p>上記のがあれば利用できるため、汎用性が高い。</p>
-<p>デバイスによってはjsonを保持しておけば、認証できるという意味ではIoTとかを考慮すると重宝する。<br>クライアント側で永続化はメモリキャッシュでも、DBでもブラウザのLocalStrageも良い。<br>認証が必要な時に、tokenをポストするかhttpヘッダーで送る形となる。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Authorization: bearer &lt;token&gt;</div></pre></td></tr></table></figure>
-<h2 id="JSON-Web-Token-の中身"><a href="#JSON-Web-Token-の中身" class="headerlink" title="JSON Web Token の中身"></a>JSON Web Token の中身</h2><h3 id="HEADER"><a href="#HEADER" class="headerlink" title="HEADER"></a>HEADER</h3><p>タイプとハッシュアルゴリズムを保持しており、これをBase64している</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"alg"</span>: <span class="string">"HS256"</span>,</div><div class="line">  <span class="attr">"typ"</span>: <span class="string">"JWT"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>HMAC SHA-256のJWTを表す。これはBase64で</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Base64.encode64(<span class="string">'&#123;"alg": "HS256", "typ": "JWT"&#125;'</span>)</div><div class="line"><span class="comment"># =&gt; eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9</span></div></pre></td></tr></table></figure>
-<p>となる。</p>
-<h3 id="PAYLOAD"><a href="#PAYLOAD" class="headerlink" title="PAYLOAD"></a>PAYLOAD</h3><p>JWTクレーム。トークンの本体となる部分で、幾つかのクレーム名はあらかじめ予約されている。<br>詳細は<a href="https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-19#section-4" target="_blank" rel="external">RFCを参照</a><br>クレーム名はJWT作成者側で自由に作成も出来る。</p>
-<p>例えば以下のようなクレーム</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"sub"</span>: <span class="string">"1234567890"</span>,</div><div class="line">  <span class="attr">"name"</span>: <span class="string">"John Doe"</span>,</div><div class="line">  <span class="attr">"admin"</span>: <span class="literal">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>こちらもBase64で</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Base64.encode64(<span class="string">'&#123;"sub":"1234567890","name":"John Doe","admin":true&#125;'</span>)</div><div class="line"><span class="comment"># =&gt; eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9</span></div></pre></td></tr></table></figure>
-<h3 id="SIGNATURE"><a href="#SIGNATURE" class="headerlink" title="SIGNATURE"></a>SIGNATURE</h3><p>最終パートはSIGNATURE。HEADERとPAYLOADをSecretKeyで署名。</p>
-<p>SecretKeyをsecretとすると、ここまでの結果から署名は</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ</div></pre></td></tr></table></figure>
-<p>となる。</p>
-<p>最終的な結果としてJWTは</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ</div></pre></td></tr></table></figure>
-<p>このtokenを使って認証を行うことなる。</p>
-<h3 id="アプリケーションで試してみた"><a href="#アプリケーションで試してみた" class="headerlink" title="アプリケーションで試してみた"></a>アプリケーションで試してみた</h3><p>Expressをつかって簡単なサーバーでJWT認証を試してみる。</p>
-<p><a href="https://github.com/kazu69/jwt-express-example" target="_blank" rel="external">jwt-express-example</a> というExpress + MySQLなアプリケーションを作成して試してみる。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># dockerコンテナを起動して</span></div><div class="line"><span class="comment"># 任意のパスワードでユーザー作成</span></div><div class="line">$ curl -X POST http://127.0.0.1:3000/user -d <span class="string">'name=testuser'</span> -d <span class="string">'password=secretpassword'</span></div><div class="line">&#123;<span class="string">"id"</span>:2,<span class="string">"name"</span>:<span class="string">"testuser"</span>,<span class="string">"password"</span>:<span class="string">"secretpassword"</span>,<span class="string">"updated_at"</span>:<span class="string">"2016-08-03T14:02:08.000Z"</span>,<span class="string">"created_at"</span>:<span class="string">"2016-08-03T14:02:08.000Z"</span>&#125;</div><div class="line"></div><div class="line"><span class="comment"># ユーザー認証をパスワードで行う</span></div><div class="line">$ curl -X POST http://127.0.0.1:3000/authentication -d <span class="string">'name=testuser'</span> -d <span class="string">'password=secretpassword'</span></div><div class="line">&#123;<span class="string">"token"</span>:<span class="string">"CREATED-JSON-WEB-TOKEN"</span>,<span class="string">"message"</span>:<span class="string">"Authentication successfully finished."</span>&#125;%</div><div class="line"></div><div class="line"><span class="comment"># 別のホストでログインする</span></div><div class="line">$ curl -X POST http://127.0.0.1:8000/login -d <span class="string">'access_token=CREATED-JSON-WEB-TOKEN"'</span></div><div class="line">&#123;<span class="string">"id"</span>:2,<span class="string">"name"</span>:<span class="string">"testuser"</span>&#125;</div></pre></td></tr></table></figure>
-<p>という感じになる。</p>
-<h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>ウェブサービスでの認証は複数のドメイン間で行われることが多い。そのため、クロスドメインを考える必要があり、<br>複雑化していくことなる。JWTのような機構を使うことで、サービス提供側はtokenを認証するということだに注力できるため、<br>仕様もシンプルにできる。<br>IoTなデバイスが増える中で、JWTな事案は今後もっと増えてくるんだろうなぁ。</p>
-<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><ul>
-<li><a href="https://github.com/dwyl/learn-json-web-tokens" target="_blank" rel="external">dwyl/learn-json-web-tokens</a></li>
-<li><a href="https://float-middle.com/json-web-tokens-jwt-vs-sessions/" target="_blank" rel="external">JSON Web Tokens (JWT) vs Sessions</a></li>
-<li><a href="https://jwt.io/" target="_blank" rel="external">jwt.io</a></li>
-<li><a href="http://hiyosi.tumblr.com/post/70073770678/jwt%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E7%B0%A1%E5%8D%98%E3%81%AB%E3%81%BE%E3%81%A8%E3%82%81%E3%81%A6%E3%81%BF%E3%81%9F" target="_blank" rel="external">JWTについて簡単にまとめてみた</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Oauth2やOpenID Connectなどすでに導入されているJWT(JSON Web Token)。&lt;br&gt;今後IoTとかを考えると認証手法としては結構有効な認証方法だということで、改めて眺めてみた。&lt;/p&gt;
     
     </summary>
     
