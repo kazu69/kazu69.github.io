@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.kazu69.net/"/>
-  <updated>2018-05-14T22:41:02.000Z</updated>
+  <updated>2018-05-14T22:49:50.000Z</updated>
   <id>http://blog.kazu69.net/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>npm@6で追加されたnpm auditでpackageのセキュリティをチェックする</title>
+    <title>npm@6で追加されたnpm auditでpackageのセキュリティ情報をチェックする</title>
     <link href="http://blog.kazu69.net/2018/05/14/package_security_aware_with_npm_audit_added_npm_v6/"/>
     <id>http://blog.kazu69.net/2018/05/14/package_security_aware_with_npm_audit_added_npm_v6/</id>
     <published>2018-05-14T11:25:21.000Z</published>
-    <updated>2018-05-14T22:41:02.000Z</updated>
+    <updated>2018-05-14T22:49:50.000Z</updated>
     
     <content type="html"><![CDATA[<p>npm@6で新たに<a href="https://github.com/npm/npm/pull/20389" target="_blank" rel="external">npm audit</a>が追加されていた。<br>これは<a href="https://liftsecurity.io" target="_blank" rel="external">liftsecurity.io</a>という企業が持っていたセキュリティノウハウをが<a href="https://blog.npmjs.org/post/172793182214/npm-acquires-lift-security-and-node-security" target="_blank" rel="external">npm incが取得した</a>ことにより実現されたとのこと。</p>
 <p>ということで自分のプロダクトでいかほどかおためしして見てみる。</p>
