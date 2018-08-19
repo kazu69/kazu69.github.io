@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Reactの新しいContext APIを学ぶ | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="React v16.3ではContext APIが刷新され、コンポーネント間のデータの受け渡しがバケツリレー的な手法から直接データストアから状態を取得できるようになっている。ということで、まず試してみる。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reactの新しいContext APIを学ぶ">
+<meta property="og:url" content="http://blog.kazu69.net/2018/07/22/learning-react-new-context-api/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="React v16.3ではContext APIが刷新され、コンポーネント間のデータの受け渡しがバケツリレー的な手法から直接データストアから状態を取得できるようになっている。ということで、まず試してみる。">
+<meta property="og:updated_time" content="2018-08-19T03:52:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Reactの新しいContext APIを学ぶ">
+<meta name="twitter:description" content="React v16.3ではContext APIが刷新され、コンポーネント間のデータの受け渡しがバケツリレー的な手法から直接データストアから状態を取得できるようになっている。ということで、まず試してみる。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-learning-react-new-context-api" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Reactの新しいContext APIを学ぶ
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2018-07-22T14:05:23.000Z" itemprop="datePublished">2018-07-22</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>React v16.3ではContext APIが刷新され、コンポーネント間のデータの受け渡しが<br>バケツリレー的な手法から直接データストアから状態を取得できるようになっている。<br>ということで、まず試してみる。</p>
+<a id="more"></a>
+<p>まずおさらいをする。</p>
+<h2 id="従来のデータの受け渡し"><a href="#従来のデータの受け渡し" class="headerlink" title="従来のデータの受け渡し"></a>従来のデータの受け渡し</h2><p>Reactでは親コンポーネントから子コンポーネント、孫コンポーネントにデータを渡す際には、<br>バケツリレー(Reactドリル)的な方法で参照を渡していく必要があった。</p>
+<p>簡単なネストコンポーネントを使っておさらいしてみる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</div><div class="line"></div><div class="line"><span class="comment">// Data Flow</span></div><div class="line"><span class="comment">// Animal Component --&gt; Homo Component --&gt; Sapiens Component</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> Sapiens = <span class="function"><span class="params">props</span> =&gt;</span> (</div><div class="line">  <span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">"sapiens"</span>&gt;</span>&#123;props.name&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="keyword">const</span> Homo = <span class="function"><span class="params">props</span> =&gt;</span> (</div><div class="line">  &lt;div className="homo"&gt;</div><div class="line">      &lt;Sapiens name=&#123;props.values.name&#125; /&gt;</div><div class="line">  &lt;/div&gt;</div><div class="line">)</div><div class="line"></div><div class="line">class Animal extends Component &#123;</div><div class="line">  state = &#123;</div><div class="line">    values: &#123;</div><div class="line">      name: 'Lucy'</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">    </div><div class="line">  render() &#123;</div><div class="line">    return (</div><div class="line">      &lt;div className="animal"&gt;</div><div class="line">        state: &#123;this.state.values.name&#125;</div><div class="line">        &lt;Homo values=&#123;this.state.values&#125; /&gt;</div><div class="line">      &lt;/div&gt;</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">export default Animal;</div></pre></td></tr></table></figure>
+<p>上記の例のようにコンポーネント間でprops経由でデータを渡す必要がある。<br>これらを解決する方法として、これまで<a href="https://redux.js.org/" target="_blank" rel="external">Redux</a>などのライブラリを使う必要があった。</p>
+<h2 id="新しいContext-APIを使う"><a href="#新しいContext-APIを使う" class="headerlink" title="新しいContext APIを使う"></a>新しいContext APIを使う</h2><p>React New Contetx APIで状態を管理、参照するには、まずデータストアを定義する必要があります。<br>このデータはあたかもグローバルな変数のように扱えるため、子コンポーネント、孫コンポーネントと参照を渡す必要はない。</p>
+<h3 id="createContext"><a href="#createContext" class="headerlink" title="createContext"></a>createContext</h3><p>まずcontextを作成する。これによりProviderとConsumerのペアを生成します。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> &#123;Provider, Consumer&#125; = React.createContext(defaultValue)</div></pre></td></tr></table></figure>
+<p>今回はカスタムオブジェクトからProviderとConsumerを使います。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> HomoSapinsesContext = React.createContext()</div></pre></td></tr></table></figure>
+<h3 id="Providerの設定"><a href="#Providerの設定" class="headerlink" title="Providerの設定"></a>Providerの設定</h3><p>ProviderをラップするカスタムProviderを作成します。<br>ProviderはConsumerにデータを提供する機能。<br>valueプロパティとしてstateを渡している点がそれにあたる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HomoSapinsesProvider</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</div><div class="line">  state = &#123;</div><div class="line">    <span class="attr">values</span>: &#123;</div><div class="line">      <span class="attr">name</span>: <span class="string">'Lucy'</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  render() &#123;</div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      <span class="xml"><span class="tag">&lt;<span class="name">HomoSapinsesContext.Provider</span></span></span></div><div class="line">        <span class="attr">value</span>=<span class="string">&#123;this.state.values&#125;</span></div><div class="line">      &gt;</div><div class="line">        &#123;this.props.children&#125;</div><div class="line">      <span class="tag">&lt;/<span class="name">HomoSapinsesContext.Provider</span>&gt;</span></div><div class="line">    )</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Consumerでコンポーネントからデータを取得する"><a href="#Consumerでコンポーネントからデータを取得する" class="headerlink" title="Consumerでコンポーネントからデータを取得する"></a>Consumerでコンポーネントからデータを取得する</h3><p>Providerの配下に子コンポーネントしてConsumerを配置することで、<br>グローバルな感じでデータを受け取ることができる。<br>このデータが変更されるたびにConsumerはレンダリングされることになる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Consumerを経由して直接データを参照できている</span></div><div class="line"><span class="keyword">const</span> Sapiens = <span class="function"><span class="params">()</span> =&gt;</span> (</div><div class="line">  &lt;div className="sapiens"&gt;</div><div class="line">    &lt;HomoSapinsesContext.Consumer&gt;</div><div class="line">      &#123;(context) =&gt; context.name&#125;</div><div class="line">    &lt;/HomoSapinsesContext.Consumer&gt;</div><div class="line">  &lt;/div&gt;</div><div class="line">)</div><div class="line"></div><div class="line">// 下位のコンポーネントにデータを渡してない</div><div class="line">const Homo = () =&gt; (</div><div class="line">  &lt;div className="homo"&gt;</div><div class="line">    &lt;Sapiens /&gt;</div><div class="line">  &lt;/div&gt;</div><div class="line">)</div><div class="line"></div><div class="line">class ContextAnimal extends Component &#123;</div><div class="line">  render() &#123;</div><div class="line">    return (</div><div class="line">      &lt;HomoSapinsesProvider&gt;</div><div class="line">        &lt;div&gt;</div><div class="line">          &lt;span&gt;state: </div><div class="line">            &lt;HomoSapinsesContext.Consumer&gt;</div><div class="line">              &#123;(context) =&gt; context.name&#125;</div><div class="line">            &lt;/HomoSapinsesContext.Consumer&gt;</div><div class="line">          &lt;/span&gt;</div><div class="line">          &lt;Homo /&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">      &lt;/HomoSapinsesProvider&gt;</div><div class="line">    )</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>このように上位のコンポーネントからデータを受け取らないで直接データにアクセスできる。</p>
+<p>ここまでのコードの全体は以下のとおり。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</div><div class="line"></div><div class="line"><span class="keyword">const</span> HomoSapinsesContext = React.createContext()</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HomoSapinsesProvider</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</div><div class="line">  state = &#123;</div><div class="line">    <span class="attr">values</span>: &#123;</div><div class="line">      <span class="attr">name</span>: <span class="string">'Lucy'</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  render() &#123;</div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      &lt;HomoSapinsesContext.Provider value=&#123;this.state.values&#125;&gt;</div><div class="line">        &#123;this.props.children&#125;</div><div class="line">      &lt;/HomoSapinsesContext.Provider&gt;</div><div class="line">    )</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">const Sapiens = () =&gt; (</div><div class="line">  &lt;div className="sapiens"&gt;</div><div class="line">    &lt;HomoSapinsesContext.Consumer&gt;</div><div class="line">      &#123;(context) =&gt; context.name&#125;</div><div class="line">    &lt;/HomoSapinsesContext.Consumer&gt;</div><div class="line">  &lt;/div&gt;</div><div class="line">)</div><div class="line"></div><div class="line">const Homo = () =&gt; (</div><div class="line">  &lt;div className="homo"&gt;</div><div class="line">    &lt;Sapiens /&gt;</div><div class="line">  &lt;/div&gt;</div><div class="line">)</div><div class="line"></div><div class="line">class ContextAnimal extends Component &#123;</div><div class="line">  render() &#123;</div><div class="line">    return (</div><div class="line">      &lt;HomoSapinsesProvider&gt;</div><div class="line">        &lt;div&gt;</div><div class="line">          &lt;span&gt;state: </div><div class="line">            &lt;HomoSapinsesContext.Consumer&gt;</div><div class="line">              &#123;(context) =&gt; context.name&#125;</div><div class="line">            &lt;/HomoSapinsesContext.Consumer&gt;</div><div class="line">          &lt;/span&gt;</div><div class="line">          &lt;Homo /&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">      &lt;/HomoSapinsesProvider&gt;</div><div class="line">    )</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">export default ContextAnimal;</div></pre></td></tr></table></figure>
+<h3 id="状態を変更する"><a href="#状態を変更する" class="headerlink" title="状態を変更する"></a>状態を変更する</h3><p>状態の変更にはsetStateで直接状態を変更する。<br>この辺りのやり方は定まってないため、開発者に依存しそう。</p>
+<p>Reduxのように状態変更のためのReducerを作成し、それを利用してみることにします。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> reducer = <span class="function">(<span class="params">prevState, action</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">if</span> (action.type === <span class="string">'UPDATE'</span>) &#123;</div><div class="line">    <span class="keyword">const</span> values = prevState.values</div><div class="line">    values.name = action.name</div><div class="line">    <span class="keyword">return</span> &#123; ...prevState, values &#125;;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>コンポーネントにはdispatchメソッドをもたせて、<br>Reducerを経由して状態を変更するようにします。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HomoSapinsesProvider</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</div><div class="line">  state = &#123;</div><div class="line">    <span class="attr">values</span>: &#123;</div><div class="line">      <span class="attr">name</span>: <span class="string">'Lucy'</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  dispatch(action)</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">this</span>.setState(<span class="function"><span class="params">state</span> =&gt;</span> reducer(state, action))</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  render()</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      <span class="xml"><span class="tag">&lt;<span class="name">HomoSapinsesContext.Provider</span></span></span></div><div class="line">        <span class="attr">value</span>=<span class="string">&#123;</span></div><div class="line">          &#123;</div><div class="line">            <span class="attr">name:</span> <span class="attr">this.state.values.name</span>,</div><div class="line">            <span class="attr">dispatch:</span> <span class="attr">this.dispatch.bind</span>(<span class="attr">this</span>)</div><div class="line">          &#125;</div><div class="line">        &#125;&gt;</div><div class="line">        &#123;this.props.children&#125;</div><div class="line">      <span class="tag">&lt;/<span class="name">HomoSapinsesContext.Provider</span>&gt;</span></div><div class="line">    )</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Provider経由でメソッドを渡すことでConsumerから利用できる。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>新しいContext APIは複雑性がなく学習コストが低いため利用しやすいと感じ。<br>単純なコンポーネントやアプリケーションと比較的結合性の低いコンポーネントなどでは<br>そのままつかうことでデータの透明性を確保できるtのでいいかもしれない。<br>公式のドキュメントにもあるとおり、新しいContext APIを使うことでより容易になるパターンもある。<br>Redux的なアーキテクチャを利用しないと状態管理が複雑になりそうで、実施あの運用はハードルが高そう。<br>なので、ある程度の規模のアプリケーションや複数人での開発においてはReduxなどに乗っておくほうがいいきがする。<br>とはいえ、この変更は革新的なので今後は使い分けが出てくるのかなという気がした。</p>
+<p><a href="https://github.com/kazu69/Scripts_Notes/tree/master/react/new-context-api" target="_blank" rel="external">今回使ったサンプル</a></p>
+<h2 id="参考ページ"><a href="#参考ページ" class="headerlink" title="参考ページ"></a>参考ページ</h2><ul>
+<li><a href="https://github.com/reactjs/rfcs/pull/2" target="_blank" rel="external">New version of context</a></li>
+<li><a href="https://reactjs.org/docs/context.html" target="_blank" rel="external">Context</a></li>
+</ul>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2018/07/22/learning-react-new-context-api/" class="hatena-bookmark-button" data-hatena-bookmark-title="Reactの新しいContext APIを学ぶ" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2018/07/22/learning-react-new-context-api/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2018/05/14/package_security_aware_with_npm_audit_added_npm_v6/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            npm@6で追加されたnpm auditでpackageのセキュリティ情報をチェックする
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2018 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2018/07/22/learning-react-new-context-api/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
