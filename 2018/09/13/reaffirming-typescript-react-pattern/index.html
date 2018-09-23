@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Typescript React Patternを再確認 | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="TypescriptでのReactアプリケーション開発において、パターン的なものを一旦個人的な備忘録としてまとめておく。登録・削除機能のみの簡単なアプリを作ることにする。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Typescript React Patternを再確認">
+<meta property="og:url" content="http://blog.kazu69.net/2018/09/13/reaffirming-typescript-react-pattern/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="TypescriptでのReactアプリケーション開発において、パターン的なものを一旦個人的な備忘録としてまとめておく。登録・削除機能のみの簡単なアプリを作ることにする。">
+<meta property="og:updated_time" content="2018-09-22T07:54:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Typescript React Patternを再確認">
+<meta name="twitter:description" content="TypescriptでのReactアプリケーション開発において、パターン的なものを一旦個人的な備忘録としてまとめておく。登録・削除機能のみの簡単なアプリを作ることにする。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-reaffirming-typescript-react-pattern" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Typescript React Patternを再確認
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2018-09-13T06:58:25.000Z" itemprop="datePublished">2018-09-13</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>TypescriptでのReactアプリケーション開発において、<br>パターン的なものを一旦個人的な備忘録としてまとめておく。<br>登録・削除機能のみの簡単なアプリを作ることにする。</p>
+<a id="more"></a>
+<h2 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h2><p>Reactを使う場合の多くにおいて状態管理はReduxを使うことが主なので、<br>まずはその周りをまとめておく。</p>
+<h3 id="Action-Creator-Action"><a href="#Action-Creator-Action" class="headerlink" title="Action Creator, Action"></a>Action Creator, Action</h3><p>ActionTypesはEnumを使う。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Before Typescript2.4</span></div><div class="line"><span class="keyword">const</span> ADD_TODO = <span class="string">'ADD_TODO'</span></div><div class="line"><span class="keyword">const</span> REMOVE_TODO = <span class="string">'REMOVE_TODO'</span></div><div class="line"></div><div class="line"><span class="comment">// Current</span></div><div class="line"><span class="keyword">enum</span> ActionTypes &#123;</div><div class="line">  ADD_TODO = <span class="string">'ADD_TODO'</span>,</div><div class="line">  REMOVE_TODO = <span class="string">'REMOVE_TODO'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-4.html" target="_blank" rel="external">Typescript2.4からstring Enums</a>がサポートされてるので、ActionTypesをEnumのメンバーにまとめて定義しておくことで型安全を確保できそう。</p>
+<p>Action Creatorは単にActionと呼ばれるObject形式のデータを返す関数であることなので</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">type Action = ReturnType&lt;typeof ActionCreator&gt;</div><div class="line">const ActionCreator = (data: unknown) =&gt; (</div><div class="line">  &#123;</div><div class="line">    type: 'ACTION_TYPE`,</div><div class="line">    payload: &#123; ... &#125;</div><div class="line">  &#125;</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>という感じで<a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#conditional-types" target="_blank" rel="external">Typescript2.8</a>からサポートされた<code>Conditional Types</code>を使って表現できる。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> AwesomeAction = ReturnType&lt;T&gt;</div></pre></td></tr></table></figure>
+<p><code>ReturnType</code>は型引数<t>が関数型の場合、その戻り値を表す型となるので、<br>Action Creatorを定義し、<code>typeof</code>演算子にて各アクションの型情報を生成する。<br>こうすることで型宣言は型推論を使って実際の実装から得ることができる。</t></p>
+<p>今回は追加と削除のAction Creatorを作成する。<br>併せてActionの共用体のaliasを作成しReducerの処理周りで使う。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> AddTodoAction = ReturnType&lt;<span class="keyword">typeof</span> addTodoActionCreator&gt;</div><div class="line"><span class="keyword">const</span> addTodoActionCreator = <span class="function">(<span class="params">todo: <span class="built_in">string</span></span>) =&gt;</span> (&#123;</div><div class="line">  <span class="keyword">type</span>: ActionTypes.ADD_TODO,</div><div class="line">  payload: &#123;</div><div class="line">    todo</div><div class="line">  &#125;,</div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="keyword">type</span> RemoveTodoAction = ReturnType&lt;<span class="keyword">typeof</span> removeTodoActionCreator&gt;</div><div class="line"><span class="keyword">const</span> removeTodoActionCreator = <span class="function">(<span class="params">id: <span class="built_in">number</span></span>) =&gt;</span> (&#123;</div><div class="line">  <span class="keyword">type</span>: ActionTypes.REMOVE_TODO,</div><div class="line">  payload: &#123;</div><div class="line">    id</div><div class="line">  &#125;,</div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="comment">// Union Types http://www.typescriptlang.org/docs/handbook/advanced-types.html#union-types</span></div><div class="line"><span class="keyword">type</span> TodoAction = AddTodoAction | RemoveTodoAction</div></pre></td></tr></table></figure>
+<p>余談だが抽象的な型表現だと今回のActionの型表現は以下のようになる</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">interface</span> AppActionWithPayload &lt;T <span class="keyword">extends</span> string, P <span class="keyword">extends</span> &#123;&#125; = &#123;&#125;&gt; &#123;</div><div class="line">  <span class="keyword">type</span>: T</div><div class="line">  payload: &#123; [K <span class="keyword">in</span> keyof P]: P[K] &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Reducer"><a href="#Reducer" class="headerlink" title="Reducer"></a>Reducer</h3><p>Reducerも同じくデフォルトの状態の定義から型情報を取得する。<br>またreducerの返却値は<code>Object.assign</code>でもいいが、spread operator(スプレッド演算子)も利用できる。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> defaultState: &#123; [index:<span class="built_in">string</span>]: <span class="built_in">Array</span>&lt;<span class="built_in">string</span>&gt; &#125; = &#123; todos: [] &#125;</div><div class="line"><span class="keyword">type</span> TodoState = <span class="keyword">typeof</span> defaultState</div><div class="line"><span class="comment">// Reducer</span></div><div class="line"><span class="keyword">const</span> reducer = (state: TodoState = defaultState, action: TodoAction): <span class="function"><span class="params">TodoState</span> =&gt;</span> &#123;</div><div class="line">  <span class="keyword">let</span> todos: <span class="built_in">string</span>[];</div><div class="line">  <span class="keyword">switch</span> (action.type) &#123;</div><div class="line">    <span class="keyword">case</span> ActionTypes.ADD_TODO:</div><div class="line">      todos = state.todos.concat(action.payload.todo)</div><div class="line">      <span class="keyword">return</span> &#123;...state, todos&#125;</div><div class="line">    <span class="keyword">case</span> ActionTypes.REMOVE_TODO:</div><div class="line">      todos = state.todos.filter(<span class="function">(<span class="params">_, i</span>) =&gt;</span> i !== action.payload.id )</div><div class="line">      <span class="keyword">return</span> &#123;...state, todos&#125;</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">      <span class="keyword">return</span> &#123;...state&#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>あとは<code>Store</code>を作ればいい</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> Store = createStore(reducer)</div></pre></td></tr></table></figure>
+<p>ここまででてreduxとしては終わり。<br>ReactのCompnentと連結していく</p>
+<h2 id="React"><a href="#React" class="headerlink" title="React"></a>React</h2><p>イメージとして以下のようなhtmlの構造を期待している</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"root"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"todo"</span> <span class="attr">name</span>=<span class="string">"todo"</span> <span class="attr">placeholder</span>=<span class="string">"Please input todo"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">button</span>&gt;</span>Add Todo<span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">ul</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"todo-item"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"todo-content"</span>&gt;</span>todo<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"0"</span>&gt;</span>Delete Todo<span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="Container-Components"><a href="#Container-Components" class="headerlink" title="Container Components"></a>Container Components</h3><p>ContainerとなるCompoentクラスの定義</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line">type AppProps = &#123;</div><div class="line">  todos: string[]</div><div class="line">  addTodo: (event: React.MouseEvent&lt;HTMLButtonElement&gt;) =&gt; void</div><div class="line">  removeTodo: (event: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; void</div><div class="line">  changeHandler: (event: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; void</div><div class="line">  setTextInputFieldRef: (element: HTMLInputElement) =&gt; void</div><div class="line">&#125; &amp; TodoActionCreators</div><div class="line"></div><div class="line">const initialState = &#123;</div><div class="line">  input: ''</div><div class="line">&#125;</div><div class="line"></div><div class="line">// &lt;1&gt;</div><div class="line">type AppState = Readonly&lt;typeof initialState&gt;</div><div class="line"></div><div class="line">class App extends React.Component&lt;AppProps, AppState&gt; &#123;</div><div class="line">  // &lt;2&gt;</div><div class="line">  readonly state = initialState</div><div class="line">  constructor(props: AppProps) &#123;</div><div class="line">    super(props)</div><div class="line">    this.addTodo = this.addTodo.bind(this)</div><div class="line">    this.removeTodo = this.removeTodo.bind(this)</div><div class="line">    this.changeHandler = this.changeHandler.bind(this)</div><div class="line">    this.textInputFieldRef = React.createRef()</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  private changeHandler(event: React.ChangeEvent&lt;HTMLInputElement&gt;) &#123;</div><div class="line">    event.preventDefault()</div><div class="line">    this.setState(&#123;input: event.target.value&#125;)</div><div class="line">  &#125; </div><div class="line"></div><div class="line">  private addTodo(event: React.MouseEvent&lt;HTMLButtonElement&gt;) &#123;</div><div class="line">    event.preventDefault()</div><div class="line">    this.props.add(this.state.input)</div><div class="line">    this.setState(&#123;input: ''&#125;)</div><div class="line">    this.textInputFieldRef.current!.value = ''</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  private removeTodo(event: React.MouseEvent&lt;HTMLButtonElement&gt;) &#123;</div><div class="line">    event.preventDefault()</div><div class="line">    const element = event.target as HTMLElement</div><div class="line">    this.props.remove(parseInt(element.id, 10))</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  render() &#123;</div><div class="line">    const &#123;todos&#125; = this.props</div><div class="line">    return (</div><div class="line">      &lt;&gt;</div><div class="line">        &lt;&gt;</div><div class="line">          &lt;TodoInputField</div><div class="line">            handleChange=&#123;this.changeHandler&#125;</div><div class="line">          /&gt;</div><div class="line">          &lt;AddTodoButton handleClick=&#123;this.addTodo&#125; /&gt;</div><div class="line">        &lt;/&gt;</div><div class="line">        &lt;ul&gt;</div><div class="line">          &#123;todos.map((todo:string, index: number) =&gt; &#123;</div><div class="line">            return &lt;TodoItem key=&#123;index&#125;&gt;</div><div class="line">              &lt;TodoContent todoContent=&#123;todo&#125; /&gt;</div><div class="line">              &lt;DeleteTodoButton </div><div class="line">                handleClick=&#123;this.removeTodo&#125;</div><div class="line">                id=&#123;index.toString()&#125;</div><div class="line">              /&gt;</div><div class="line">            &lt;/TodoItem&gt;</div><div class="line">          &#125;)&#125;</div><div class="line">        &lt;/ul&gt;</div><div class="line">      &lt;/&gt;</div><div class="line">    )</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Container Comppnentはstatefullなので<code>initialState</code>が必要になる。<br><code>&lt;1&gt;</code>のように実際の実装から<code>typeof</code> 演算子で実装から型情報を得る。</p>
+<p>Reactではstateは<code>setState</code>でのみ変更する。<br>そのため、stateを直接変更できないよう<code>&lt;2&gt;</code>のようにstateを<code>readonly</code>修飾子でイミュータブルにしておく。併せて型情報もreadonlyにしている。</p>
+<h3 id="Presentational-Component"><a href="#Presentational-Component" class="headerlink" title="Presentational Component"></a>Presentational Component</h3><p>PresentationのComponentはstatelessなことが多い。これは基本的に<code>Stateless Functional Component</code>を利用する。</p>
+<p>input fieldから作成する。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> defaultTodoInputField = &#123;</div><div class="line">  id: <span class="string">'todo'</span>,</div><div class="line">  placeholder: <span class="string">'Please input todo'</span>,</div><div class="line">  name: <span class="string">'todo'</span>,</div><div class="line">&#125;</div><div class="line"><span class="keyword">type</span> DefaultTodoInputField = <span class="keyword">typeof</span> defaultTodoInputField</div><div class="line"><span class="keyword">type</span> TodoInputFieldWithDefaltProps  = &#123;</div><div class="line">  handleChange(event: React.ChangeEvent&lt;HTMLInputElement&gt;): <span class="built_in">void</span></div><div class="line">  forwardRef: React.RefObject&lt;HTMLInputElement&gt;</div><div class="line">&#125; &amp; DefaultTodoInputField</div></pre></td></tr></table></figure>
+<p><code>defaultTodoInputField</code>の型情報はTypeScriptの型推論に任せられる。<br>実際の実装から同じようにtypeof演算子にて型情報を得ることができる。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> TodoInputField: React.SFC&lt;TodoInputFieldWithDefaltProps&gt; = <span class="function">(<span class="params">props</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">const</span> &#123;id, name, placeholder, handleChange, forwardRef&#125; = props</div><div class="line">  <span class="keyword">return</span> (</div><div class="line">    &lt;input</div><div class="line">      <span class="keyword">type</span>=<span class="string">"text"</span></div><div class="line">      id=&#123;id&#125;</div><div class="line">      name=&#123;name&#125;</div><div class="line">      placeholder=&#123;placeholder&#125;</div><div class="line">      onChange=&#123;handleChange&#125;</div><div class="line">      ref=&#123;forwardRef&#125;</div><div class="line">    /&gt;</div><div class="line">  )</div><div class="line">&#125;</div><div class="line"><span class="comment">// デフォルト値の設定</span></div><div class="line">TodoInputField.defaultProps = defaultTodoInputField</div></pre></td></tr></table></figure>
+<h4 id="defaultProps"><a href="#defaultProps" class="headerlink" title="defaultProps"></a>defaultProps</h4><p>TypeScript3.0からはJSX syntaxで<code>defaultProps</code>プロパティを正しく利用できるようになっているので、その恩恵を受けて<code>!</code>(Non-null assertion operator)を利用する必要はない。</p>
+<p><a href="https://github.com/facebook/react/issues/3725" target="_blank" rel="external">Default props in ES6 class syntax</a></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">// これまでは`defaultProps`プロパティとjsxのレンダリングの関連性をサポートしてなかったので`!`でnot-nullをasserteしていた</div><div class="line">type Props &#123; name?: string &#125;</div><div class="line">class Greet extends React.Component&lt;Props&gt; &#123;</div><div class="line">  static defaultProps = &#123; name: "world"&#125;</div><div class="line">  render() &#123;</div><div class="line">    return (</div><div class="line">      const &#123; name &#125; = this.props;</div><div class="line">      return &lt;div&gt;Hello $&#123;name!.toUpperCase()&#125;&lt;/div&gt;</div><div class="line">    )</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">const Greet: React.SFC&lt;&#123; name = "world" &#125;: Props = (props) =&gt; (</div><div class="line">  &lt;div&gt;Hello $&#123;name!.toUpperCase()&#125;&lt;/div&gt;</div><div class="line">)</div><div class="line"></div><div class="line">// Typescript3.0からはJSX Syntaxで`defaultProps`を正しく解釈できるので</div><div class="line">// !は必要なくなった</div><div class="line">class Greet extends React.Component&lt;Props&gt; &#123;</div><div class="line">  static defaultProps = &#123; name: "world"&#125;</div><div class="line">  render() &#123;</div><div class="line">    return (</div><div class="line">      const &#123; name &#125; = this.props;</div><div class="line">      return &lt;div&gt;Hello $&#123;name.toUpperCase()&#125;&lt;/div&gt;</div><div class="line">    )</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">const Greet: React.SFC&lt;&#123; name = "world" &#125;: Props = (props) =&gt; (</div><div class="line">  &lt;div&gt;Hello $&#123;name.toUpperCase()&#125;&lt;/div&gt;</div><div class="line">)</div></pre></td></tr></table></figure>
+<h3 id="Refs-amp-Forwarding-Refs"><a href="#Refs-amp-Forwarding-Refs" class="headerlink" title="Refs &amp; Forwarding Refs"></a>Refs &amp; Forwarding Refs</h3><p>Componentのマウントのタイミングinputフォームにフォーカスしたり、<br>フォームの追加ボタン押下後にフォームの入力値を空にするために、<br>今回はRefを使って要素にアクセスようにしたい。</p>
+<h4 id="Forwarding-Refs"><a href="#Forwarding-Refs" class="headerlink" title="Forwarding Refs"></a>Forwarding Refs</h4><p><a href="https://reactjs.org/docs/forwarding-refs.html" target="_blank" rel="external">Forwarding Refs</a>はReact v16.3.0で追加されたAPIでHOC(<a href="https://reactjs.org/docs/higher-order-components.html" target="_blank" rel="external">Higher-order components</a>)を使って、コンポーネント経由(propsを介して)refsを渡せる。<br>またrefの作成には同じバージョンで導入された<code>createRef</code> APIを利用する。</p>
+<p>そのために <code>App Class</code> を修正する</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line">class App extends React.Component&lt;AppProps, AppState&gt; &#123;</div><div class="line"></div><div class="line">  // &lt;Forwarding Refs&gt;</div><div class="line">  private textInputFieldRef: React.RefObject&lt;HTMLInputElement&gt;</div><div class="line"></div><div class="line">  readonly state = initialState</div><div class="line"></div><div class="line">  constructor(props: AppProps) &#123;</div><div class="line">    super(props)</div><div class="line">    this.addTodo = this.addTodo.bind(this)</div><div class="line">    this.removeTodo = this.removeTodo.bind(this)</div><div class="line">    this.changeHandler = this.changeHandler.bind(this)</div><div class="line">    this.textInputFieldRef = React.createRef()</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  componentDidMount() &#123;</div><div class="line">    // &lt;Forwarding Refsを参照&gt;</div><div class="line">    this.textInputFieldRef.current!.focus()</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  private changeHandler(event: React.ChangeEvent&lt;HTMLInputElement&gt;) &#123;</div><div class="line">    event.preventDefault()</div><div class="line">    this.setState(&#123;input: event.target.value&#125;)</div><div class="line">  &#125; </div><div class="line"></div><div class="line">  private addTodo(event: React.MouseEvent&lt;HTMLButtonElement&gt;) &#123;</div><div class="line">    event.preventDefault()</div><div class="line">    this.props.add(this.state.input)</div><div class="line">    this.setState(&#123;input: ''&#125;)</div><div class="line">     // &lt;Forwarding Refsを参照&gt;</div><div class="line">    this.textInputFieldRef.current!.value = ''</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  private removeTodo(event: React.MouseEvent&lt;HTMLButtonElement&gt;) &#123;</div><div class="line">    event.preventDefault()</div><div class="line">    const element = event.target as HTMLElement</div><div class="line">    this.props.remove(parseInt(element.id, 10))</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  render() &#123;</div><div class="line">    const &#123;todos&#125; = this.props</div><div class="line">    return (</div><div class="line">      &lt;&gt;</div><div class="line">        &lt;&gt;</div><div class="line">          &lt;TodoInputFieldWithForwardedRef</div><div class="line">            handleChange=&#123;this.changeHandler&#125;</div><div class="line">            forwardRef=&#123;this.textInputFieldRef&#125;</div><div class="line">          /&gt;</div><div class="line">          &lt;AddTodoButton handleClick=&#123;this.addTodo&#125; /&gt;</div><div class="line">        &lt;/&gt;</div><div class="line">        &lt;ul&gt;</div><div class="line">          &#123;todos.map((todo:string, index: number) =&gt; &#123;</div><div class="line">            return &lt;TodoItem key=&#123;index&#125;&gt;</div><div class="line">              &lt;TodoContent todoContent=&#123;todo&#125; /&gt;</div><div class="line">              &lt;DeleteTodoButton </div><div class="line">                handleClick=&#123;this.removeTodo&#125;</div><div class="line">                id=&#123;index.toString()&#125;</div><div class="line">              /&gt;</div><div class="line">            &lt;/TodoItem&gt;</div><div class="line">          &#125;)&#125;</div><div class="line">        &lt;/ul&gt;</div><div class="line">      &lt;/&gt;</div><div class="line">    )</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>さらにinput fieladのコンポーネントも<code>TodoInputFieldWithForwardedRef</code>を利用する。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> TodoInputField: React.SFC&lt;TodoInputFieldWithDefaltProps&gt; = <span class="function">(<span class="params">props</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">const</span> &#123;id, name, placeholder, handleChange, forwardRef&#125; = props</div><div class="line">  <span class="keyword">return</span> (</div><div class="line">    &lt;input</div><div class="line">      <span class="keyword">type</span>=<span class="string">"text"</span></div><div class="line">      id=&#123;id&#125;</div><div class="line">      name=&#123;name&#125;</div><div class="line">      placeholder=&#123;placeholder&#125;</div><div class="line">      onChange=&#123;handleChange&#125;</div><div class="line">      ref=&#123;forwardRef&#125;</div><div class="line">    /&gt;</div><div class="line">  )</div><div class="line">&#125;</div><div class="line"><span class="comment">// デフォルト値の設定</span></div><div class="line">TodoInputField.defaultProps = defaultTodoInputField</div><div class="line"></div><div class="line"><span class="comment">// RefsをForwardされたcomponentを合成</span></div><div class="line"><span class="keyword">const</span> TodoInputFieldWithForwardedRef: React.SFC&lt;TodoInputFieldWithDefaltProps&gt; = React.forwardRef(<span class="function">(<span class="params">props, ref</span>) =&gt;</span> (</div><div class="line">    &lt;TodoInputField &#123;...props&#125; ref=&#123;ref&#125; /&gt;</div><div class="line">  )</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>ここまででパターンとして新たに見直した箇所は終わり。</p>
+<h3 id="Types-or-Interface"><a href="#Types-or-Interface" class="headerlink" title="Types or Interface"></a>Types or Interface</h3><p>サンプルコードなど見ているとどちらもありそうだった。Reactのプロジェクトに限れば<br><code>外部に公開されるAPI</code>や<code>サードパーティーの型情報</code>などは<code>nterface</code>を使う。</p>
+<p>逆にReactアプリケーションデータやcomponentのprppertyやstateなどはtype ailiaseを利用する。</p>
+<p><a href="https://medium.com/@martin_hotell/interface-vs-type-alias-in-typescript-2-7-2a8f1777af4c" target="_blank" rel="external">Interface vs Type alias in TypeScript 2.7</a>にある、<br>Componentの拡張はHOCなどのパターンで行うので、interfaceでの継承などはあまり必要ない。という感じの説明がしっくりきた。<br>また、type ailiaseを利用することで、意図しない型情報のマージを避けることもできる点もあるかな。</p>
+<h3 id="参考にしたサイト"><a href="#参考にしたサイト" class="headerlink" title="参考にしたサイト"></a>参考にしたサイト</h3><ul>
+<li><a href="https://www.typescriptlang.org/docs/home.html" target="_blank" rel="external">TypeScript Documentation
+</a><br><a href="https://reactjs.org/blog/2018/03/29/react-v-16-3.html" target="_blank" rel="external">React Blog</a></li>
+</ul>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2018/09/13/reaffirming-typescript-react-pattern/" class="hatena-bookmark-button" data-hatena-bookmark-title="Typescript React Patternを再確認" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2018/09/13/reaffirming-typescript-react-pattern/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2018/07/22/learning-react-new-context-api/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            Reactの新しいContext APIを学ぶ
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2018 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2018/09/13/reaffirming-typescript-react-pattern/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
