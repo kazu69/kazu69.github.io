@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/04/19/use-the-npm-as-the-build-tool/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Grunt、 gulpなどを使うのではなく、npmをビルドタスクを使うためにちょっとおさらいした。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ビルドツールとしてnpmを使う">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>、 <a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>などを使うのではなく、npmをビルドタスクを使うためにちょっとおさらいした。</p>
+      <p><a href="http://gruntjs.com/" target="_blank" rel="noopener">Grunt</a>、 <a href="http://gulpjs.com/" target="_blank" rel="noopener">gulp</a>などを使うのではなく、npmをビルドタスクを使うためにちょっとおさらいした。</p>
 <a id="more"></a>
 <h2 id="npmのpath"><a href="#npmのpath" class="headerlink" title="npmのpath"></a>npmのpath</h2><p>npmでインストールすると、<br>モジュールは ./node_modules/にインストールされ、<br>node_modules/.bin配下に各パッケージのbinへのシンボリックリンクが作成される。</p>
 <p>これは実際にnpm binを実行するとパスがわかる。</p>
@@ -114,7 +115,7 @@ ga('send', 'pageview');
 <p>つまり、npm run TASKではモジュールのパスに$(npm bin)は必要無い。</p>
 <h2 id="pre、postフック"><a href="#pre、postフック" class="headerlink" title="pre、postフック"></a>pre、postフック</h2><p>npmコマンドにpre、postというprefixをつけることでそのコマンドの前後にフックできる。<br>たとえば、npm testにpre postそれぞれのフックを追加すると、</p>
 <p>npm test を実行すると、 npm run pretest、 npm test, npm run posttest の順番に実行される。</p>
-<h2 id="カスタム引数"><a href="#カスタム引数" class="headerlink" title="カスタム引数"></a>カスタム引数</h2><p>npm@2.0.0 以上では<a href="https://github.com/npm/npm/pull/5518" target="_blank" rel="external">実行スクリプトにカスタム引数を渡すことができるようになっている。</a></p>
+<h2 id="カスタム引数"><a href="#カスタム引数" class="headerlink" title="カスタム引数"></a>カスタム引数</h2><p>npm@2.0.0 以上では<a href="https://github.com/npm/npm/pull/5518" target="_blank" rel="noopener">実行スクリプトにカスタム引数を渡すことができるようになっている。</a></p>
 <p>「–」で 好きな引数を渡すことができる。<br>たとえば以下のうように</p>
 <script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=option.json"></script>
 
@@ -137,13 +138,13 @@ ga('send', 'pageview');
 <h2 id="マルチタスク"><a href="#マルチタスク" class="headerlink" title="マルチタスク"></a>マルチタスク</h2><p>マルチタスクはpre、postフックでタスクを実行するほかに&amp;&amp;演算子でつなげていけば可能。</p>
 <script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=mutitask.json"></script>
 
-<p>また、標準出力、標準入力、リダレクトをつかって<a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>のようにシームレスに処理できる。</p>
+<p>また、標準出力、標準入力、リダレクトをつかって<a href="http://gulpjs.com/" target="_blank" rel="noopener">gulp</a>のようにシームレスに処理できる。</p>
 <script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=stream.json"></script>
 
-<h2 id="ファイル監視"><a href="#ファイル監視" class="headerlink" title="ファイル監視"></a>ファイル監視</h2><p>ファイル監視は<a href="https://www.npmjs.com/package/watch" target="_blank" rel="external">watch</a>や<a href="http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/" target="_blank" rel="external">nodemon</a>などを使う。</p>
+<h2 id="ファイル監視"><a href="#ファイル監視" class="headerlink" title="ファイル監視"></a>ファイル監視</h2><p>ファイル監視は<a href="https://www.npmjs.com/package/watch" target="_blank" rel="noopener">watch</a>や<a href="http://blog.keithcirkel.co.uk/how-to-use-npm-as-a-build-tool/" target="_blank" rel="noopener">nodemon</a>などを使う。</p>
 <script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=watch.json"></script>
 
-<p>フロントエンドのビルドツールは<a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>や<a href="http://gulpjs.com/" target="_blank" rel="external">gulp</a>、<a href="http://webpack.github.io/" target="_blank" rel="external">webpack</a>を使う規模でなければnpmだけでもいけそう。</p>
+<p>フロントエンドのビルドツールは<a href="http://gruntjs.com/" target="_blank" rel="noopener">Grunt</a>や<a href="http://gulpjs.com/" target="_blank" rel="noopener">gulp</a>、<a href="http://webpack.github.io/" target="_blank" rel="noopener">webpack</a>を使う規模でなければnpmだけでもいけそう。</p>
 
     
   </div>

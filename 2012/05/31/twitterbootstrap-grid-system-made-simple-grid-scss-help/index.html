@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2012/05/31/twitterbootstrap-grid-system-made-simple-grid-scss-help/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="scssでgridレイアウトをしたかったけど、 1KB CSS Gridが惜しい感じだったのと、Twitter BootstrapがLessだったのと、ピンポイントでシンプルに使いたかったので参考にして同じ処理を作ってみた。(sassバージョンもあったけど)">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TwitterBootstrapのgridシステムを参考にシンプルなgrid.scssを作った">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>scssでgridレイアウトをしたかったけど、 <a href="http://1kbgrid.com/" target="_blank" rel="external">1KB CSS Grid</a>が惜しい感じだったのと、<a href="http://twitter.github.com/bootstrap/" target="_blank" rel="external">Twitter Bootstrap</a>がLessだったのと、ピンポイントでシンプルに使いたかったので参考にして同じ処理を作ってみた。(<a href="https://github.com/jlong/sass-twitter-bootstrap" target="_blank" rel="external">sassバージョン</a>もあったけど)<br><a id="more"></a><br>まず、定数となるところはmixinでファイルを分離しておきました。</p>
+      <p>scssでgridレイアウトをしたかったけど、 <a href="http://1kbgrid.com/" target="_blank" rel="noopener">1KB CSS Grid</a>が惜しい感じだったのと、<a href="http://twitter.github.com/bootstrap/" target="_blank" rel="noopener">Twitter Bootstrap</a>がLessだったのと、ピンポイントでシンプルに使いたかったので参考にして同じ処理を作ってみた。(<a href="https://github.com/jlong/sass-twitter-bootstrap" target="_blank" rel="noopener">sassバージョン</a>もあったけど)<br><a id="more"></a><br>まず、定数となるところはmixinでファイルを分離しておきました。</p>
 <script src="https://gist.github.com/2832007.js?file=const.scss"></script>
 
 <p>mixinでgridシステム本体を作りました。</p>
@@ -113,7 +114,7 @@ ga('send', 'pageview');
 <script src="https://gist.github.com/2832007.js?file=sample.html"></script>
 
 <p>Fluid/Liquidな場合のoffsetがあれなのと、IEとかはこのままではつかえないので、修正の必要があるけど<br>ざっくりしたもの作るときに便利かも。</p>
-<p>ちなみにFixed-Widthレイアウトの場合、pxに小数点以下が入ることもあるんですけど、ブラウザで処理が違っているのでその辺は直さないと行けないですね。<br>(<a href="http://parashuto.com/rriver/responsive-web/sub-pixel-rounding-browser-problem" target="_blank" rel="external">http://parashuto.com/rriver/responsive-web/sub-pixel-rounding-browser-problem</a>)</p>
+<p>ちなみにFixed-Widthレイアウトの場合、pxに小数点以下が入ることもあるんですけど、ブラウザで処理が違っているのでその辺は直さないと行けないですね。<br>(<a href="http://parashuto.com/rriver/responsive-web/sub-pixel-rounding-browser-problem" target="_blank" rel="noopener">http://parashuto.com/rriver/responsive-web/sub-pixel-rounding-browser-problem</a>)</p>
 
     
   </div>

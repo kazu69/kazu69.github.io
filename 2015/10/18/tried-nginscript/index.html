@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/10/18/tried-nginscript/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="nginx上で動作するJavaScript仮想マシンである、nginScript なるものがリリースされた。(まだプレビュー版とのことだが) これはリクエスト処理の実行時に評価され、特定のリクエストに対してnginxの内部処理をを調整することが可能になる。っぽい。 Luaやngx_mrubyと同じような感じで使えるのようだ。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-10-26T16:01:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginScriptを試してみた">
@@ -100,12 +101,12 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/" target="_blank" rel="external">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
+      <p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/" target="_blank" rel="noopener">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
 <p>これはリクエスト処理の実行時に評価され、特定のリクエストに対してnginxの内部処理をを調整することが可能になる。っぽい。</p>
-<p><a href="https://www.nginx.com/resources/wiki/modules/lua/" target="_blank" rel="external">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
+<p><a href="https://www.nginx.com/resources/wiki/modules/lua/" target="_blank" rel="noopener">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="noopener">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
 <a id="more"></a>
-<p><a href="https://www.nginx.com/resources/wiki/nginScript/" target="_blank" rel="external">nginScriptのwiki</a>を参考にDocker + docker-machineで簡単に試してみた。</p>
-<h2 id="install-and-build-nginx"><a href="#install-and-build-nginx" class="headerlink" title="install and build nginx"></a>install and build nginx</h2><p><a href="http://nginx.org/en/download.html" target="_blank" rel="external">nginx: download</a>から最新のバージョンを取得する。<br>またnginScriptはオプションとして提供されているので、<a href="http://hg.nginx.org/" target="_blank" rel="external">nginxのMercurial</a>から取得する必要がある。</p>
+<p><a href="https://www.nginx.com/resources/wiki/nginScript/" target="_blank" rel="noopener">nginScriptのwiki</a>を参考にDocker + docker-machineで簡単に試してみた。</p>
+<h2 id="install-and-build-nginx"><a href="#install-and-build-nginx" class="headerlink" title="install and build nginx"></a>install and build nginx</h2><p><a href="http://nginx.org/en/download.html" target="_blank" rel="noopener">nginx: download</a>から最新のバージョンを取得する。<br>またnginScriptはオプションとして提供されているので、<a href="http://hg.nginx.org/" target="_blank" rel="noopener">nginxのMercurial</a>から取得する必要がある。</p>
 <script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=Dockerfile"></script>
 <p>これを適当な感じでbuild</p>
 <script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=build.sh"></script>
@@ -119,8 +120,8 @@ ga('send', 'pageview');
 <h3 id="リクエストパラメータ"><a href="#リクエストパラメータ" class="headerlink" title="リクエストパラメータ"></a>リクエストパラメータ</h3><p>$r.args にJavaScriptのオブジェクトとして格納されている。</p>
 <p>nginScriptはECMA標準準拠というわけではないようだが、基本的なことはできそう。<br>適当な関数を定義して評価することや、カスタムヘッダーを追加することなどはできた。</p>
 <script src="//gist.github.com/kazu69/d531eea15e20201c0742.js?file=function.sh"></script>
-<p>ということで、ほとんど<a href="http://hg.nginx.org/njs/file/tip/README" target="_blank" rel="external">Readme</a> をそのまま試したことになるけど、<br>いまのところlocationディレクティブにhookして、リクエスト、レスポンスをJavaScriptで操作できる位という感じだった。</p>
-<p>参考にしたページ<br><a href="https://www.nginx.com/resources/wiki/nginScript/" target="_blank" rel="external">nginx Wiki documentation</a><br><a href="http://hg.nginx.org/njs/file/11d4d66851ed/README?_ga=1.105907269.772607199.1445353842" target="_blank" rel="external">README</a></p>
+<p>ということで、ほとんど<a href="http://hg.nginx.org/njs/file/tip/README" target="_blank" rel="noopener">Readme</a> をそのまま試したことになるけど、<br>いまのところlocationディレクティブにhookして、リクエスト、レスポンスをJavaScriptで操作できる位という感じだった。</p>
+<p>参考にしたページ<br><a href="https://www.nginx.com/resources/wiki/nginScript/" target="_blank" rel="noopener">nginx Wiki documentation</a><br><a href="http://hg.nginx.org/njs/file/11d4d66851ed/README?_ga=1.105907269.772607199.1445353842" target="_blank" rel="noopener">README</a></p>
 
     
   </div>

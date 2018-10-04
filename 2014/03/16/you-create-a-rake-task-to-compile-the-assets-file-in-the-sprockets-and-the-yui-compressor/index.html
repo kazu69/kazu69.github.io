@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/03/16/you-create-a-rake-task-to-compile-the-assets-file-in-the-sprockets-and-the-yui-compressor/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="PHPのアプリケーションで、javascriptファイルをコンパイルする必要があったのでSprocketsを使ったコンパイルタスクを作成したのでメモ。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SprocketsとYUI Compressorでassets fileをcompileするrake taskを作成した">
@@ -101,7 +102,7 @@ ga('send', 'pageview');
     </div>
     
       <p>PHPのアプリケーションで、javascriptファイルをコンパイルする必要があったのでSprocketsを使ったコンパイルタスクを作成したのでメモ。<br><a id="more"></a></p>
-<p>今回は別の方法でYUI Compressorを使用してcompressしていたので、<a href="https://github.com/sstephenson/ruby-yui-compressor" target="_blank" rel="external">ruby-yui-compressor</a>を使用した。<br>Gemfileには以下のように追加。</p>
+<p>今回は別の方法でYUI Compressorを使用してcompressしていたので、<a href="https://github.com/sstephenson/ruby-yui-compressor" target="_blank" rel="noopener">ruby-yui-compressor</a>を使用した。<br>Gemfileには以下のように追加。</p>
 <script src="https://gist.github.com/kazu69/9570672.js?file=Gemfile"></script>
 
 <p>タスクは以下のようにnamespaceを作成して追加した。</p>
@@ -111,7 +112,7 @@ ga('send', 'pageview');
 <p>Sprockets::BundleAssetインスタンスとしてファイルは取得される。<br>このインスタンスをto_sすることでファイルの中身を得ることができる。今回は既存のファイル内のコメントを削除する必要があったので、正規表現でファイル内を走査して軒並み削除した。</p>
 <p>また、Sprockets::BundleAssetインスタンスはlengthメソッドでbyteサイズ、mtimeメソッドで最終更新時刻、pathnameメソッドで絶対パスが得られる。</p>
 <p>最後に元ファイルの情報をコメントで追加しておく必要もあったので、ファイル名と最終変更日を取得し、ヒアドキュメントでまずコメントを挿入してコードを追加した。</p>
-<p>参考にしたページ: <a href="http://d.hatena.ne.jp/tashen/20120624/p1" target="_blank" rel="external">http://d.hatena.ne.jp/tashen/20120624/p1</a></p>
+<p>参考にしたページ: <a href="http://d.hatena.ne.jp/tashen/20120624/p1" target="_blank" rel="noopener">http://d.hatena.ne.jp/tashen/20120624/p1</a></p>
 
     
   </div>

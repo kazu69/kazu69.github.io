@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2013/10/22/files-compiled-with-the-rails-assets-precompile-want-to-read-dynamically-on-the-client-side-when-the-response/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="ややこしいし、滅多にない状況だけど忘れないために。JavaScriptのライブラリなどが、RailsのAssets PrecompileでコンパイルしたJavaScriptまたはCSSなどを動的に読込む(requireJSなどで)必要がある場合の対応。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rails Assets Precompile でコンパイルしたファイルをクライアント側で動的に読込みたいときの対応">
@@ -118,10 +119,10 @@ ga('send', 'pageview');
 </ol>
 <p>という選択肢を検討しましたが、便利なgemを使って解決できました。</p>
 <ul>
-<li>digestを付与しないファイルを出力する<a href="https://github.com/alexspeller/non-stupid-digest-assets" target="_blank" rel="external">non-stupid-digest-assets</a></li>
-<li>digestを付与したファイルを302でリダイレクトできる <a href="https://github.com/sikachu/sprockets-redirect" target="_blank" rel="external">sprockets-redirect</a></li>
+<li>digestを付与しないファイルを出力する<a href="https://github.com/alexspeller/non-stupid-digest-assets" target="_blank" rel="noopener">non-stupid-digest-assets</a></li>
+<li>digestを付与したファイルを302でリダイレクトできる <a href="https://github.com/sikachu/sprockets-redirect" target="_blank" rel="noopener">sprockets-redirect</a></li>
 </ul>
-<p><a href="https://github.com/rails/sprockets-rails/issues/49#issuecomment-26020304" target="_blank" rel="external">ここ</a>にまとまってますね。</p>
+<p><a href="https://github.com/rails/sprockets-rails/issues/49#issuecomment-26020304" target="_blank" rel="noopener">ここ</a>にまとまってますね。</p>
 
     
   </div>

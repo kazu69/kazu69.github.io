@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/03/05/created-their-own-extended-tags-using-polymer/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="気になっていたPolymerを使って、独自拡張タグ を作成してみた。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Polymerを使って独自拡張タグを作成した">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>気になっていた<a href="http://www.polymer-project.org/" target="_blank" rel="external">Polymer</a>を使って、独自拡張タグ <a href="https://github.com/kazu69/x-gravatar/" target="_blank" rel="external"><x-gravatar></x-gravatar></a>を作成してみた。</p>
+      <p>気になっていた<a href="http://www.polymer-project.org/" target="_blank" rel="noopener">Polymer</a>を使って、独自拡張タグ <a href="https://github.com/kazu69/x-gravatar/" target="_blank" rel="noopener"><x-gravatar></x-gravatar></a>を作成してみた。</p>
 <a id="more"></a>
 <p>Polymerは最利用可能なhtmlウィジェットを作成するweb component技術にpolyfillなパッケージを追加したもので、利用することでカスタムUIを作成できるコンポーネント。</p>
 <p>フレームワークではなく、あくまで既存のHTMLから抜け落ちているものを補完するコンポーネントという感じ。</p>
@@ -131,7 +132,7 @@ ga('send', 'pageview');
 <script src="http://gist-it.appspot.com/github/kazu69/x-gravatar/blob/master/src/x-gravatar.html?slice=2"></script>
 
 <p>attributesで指定することで、polymer-elementのプロパティとして取得できる。</p>
-<p><a href="http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods" target="_blank" rel="external">ライフサイクルメソッド</a>は以下になり</p>
+<p><a href="http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods" target="_blank" rel="noopener">ライフサイクルメソッド</a>は以下になり</p>
 <script src="http://gist-it.appspot.com/github/kazu69/x-gravatar/blob/master/src/x-gravatar.html?slice=27:45"></script>
 
 <p>polymer-element(ここではx-gravatar)が作成され、domの処理が可能になった場合にreadyが実行される。<br>polymer-responseで受け取ったdataをmodelとしてview(polymer-element要素)にbindする。<br>このあたりはAngularJSとほぼ同じ。</p>
@@ -140,8 +141,8 @@ ga('send', 'pageview');
 
 <p>最終的にtemplate要素の実行結果がx-gravatar要素に出力される。<br>非同期で取得してるので、取得したデータの表示に若干のタイムラグは致し方ない感じです。</p>
 <p>PolymerはAngulerと似ている感があるけど、web compornentを利用することを目的としたフレームワークがpolymerという認識でいいのかな。</p>
-<p><a href="http://stackoverflow.com/questions/18089075/what-is-the-difference-between-polymer-elements-and-angularjs-directives" target="_blank" rel="external">stackoverflowでも議論</a>されていた。</p>
-<p>repository: <a href="https://github.com/kazu69/x-gravatar/" target="_blank" rel="external">kazu69 / x-gravatar</a></p>
+<p><a href="http://stackoverflow.com/questions/18089075/what-is-the-difference-between-polymer-elements-and-angularjs-directives" target="_blank" rel="noopener">stackoverflowでも議論</a>されていた。</p>
+<p>repository: <a href="https://github.com/kazu69/x-gravatar/" target="_blank" rel="noopener">kazu69 / x-gravatar</a></p>
 
     
   </div>

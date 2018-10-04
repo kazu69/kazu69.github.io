@@ -12,6 +12,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/09/03/watched-gulp4/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="gulpfileをES6に置き換える必要があり、何気にgulpの情報追っていると、そろそろv4.0がリリースされそうなのでざっくりと眺めてみた。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-09-07T15:04:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="gulp v4.0を眺めてみた">
@@ -99,41 +100,41 @@ ga('send', 'pageview');
     
       <p>gulpfileをES6に置き換える必要があり、何気にgulpの情報追っていると、<br>そろそろv4.0がリリースされそうなのでざっくりと眺めてみた。</p>
 <a id="more"></a>
-<h2 id="gulpfileをES6で書く"><a href="#gulpfileをES6で書く" class="headerlink" title="gulpfileをES6で書く"></a>gulpfileをES6で書く</h2><p>まず、本来の目的だったこの件、<a href="https://github.com/gulpjs/gulp/issues/830#issuecomment-123601869" target="_blank" rel="external">v3.9</a>ですでに対応されていた。</p>
+<h2 id="gulpfileをES6で書く"><a href="#gulpfileをES6で書く" class="headerlink" title="gulpfileをES6で書く"></a>gulpfileをES6で書く</h2><p>まず、本来の目的だったこの件、<a href="https://github.com/gulpjs/gulp/issues/830#issuecomment-123601869" target="_blank" rel="noopener">v3.9</a>ですでに対応されていた。</p>
 <p>以下の条件であれば利用可能のようだった。</p>
 <ul>
 <li>gulp v3.9以上</li>
 <li>gulpfile.jsをgulpfile.babel.jsとする</li>
-<li><a href="https://www.npmjs.com/package/babel-core" target="_blank" rel="external">babel-core</a> をインストールすること</li>
+<li><a href="https://www.npmjs.com/package/babel-core" target="_blank" rel="noopener">babel-core</a> をインストールすること</li>
 </ul>
 <p>内部的にはbabelで変換しているようだ。</p>
 <hr>
-<p>続いて、v4.0の<a href="https://github.com/gulpjs/gulp/blob/4.0/docs/API.md" target="_blank" rel="external">CAHNGELOG</a>も眺めてみた。</p>
+<p>続いて、v4.0の<a href="https://github.com/gulpjs/gulp/blob/4.0/docs/API.md" target="_blank" rel="noopener">CAHNGELOG</a>も眺めてみた。</p>
 <h2 id="gulp4-0をインストール"><a href="#gulp4-0をインストール" class="headerlink" title="gulp4.0をインストール"></a>gulp4.0をインストール</h2><script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=install.sh"></script>
 <h2 id="cliの変更点"><a href="#cliの変更点" class="headerlink" title="cliの変更点"></a>cliの変更点</h2><p><code>--tasks-json</code> と <code>--verify</code> オプションが追加されてる。</p>
 <p>–task-json はタスクをjson形式で出力する。</p>
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=cli-task-json.sh"></script>
 <p>–verify はpluginsがpackage.jsonを参照しているかチェックする。</p>
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=gulp-verify.sh"></script>
-<h2 id="APIの変更点"><a href="#APIの変更点" class="headerlink" title="APIの変更点"></a>APIの変更点</h2><p>大きな変更点はタスク処理機構が、<a href="https://www.npmjs.com/package/orchestrator" target="_blank" rel="external">orchestrator</a> から <a href="https://github.com/phated/undertaker" target="_blank" rel="external">undertaker</a> に変更される点だった。</p>
+<h2 id="APIの変更点"><a href="#APIの変更点" class="headerlink" title="APIの変更点"></a>APIの変更点</h2><p>大きな変更点はタスク処理機構が、<a href="https://www.npmjs.com/package/orchestrator" target="_blank" rel="noopener">orchestrator</a> から <a href="https://github.com/phated/undertaker" target="_blank" rel="noopener">undertaker</a> に変更される点だった。</p>
 <p>orchestratorではタスクの同期制御サポートされてないが、undertakerで使うことでタスクの同期処理などが簡単に解決できるようになる。</p>
 <p>処理機構の変更のため、APIも大きく変更されている。</p>
 <p>gulp.taskはこれまで引数に<strong>gulp.task(name[, deps], fn)</strong>となっていたが、<strong>gulp.task([name,] fn)</strong>と依存タスクを指定するdepsがなくなった。</p>
-<p><code>src</code>、<code>dest</code>、<code>watch</code>、<code>symlink</code>はgulpのclassを使用しているが、<br>それ以外は<a href="https://github.com/phated/undertaker" target="_blank" rel="external">undertaker</a>のメソッドをcallしている。</p>
+<p><code>src</code>、<code>dest</code>、<code>watch</code>、<code>symlink</code>はgulpのclassを使用しているが、<br>それ以外は<a href="https://github.com/phated/undertaker" target="_blank" rel="noopener">undertaker</a>のメソッドをcallしている。</p>
 <p>追加されたAPIは</p>
 <p><code>gulp.parallel</code>、<code>gulp.series</code>、<code>gulp.tree</code>、<code>gulp.registry</code>、<code>gulp.lastRun</code>となる。</p>
-<h3 id="gulp-parallel"><a href="#gulp-parallel" class="headerlink" title="gulp.parallel"></a>gulp.parallel</h3><p>これまでは<a href="https://www.npmjs.com/package/run-sequence" target="_blank" rel="external">runSequence</a>などを使っていたTaskの並列化を行うことができる。</p>
+<h3 id="gulp-parallel"><a href="#gulp-parallel" class="headerlink" title="gulp.parallel"></a>gulp.parallel</h3><p>これまでは<a href="https://www.npmjs.com/package/run-sequence" target="_blank" rel="noopener">runSequence</a>などを使っていたTaskの並列化を行うことができる。</p>
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=gulpfile1.js"></script>
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=parallel.sh"></script>
 <h3 id="gulp-series"><a href="#gulp-series" class="headerlink" title="gulp.series"></a>gulp.series</h3><p>こちらはTaskを直列化できる。</p>
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=gulpfile2.js"></script>
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=series.sh"></script>
-<h3 id="gulp-tree"><a href="#gulp-tree" class="headerlink" title="gulp.tree"></a>gulp.tree</h3><p>タスクの依存性をtreeで返す。内部的にはを呼んでいる。<a href="https://github.com/phated/undertaker#options" target="_blank" rel="external">optionはundertakerと同じ</a>。</p>
+<h3 id="gulp-tree"><a href="#gulp-tree" class="headerlink" title="gulp.tree"></a>gulp.tree</h3><p>タスクの依存性をtreeで返す。内部的にはを呼んでいる。<a href="https://github.com/phated/undertaker#options" target="_blank" rel="noopener">optionはundertakerと同じ</a>。</p>
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=gulpfile3.js"></script>
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=tree.sh"></script>
 <h3 id="gulp-registry"><a href="#gulp-registry" class="headerlink" title="gulp.registry"></a>gulp.registry</h3><p>カスタムタスクを登録する。</p>
 <p>例えば、別ファイルに分割してあるタスクをrequireして、registryを使って登録することで、<br>読み込んだタスクを使えるようになる。</p>
-<p>これまでファイルを分割した際は、<a href="https://www.npmjs.com/package/require-dir" target="_blank" rel="external">require-dir</a>などでファイルを読込んでいたのが、v4.0からはrequireしてregistryで行うようになり、直感的に扱える感じになる。</p>
+<p>これまでファイルを分割した際は、<a href="https://www.npmjs.com/package/require-dir" target="_blank" rel="noopener">require-dir</a>などでファイルを読込んでいたのが、v4.0からはrequireしてregistryで行うようになり、直感的に扱える感じになる。</p>
 <p>例えば以下のようにタスクを別ファイルに作成している場合</p>
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=custom.js"></script>
 <p>reqistryで登録することで使用できる。</p>
@@ -142,7 +143,7 @@ ga('send', 'pageview');
 <script src="//gist.github.com/kazu69/020451222ded7461a7cc.js?file=gulpfile5.js"></script>
 <hr>
 <p>ということで、ざっくり見て行ったがバージョン4.0から非同期処理まわりがpluginなしで行えるようになる。<br>v4.0がいつリリースされるのかちょっとわからないが、必要あであれば先にundertakerを使っておくようにすると良さそう。</p>
-<p>参考サイト<br><a href="http://www.ociweb.com/resources/publications/sett/gulp-4/" target="_blank" rel="external">gulp 4</a><br><a href="http://blog.reactandbethankful.com/posts/2015/04/23/building-with-gulp-3-and-4-part-2-gulp-anatomy/" target="_blank" rel="external">Building with Gulp 3 and 4 (Part 2: Gulp’s anatomy)</a></p>
+<p>参考サイト<br><a href="http://www.ociweb.com/resources/publications/sett/gulp-4/" target="_blank" rel="noopener">gulp 4</a><br><a href="http://blog.reactandbethankful.com/posts/2015/04/23/building-with-gulp-3-and-4-part-2-gulp-anatomy/" target="_blank" rel="noopener">Building with Gulp 3 and 4 (Part 2: Gulp’s anatomy)</a></p>
 
     
   </div>

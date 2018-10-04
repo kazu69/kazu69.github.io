@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2009/08/31/that-way-of-writing-css-site-displaying-more-quickly/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Yslowやpagespeedを使ってサイトを最適化していくことが多い最近なんですが、cssの書き方次第ではわずかですが パフォーマンスを改善できるらいいです。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="cssの書き方でもっとサイト表示が速くなるという話">
@@ -140,7 +141,7 @@ ga('send', 'pageview');
 <p>複数のcssの管理に便利な&#64;import構文ですが、これを使うとcssの並列読み込みが妨げられる事があります。基本的にブラウザは複数のcssファイルを並列で読み込みますが、&#64;import構文を使うと直列でしか読み込まなくなる場合があります。読み込みに数秒でしょうがロスが生じるので、可能ならさける方がよいでしょう。特にIEとか。</p>
 <p>あとは基本的に親要素からの継承をうまく理解して、無駄な指定を省くことでパフォーマンスのよいCSSを作成できるというわけです。しかし、日々のメンテナンスを考えると、パフォーマンス優先でマークアップルールを作るのは困難かな・・・。</p>
 <p>ということで、ここに書いたものは、</p>
-<p><a href="http://code.google.com/intl/ja/speed/page-speed/docs/rendering.html" target="_blank" rel="external">Google Page Speed Optimize browser renderingのUse efficient CSS selectors</a>より抜粋しました。</p>
+<p><a href="http://code.google.com/intl/ja/speed/page-speed/docs/rendering.html" target="_blank" rel="noopener">Google Page Speed Optimize browser renderingのUse efficient CSS selectors</a>より抜粋しました。</p>
 
     
   </div>

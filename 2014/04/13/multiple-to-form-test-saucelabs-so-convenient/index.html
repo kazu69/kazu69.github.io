@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/04/13/multiple-to-form-test-saucelabs-so-convenient/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="複数のプラットフォームでのブラウザテストができるSaucelabsを使うと、クロスブラウザテストで楽ができそう。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Saucelabsを使ったマルチプラトフォームテストが便利そう">
@@ -100,18 +101,18 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>複数のプラットフォームでのブラウザテストができる<a href="https://saucelabs.com" target="_blank" rel="external">Saucelabs</a>を使うと、クロスブラウザテストで楽ができそう。</p>
+      <p>複数のプラットフォームでのブラウザテストができる<a href="https://saucelabs.com" target="_blank" rel="noopener">Saucelabs</a>を使うと、クロスブラウザテストで楽ができそう。</p>
 <a id="more"></a>
 <p>CapybaraでE2Eのテストを作成する必要があったのですが、マルチプラットフォームのクロスブラウザテストもした方が良さそうだったのでSaucelabsを使ってみたら結構良さそうだった。</p>
 <p>Saucelabsを利用することで豊富なプラットフォームとブラウザでのテストができて、実行時の詳細なログを確認できるだけでなく、テストの実行時の様子をオンデマンドでもscreenshotsやscreencastsで確認できる。<br>この辺の環境を自前で構築するする手間を肩代わりできる。<br>無料アカウントだと利用できるVMの数やテストできる時間に制限はあるものの、それ以上に恩恵は大きいきがする。</p>
 <p>簡単にセットアップをメモしたもの。<br>Gemfileに以下のgemを追加</p>
 <script src="https://gist.github.com/kazu69/248efae6d38a4666b1cc.js?file=Gemfile"></script>
 
-<p>sauce-connectを使用して、セキュアな状態でSaucelabsとTunnelし、Saucalebsのvmでアプリケーションを実行する。<br>これにより、ローカル環境などで動作しているアプリケーションでもテストできる。<br>詳しくは<a href="https://saucelabs.com/docs/connect" target="_blank" rel="external">この辺り</a>に解説がある。<br>また、parallel_testsを使用しているので並列にテストを行え、時間短縮できそう。</p>
+<p>sauce-connectを使用して、セキュアな状態でSaucelabsとTunnelし、Saucalebsのvmでアプリケーションを実行する。<br>これにより、ローカル環境などで動作しているアプリケーションでもテストできる。<br>詳しくは<a href="https://saucelabs.com/docs/connect" target="_blank" rel="noopener">この辺り</a>に解説がある。<br>また、parallel_testsを使用しているので並列にテストを行え、時間短縮できそう。</p>
 <p>今回はsaucelabsの設定用にsauce_helper.rbを作成した</p>
 <script src="https://gist.github.com/kazu69/248efae6d38a4666b1cc.js?file=sauce_helper.rb"></script>
 
-<p>ここのあたりの設定についても<a href="https://saucelabs.com/ruby" target="_blank" rel="external">ドキュメント</a>に沿った感じで、username、access_keyを使って、必要なプラットフォームを追加しておけば大体いい感じ。<a href="https://saucelabs.com/platforms" target="_blank" rel="external">サポートプラットフォーム</a>は豊富にあるのでほぼサポートできそう。</p>
+<p>ここのあたりの設定についても<a href="https://saucelabs.com/ruby" target="_blank" rel="noopener">ドキュメント</a>に沿った感じで、username、access_keyを使って、必要なプラットフォームを追加しておけば大体いい感じ。<a href="https://saucelabs.com/platforms" target="_blank" rel="noopener">サポートプラットフォーム</a>は豊富にあるのでほぼサポートできそう。</p>
 <p>今回は既存のcapybaranのテストに追加するために、環境変数で既存のテストとsaucalabesのテストをそれぞれ実行できるようにするために、spec_helper.rbは以下のようになった。</p>
 <script src="https://gist.github.com/kazu69/248efae6d38a4666b1cc.js?file=spec_helper.rb"></script>
 

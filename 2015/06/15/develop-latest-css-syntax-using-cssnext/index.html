@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/06/15/develop-latest-css-syntax-using-cssnext/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-07-13T11:16:24.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="cssnextを使って最新のcss syntaxで開発するのが良さそう">
@@ -103,17 +104,17 @@ ga('send', 'pageview');
       <p>ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。</p>
 <a id="more"></a>
 <h2 id="JavaScriptの最近の事情"><a href="#JavaScriptの最近の事情" class="headerlink" title="JavaScriptの最近の事情"></a>JavaScriptの最近の事情</h2><p>javascriptではES6でコードを書き、BabelでTransplieするという流れが定着しつつある。<br>これは、これまで必要だったライブラリが不要になり、コードが依存するライブラリを減らすことができ、altJSに頼らないで開発できるという利点からである。</p>
-<p>同じことがCSSでも起きている。まずこれまでCSSを牽引してきた<a href="http://sass-lang.com/" target="_blank" rel="external">Sass</a>について。</p>
+<p>同じことがCSSでも起きている。まずこれまでCSSを牽引してきた<a href="http://sass-lang.com/" target="_blank" rel="noopener">Sass</a>について。</p>
 <h2 id="Sassの問題点"><a href="#Sassの問題点" class="headerlink" title="Sassの問題点"></a>Sassの問題点</h2><p>最近のCSSの開発にはaltCSSとしてSass,Less,StylusなどのPreprocessorが使用されている。<br>特にSassはJavaScriptで言う所のjQueryに近い存在になり、APIもやや複雑になっている感じがある。</p>
 <p>Sassを使っていても実際はそのほんの一部の機能だけで開発していることが多い。<br>実際、Sassを使うにあたり必要な機能はほんの一握りなのでその機能だけ切り取り使えると、もっと軽く使える気もする。</p>
 <p>また、仮に他のaltCSSへの乗り換えの際にはSassの資産をそのまま使えるとは限らない。<br>などという懸念点を回避する手法として、CSSの先行実装を取り入れるという考え方でcssnextが選択肢に上がる。</p>
-<h2 id="cssnextとは"><a href="#cssnextとは" class="headerlink" title="cssnextとは"></a>cssnextとは</h2><p><a href="http://cssnext.io/" target="_blank" rel="external">cssnext</a>はcssの先行実装をサポートしていないブラウザも使えるようにするPostprocessorである。<br>あくまでcssのsyntaxのみで構成されているので、利用している機能を将来的にブラウザがサポートさえしてくれれば<br>cssnextでTransplileする必要すらなくなる。</p>
+<h2 id="cssnextとは"><a href="#cssnextとは" class="headerlink" title="cssnextとは"></a>cssnextとは</h2><p><a href="http://cssnext.io/" target="_blank" rel="noopener">cssnext</a>はcssの先行実装をサポートしていないブラウザも使えるようにするPostprocessorである。<br>あくまでcssのsyntaxのみで構成されているので、利用している機能を将来的にブラウザがサポートさえしてくれれば<br>cssnextでTransplileする必要すらなくなる。</p>
 <p>cssnext自体はpostcssを使っているので、必要なpluginを選択的に使える。これにより変換に時間がかかるという問題も解消できそう。</p>
-<p>メジャーなcss frameworkの<a href="https://twitter.com/mdo/status/591364406816079873" target="_blank" rel="external">Bootstrapはver5からpostcss</a>に、<a href="https://github.com/zurb/foundation/issues/6533" target="_blank" rel="external">Foundationもcssnext</a>を検討している。</p>
+<p>メジャーなcss frameworkの<a href="https://twitter.com/mdo/status/591364406816079873" target="_blank" rel="noopener">Bootstrapはver5からpostcss</a>に、<a href="https://github.com/zurb/foundation/issues/6533" target="_blank" rel="noopener">Foundationもcssnext</a>を検討している。</p>
 <p>ということで、実際にどのようなことができるのか機能を一通り触ってみた。</p>
 <h2 id="cssnext-features"><a href="#cssnext-features" class="headerlink" title="cssnext features"></a>cssnext features</h2><h3 id="設定-config"><a href="#設定-config" class="headerlink" title="設定(config)"></a>設定(config)</h3><p>configオプションまたは設定ファイルで、使う機能を選択できる。</p>
-<p>基本的にbrowsersオプションを指定しておけば、autoprefixerが<a href="http://caniuse.com/" target="_blank" rel="external">caniuse</a>のdatabaseを参照して、個別にfeaturesをenabled、disabledを判断します。(@MoOxのアドバイスをもとに追記)</p>
-<p>もし、個別に機能を制御するならば、各種の変換はpostcssのpluginなので、そのオプションも設定できる。<br>ちなみに、設定ファイルを使う場合は<a href="https://github.com/cssnext/cssnext/issues/73" target="_blank" rel="external">.cssnextrcという名前でjsonかyaml形式になりそう</a>。</p>
+<p>基本的にbrowsersオプションを指定しておけば、autoprefixerが<a href="http://caniuse.com/" target="_blank" rel="noopener">caniuse</a>のdatabaseを参照して、個別にfeaturesをenabled、disabledを判断します。(@MoOxのアドバイスをもとに追記)</p>
+<p>もし、個別に機能を制御するならば、各種の変換はpostcssのpluginなので、そのオプションも設定できる。<br>ちなみに、設定ファイルを使う場合は<a href="https://github.com/cssnext/cssnext/issues/73" target="_blank" rel="noopener">.cssnextrcという名前でjsonかyaml形式になりそう</a>。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=.cssnextrc"></script>
 <h3 id="Custom-Properties"><a href="#Custom-Properties" class="headerlink" title="Custom Properties"></a>Custom Properties</h3><p>カスタムプロパティ。cssnextでは現状はrootで定義しないといけない</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_properties.src.css"></script>
@@ -141,7 +142,7 @@ ga('send', 'pageview');
 <h3 id="Hex-Color"><a href="#Hex-Color" class="headerlink" title="Hex Color"></a>Hex Color</h3><p>アルファチャンネンルを追加した、RRGGBBAA形式でのhex colorが使える。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rrggbbaa.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rrggbbaa.dest.css"></script>
-<h3 id="Rebeccapurple"><a href="#Rebeccapurple" class="headerlink" title="Rebeccapurple"></a>Rebeccapurple</h3><p><a href="http://lists.w3.org/Archives/Public/www-style/2014Jun/0312.html" target="_blank" rel="external">6歳にして亡くなった、Eric Meyer氏の娘の名前</a>らしい。</p>
+<h3 id="Rebeccapurple"><a href="#Rebeccapurple" class="headerlink" title="Rebeccapurple"></a>Rebeccapurple</h3><p><a href="http://lists.w3.org/Archives/Public/www-style/2014Jun/0312.html" target="_blank" rel="noopener">6歳にして亡くなった、Eric Meyer氏の娘の名前</a>らしい。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rebeccapurple.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rebeccapurple.dest.css"></script>
 <h3 id="font-variant-プロパティ"><a href="#font-variant-プロパティ" class="headerlink" title="font-variant プロパティ"></a>font-variant プロパティ</h3><p>フォントをsmall capsにする際に使う。</p>
@@ -164,7 +165,7 @@ ga('send', 'pageview');
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=not.dest.css"></script>
 <h3 id="import"><a href="#import" class="headerlink" title="@import"></a>@import</h3><p>Sassなどと同じように特定のstylesheetをimportする。<br>相対パス、node_modules, web_modulesから読み込みをこなう。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=import.src.css"></script>
-<h3 id="with-Gulp"><a href="#with-Gulp" class="headerlink" title="with Gulp"></a>with Gulp</h3><p>gulpでは<a href="https://www.npmjs.com/package/gulp-cssnext" target="_blank" rel="external">gulp-cssnext</a>や<a href="https://www.npmjs.com/package/gulp-postcss" target="_blank" rel="external">gulp-postcss</a>を使う感じになる。</p>
+<h3 id="with-Gulp"><a href="#with-Gulp" class="headerlink" title="with Gulp"></a>with Gulp</h3><p>gulpでは<a href="https://www.npmjs.com/package/gulp-cssnext" target="_blank" rel="noopener">gulp-cssnext</a>や<a href="https://www.npmjs.com/package/gulp-postcss" target="_blank" rel="noopener">gulp-postcss</a>を使う感じになる。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=gulpfile.js"></script>
 <h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>ということで、今回挙げたようなcssの新しいモジュールはaltCSSで提供されているAPIに影響を受けた感じであるので、記法はともかく機能は大体予想がつく。そのため、学習コストはあまり高くない気がする。</p>
 <p>postcssということでautoprefixerなどがdefaultで機能するので、fallbackなどもあまり意識しないで済みそう。</p>

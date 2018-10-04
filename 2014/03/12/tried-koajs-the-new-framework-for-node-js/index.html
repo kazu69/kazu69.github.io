@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/03/12/tried-koajs-the-new-framework-for-node-js/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="気になっていた、nodejsのWebアプリケーションフレームワークのKoajsを使って、簡単なアプリケーションを作成してみた。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="node.jsの新しいフレームワークKoajsを使ってみた">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>気になっていた、nodejsのWebアプリケーションフレームワークの<a href="http://koajs.com/" target="_blank" rel="external">Koajs</a>を使って、簡単なアプリケーションを作成してみた。<br><a id="more"></a><br>koajsはECMAScript6 Harmonyのgeneratorsを使って実装されているため、Expressのように悩ましいcallbackを多用せずに開発できる。</p>
+      <p>気になっていた、nodejsのWebアプリケーションフレームワークの<a href="http://koajs.com/" target="_blank" rel="noopener">Koajs</a>を使って、簡単なアプリケーションを作成してみた。<br><a id="more"></a><br>koajsはECMAScript6 Harmonyのgeneratorsを使って実装されているため、Expressのように悩ましいcallbackを多用せずに開発できる。</p>
 <p>ECMAScript6 Harmonyを使うのでので node.js v0.11 以上が必要。</p>
 <p>generator構文は <strong>function* func() {}</strong> と定義することで利用できる。<br>generator functionでは yield が利用できる。これを利用することで処理を同期的に扱うことができるようになる。</p>
 <p>generatorを実行させる簡単な例。</p>
@@ -126,11 +127,11 @@ nextで次の関数を実行し、実行後に続きから処理を再開可能�
 <p>koa自体は最小限の実装となっており、実際に使うには様々なkoaのmiddlewearを組み合わせて使う。</p>
 <p>今回は次のmiddlewear群を使った。</p>
 <ul>
-<li><a href="https://github.com/koajs/static" target="_blank" rel="external">koa-static</a> - 静的ファイル配信</li>
-<li><a href="https://github.com/koajs/route" target="_blank" rel="external">koa-route</a> - routing</li>
-<li><a href="https://github.com/koajs/logger" target="_blank" rel="external">koa-logger</a> - logger</li>
-<li><a href="https://github.com/visionmedia/co-views" target="_blank" rel="external">co-views</a> - view template render</li>
-<li>mongodb, <a href="https://github.com/LearnBoost/monk" target="_blank" rel="external">monk</a>, <a href="https://github.com/visionmedia/co-monk" target="_blank" rel="external">co-monk</a> - mongoDB apiライブラリ</li>
+<li><a href="https://github.com/koajs/static" target="_blank" rel="noopener">koa-static</a> - 静的ファイル配信</li>
+<li><a href="https://github.com/koajs/route" target="_blank" rel="noopener">koa-route</a> - routing</li>
+<li><a href="https://github.com/koajs/logger" target="_blank" rel="noopener">koa-logger</a> - logger</li>
+<li><a href="https://github.com/visionmedia/co-views" target="_blank" rel="noopener">co-views</a> - view template render</li>
+<li>mongodb, <a href="https://github.com/LearnBoost/monk" target="_blank" rel="noopener">monk</a>, <a href="https://github.com/visionmedia/co-monk" target="_blank" rel="noopener">co-monk</a> - mongoDB apiライブラリ</li>
 </ul>
 <p>routingは</p>
 <script src="http://gist-it.appspot.com/github/kazu69/koa-todo-app/blob/master/app.js?slice=33:40"></script>
@@ -154,7 +155,7 @@ nextで次の関数を実行し、実行後に続きから処理を再開可能�
 <p>koa アプリを動かすには、起動オプションで –harmonyをつけて起動する必要がある。</p>
 <p><strong> node –harmony app.js </strong></p>
 <p>触ってみて、callbackで複雑になることないので、見通しがいい。<br>generators function を使うことで非同期処理を同期的に記述できるのがいい感じ。</p>
-<p>repository - <a href="https://github.com/kazu69/koa-todo-app/" target="_blank" rel="external">koa-todo-app</a></p>
+<p>repository - <a href="https://github.com/kazu69/koa-todo-app/" target="_blank" rel="noopener">koa-todo-app</a></p>
 
     
   </div>

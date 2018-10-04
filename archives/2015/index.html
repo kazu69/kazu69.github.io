@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/archives/2015/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="福岡でwebの仕事をしています">
+<meta property="og:locale" content="ja">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="69log">
 <meta name="twitter:description" content="福岡でwebの仕事をしています">
@@ -101,8 +102,8 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/" target="_blank" rel="external">MariaDB</a>が以下のようなエラーを吐いていた。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Unsafe statement written to the binary log using statement format</div><div class="line">since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it</div><div class="line">invokes a trigger or a stored function that inserts into an</div><div class="line">AUTO_INCREMENT column. Inserted values cannot be logged correctly.</div></pre></td></tr></table></figure>
+      <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/" target="_blank" rel="noopener">MariaDB</a>が以下のようなエラーを吐いていた。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Unsafe statement written to the binary log using statement format</span><br><span class="line">since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it</span><br><span class="line">invokes a trigger or a stored function that inserts into an</span><br><span class="line">AUTO_INCREMENT column. Inserted values cannot be logged correctly.</span><br></pre></td></tr></table></figure>
 <p>バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。<br>STATEMENTだと安全でないということはどういうことか。少し試してみた。</p>
       
     
@@ -144,7 +145,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。<br>Docker 1.8 から<a href="http://docs.docker.com/engine/reference/logging/fluentd/" target="_blank" rel="external">Fluentdもlog driver</a>に追加されているので、これを使って簡単なサンプルを構築した。</p>
+      <p>なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。<br>Docker 1.8 から<a href="http://docs.docker.com/engine/reference/logging/fluentd/" target="_blank" rel="noopener">Fluentdもlog driver</a>に追加されているので、これを使って簡単なサンプルを構築した。</p>
       
     
   </div>
@@ -226,7 +227,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="https://github.com/tmm1/stackprof" target="_blank" rel="external">stackprof</a> を使えばrspecのプロファイリングが出来る戸言うことを知ったので、<br>早速テストでためしてみた。</p>
+      <p><a href="https://github.com/tmm1/stackprof" target="_blank" rel="noopener">stackprof</a> を使えばrspecのプロファイリングが出来る戸言うことを知ったので、<br>早速テストでためしてみた。</p>
       
     
   </div>
@@ -267,9 +268,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/" target="_blank" rel="external">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
+      <p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/" target="_blank" rel="noopener">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
 <p>これはリクエスト処理の実行時に評価され、特定のリクエストに対してnginxの内部処理をを調整することが可能になる。っぽい。</p>
-<p><a href="https://www.nginx.com/resources/wiki/modules/lua/" target="_blank" rel="external">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
+<p><a href="https://www.nginx.com/resources/wiki/modules/lua/" target="_blank" rel="noopener">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="noopener">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
       
     
   </div>
@@ -310,7 +311,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://githubengineering.com/subresource-integrity/" target="_blank" rel="external">Subresource Integrity</a> という記事をみて、<br>ちょっと興味深かったのでSubresource Integrityについて、軽く見てみた。</p>
+      <p><a href="http://githubengineering.com/subresource-integrity/" target="_blank" rel="noopener">Subresource Integrity</a> という記事をみて、<br>ちょっと興味深かったのでSubresource Integrityについて、軽く見てみた。</p>
       
     
   </div>
@@ -351,7 +352,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>最近、時間のあるときにすこしだけ<a href="https://www.haskell.org/" target="_blank" rel="external">Haskell</a>を触ったりもしていて、<br>Monadなるものに触れた。</p>
+      <p>最近、時間のあるときにすこしだけ<a href="https://www.haskell.org/" target="_blank" rel="noopener">Haskell</a>を触ったりもしていて、<br>Monadなるものに触れた。</p>
 <p>そこで、それっぽいものをJavaScriptで試してみた。</p>
       
     
@@ -426,7 +427,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>ここ最近結構cssを弄っていたけど、その時に見つけた<a href="http://www.basscss.com/" target="_blank" rel="external">Basscss</a>というcss Frameworkが良さそうだった。</p>
+      <p>ここ最近結構cssを弄っていたけど、その時に見つけた<a href="http://www.basscss.com/" target="_blank" rel="noopener">Basscss</a>というcss Frameworkが良さそうだった。</p>
       
     
   </div>
@@ -463,7 +464,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>HTTP/2 serverである<a href="https://github.com/h2o/h2o" target="_blank" rel="external">h2o</a>で初めてのサーバプッシュを試してみた。</p>
+      <p>HTTP/2 serverである<a href="https://github.com/h2o/h2o" target="_blank" rel="noopener">h2o</a>で初めてのサーバプッシュを試してみた。</p>
       
     
   </div>

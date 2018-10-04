@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/01/27/tried-the-chef-server-at-chef12/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="普段はChef Soloしか使う機会がないので、Chef Serverを試してみた。ちなみに、Chef12からはClientからServerへのリクエストにおいて、SSL証明書の検証が必要になり安全性がたかまったとか。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-08-17T04:53:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chef12でChef Serverを試してみた">
@@ -114,7 +115,7 @@ ga('send', 'pageview');
 
 <h2 id="Chef-Serverのセットアップ"><a href="#Chef-Serverのセットアップ" class="headerlink" title="Chef Serverのセットアップ"></a>Chef Serverのセットアップ</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=chef-server-setup.sh"></script>
 
-<p>Web UI をインストールしている場合、192.168.33.12/signupにアクセスできるようになる。<br>workstation側でhostsの設定をしていると<a href="https://chef-server/でもアクセスできる。" target="_blank" rel="external">https://chef-server/でもアクセスできる。</a></p>
+<p>Web UI をインストールしている場合、192.168.33.12/signupにアクセスできるようになる。<br>workstation側でhostsの設定をしていると<a href="https://chef-server/でもアクセスできる。" target="_blank" rel="noopener">https://chef-server/でもアクセスできる。</a></p>
 <h2 id="ユーザー、Organization作成"><a href="#ユーザー、Organization作成" class="headerlink" title="ユーザー、Organization作成"></a>ユーザー、Organization作成</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-user-organization.sh"></script>
 
 <p>またworkstationのhostsにchef-serverのipを追加しておく。</p>
@@ -135,7 +136,7 @@ ga('send', 'pageview');
 
 <p>ここで以下のように</p>
 <pre><code>INFO: HTTP Request Returned 401 Unauthorized: Failed to authenticate as NODENAME. Ensure that your node_name and client key are correct.
-</code></pre><p>など401エラーが発生する場合、多くは証明書の問題っぽい。<br>エラーが出た際は<a href="https://docs.chef.io/errors.html" target="_blank" rel="external">https://docs.chef.io/errors.html</a>を一度参考すると良さそう。</p>
+</code></pre><p>など401エラーが発生する場合、多くは証明書の問題っぽい。<br>エラーが出た際は<a href="https://docs.chef.io/errors.html" target="_blank" rel="noopener">https://docs.chef.io/errors.html</a>を一度参考すると良さそう。</p>
 <h2 id="Chef-Client-の情報を取得する"><a href="#Chef-Client-の情報を取得する" class="headerlink" title="Chef Client の情報を取得する"></a>Chef Client の情報を取得する</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=check-chef-client.sh"></script>
 
 <h2 id="WorkstationからChef-ClientにRun-Listを適用"><a href="#WorkstationからChef-ClientにRun-Listを適用" class="headerlink" title="WorkstationからChef ClientにRun Listを適用"></a>WorkstationからChef ClientにRun Listを適用</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=add-run-list.sh"></script>
@@ -163,7 +164,7 @@ ga('send', 'pageview');
 <li>古いバージョンのchef-clientを利用する</li>
 </ul>
 <p>という方法で解決できそうだった。</p>
-<p>参考にしたページ: <a href="http://www.creationline.com/lab/6644" target="_blank" rel="external">Chef 12の新機能: knife ssl check/fetch #opschef_ja #getchef_ja</a></p>
+<p>参考にしたページ: <a href="http://www.creationline.com/lab/6644" target="_blank" rel="noopener">Chef 12の新機能: knife ssl check/fetch #opschef_ja #getchef_ja</a></p>
 
     
   </div>

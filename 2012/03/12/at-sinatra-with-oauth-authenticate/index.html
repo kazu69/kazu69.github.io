@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2012/03/12/at-sinatra-with-oauth-authenticate/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Rubyの勉強の一環として、軽量Webフレームワークsinatraで、oauth(authenticate)してみた。sinatraを選んだ理由は、とにかくシンプルで軽い。ちょっとしたものしか作らないような自分にはマッチしたフレームワークなきがします。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="sinatraでoauth(authenticate)してみた">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Rubyの勉強の一環として、軽量Webフレームワーク<a href="http://www.sinatrarb.com/" target="_blank" rel="external">sinatra</a>で、oauth(authenticate)してみた。<br>sinatraを選んだ理由は、とにかくシンプルで軽い。ちょっとしたものしか作らないような自分にはマッチしたフレームワークなきがします。<br><a id="more"></a><br>まずは、sinatraのサイトにある通り<br>`<br>[sourcecode language=”ruby”]</p>
+      <p>Rubyの勉強の一環として、軽量Webフレームワーク<a href="http://www.sinatrarb.com/" target="_blank" rel="noopener">sinatra</a>で、oauth(authenticate)してみた。<br>sinatraを選んだ理由は、とにかくシンプルで軽い。ちょっとしたものしか作らないような自分にはマッチしたフレームワークなきがします。<br><a id="more"></a><br>まずは、sinatraのサイトにある通り<br>`<br>[sourcecode language=”ruby”]</p>
 <h1 id="app-rb"><a href="#app-rb" class="headerlink" title="app.rb"></a>app.rb</h1><p>require ‘sinatra’<br>get ‘/‘ do<br>  ‘Hello world!’<br>end<br>[/sourcecode]<br><code>gemをインストールして動かします。</code><br>[sourcecode language=”ruby”]<br>gem install sinatra<br>ruby -rubygems myapp.rb<br>[/sourcecode]<br>`</p>
 <p>という具合に簡単です。</p>
 <p>ルートハンドラやテンプレートにヘルパメソッドを定義できます。<br>`<br>[sourcecode language=”ruby”]<br>helpers do<br>    include Rack::Utils<br>    use Rack::Csrf, :raise =&amp;gt; true</p>
@@ -134,8 +135,8 @@ end
 
 <p>そもそもrubyを正しく学んでないので、おかしなところあるかもしれないけど。<br>以下個人的なメモ。</p>
 <ul>
-<li>SinatraのsessionはRackのCookieSessionを利用してるけど、暗号化があまりよろしくないっぽい。利用の際はRackのSessionをsecretキーを指定して使うべきではないだろうか。<br><a href="http://d.hatena.ne.jp/gioext/20090528/1243483873" target="_blank" rel="external">SinatraのSessionには注意</a></li>
-<li>開発時にオートリロードしてくれないので、変更加えるたびにWEBrickを再起動させるのが面倒。<a href="http://rtomayko.github.com/shotgun/" target="_blank" rel="external">shotgun</a>ってのを入れてオートリロード化。</li>
+<li>SinatraのsessionはRackのCookieSessionを利用してるけど、暗号化があまりよろしくないっぽい。利用の際はRackのSessionをsecretキーを指定して使うべきではないだろうか。<br><a href="http://d.hatena.ne.jp/gioext/20090528/1243483873" target="_blank" rel="noopener">SinatraのSessionには注意</a></li>
+<li>開発時にオートリロードしてくれないので、変更加えるたびにWEBrickを再起動させるのが面倒。<a href="http://rtomayko.github.com/shotgun/" target="_blank" rel="noopener">shotgun</a>ってのを入れてオートリロード化。</li>
 </ul>
 <p>簡単なクライアントアプリケーションやJSのapiサーバーとして簡単に実装できていいですね。(モックレベルかな)</p>
 

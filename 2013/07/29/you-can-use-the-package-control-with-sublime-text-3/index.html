@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2013/07/29/you-can-use-the-package-control-with-sublime-text-3/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Sublime Text 3に乗り換えたけど、Pacakge Controlが使えなかったので、調べてみた。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sublime Text 3 でPackage Controlを使えるようにする">
@@ -100,13 +101,13 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Sublime Text 3に乗り換えたけど、Pacakge Controlが使えなかったので、調べてみた。<br><a id="more"></a><br>どうも、Sublime Text 3では Pacakge ControlにはSSL認証が必要になったらしく、そのままでは.sublime-packageを展開できないらしい。<br>そこでgitリポジトリから直接cloneして<a href="https://github.com/wbond/sublime_package_control/tree/python3" target="_blank" rel="external">python3ブランチ</a>を使用するみたい。</p>
-<p>[shell]<br>cd Packages/<br>git clone <a href="https://github.com/wbond/sublime_package_control.git" target="_blank" rel="external">https://github.com/wbond/sublime_package_control.git</a> &quot;Package Control&quot;<br>cd &quot;Package Control&quot;<br>git checkout python3<br>[/shell]</p>
+      <p>Sublime Text 3に乗り換えたけど、Pacakge Controlが使えなかったので、調べてみた。<br><a id="more"></a><br>どうも、Sublime Text 3では Pacakge ControlにはSSL認証が必要になったらしく、そのままでは.sublime-packageを展開できないらしい。<br>そこでgitリポジトリから直接cloneして<a href="https://github.com/wbond/sublime_package_control/tree/python3" target="_blank" rel="noopener">python3ブランチ</a>を使用するみたい。</p>
+<p>[shell]<br>cd Packages/<br>git clone <a href="https://github.com/wbond/sublime_package_control.git" target="_blank" rel="noopener">https://github.com/wbond/sublime_package_control.git</a> &quot;Package Control&quot;<br>cd &quot;Package Control&quot;<br>git checkout python3<br>[/shell]</p>
 <p>とりあえず、これでPackage Controlが使えました。</p>
 <p>ちなみに自分はDropbox経由でPackageなど管理しているので、関連ディレクトリびシンボリックリンクを作成しました。<br>その辺りもまとめて</p>
 <p>[shell]<br>ln -s ~/Dropbox/Sublime\ Text\ 3/Cache ~/Library/Application\ Support/Sublime\ Text\ 3/Cache<br>ln -s ~/Dropbox/Sublime\ Text\ 3/Installed\ Packages ~/Library/Application\ Support/Sublime\ Text\ 3/Installed\ Packages<br>ln -s ~/Dropbox/Sublime\ Text\ 3/Packages ~/Library/Application\ Support/Sublime\ Text\ 3/Packages<br>[/shell]</p>
-<p>参考にしたサイト<br><a href="http://wbond.net/sublime_packages/package_control/installation#ST3" target="_blank" rel="external">http://wbond.net/sublime_packages/package_control/installation#ST3</a></p>
-<p><a href="https://gist.github.com/moomerman/4674060" target="_blank" rel="external">https://gist.github.com/moomerman/4674060</a></p>
+<p>参考にしたサイト<br><a href="http://wbond.net/sublime_packages/package_control/installation#ST3" target="_blank" rel="noopener">http://wbond.net/sublime_packages/package_control/installation#ST3</a></p>
+<p><a href="https://gist.github.com/moomerman/4674060" target="_blank" rel="noopener">https://gist.github.com/moomerman/4674060</a></p>
 
     
   </div>

@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/04/18/browserify-uses-jquery-plugin-with-jquery-cdn/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="jQueryをCDNから取得し、jQuery pluginが活躍している場合のbrowserify導入の備忘録">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="browserifyでjQuery(CDN)とjQueryプラグインを使う">
@@ -103,7 +104,7 @@ ga('send', 'pageview');
       <p>jQueryをCDNから取得し、jQuery pluginが活躍している場合のbrowserify導入の備忘録</p>
 <a id="more"></a>
 <h2 id="CDNのjQueryをrequireする"><a href="#CDNのjQueryをrequireする" class="headerlink" title="CDNのjQueryをrequireする"></a>CDNのjQueryをrequireする</h2><p>CDNを使うことで、browserifyでbundleするファイルサイズは小さくなり、ファイル生成までの時間も短くなるという恩恵がある。</p>
-<p>まず、CDNのjQueryを利用するのに<a href="https://github.com/thlorenz/browserify-shim" target="_blank" rel="external">browserify-shim</a>を使う。<br>globalのjQueryを「jquery」というモジュール名でrequireできるようにする。</p>
+<p>まず、CDNのjQueryを利用するのに<a href="https://github.com/thlorenz/browserify-shim" target="_blank" rel="noopener">browserify-shim</a>を使う。<br>globalのjQueryを「jquery」というモジュール名でrequireできるようにする。</p>
 <script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=browserify-shim.json"></script>
 
 <p>requireでincludeするjqueryはglobal(window)空間に存在しているので、<br>実際にはrequireなどせずとも使えるといえば使える。</p>
@@ -136,7 +137,7 @@ ga('send', 'pageview');
 <script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=cdn-jquery.js"></script>
 
 <p>とこれでまずはjQueryはCDNの恩恵を受けることができる。</p>
-<h2 id="jQuery-pluginの対応"><a href="#jQuery-pluginの対応" class="headerlink" title="jQuery pluginの対応"></a>jQuery pluginの対応</h2><p>jquery pluginもnpmから取得できるので、bowerを使用することなくnpm経由で直接installからexportsできる。<br>(<a href="http://blog.npmjs.org/post/111385956875/welcome-jquery-developers" target="_blank" rel="external">Welcome, jQuery developers!</a>)</p>
+<h2 id="jQuery-pluginの対応"><a href="#jQuery-pluginの対応" class="headerlink" title="jQuery pluginの対応"></a>jQuery pluginの対応</h2><p>jquery pluginもnpmから取得できるので、bowerを使用することなくnpm経由で直接installからexportsできる。<br>(<a href="http://blog.npmjs.org/post/111385956875/welcome-jquery-developers" target="_blank" rel="noopener">Welcome, jQuery developers!</a>)</p>
 <p>任意のjquery.pluginと自作モジュールのmy_module.jsを利用するとした場合、</p>
 <script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=browserify-browser-modules.json"></script>
 
@@ -145,7 +146,7 @@ ga('send', 'pageview');
 <p>module 形式でない package の場合でも、<code>browserify -r jquery_plugin</code> で require オプションを使うことで requireできるようになるのでとりあえずなんとかなる。</p>
 <script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=browserify-require.js"></script>
 
-<p><a href="http://qiita.com/hitsujiwool/items/b013577d361bfdef18a6" target="_blank" rel="external">browserify (browser-pack) はどんなコードを出力するのか？</a>あたりが詳しい。</p>
+<p><a href="http://qiita.com/hitsujiwool/items/b013577d361bfdef18a6" target="_blank" rel="noopener">browserify (browser-pack) はどんなコードを出力するのか？</a>あたりが詳しい。</p>
 <script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file==my_module.js"></script>
 
 <p>サイトの規模によってはbrowserifyを利用して全てのファイルをまとめてしまうと、ファイルサイズが気になる。</p>
@@ -154,11 +155,11 @@ ga('send', 'pageview');
 <p>意図しないグローバルを汚染をしない程度にとどめておく程度にしておくとかでもいいのではないだろうかと。</p>
 <script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=page-content.js"></script>
 
-<p>お手軽に <a href="https://github.com/jfhbrook/browserify-cdn" target="_blank" rel="external">browserify-cdn</a> もある。</p>
+<p>お手軽に <a href="https://github.com/jfhbrook/browserify-cdn" target="_blank" rel="noopener">browserify-cdn</a> もある。</p>
 <p>参考にしたページ</p>
 <ul>
-<li><a href="https://github.com/umdjs/umd" target="_blank" rel="external">https://github.com/umdjs/umd</a></li>
-<li><a href="http://blog.npmjs.org/post/112064849860/using-jquery-plugins-with-npm" target="_blank" rel="external">http://blog.npmjs.org/post/112064849860/using-jquery-plugins-with-npm</a></li>
+<li><a href="https://github.com/umdjs/umd" target="_blank" rel="noopener">https://github.com/umdjs/umd</a></li>
+<li><a href="http://blog.npmjs.org/post/112064849860/using-jquery-plugins-with-npm" target="_blank" rel="noopener">http://blog.npmjs.org/post/112064849860/using-jquery-plugins-with-npm</a></li>
 </ul>
 
     

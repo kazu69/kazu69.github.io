@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2011/02/28/i-put-the-node-js-on-ubuntu-with-no-knowledge-at-all-of/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="何ができるか詳しく知らないけど、node.jsっていうのが流行ってるらしいのでVMにUbuntuいれて、node.jsをインストールしてみた。あくまで、個人的な備忘録です。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="まったくの知識なしで、Ubuntuにnode.jsを入れてみた">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>何ができるか詳しく知らないけど、<a href="http://nodejs.org/" target="_blank" rel="external">node.js</a>っていうのが流行ってるらしいのでVMにUbuntuいれて、node.jsをインストールしてみた。あくまで、個人的な備忘録です。<br><a id="more"></a><br>まずはgitをインストールしたいので、Ubuntuの『アプリケーション』の『端末』を起動。<br>[code]</p>
+      <p>何ができるか詳しく知らないけど、<a href="http://nodejs.org/" target="_blank" rel="noopener">node.js</a>っていうのが流行ってるらしいのでVMにUbuntuいれて、node.jsをインストールしてみた。あくまで、個人的な備忘録です。<br><a id="more"></a><br>まずはgitをインストールしたいので、Ubuntuの『アプリケーション』の『端末』を起動。<br>[code]</p>
 <p>git –version</p>
 <p>[/code]</p>
 <p>でgitが入っていないことを確認。<br>インストールの方法がひょうじされるので、指示に従って、インストールします。<br>[code]</p>
@@ -137,7 +138,7 @@ ga('send', 'pageview');
 <p>[code]</p>
 <p>Checking for openssl                     : not found<br>Checking for function SSL_library_init   : not found</p>
 <p>[/code]</p>
-<p>とかの<a href="http://www.openssl.org/" target="_blank" rel="external">OpenSSL</a>のエラーがでた。<br>OpenSSLを入れる必要がありそう。<br>全然わからないので、しらべてみると、<br><a href="http://d.hatena.ne.jp/tricknotes/20100523/p1" target="_blank" rel="external">libssl-dev(0.98) をインストールするといいとかいう記事</a>があったので、</p>
+<p>とかの<a href="http://www.openssl.org/" target="_blank" rel="noopener">OpenSSL</a>のエラーがでた。<br>OpenSSLを入れる必要がありそう。<br>全然わからないので、しらべてみると、<br><a href="http://d.hatena.ne.jp/tricknotes/20100523/p1" target="_blank" rel="noopener">libssl-dev(0.98) をインストールするといいとかいう記事</a>があったので、</p>
 <p>[code]</p>
 <p>sudo apt-get install libssl-dev</p>
 <p>[/code]</p>
@@ -160,12 +161,12 @@ ga('send', 'pageview');
 <p>とりあえず入ったぽい。</p>
 <p>まったくの知識ゼロからでしたが、なんとか行けた気がする。</p>
 <p>ubuntuに関してもまったくの知識なしなので、作業中に、<br>root権限がないからごにょごにょというエラーが途中で何回か出たので調べたら、</p>
-<p><a href="https://forums.ubuntulinux.jp/viewtopic.php?pid=1330" target="_blank" rel="external">Ubuntu日本語フォーラム</a>にそれっぽいことが書いてあった。</p>
+<p><a href="https://forums.ubuntulinux.jp/viewtopic.php?pid=1330" target="_blank" rel="noopener">Ubuntu日本語フォーラム</a>にそれっぽいことが書いてあった。</p>
 <blockquote>
 <p>ubuntuでは原則としてrootでのログインはしないという形が取られています。<br>root権限が必要なコマンドを使うときは<br>$ sudo hogehoge<br>という方法を用います。</p>
 </blockquote>
 <p>ということらしい。またひとつ賢くなりました。<br>たぶん、インストールできたと思うので、まずは「Hellow World」からですね。</p>
-<p>それは、また今度<a href="http://nodejs.org/#introduction" target="_blank" rel="external">node.jsのintroduction</a>でもみながら。</p>
+<p>それは、また今度<a href="http://nodejs.org/#introduction" target="_blank" rel="noopener">node.jsのintroduction</a>でもみながら。</p>
 
     
   </div>

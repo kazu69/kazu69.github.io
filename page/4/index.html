@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/page/4/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="福岡でwebの仕事をしています">
+<meta property="og:locale" content="ja">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="69log">
 <meta name="twitter:description" content="福岡でwebの仕事をしています">
@@ -73,6 +74,47 @@ ga('send', 'pageview');
     <main role="main" id="main">
       <section>
   
+    <article id="post-rendering_reactjs_template_server_side_in_php_application" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/17/rendering_reactjs_template_server_side_in_php_application/">PHPアプリケーションでのReact.jsのサーバーレンダリング考える</a>
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2016-04-17T09:08:21.000Z" itemprop="datePublished">2016-04-17</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/tec/">tec</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>PHPでReact.jsなアプリケーションを導入する時に眺めてみた時のメモ。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-optimize_resources_using_resoucehint_and_preload" class="article article-type-post" itemscope itemprop="blogPost">
   <header class="article-header">
     
@@ -97,7 +139,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="https://www.w3.org/TR/resource-hints/" target="_blank" rel="external">Resource Hints</a>と<a href="https://www.w3.org/TR/preload/" target="_blank" rel="external">Preload</a>を使うことでリソースの取得を最適化できるようなので試してみた。</p>
+      <p><a href="https://www.w3.org/TR/resource-hints/" target="_blank" rel="noopener">Resource Hints</a>と<a href="https://www.w3.org/TR/preload/" target="_blank" rel="noopener">Preload</a>を使うことでリソースの取得を最適化できるようなので試してみた。</p>
       
     
   </div>
@@ -134,7 +176,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>しばらく<a href="https://facebook.github.io/react/" target="_blank" rel="external">React</a>周りの情報を追うのが疎かになっていた感があったので、<br>ReactアプリをES2015 classでリファクタリングして、ついでに<a href="http://redux.js.org/" target="_blank" rel="external">Redux</a>にのせてみた際に学んだことの個人的なまとめ。</p>
+      <p>しばらく<a href="https://facebook.github.io/react/" target="_blank" rel="noopener">React</a>周りの情報を追うのが疎かになっていた感があったので、<br>ReactアプリをES2015 classでリファクタリングして、ついでに<a href="http://redux.js.org/" target="_blank" rel="noopener">Redux</a>にのせてみた際に学んだことの個人的なまとめ。</p>
       
     
   </div>
@@ -253,8 +295,8 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/" target="_blank" rel="external">MariaDB</a>が以下のようなエラーを吐いていた。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Unsafe statement written to the binary log using statement format</div><div class="line">since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it</div><div class="line">invokes a trigger or a stored function that inserts into an</div><div class="line">AUTO_INCREMENT column. Inserted values cannot be logged correctly.</div></pre></td></tr></table></figure>
+      <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/" target="_blank" rel="noopener">MariaDB</a>が以下のようなエラーを吐いていた。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Unsafe statement written to the binary log using statement format</span><br><span class="line">since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it</span><br><span class="line">invokes a trigger or a stored function that inserts into an</span><br><span class="line">AUTO_INCREMENT column. Inserted values cannot be logged correctly.</span><br></pre></td></tr></table></figure>
 <p>バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。<br>STATEMENTだと安全でないということはどういうことか。少し試してみた。</p>
       
     
@@ -296,7 +338,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。<br>Docker 1.8 から<a href="http://docs.docker.com/engine/reference/logging/fluentd/" target="_blank" rel="external">Fluentdもlog driver</a>に追加されているので、これを使って簡単なサンプルを構築した。</p>
+      <p>なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。<br>Docker 1.8 から<a href="http://docs.docker.com/engine/reference/logging/fluentd/" target="_blank" rel="noopener">Fluentdもlog driver</a>に追加されているので、これを使って簡単なサンプルを構築した。</p>
       
     
   </div>
@@ -378,7 +420,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="https://github.com/tmm1/stackprof" target="_blank" rel="external">stackprof</a> を使えばrspecのプロファイリングが出来る戸言うことを知ったので、<br>早速テストでためしてみた。</p>
+      <p><a href="https://github.com/tmm1/stackprof" target="_blank" rel="noopener">stackprof</a> を使えばrspecのプロファイリングが出来る戸言うことを知ったので、<br>早速テストでためしてみた。</p>
       
     
   </div>
@@ -419,50 +461,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/" target="_blank" rel="external">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
+      <p>nginx上で動作するJavaScript仮想マシンである、<a href="https://www.nginx.com/blog/launching-nginscript-and-looking-ahead/" target="_blank" rel="noopener">nginScript</a> なるものがリリースされた。<br>(まだプレビュー版とのことだが)</p>
 <p>これはリクエスト処理の実行時に評価され、特定のリクエストに対してnginxの内部処理をを調整することが可能になる。っぽい。</p>
-<p><a href="https://www.nginx.com/resources/wiki/modules/lua/" target="_blank" rel="external">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-check-for-subresource-integrity" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/01/check-for-subresource-integrity/">Subresource Integrityについて調べた</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2015-10-01T13:34:16.000Z" itemprop="datePublished">2015-10-01</time>
-
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/web/">web</a>
-  </div>
-
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p><a href="http://githubengineering.com/subresource-integrity/" target="_blank" rel="external">Subresource Integrity</a> という記事をみて、<br>ちょっと興味深かったのでSubresource Integrityについて、軽く見てみた。</p>
+<p><a href="https://www.nginx.com/resources/wiki/modules/lua/" target="_blank" rel="noopener">Lua</a>や<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="noopener">ngx_mruby</a>と同じような感じで使えるのようだ。</p>
       
     
   </div>

@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Rubyのベンチマークを計測するのにbenchmark-ipsを使うと簡単だし、便利そうだったのでメモ。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rubyのベンチマークを計測するのにbenchmark-ipsが便利そうだった">
@@ -100,15 +101,15 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Rubyのベンチマークを計測するのに<a href="https://github.com/evanphx/benchmark-ips" target="_blank" rel="external">benchmark-ips</a>を使うと簡単だし、便利そうだったのでメモ。<br><a id="more"></a></p>
-<p>Rubyでベンチマークを取る場合、<a href="http://docs.ruby-lang.org/ja/2.1.0/class/Benchmark.html" target="_blank" rel="external">Benchmark</a>を使うことが多い。<br>この場合、実行回数を勘所で決めないといけなかったりする。</p>
+      <p>Rubyのベンチマークを計測するのに<a href="https://github.com/evanphx/benchmark-ips" target="_blank" rel="noopener">benchmark-ips</a>を使うと簡単だし、便利そうだったのでメモ。<br><a id="more"></a></p>
+<p>Rubyでベンチマークを取る場合、<a href="http://docs.ruby-lang.org/ja/2.1.0/class/Benchmark.html" target="_blank" rel="noopener">Benchmark</a>を使うことが多い。<br>この場合、実行回数を勘所で決めないといけなかったりする。</p>
 <p>benchmark-ipsを使うと、1秒あたりに何回実行できたのかを評価するので、実行回数は気にしなくていい。<br>あと、標準偏差も出してくれるあたりもいい感じ。</p>
 <script src="https://gist.github.com/kazu69/dc52ab38e243c98b93c6.js?file=sample.rb"></script>
 
 <script src="https://gist.github.com/kazu69/dc52ab38e243c98b93c6.js?file=result.sh"></script>
 
 <p>ちなみに、デフォルトではリハーサル2回、本番は5回実行。</p>
-<p>参考にしたページ: <a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/" target="_blank" rel="external">Unraveling String Key Performance in Ruby 2.2</a></p>
+<p>参考にしたページ: <a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/" target="_blank" rel="noopener">Unraveling String Key Performance in Ruby 2.2</a></p>
 
     
   </div>

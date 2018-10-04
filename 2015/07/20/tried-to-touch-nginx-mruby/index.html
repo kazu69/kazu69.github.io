@@ -12,6 +12,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="nginxの設定をrubyでダイナミックに設定できるnginx_mrubyを試してみた。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-08-17T04:38:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx_mrubyを試してみた">
@@ -97,17 +98,17 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>nginxの設定をrubyでダイナミックに設定できる<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">nginx_mruby</a>を試してみた。</p>
+      <p>nginxの設定をrubyでダイナミックに設定できる<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="noopener">nginx_mruby</a>を試してみた。</p>
 <a id="more"></a>
 <p>個人的にnginx_mrubyを使うことのメリットは、サーバーの設定をダウンタイムなしに変更できるという点と、<br>rubyを使ってアプリケーションコードを書くように、サーバーの設定扱うことができる(rack middlewareのように)という点と感じた。</p>
 <h2 id="nginx-mrubyのビルド"><a href="#nginx-mrubyのビルド" class="headerlink" title="nginx_mrubyのビルド"></a>nginx_mrubyのビルド</h2><p>今回はOSをDocker + ubuntuで試してみた。</p>
-<p><a href="https://github.com/matsumoto-r/ngx_mruby/wiki/Install" target="_blank" rel="external">wikiのinstall</a>を参考にした感じなのだが、以下のようになった。</p>
+<p><a href="https://github.com/matsumoto-r/ngx_mruby/wiki/Install" target="_blank" rel="noopener">wikiのinstall</a>を参考にした感じなのだが、以下のようになった。</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=Dockerfile"></script>
-<p>mrubyはビルドの設定をbuild_config.rbというファイルで行う。今回はbasic認証を行ってみようと思うので<br>mrubyのgemであるmgemに<a href="https://github.com/mattn/mruby-base64" target="_blank" rel="external">mruby-base64</a>を追加した。</p>
-<p>ちなみに、同じようにapacheのconfをmrubyで制御できる<a href="https://github.com/matsumoto-r/mod_mruby/" target="_blank" rel="external">mod_mruby</a>にはbasic認証のために<a href="https://github.com/matsumoto-r/mod_mruby/wiki/Directives#basic-auth" target="_blank" rel="external">mrubyAuthnCheckPasswordというDirectiveが存在していた</a>。</p>
+<p>mrubyはビルドの設定をbuild_config.rbというファイルで行う。今回はbasic認証を行ってみようと思うので<br>mrubyのgemであるmgemに<a href="https://github.com/mattn/mruby-base64" target="_blank" rel="noopener">mruby-base64</a>を追加した。</p>
+<p>ちなみに、同じようにapacheのconfをmrubyで制御できる<a href="https://github.com/matsumoto-r/mod_mruby/" target="_blank" rel="noopener">mod_mruby</a>にはbasic認証のために<a href="https://github.com/matsumoto-r/mod_mruby/wiki/Directives#basic-auth" target="_blank" rel="noopener">mrubyAuthnCheckPasswordというDirectiveが存在していた</a>。</p>
 <p>ということで、今回は以下のようにした。</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=build_config.rb"></script>
-<p><a href="https://github.com/matsumoto-r/ngx_mruby/wiki/Directives" target="_blank" rel="external">ngx_mrubyのwiki</a>にあるように、サーバーの各イベントでrubyファイルをhookできるdirectiveがかある。</p>
+<p><a href="https://github.com/matsumoto-r/ngx_mruby/wiki/Directives" target="_blank" rel="noopener">ngx_mrubyのwiki</a>にあるように、サーバーの各イベントでrubyファイルをhookできるdirectiveがかある。</p>
 <p>これをconfファイルで設定していく。<br>ファイルパスを渡すものとインラインでrubyのコードを書けるものが存在している。</p>
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=nginx.conf"></script>
 <p>実際に処理を行うのはrubyでかけるので、</p>
@@ -120,8 +121,8 @@ ga('send', 'pageview');
 <p>basic認証だとあまり良い例にはならなかったけど、例えば、特定のディレクトリへのアクセスなどを制御したい時に、<br>nginxのconfに正規表現などでいろいろと書くより、rubyでかける方が個人的には敷居が低く感じる。</p>
 <p>実際にインフラ周りの知識はあまりないけど、rubyでサーバーを柔軟に制御できるのは便利だと思った。</p>
 <p>あと、mrubyのデバッグについて良い方法が知りたい。</p>
-<p><a href="https://github.com/kazu69/ngx_mruby_playground" target="_blank" rel="external">今回作ったもの</a></p>
-<p>参考にしたページ<br><a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">nginx_mruby</a><br><a href="http://qiita.com/takeswim/items/bf88ea7bb76e11fdc71e" target="_blank" rel="external">ngx_mrubyを使って簡易ファイル共有システムを作る</a><br><a href="http://qiita.com/matsumotory/items/7121d6cce728125e5ce2" target="_blank" rel="external">mod_mrubyインストール後入門</a></p>
+<p><a href="https://github.com/kazu69/ngx_mruby_playground" target="_blank" rel="noopener">今回作ったもの</a></p>
+<p>参考にしたページ<br><a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="noopener">nginx_mruby</a><br><a href="http://qiita.com/takeswim/items/bf88ea7bb76e11fdc71e" target="_blank" rel="noopener">ngx_mrubyを使って簡易ファイル共有システムを作る</a><br><a href="http://qiita.com/matsumotory/items/7121d6cce728125e5ce2" target="_blank" rel="noopener">mod_mrubyインストール後入門</a></p>
 
     
   </div>

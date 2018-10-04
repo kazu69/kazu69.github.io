@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/05/03/middleman-applications-using-wercker-on-github-page-continued-to-deploy/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="&amp;lt;a href=http://middlemanapp.com/&amp;quot;&amp;gt;middlemanアプリケーションをgithubのmasterブランチにpushするだけでgithub pageを更新できるようにした。">
+<meta property="og:locale" content="ja">
 <meta property="og:image" content="http://cl.ly/image/271h0q1J2m0T/img.jpg">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
@@ -102,10 +103,10 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>&lt;a href=<a href="http://middlemanapp.com/&quot;&gt;middleman" target="_blank" rel="external">http://middlemanapp.com/&quot;&gt;middleman</a>アプリケーションをgithubのmasterブランチにpushするだけでgithub pageを更新できるようにした。</p>
+      <p>&lt;a href=<a href="http://middlemanapp.com/&quot;&gt;middleman" target="_blank" rel="noopener">http://middlemanapp.com/&quot;&gt;middleman</a>アプリケーションをgithubのmasterブランチにpushするだけでgithub pageを更新できるようにした。</p>
 <a id="more"></a>
 <p>middlemanは静的サイトジェネレーターで、ビルドすることで静的サイトを生成できる。<br>生成した静的ページをgithubのgh-pagesブランチにpushすることでwebページとして公開する。</p>
-<p>今回はmasterにプッシュしたあとのビルドからデプロイまでの過程を<a href="https://app.wercker.com/" target="_blank" rel="external">wercker</a>を使ってCIした。<br>同様のことは<a href="https://travis-ci.org/" target="_blank" rel="external">Travis CI</a>や<a href="https://drone.io/" target="_blank" rel="external">drone.io</a>などを使ってもできる。<br>werckerは<a href="https://bitbucket.org/" target="_blank" rel="external">Bitbacket</a>や<a href="https://github.com/" target="_blank" rel="external">github</a>のプライベートリポジトリでも利用できて、<br>サービスがβ版の間は無料(ただしビルドは25分以内でないといけない)ということで選択した。</p>
+<p>今回はmasterにプッシュしたあとのビルドからデプロイまでの過程を<a href="https://app.wercker.com/" target="_blank" rel="noopener">wercker</a>を使ってCIした。<br>同様のことは<a href="https://travis-ci.org/" target="_blank" rel="noopener">Travis CI</a>や<a href="https://drone.io/" target="_blank" rel="noopener">drone.io</a>などを使ってもできる。<br>werckerは<a href="https://bitbucket.org/" target="_blank" rel="noopener">Bitbacket</a>や<a href="https://github.com/" target="_blank" rel="noopener">github</a>のプライベートリポジトリでも利用できて、<br>サービスがβ版の間は無料(ただしビルドは25分以内でないといけない)ということで選択した。</p>
 <p>werckerアカウントを作成し、middlemanをgithubリポジトリを同期したら、<br>デプロイターゲットとしてgh_pageを登録していく。</p>
 <p>まず、githubのアカウント設定のapplicationからtokenを作成する。</p>
 <p>つづいて、werckerのmiddlemanアプリケーションのsetting内にある<br>「Deploy targets」で「Add deploy targe」で「Custom deploy」を選択する。</p>
@@ -117,7 +118,7 @@ ga('send', 'pageview');
 </ul>
 <p>これでmasterブランチにpushするとwercker.ymlの指定通りにビルドステップを実行し、<br>自動でデプロイステップも実行するようになる。</p>
 <p>続いて環境変数を設定する。</p>
-<p>Add new variableから<br>Environment variableにGH_REMOTE。テキストエリアに<br><a href="https://{GITHUB-TOKEN}@github.com/{GITHUB-ACCOUNT}/{リポジトリ名}" target="_blank" rel="external">https://{GITHUB-TOKEN}@github.com/{GITHUB-ACCOUNT}/{リポジトリ名}</a> を入力。</p>
+<p>Add new variableから<br>Environment variableにGH_REMOTE。テキストエリアに<br><a href="https://{GITHUB-TOKEN}@github.com/{GITHUB-ACCOUNT}/{リポジトリ名}" target="_blank" rel="noopener">https://{GITHUB-TOKEN}@github.com/{GITHUB-ACCOUNT}/{リポジトリ名}</a> を入力。</p>
 <p><img src="http://cl.ly/image/271h0q1J2m0T/img.jpg" alt=""></p>
 <p>これで、wercker側の設定は完了。</p>
 <p>あとはwercker.ymlにビルドステップとデプロイステップを記述する。</p>
@@ -128,7 +129,7 @@ ga('send', 'pageview');
 
 <p>特に指定してないとバージョンが低くできなかったため、bower installでエラーになってしまった。<br>middlemanのビルドだけであれば特にboxを指定しないでも大丈夫かも。</p>
 <p>Travis CIでの手順より若干簡単かな。</p>
-<p>参考ページ: <a href="http://blog.wercker.com/2013/07/25/Using-wercker-to-publish-to-GitHub-pages.html" target="_blank" rel="external">http://blog.wercker.com/2013/07/25/Using-wercker-to-publish-to-GitHub-pages.html</a><br>Github Repository: <a href="https://github.com/kazu69/middleman-blog" target="_blank" rel="external">kazu69/middleman-blog</a></p>
+<p>参考ページ: <a href="http://blog.wercker.com/2013/07/25/Using-wercker-to-publish-to-GitHub-pages.html" target="_blank" rel="noopener">http://blog.wercker.com/2013/07/25/Using-wercker-to-publish-to-GitHub-pages.html</a><br>Github Repository: <a href="https://github.com/kazu69/middleman-blog" target="_blank" rel="noopener">kazu69/middleman-blog</a></p>
 
     
   </div>

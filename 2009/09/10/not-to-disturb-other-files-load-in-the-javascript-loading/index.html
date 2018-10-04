@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2009/09/10/not-to-disturb-other-files-load-in-the-javascript-loading/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="javascriptのロード中は基本的にほかのファイルのロードが行われないのは、一般的なお話ですが(最新のブラウザはパラレルでロードできるからこの範疇ではない)、少しでもサイトの最適化を行うならばパラッルダウンロードはしておきたいところ。">
+<meta property="og:locale" content="ja">
 <meta property="og:image" content="http://blog.kazu69.net/images/090929.png">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
@@ -130,7 +131,7 @@ domscript.onreadystatechange = function() {
 document.getElementsByTagName(&apos;head&apos;)[0].appendChild(domscript);
 </code></pre><p>`<br>という感じで実行すると、</p>
 <p><img src="/images/090929.png" alt=""><br>という具合にjsとimgがパラレルでダウンロードされました。</p>
-<p><a href="http://stevesouders.com/efws/script-onload.php" target="_blank" rel="external"><br>stevesouders.com</a>より</p>
+<p><a href="http://stevesouders.com/efws/script-onload.php" target="_blank" rel="noopener"><br>stevesouders.com</a>より</p>
 
     
   </div>

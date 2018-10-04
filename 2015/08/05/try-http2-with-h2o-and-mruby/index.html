@@ -12,6 +12,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/08/05/try-http2-with-h2o-and-mruby/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="HTTP/2 serverであるh2oで初めてのサーバプッシュを試してみた。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-08-06T11:25:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTTP&#x2F;2サーバーh2oでサーバプッシュを試してみた">
@@ -97,12 +98,12 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>HTTP/2 serverである<a href="https://github.com/h2o/h2o" target="_blank" rel="external">h2o</a>で初めてのサーバプッシュを試してみた。</p>
+      <p>HTTP/2 serverである<a href="https://github.com/h2o/h2o" target="_blank" rel="noopener">h2o</a>で初めてのサーバプッシュを試してみた。</p>
 <a id="more"></a>
-<p>今回は<a href="https://github.com/matsumoto-r/h2o_mruby" target="_blank" rel="external">h2o_mruby</a>も触ってみたかったということで、h2oをmrubyとともにビルドして少し触ってみた。</p>
-<p><a href="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/">前回</a>試してみた<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="external">nginx_mruby</a>と同じくh2o_mrunyもサーバーをrubyで動的に制御することができる。</p>
+<p>今回は<a href="https://github.com/matsumoto-r/h2o_mruby" target="_blank" rel="noopener">h2o_mruby</a>も触ってみたかったということで、h2oをmrubyとともにビルドして少し触ってみた。</p>
+<p><a href="http://blog.kazu69.net/2015/07/20/tried-to-touch-nginx-mruby/">前回</a>試してみた<a href="https://github.com/matsumoto-r/ngx_mruby" target="_blank" rel="noopener">nginx_mruby</a>と同じくh2o_mrunyもサーバーをrubyで動的に制御することができる。</p>
 <h2 id="サーバプッシュとは"><a href="#サーバプッシュとは" class="headerlink" title="サーバプッシュとは"></a>サーバプッシュとは</h2><p>HTTP/1の場合、サーバーはクライアントからのリクエストに応じて、レスポンスを返すものでした。<br>しかし、HTTP/2の場合はクライアントからのリクエストがなくても、サーバーからレスポンスを返すことができる。</p>
-<p>今回は<a href="https://w3c.github.io/resource-hints/" target="_blank" rel="external">resouce hints</a>にあるように、リクエストヘッダーに<code>link:&lt;style.css&gt;; rel=preload; as=stylesheet</code> のようなLinkヘッダーを追加してレスポンスを返すようにした。</p>
+<p>今回は<a href="https://w3c.github.io/resource-hints/" target="_blank" rel="noopener">resouce hints</a>にあるように、リクエストヘッダーに<code>link:&lt;style.css&gt;; rel=preload; as=stylesheet</code> のようなLinkヘッダーを追加してレスポンスを返すようにした。</p>
 <p>こうすることで、h2oサーバーは予めクライアントが次に何をリクエストするのか把握できる。<br>そして、クライアントがリクエストする前に、このファイルを返してくれる。</p>
 <p>これにより、クライアントは次のリクエストからそのレスポンスまでの待ち時間(レイテンシ)を短縮できる。<br>そのため、これまでよりもブラウザは早く描画を行うことができるということになるっぽい。</p>
 <h2 id="構成"><a href="#構成" class="headerlink" title="構成"></a>構成</h2><p>今回は、フロントにh2oを立たせて、リクエストをnginxにproxyする。<br>そして、nginx側でheaderにLinkヘッダーを追加してレスポンスを返す。</p>
@@ -120,11 +121,11 @@ ga('send', 'pageview');
 <script src="//gist.github.com/kazu69/1a1922409dd3514f6f6c.js?file=nginx.conf"></script>
 <p>modify_header.rb でレスポンスヘッダーにLinkヘッダーを追加する。</p>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=modify_header.rb"></script>
-<h2 id="ブラウザでアクセスできるようにPortFoward"><a href="#ブラウザでアクセスできるようにPortFoward" class="headerlink" title="ブラウザでアクセスできるようにPortFoward"></a>ブラウザでアクセスできるようにPortFoward</h2><p><a href="http://boot2docker.io/" target="_blank" rel="external">boot2docker</a>をつかっているので、ブラウザでDcokerコンテナにアクセスできるようにPortFowardしておく。</p>
+<h2 id="ブラウザでアクセスできるようにPortFoward"><a href="#ブラウザでアクセスできるようにPortFoward" class="headerlink" title="ブラウザでアクセスできるようにPortFoward"></a>ブラウザでアクセスできるようにPortFoward</h2><p><a href="http://boot2docker.io/" target="_blank" rel="noopener">boot2docker</a>をつかっているので、ブラウザでDcokerコンテナにアクセスできるようにPortFowardしておく。</p>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=portfoward.sh"></script>
 <h2 id="Docker-run"><a href="#Docker-run" class="headerlink" title="Docker run"></a>Docker run</h2><p>準備できたのでnginx、 h2oのコンテナを立ち上げていく。</p>
 <script src="//gist.github.com/kazu69/fb321bd71b19878bd99d.js?file=docker_run.sh"></script>
-<p>nginxのipを泥臭く取ってきてから、h2oをビルドしてしまったが、<br>本当は <a href="http://blog.matsumoto-r.jp/?p=4326" target="_blank" rel="external">Dockerとmrubyで迅速かつ容易にnginxとapacheの柔軟なリバースプロキシ構成を構築する</a> にあるようにmrubyで動的変更できるように、環境変数を使って対応する予定でした。<br>しかし、h2o_mrubyを把握できてないのでうまくいかずに、今回は一旦保留とした。</p>
+<p>nginxのipを泥臭く取ってきてから、h2oをビルドしてしまったが、<br>本当は <a href="http://blog.matsumoto-r.jp/?p=4326" target="_blank" rel="noopener">Dockerとmrubyで迅速かつ容易にnginxとapacheの柔軟なリバースプロキシ構成を構築する</a> にあるようにmrubyで動的変更できるように、環境変数を使って対応する予定でした。<br>しかし、h2o_mrubyを把握できてないのでうまくいかずに、今回は一旦保留とした。</p>
 <p>とりあえず、これでブラウでアクセスしてみると分かりそう。</p>
 <h2 id="ブラウザ-Chrome-でアクセス"><a href="#ブラウザ-Chrome-でアクセス" class="headerlink" title="ブラウザ(Chrome)でアクセス"></a>ブラウザ(Chrome)でアクセス</h2><p>あらかじめ <strong>chrome://net-internals/#events</strong> を開いておき、ブラウザでh2oサーバーにアクセス。</p>
 <p>すると、htmlへのリクエストはh2oでproxyされて、nginxのhtmlが帰ってくる。</p>
@@ -136,7 +137,7 @@ ga('send', 'pageview');
 <p>確かに、<code>HTTP2_SESSION_RECV_PUSH_PROMISE</code> とあり、サーバー側でpushしているのが確認できました。</p>
 <p>今回はh2o_mrubyまで詳しく把握できなくて、ipを動的に変更できなかったが、おそらく切り替ることはできるだと思う。</p>
 <p>また折を見て、h2o+mrubyを個人サービスのフロントに立たせてみることにチャレンジしてみようかな。</p>
-<p>参考にしたページ<br><a href="http://techblog.yahoo.co.jp/infrastructure/http2/introduction_to_http2/" target="_blank" rel="external">HTTP/2 入門</a><br><a href="http://labs.gree.jp/blog/2014/12/11987/" target="_blank" rel="external">初めてのHTTP/2サーバプッシュ</a><br><a href="http://jxck.hatenablog.com/entry/http2-server-side-architecture" target="_blank" rel="external">HTTP2 時代のサーバサイドアーキテクチャ考察</a></p>
+<p>参考にしたページ<br><a href="http://techblog.yahoo.co.jp/infrastructure/http2/introduction_to_http2/" target="_blank" rel="noopener">HTTP/2 入門</a><br><a href="http://labs.gree.jp/blog/2014/12/11987/" target="_blank" rel="noopener">初めてのHTTP/2サーバプッシュ</a><br><a href="http://jxck.hatenablog.com/entry/http2-server-side-architecture" target="_blank" rel="noopener">HTTP2 時代のサーバサイドアーキテクチャ考察</a></p>
 
     
   </div>

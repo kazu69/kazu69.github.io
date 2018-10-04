@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2013/11/11/tried-a-cross-browser-synchronization-browser-sync/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="フロントエンド開発時にファイルの変更と同時にブラウザをリロードするlivereloadは便利ですが、Browser ExtensionsにIEがサポートされてなかったりするので残念。 そこでbrowser-syncを使って、livereloadと同じようにブラウザ同期を行えるっぽいので試した。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="browser-syncを使ったクロスブラウザ同期を試してみた">
@@ -100,8 +101,8 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>フロントエンド開発時にファイルの変更と同時にブラウザをリロードする<a href="http://livereload.com/" target="_blank" rel="external">livereload</a>は便利ですが、<a href="https://github.com/livereload/livereload-extensions" target="_blank" rel="external">Browser Extensions</a>にIEがサポートされてなかったりするので残念。</p>
-<p>そこで<a href="https://github.com/shakyShane/browser-sync" target="_blank" rel="external">browser-sync</a>を使って、livereloadと同じようにブラウザ同期を行えるっぽいので試した。<br><a id="more"></a></p>
+      <p>フロントエンド開発時にファイルの変更と同時にブラウザをリロードする<a href="http://livereload.com/" target="_blank" rel="noopener">livereload</a>は便利ですが、<a href="https://github.com/livereload/livereload-extensions" target="_blank" rel="noopener">Browser Extensions</a>にIEがサポートされてなかったりするので残念。</p>
+<p>そこで<a href="https://github.com/shakyShane/browser-sync" target="_blank" rel="noopener">browser-sync</a>を使って、livereloadと同じようにブラウザ同期を行えるっぽいので試した。<br><a id="more"></a></p>
 <p>browser-syncは</p>
 <ul>
 <li>スクロールをブラウザ間で同期</li>
@@ -112,14 +113,14 @@ ga('send', 'pageview');
 <li>ビルドインウェブサーバーを使用することで静的ファイルにも対応できる<br>という特徴があります。</li>
 </ul>
 <p>がある。<br>ファイルの変更はsocket.ioを使用してブラウザに通知され、IEでも問題なく利用できた。(VM環境のIE)</p>
-<p>gruntを利用している場合、 <a href="https://github.com/shakyshane/grunt-browser-sync" target="_blank" rel="external">grunt-browser-sync</a>を利用することで既存の環境に導入することも容易だった。</p>
+<p>gruntを利用している場合、 <a href="https://github.com/shakyshane/grunt-browser-sync" target="_blank" rel="noopener">grunt-browser-sync</a>を利用することで既存の環境に導入することも容易だった。</p>
 <h2 id="インストール"><a href="#インストール" class="headerlink" title="インストール"></a>インストール</h2><p>[shell]</p>
 <h1 id="install"><a href="#install" class="headerlink" title="install"></a>install</h1><p>$ npm install grunt-browser-sync –save-dev<br>[/shell]</p>
 <p>[javascript]<br>// add Gruntfile.js<br>grunt.loadNpmTasks(‘grunt-browser-sync’)<br>[/javascript]</p>
 <h2 id="設定"><a href="#設定" class="headerlink" title="設定"></a>設定</h2><p>最小の設定でlivereloadできる。<br>Gruntfileにタスクを追加<br>[ruby]<br>browser_sync:<br>  files:<br>    src: [<br>      ‘app/css/*.css’<br>    ]<br>[/ruby]</p>
 <p>[shell]<br>browser-sync  grunt browser_sync<br>Running &quot;browser_sync:files&quot; (browser_sync) task<br>   info  - socket.io started</p>
 <p>All Set Up! Now copy &amp; paste this snippet just before the closing &lt;/body&gt; tag in your website.</p>
-<p>&lt;script src=’<a href="http://192.168.0.5:3000/socket.io/socket.io.js&#39;&gt;&lt;/script&amp;gt" target="_blank" rel="external">http://192.168.0.5:3000/socket.io/socket.io.js&#39;&gt;&lt;/script&amp;gt</a>;<br>&lt;script src=’<a href="http://192.168.0.5:3001/browser-sync-client.min.js&#39;&gt;&lt;/script&amp;gt" target="_blank" rel="external">http://192.168.0.5:3001/browser-sync-client.min.js&#39;&gt;&lt;/script&amp;gt</a>;</p>
+<p>&lt;script src=’<a href="http://192.168.0.5:3000/socket.io/socket.io.js&#39;&gt;&lt;/script&amp;gt" target="_blank" rel="noopener">http://192.168.0.5:3000/socket.io/socket.io.js&#39;&gt;&lt;/script&amp;gt</a>;<br>&lt;script src=’<a href="http://192.168.0.5:3001/browser-sync-client.min.js&#39;&gt;&lt;/script&amp;gt" target="_blank" rel="noopener">http://192.168.0.5:3001/browser-sync-client.min.js&#39;&gt;&lt;/script&amp;gt</a>;</p>
 <p>Watching 3 files<br>Browser Connected! (Chrome, version: 30.0.1599.101)<br>[/shell]</p>
 <p>指定されたscriptタグを追加することで同期可能になる。<br>hostはbrowser-syncがネットワーク上の利用可能なものを適当に使用する感じっぽい。<br>もちろんhostを指定することも可能で<br>[ruby]<br>browser_sync:<br>  files:<br>    src: [<br>      ‘app/css/*.css’<br>    ]<br>　　options:<br>     host : ‘192.168.0.1’<br>[/ruby]</p>
 <p>また、grunt-watchを利用する場合は</p>
@@ -127,11 +128,11 @@ ga('send', 'pageview');
 <p>serverオプションではアプリケーションのディレクトリ、indexファイルなど設定でき<br>[ruby]<br>browser_sync:<br>  files:<br>    src: [<br>      ‘app/css/*.css’<br>    ]<br>　　options:<br>     server:<br>       baseDir: ‘app<br>       index: ‘index.html’<br>[/ruby]</p>
 <p>となる。この場合はscriptタグを追加する必要はなく、自動的に同期される。</p>
 <p>[shell]<br>$ grunt browser_sync<br>Running &quot;browser_sync:files&quot; (browser_sync) task<br>   info  - socket.io started</p>
-<p>OK, Server running at <a href="http://192.168.0.5:3001" target="_blank" rel="external">http://192.168.0.5:3001</a></p>
+<p>OK, Server running at <a href="http://192.168.0.5:3001" target="_blank" rel="noopener">http://192.168.0.5:3001</a></p>
 <p>Serving files from: /YOUR/FILE/PATH</p>
 <p>Go load a browser &amp; check back here. If you set up everthing correctly, you’ll see a ‘Browser Connected’ message.</p>
 <p>Watching 3 files<br>Browser Connected! (Chrome, version: 30.0.1599.101)<br>[/shell]</p>
-<p>実行後にデフォルトブラウザが起動。<br>ほかのブラウザやエミュレーターで<a href="http://192.168.0.5:3001/を開くことで同期を行うことができる。" target="_blank" rel="external">http://192.168.0.5:3001/を開くことで同期を行うことができる。</a></p>
+<p>実行後にデフォルトブラウザが起動。<br>ほかのブラウザやエミュレーターで<a href="http://192.168.0.5:3001/を開くことで同期を行うことができる。" target="_blank" rel="noopener">http://192.168.0.5:3001/を開くことで同期を行うことができる。</a></p>
 <p>またghostModeオプションがあり、</p>
 <ul>
 <li>Scrollをブラウザで同期</li>

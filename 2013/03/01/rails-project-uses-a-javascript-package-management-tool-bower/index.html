@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2013/03/01/rails-project-uses-a-javascript-package-management-tool-bower/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="railsのプロジェクトでjavascriptのパッケージ管理をやってみようと思いまして、調べてみた。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="railsプロジェクトでjavascriptのパッケージ管理ツールBowerを使う">
@@ -102,13 +103,13 @@ ga('send', 'pageview');
     
       <p>railsのプロジェクトでjavascriptのパッケージ管理をやってみようと思いまして、調べてみた。<br><a id="more"></a><br>javascriptのパッケージ管理ツールは</p>
 <ul>
-<li><a href="http://twitter.github.com/bower/" target="_blank" rel="external">bower</a></li>
-<li><a href="http://component.io/" target="_blank" rel="external">component</a></li>
-<li><a href="http://jamjs.org/" target="_blank" rel="external">jam</a></li>
-<li><a href="http://volojs.org/" target="_blank" rel="external">volo</a><br>という感じで、いくつかあります。今回はTwitter社が開発している<a href="http://twitter.github.com/bower/" target="_blank" rel="external">Bower</a>を利用しようと思います。</li>
+<li><a href="http://twitter.github.com/bower/" target="_blank" rel="noopener">bower</a></li>
+<li><a href="http://component.io/" target="_blank" rel="noopener">component</a></li>
+<li><a href="http://jamjs.org/" target="_blank" rel="noopener">jam</a></li>
+<li><a href="http://volojs.org/" target="_blank" rel="noopener">volo</a><br>という感じで、いくつかあります。今回はTwitter社が開発している<a href="http://twitter.github.com/bower/" target="_blank" rel="noopener">Bower</a>を利用しようと思います。</li>
 </ul>
 <h2 id="Bowerについて"><a href="#Bowerについて" class="headerlink" title="Bowerについて"></a>Bowerについて</h2><p>BowerはJavascriptのほか、CSSや画像などassetsファイルのパッケージ管理ツールです。</p>
-<p>Bowerはほかのツールと異なり、buildやscaffoldingなどの機能はありません。<br>自作したcomponentsを<a href="http://sindresorhus.com/bower-components/" target="_blank" rel="external">Bower components</a>に登録できます。<br>あと、Bower componentsのみならずgithubやnpm、プライベートなrepositoryからもパッケージを取得できます。</p>
+<p>Bowerはほかのツールと異なり、buildやscaffoldingなどの機能はありません。<br>自作したcomponentsを<a href="http://sindresorhus.com/bower-components/" target="_blank" rel="noopener">Bower components</a>に登録できます。<br>あと、Bower componentsのみならずgithubやnpm、プライベートなrepositoryからもパッケージを取得できます。</p>
 <h2 id="Bowerを触ってみる"><a href="#Bowerを触ってみる" class="headerlink" title="Bowerを触ってみる"></a>Bowerを触ってみる</h2><p>インストール(nodeとnpmはすでにインストール済み)<br>[shell]</p>
 <h1 id="とりあえずグローバルインストールしとく"><a href="#とりあえずグローバルインストールしとく" class="headerlink" title="とりあえずグローバルインストールしとく"></a>とりあえずグローバルインストールしとく</h1><p>npm install bower -g<br>[/shell]</p>
 <p>initialize<br>[shell]<br>$ bower init<br>name: [blog]<br>version: [0.0.0]<br>main file: []<br>add commonly ignored files to ignore list? (y/n): [y] y<br>[/shell]</p>
@@ -175,21 +176,21 @@ ga('send', 'pageview');
 <h1 id="登録したプロジェクトを別のプロジェクトで利用"><a href="#登録したプロジェクトを別のプロジェクトで利用" class="headerlink" title="登録したプロジェクトを別のプロジェクトで利用"></a>登録したプロジェクトを別のプロジェクトで利用</h1><p>$ bower link project<br>bower link /Users/other_project &gt; /Users/hoge/.bower/links/project<br>[/shell]</p>
 <p>リンクは現在のプロジェクトを/Users/hoge/.bower (~/.bower)にキャッシュして、ほかのプロジェクトでも利用できるする機能っぽい。<br>自身で開発しているパッケージのテストするときに活用できる。</p>
 <p>また、各プロジェクトのディレクトリに.bowerrcを置くことで設定が個別に設定ができる。</p>
-<p>[javascript]<br>{<br>  &quot;directory&quot; : &quot;path/to/install/dir&quot;,<br>  &quot;json&quot;      : &quot;component.json&quot;,<br>  &quot;endpoint&quot;  : &quot;<a href="https://bower.herokuapp.com&amp;quot" target="_blank" rel="external">https://bower.herokuapp.com&amp;quot</a>;<br>}<br>[/javascript]</p>
+<p>[javascript]<br>{<br>  &quot;directory&quot; : &quot;path/to/install/dir&quot;,<br>  &quot;json&quot;      : &quot;component.json&quot;,<br>  &quot;endpoint&quot;  : &quot;<a href="https://bower.herokuapp.com&amp;quot" target="_blank" rel="noopener">https://bower.herokuapp.com&amp;quot</a>;<br>}<br>[/javascript]</p>
 <p>という感じで使えそう。</p>
 <h2 id="Railsプロジェクに追加"><a href="#Railsプロジェクに追加" class="headerlink" title="Railsプロジェクに追加"></a>Railsプロジェクに追加</h2><p>Railsプロジェクトで使用してみる。</p>
 <p>Rials.rootに.bwoerrcを追加<br>[shell]<br>$ touch .bwoerrc<br>[/shell]</p>
-<p>.bwoerrcを編集<br>[javascript]<br>{<br>  &quot;directory&quot; : &quot;vendor/assets/components&quot;,<br>  &quot;json&quot;      : &quot;component.json&quot;,<br>  &quot;endpoint&quot;  : &quot;<a href="https://bower.herokuapp.com&amp;quot" target="_blank" rel="external">https://bower.herokuapp.com&amp;quot</a>;<br>}<br>[/javascript]</p>
+<p>.bwoerrcを編集<br>[javascript]<br>{<br>  &quot;directory&quot; : &quot;vendor/assets/components&quot;,<br>  &quot;json&quot;      : &quot;component.json&quot;,<br>  &quot;endpoint&quot;  : &quot;<a href="https://bower.herokuapp.com&amp;quot" target="_blank" rel="noopener">https://bower.herokuapp.com&amp;quot</a>;<br>}<br>[/javascript]</p>
 <p>component.jsonの生成<br>[shell]<br>$ bower init</p>
 <h1 id="あとはウィザードに従って。"><a href="#あとはウィザードに従って。" class="headerlink" title="あとはウィザードに従って。"></a>あとはウィザードに従って。</h1><p>[/shell]</p>
-<p>component.jsonにパッケージを追加<br>[javascript]<br>{<br>  &quot;name&quot;: &quot;myapp&quot;,<br>  &quot;version&quot;: &quot;0.0.1&quot;,<br>  &quot;ignore&quot;: [<br>    &quot;<em>*/.</em>&quot;,<br>    &quot;node_modules&quot;,<br>    &quot;components&quot;<br>  ],<br>  &quot;dependencies&quot;: {<br>    &quot;jquery&quot;: &quot;<a href="http://code.jquery.com/jquery-1.8.1.js&amp;quot" target="_blank" rel="external">http://code.jquery.com/jquery-1.8.1.js&amp;quot</a>;,<br>    &quot;string.js&quot;: &quot;<a href="https://github.com/jprichardson/string.js.git&amp;quot" target="_blank" rel="external">https://github.com/jprichardson/string.js.git&amp;quot</a>;<br>  }<br>}<br>[/javascript]</p>
+<p>component.jsonにパッケージを追加<br>[javascript]<br>{<br>  &quot;name&quot;: &quot;myapp&quot;,<br>  &quot;version&quot;: &quot;0.0.1&quot;,<br>  &quot;ignore&quot;: [<br>    &quot;<em>*/.</em>&quot;,<br>    &quot;node_modules&quot;,<br>    &quot;components&quot;<br>  ],<br>  &quot;dependencies&quot;: {<br>    &quot;jquery&quot;: &quot;<a href="http://code.jquery.com/jquery-1.8.1.js&amp;quot" target="_blank" rel="noopener">http://code.jquery.com/jquery-1.8.1.js&amp;quot</a>;,<br>    &quot;string.js&quot;: &quot;<a href="https://github.com/jprichardson/string.js.git&amp;quot" target="_blank" rel="noopener">https://github.com/jprichardson/string.js.git&amp;quot</a>;<br>  }<br>}<br>[/javascript]</p>
 <p>パッケージのインストール<br>[shell]<br>$ bower install<br>[/shell]</p>
 <p>Bowerのインストールディレクトリ(vendor/assets/components)をAssetsパスに通す<br>[ruby]</p>
 <h1 id="application-rb"><a href="#application-rb" class="headerlink" title="application.rb"></a>application.rb</h1><p>config.assets.paths &lt;&lt; Rails.root.join(‘vendor’, ‘assets’, ‘components’)<br>[/ruby]</p>
 <p>あとはapplication.jsにパッケージを追加<br>[javascript]<br>//= require jquery/jquery-min<br>//= require string.js/lib/string.min.js<br>[/javascript]</p>
-<p>という感じで良さそう。<br>後で気がついたけど、gemで<a href="https://github.com/rharriso/bower-rails/" target="_blank" rel="external">bower-rails</a>とかもありますね。</p>
-<p>Bowerはあくまでパッケージ管理ツールなので、ほかのタスク実行ツール<a href="http://gruntjs.com/" target="_blank" rel="external">grunt</a>とかと使っていくといい気がする。<br>Bowerとgruntだと<a href="http://yeoman.io/" target="_blank" rel="external">Yeoman</a>でよかったのかな。</p>
-<p>参考にしたサイト<br><a href="https://github.com/wilmoore/frontend-packagers" target="_blank" rel="external">frontend-packagers</a></p>
+<p>という感じで良さそう。<br>後で気がついたけど、gemで<a href="https://github.com/rharriso/bower-rails/" target="_blank" rel="noopener">bower-rails</a>とかもありますね。</p>
+<p>Bowerはあくまでパッケージ管理ツールなので、ほかのタスク実行ツール<a href="http://gruntjs.com/" target="_blank" rel="noopener">grunt</a>とかと使っていくといい気がする。<br>Bowerとgruntだと<a href="http://yeoman.io/" target="_blank" rel="noopener">Yeoman</a>でよかったのかな。</p>
+<p>参考にしたサイト<br><a href="https://github.com/wilmoore/frontend-packagers" target="_blank" rel="noopener">frontend-packagers</a></p>
 
     
   </div>

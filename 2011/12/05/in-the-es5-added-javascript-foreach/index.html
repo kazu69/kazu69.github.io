@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2011/12/05/in-the-es5-added-javascript-foreach/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="ECMA-262の第5版(ES5)のまとめ記事見てたらArrayオブジェクトにforEachが追加されてた。ということで、個人的なメモ。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ES5で追加されたJavaScriptのforEach">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://www.ibm.com/developerworks/jp/web/library/wa-ecma262/?cmp=dw&amp;cpb=dwwdv&amp;ct=dwrss&amp;cr=dwrss&amp;ccy=jp&amp;csr=052011" target="_blank" rel="external">ECMA-262の第5版(ES5)のまとめ記事</a>見てたらArrayオブジェクトにforEachが追加されてた。<br>ということで、個人的なメモ。<br><a id="more"></a><br><code>array.forEach(callback[, thisObject]);</code><br>配列の各要素にたいしてcallback関数を実行できます。<br>thisObjectは、callbackを実行時にthisとして使用するオブジェクト。</p>
+      <p><a href="http://www.ibm.com/developerworks/jp/web/library/wa-ecma262/?cmp=dw&amp;cpb=dwwdv&amp;ct=dwrss&amp;cr=dwrss&amp;ccy=jp&amp;csr=052011" target="_blank" rel="noopener">ECMA-262の第5版(ES5)のまとめ記事</a>見てたらArrayオブジェクトにforEachが追加されてた。<br>ということで、個人的なメモ。<br><a id="more"></a><br><code>array.forEach(callback[, thisObject]);</code><br>配列の各要素にたいしてcallback関数を実行できます。<br>thisObjectは、callbackを実行時にthisとして使用するオブジェクト。</p>
 <p>さらにECMA-262に対応してないブラウザにはprototypeで拡張してやればネイティブのメソッドとして使える。<br>`<br>if (!Array.prototype.forEach)<br>{<br>  Array.prototype.forEach = function(fun /<em>, thisp</em>/)<br>  {<br>    var len = this.length;<br>    if (typeof fun != “function”)<br>      throw new TypeError();</p>
 <pre><code>var thisp = arguments[1];
 for (var i = 0; i &lt; len; i++)
@@ -112,7 +113,7 @@ for (var i = 0; i &lt; len; i++)
 <p>ということで、サンプル</p>
 <iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/jjANQ/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-<p><a href="https://developer.mozilla.org/ja/JavaScript/Reference/Global_Objects/Array/forEach" target="_blank" rel="external">Mozilla Developer Network forEach</a></p>
+<p><a href="https://developer.mozilla.org/ja/JavaScript/Reference/Global_Objects/Array/forEach" target="_blank" rel="noopener">Mozilla Developer Network forEach</a></p>
 
     
   </div>

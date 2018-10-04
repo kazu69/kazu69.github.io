@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/03/15/to-build-external-modules-in-browserify/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="node.jsで書かれたjavascriptをクライアントサイドでも実行できるようにしてくれるBrowserifyが便利で、grunt-browserify使ってるけど外部モジュールの取り扱いに関していまいち理解できてなかった。なので、改めて簡単にまとめたメモ。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Browserifyで外部モジュールをbuildする">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>node.jsで書かれたjavascriptをクライアントサイドでも実行できるようにしてくれる<a href="http://browserify.org/" target="_blank" rel="external">Browserify</a>が便利で、<br><a href="https://github.com/jmreidy/grunt-browserify" target="_blank" rel="external">grunt-browserify</a>使ってるけど外部モジュールの取り扱いに関していまいち理解できてなかった。<br>なので、改めて簡単にまとめたメモ。<br><a id="more"></a><br>次のような構成</p>
+      <p>node.jsで書かれたjavascriptをクライアントサイドでも実行できるようにしてくれる<a href="http://browserify.org/" target="_blank" rel="noopener">Browserify</a>が便利で、<br><a href="https://github.com/jmreidy/grunt-browserify" target="_blank" rel="noopener">grunt-browserify</a>使ってるけど外部モジュールの取り扱いに関していまいち理解できてなかった。<br>なので、改めて簡単にまとめたメモ。<br><a id="more"></a><br>次のような構成</p>
 <script src="http://gist-it.appspot.com/github/kazu69/browserify-external-bundle-example/blob/master/README.md?slice=23:39"></script>
 
 <p>srcにあるjsファイル群をbuildに吐き出す。外部モジュールとし、node-modulesにあるjQueryをsrcにあるjsファイル群でrequireしてみる。</p>
@@ -112,7 +113,7 @@ ga('send', 'pageview');
 <script src="http://gist-it.appspot.com/github/kazu69/browserify-external-bundle-example/blob/master/src/main.js?slice=0"></script>
 
 <p>としてrequireできるようになる。</p>
-<p>ここでは<a href="https://github.com/substack/brfs" target="_blank" rel="external">brfs</a>を使って、htmlファイルもrequireして、出力できるようにしているので、</p>
+<p>ここでは<a href="https://github.com/substack/brfs" target="_blank" rel="noopener">brfs</a>を使って、htmlファイルもrequireして、出力できるようにしているので、</p>
 <script src="http://gist-it.appspot.com/github/kazu69/browserify-external-bundle-example/blob/master/src/main.js"></script>
 となっている。
 
@@ -132,7 +133,7 @@ javascriptファイルは
 
 <p>という感じで外部のモジュールを利用できる。</p>
 <p>ファイルのbuildを分割して管理し、そこで外部モジュールへの依存関係も解決できるので非常に便利だった。</p>
-<p>repository: <a href="https://github.com/kazu69/browserify-external-bundle-example" target="_blank" rel="external">kazu69 / browserify-external-bundle-example</a><br>参考にしたページ: <a href="http://aeflash.com/2014-03/a-year-with-browserify.html" target="_blank" rel="external">http://aeflash.com/2014-03/a-year-with-browserify.html</a></p>
+<p>repository: <a href="https://github.com/kazu69/browserify-external-bundle-example" target="_blank" rel="noopener">kazu69 / browserify-external-bundle-example</a><br>参考にしたページ: <a href="http://aeflash.com/2014-03/a-year-with-browserify.html" target="_blank" rel="noopener">http://aeflash.com/2014-03/a-year-with-browserify.html</a></p>
 
     
   </div>

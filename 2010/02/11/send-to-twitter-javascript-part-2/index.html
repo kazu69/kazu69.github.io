@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2010/02/11/send-to-twitter-javascript-part-2/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="忘れないために。何かで作ったんだけど、ソースがなくなった気がしたのでここに書いておく。 twitterでつぶやくボタンとかに指定したURLをbit.lyで短縮してつぶやくやつ。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Twitterに送る Javascript その2">
@@ -101,7 +102,7 @@ ga('send', 'pageview');
     </div>
     
       <p>忘れないために。<br>何かで作ったんだけど、ソースがなくなった気がしたのでここに書いておく。</p>
-<p>twitterでつぶやくボタンとかに指定したURLを<a href="http://bit.ly/" target="_blank" rel="external">bit.ly</a>で短縮してつぶやくやつ。<br><a id="more"></a><br>まじめに<a href="http://bit.ly/" target="_blank" rel="external">bit.ly</a>に登録して、APIキーを取得。<br>それを使ってjsで実装。<br>Javascriptは<a href="http://kazu69.net/blog/sample/tweet/tweet.js.txt" target="_blank" rel="external">http://kazu69.net/blog/sample/tweet/tweet.js.txt</a>。</p>
+<p>twitterでつぶやくボタンとかに指定したURLを<a href="http://bit.ly/" target="_blank" rel="noopener">bit.ly</a>で短縮してつぶやくやつ。<br><a id="more"></a><br>まじめに<a href="http://bit.ly/" target="_blank" rel="noopener">bit.ly</a>に登録して、APIキーを取得。<br>それを使ってjsで実装。<br>Javascriptは<a href="http://kazu69.net/blog/sample/tweet/tweet.js.txt" target="_blank" rel="noopener">http://kazu69.net/blog/sample/tweet/tweet.js.txt</a>。</p>
 <p>指定したURLを短縮するなら、<br><code>&amp;lt;a href=&quot;http://yahoo.co.jp&quot; class=&quot;retweet&quot;&amp;gt;ヤフー&amp;lt;a&amp;gt;</code><br>のように a タグのclass属性にretweet ってのを記述。<br>スクリプトを読み込ませて、<br><code>/*先にスクリプトをロード*/
 &amp;lt;script type=&quot;text/javascript&quot;  charset=&quot;utf-8&quot; src=&quot;****&quot;&amp;gt;&amp;lt;/script&amp;gt;
 &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
@@ -114,7 +115,7 @@ falseなら 該当ページの URLを短縮
 */
 window.rt.f = true
 rt.f1();
-&amp;lt;/script&amp;gt;</code><br>とする。デザインとかはCSSで。<br>ちなみに、<a href="http://logpi.jp/" target="_blank" rel="external">ログピ</a>におくるなら<br><code>window.rt.sid = &quot;logpi&quot;</code><br>とするとできるけど、ログピはURL貼ると「click here」ってでてるのであまり意味ないかも・・・。<br>ソースがあれなのはあれなので、あしからず。</p>
+&amp;lt;/script&amp;gt;</code><br>とする。デザインとかはCSSで。<br>ちなみに、<a href="http://logpi.jp/" target="_blank" rel="noopener">ログピ</a>におくるなら<br><code>window.rt.sid = &quot;logpi&quot;</code><br>とするとできるけど、ログピはURL貼ると「click here」ってでてるのであまり意味ないかも・・・。<br>ソースがあれなのはあれなので、あしからず。</p>
 
     
   </div>

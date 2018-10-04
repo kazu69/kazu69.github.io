@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/11/17/tried-the-dialog-element-in-html5/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="ダイアログ要素やモーダルウィンドウを容易に使えるdialog要素を試してみた。dialog要素を使うことで、ダイアログの要素をdom内に埋め込むので、cssなどで容易にスタイリング出来るという嬉しいもの。ちなみに、dialog要素のサポート状況はこちらの通り。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTML5のDialog要素を試してみた">
@@ -100,12 +101,12 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>ダイアログ要素やモーダルウィンドウを容易に使えるdialog要素を試してみた。<br>dialog要素を使うことで、ダイアログの要素をdom内に埋め込むので、cssなどで容易にスタイリング出来るという嬉しいもの。<br>ちなみに、dialog要素のサポート状況は<a href="http://caniuse.com/#search=dialog" target="_blank" rel="external">こちらの通り</a>。<br><a id="more"></a></p>
+      <p>ダイアログ要素やモーダルウィンドウを容易に使えるdialog要素を試してみた。<br>dialog要素を使うことで、ダイアログの要素をdom内に埋め込むので、cssなどで容易にスタイリング出来るという嬉しいもの。<br>ちなみに、dialog要素のサポート状況は<a href="http://caniuse.com/#search=dialog" target="_blank" rel="noopener">こちらの通り</a>。<br><a id="more"></a></p>
 <p>ごくごく単純に以下のようにdialog 要素のshow()、close() APIを使うだけで簡単にダイアログを表示をできる。<br>show()に対してhide()ではなく、close()を呼ぶあたりが面白い。</p>
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample1.slim"></script>
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample1.coffee"></script>
 
-<p>See the Pen <a href="http://codepen.io/kazu69/pen/gbbNqz/" target="_blank" rel="external">gbbNqz</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
+<p>See the Pen <a href="http://codepen.io/kazu69/pen/gbbNqz/" target="_blank" rel="noopener">gbbNqz</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="noopener">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="noopener">CodePen</a>.</p>
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <p>モーダルウィンドウを表示する場合は、showModal() APIを使えば良い。<br>また、モーダルウィンドウの背景要素にスタイルを付ける場合は、::backdrop擬似要素を使うことで実現できる。<br>dialog要素にスタイルを付けることで、モーダルウィンドウにスタイルを付けることができる。</p>
@@ -113,7 +114,7 @@ ga('send', 'pageview');
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample2.scss"></script>
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=sample2.coffee"></script>
 
-<p>See the Pen <a href="http://codepen.io/kazu69/pen/dPPBrz/" target="_blank" rel="external">dPPBrz</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
+<p>See the Pen <a href="http://codepen.io/kazu69/pen/dPPBrz/" target="_blank" rel="noopener">dPPBrz</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="noopener">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="noopener">CodePen</a>.</p>
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <p>dialog要素でformのメソッドにdialogを指定することで、フォームとダイアログ、モーダルウィンドウを連携することができる。<br>モーダルウィンドウのボタンを押すとモーダルウィンドウが閉じられ、入力値またはボタンの値をdialog要素のreturnValueにセットすることができる。</p>
@@ -121,11 +122,11 @@ ga('send', 'pageview');
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=script.coffee"></script>
 <script src="https://gist.github.com/kazu69/faf7525ec629d642e12e.js?file=tyle.scss"></script>
 
-<p>See the Pen <a href="http://codepen.io/kazu69/pen/qEBJVW/" target="_blank" rel="external">dialog tag sample</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="external">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="external">CodePen</a>.</p>
+<p>See the Pen <a href="http://codepen.io/kazu69/pen/qEBJVW/" target="_blank" rel="noopener">dialog tag sample</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="noopener">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="noopener">CodePen</a>.</p>
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
-<p>ちなみに、polyfillは<a href="https://github.com/GoogleChrome/dialog-polyfill" target="_blank" rel="external">chrome/dialog-polyfill</a>。</p>
-<p>参考にしたページ: <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog" target="_blank" rel="external">MDN</a>、<a href="http://updates.html5rocks.com/2013/09/dialog-element-Modals-made-easy" target="_blank" rel="external">dialog element: Modals made easy</a></p>
+<p>ちなみに、polyfillは<a href="https://github.com/GoogleChrome/dialog-polyfill" target="_blank" rel="noopener">chrome/dialog-polyfill</a>。</p>
+<p>参考にしたページ: <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog" target="_blank" rel="noopener">MDN</a>、<a href="http://updates.html5rocks.com/2013/09/dialog-element-Modals-made-easy" target="_blank" rel="noopener">dialog element: Modals made easy</a></p>
 
     
   </div>

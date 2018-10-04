@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/archives/page/14/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="福岡でwebの仕事をしています">
+<meta property="og:locale" content="ja">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="69log">
 <meta name="twitter:description" content="福岡でwebの仕事をしています">
@@ -72,6 +73,47 @@ ga('send', 'pageview');
 
     <main role="main" id="main">
       <section>
+  
+    <article id="post-at-sinatra-with-oauth-authenticate" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/03/12/at-sinatra-with-oauth-authenticate/">sinatraでoauth(authenticate)してみた</a>
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2012-03-12T09:32:54.000Z" itemprop="datePublished">2012-03-12</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/ruby/">ruby</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Rubyの勉強の一環として、軽量Webフレームワーク<a href="http://www.sinatrarb.com/" target="_blank" rel="noopener">sinatra</a>で、oauth(authenticate)してみた。<br>sinatraを選んだ理由は、とにかくシンプルで軽い。ちょっとしたものしか作らないような自分にはマッチしたフレームワークなきがします。<br>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
   
     <article id="post-summary-of-commonly-used-smartphones-in-html-css-javascript" class="article article-type-post" itemscope itemprop="blogPost">
   <header class="article-header">
@@ -183,7 +225,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://www.ibm.com/developerworks/jp/web/library/wa-ecma262/?cmp=dw&amp;cpb=dwwdv&amp;ct=dwrss&amp;cr=dwrss&amp;ccy=jp&amp;csr=052011" target="_blank" rel="external">ECMA-262の第5版(ES5)のまとめ記事</a>見てたらArrayオブジェクトにforEachが追加されてた。<br>ということで、個人的なメモ。<br>
+      <p><a href="http://www.ibm.com/developerworks/jp/web/library/wa-ecma262/?cmp=dw&amp;cpb=dwwdv&amp;ct=dwrss&amp;cr=dwrss&amp;ccy=jp&amp;csr=052011" target="_blank" rel="noopener">ECMA-262の第5版(ES5)のまとめ記事</a>見てたらArrayオブジェクトにforEachが追加されてた。<br>ということで、個人的なメモ。<br>
       
     
   </div>
@@ -224,7 +266,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>jQuery1.5から導入されていた<a href="http://api.jquery.com/category/deferred-object/" target="_blank" rel="external">Deferred Object</a>について、詳しく理解していなかったので調べてみたところ、すてきな機能っぽいのでまとめてみた。<br>
+      <p>jQuery1.5から導入されていた<a href="http://api.jquery.com/category/deferred-object/" target="_blank" rel="noopener">Deferred Object</a>について、詳しく理解していなかったので調べてみたところ、すてきな機能っぽいのでまとめてみた。<br>
       
     
   </div>
@@ -265,7 +307,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>css拡張メタ言語<a href="http://lesscss.org/" target="_blank" rel="external">Less</a>。個人的によく使うスニペットの備忘録。<br>
+      <p>css拡張メタ言語<a href="http://lesscss.org/" target="_blank" rel="noopener">Less</a>。個人的によく使うスニペットの備忘録。<br>
       
     
   </div>
@@ -306,7 +348,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://blog.jquery.com/2011/11/03/jquery-1-7-released/" target="_blank" rel="external">jQuery1.7</a>がリリースされたのですが、今回追加されたevent apiのon()、off()がとても便利で、on()でイベントを登録し、off()でイベントを削除するするということで、これまでより直感的です。<br>
+      <p><a href="http://blog.jquery.com/2011/11/03/jquery-1-7-released/" target="_blank" rel="noopener">jQuery1.7</a>がリリースされたのですが、今回追加されたevent apiのon()、off()がとても便利で、on()でイベントを登録し、off()でイベントを削除するするということで、これまでより直感的です。<br>
       
     
   </div>
@@ -347,7 +389,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>websocketで何かしてみたくて、さらに<a href="http://documentcloud.github.com/backbone/" target="_blank" rel="external">backbornjs</a>も触りたかったということで、ircのようなチャットを作ってみました。<br>
+      <p>websocketで何かしてみたくて、さらに<a href="http://documentcloud.github.com/backbone/" target="_blank" rel="noopener">backbornjs</a>も触りたかったということで、ircのようなチャットを作ってみました。<br>
       
     
   </div>
@@ -429,48 +471,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>大規模なwebアプリケーションを構築する際にCSS自体の管理も煩雑になりがち。ベンダープレフィックスなどの記述自体も面倒になってきたので、それらを解決する一つの方法として『<a href="http://sass-lang.com/" target="_blank" rel="external">SASS</a>』と『<a href="http://lesscss.org/" target="_blank" rel="external">LESS</a>』を検討してみました。<br>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-steve-jobs" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2011/10/06/steve-jobs/">Steve Jobs</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2011-10-06T13:37:16.000Z" itemprop="datePublished">2011-10-06</time>
-
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/days/">days</a>
-  </div>
-
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>Apple共同設立者で前CEOのSteve Jobs氏が亡くなりました。<br>
+      <p>大規模なwebアプリケーションを構築する際にCSS自体の管理も煩雑になりがち。ベンダープレフィックスなどの記述自体も面倒になってきたので、それらを解決する一つの方法として『<a href="http://sass-lang.com/" target="_blank" rel="noopener">SASS</a>』と『<a href="http://lesscss.org/" target="_blank" rel="noopener">LESS</a>』を検討してみました。<br>
       
     
   </div>

@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2013/03/03/in-the-sublime-text2-on-the-build-compile-environmental-note/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="個人的メモ。エディターの設定ファイルを誤操作してしまって。再度構築していたんですが、どうやるんだっけってのをメモしておく。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="sublime text2 でBuild(コンパイル)環境に関するメモ">
@@ -101,7 +102,7 @@ ga('send', 'pageview');
     </div>
     
       <p>個人的メモ。エディターの設定ファイルを誤操作してしまって。<br>再度構築していたんですが、どうやるんだっけってのをメモしておく。<br><a id="more"></a><br>Sublime Text2でcoffeeスクリプトとかをコンパイルできるんですが、パッケージインストーラーで入れただけだとエラーになっていたので調べてみた。</p>
-<p>ちなみに今回は<a href="https://github.com/surjikal/sublime-coffee-compile" target="_blank" rel="external">sublime-coffee-compile</a>を使いたかったんです。</p>
+<p>ちなみに今回は<a href="https://github.com/surjikal/sublime-coffee-compile" target="_blank" rel="noopener">sublime-coffee-compile</a>を使いたかったんです。</p>
 <p>たとえばcoffee scriptの設定ファイル(CoffeeScript.sublime-build)をみてみると<br>[javascript]<br>{<br>    &quot;cmd&quot;: [&quot;coffee&quot;,&quot;-c&quot;,&quot;$file&quot;]<br>,    &quot;path&quot;: &quot;/usr/local/bin:$PATH&quot;<br>,    &quot;selector&quot;: &quot;source.coffee&quot;<br>}<br>[/javascript]</p>
 <p>こんな感じのjson形式。コマンドとパス、セレクターが指定されてるだけ。<br>では早速ビルド(cmd+B)すると</p>
 <p> [Errno 2] No such file or directory</p>
@@ -115,7 +116,7 @@ ga('send', 'pageview');
 <p>のパスを追加しておけば良さそう。</p>
 <p>ただ、開発環境ごとにパスを通すのが面倒なので、ユーザーの環境設定にパスを通しておく。<br>設定ファイル(cmd+,)でひらいて<br>[javascript]<br>{<br>…<br>&quot;build_env&quot;:{<br>        &quot;PATH&quot;: &quot;/usr/local/bin:/usr/local/sbin:/usr/local/share/python:$HOME/.nodebrew/current/bin:$HOME/.phpenv/bin:$HOME/.nodebrew/current/bin&quot;<br>    }<br>…<br>}<br>[/javascript]</p>
 <p>でいいかな。</p>
-<p>OSごとにかえるなら<a href="http://docs.sublimetext.info/en/latest/reference/build_systems.html#platform-specific-options" target="_blank" rel="external">Platform option</a>とかですかね。</p>
+<p>OSごとにかえるなら<a href="http://docs.sublimetext.info/en/latest/reference/build_systems.html#platform-specific-options" target="_blank" rel="noopener">Platform option</a>とかですかね。</p>
 <p>[javascript]<br>{<br>    &quot;cmd&quot;: [&quot;ant&quot;],<br>    &quot;file_regex&quot;: &quot;^ <em>\[javac\] (.+):([0-9]+):() (.</em>)$&quot;,<br>    &quot;working_dir&quot;: &quot;${project_path:${folder}}&quot;,<br>    &quot;selector&quot;: &quot;source.java&quot;,</p>
 <pre><code>&amp;quot;windows&amp;quot;:
 {

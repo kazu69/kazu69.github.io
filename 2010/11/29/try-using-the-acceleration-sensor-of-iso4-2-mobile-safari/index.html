@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2010/11/29/try-using-the-acceleration-sensor-of-iso4-2-mobile-safari/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="iso4.2のmobile safariが加速度センサーに対応(Mobile Web Programming)ということで、ちょっとためしてみた。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iso4.2のMobile Safariの加速度センサーを使ってみる">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>iso4.2のmobile safariが加速度センサーに対応(<a href="http://www.mobilexweb.com/blog/safari-ios-accelerometer-websockets-html5" target="_blank" rel="external">Mobile Web Programming</a>)ということで、ちょっとためしてみた。<br><a id="more"></a><br>イベントリスナーへ<br><code>window.addEventListener(&quot;devicemotion&quot;, function(){}, true);</code><br>追加するだけで使えます。実に簡単。</p>
+      <p>iso4.2のmobile safariが加速度センサーに対応(<a href="http://www.mobilexweb.com/blog/safari-ios-accelerometer-websockets-html5" target="_blank" rel="noopener">Mobile Web Programming</a>)ということで、ちょっとためしてみた。<br><a id="more"></a><br>イベントリスナーへ<br><code>window.addEventListener(&quot;devicemotion&quot;, function(){}, true);</code><br>追加するだけで使えます。実に簡単。</p>
 <p><code>&amp;lt;!DOCTYPE HTML&amp;gt;
 &amp;lt;html lang=&quot;ja-JP&quot;&amp;gt;
   &amp;lt;head&amp;gt;
@@ -128,8 +129,8 @@ ga('send', 'pageview');
     &amp;lt;/script&amp;gt;
   &amp;lt;/body&amp;gt;
 &amp;lt;/html&amp;gt;</code><br>とこのような感じでx軸(横方向)、y軸(上方向)、z軸(手前方向)の傾きを取得できます。<br>ちなみに、何もしなくとも地球の重量を感知してるんですね。</p>
-<p>ちなみに、Y座標はiPhoneデバイスの向きに準じているので、ブラウザで座標系を操作する時は、<br>注意ですね。<br>参考：<a href="http://japan.internet.com/developer/20100803/26.html" target="_blank" rel="external">http://japan.internet.com/developer/20100803/26.html</a><br><a href="http://dev.w3.org/geo/api/spec-source-orientation.html" target="_blank" rel="external">http://dev.w3.org/geo/api/spec-source-orientation.html</a></p>
-<p>簡単な<a href="http://kazu69.net/blog/sample/ios42/safari.html" target="_blank" rel="external">サンプル</a>も作ってみたけど、これゲームとかできそうですね。</p>
+<p>ちなみに、Y座標はiPhoneデバイスの向きに準じているので、ブラウザで座標系を操作する時は、<br>注意ですね。<br>参考：<a href="http://japan.internet.com/developer/20100803/26.html" target="_blank" rel="noopener">http://japan.internet.com/developer/20100803/26.html</a><br><a href="http://dev.w3.org/geo/api/spec-source-orientation.html" target="_blank" rel="noopener">http://dev.w3.org/geo/api/spec-source-orientation.html</a></p>
+<p>簡単な<a href="http://kazu69.net/blog/sample/ios42/safari.html" target="_blank" rel="noopener">サンプル</a>も作ってみたけど、これゲームとかできそうですね。</p>
 
     
   </div>

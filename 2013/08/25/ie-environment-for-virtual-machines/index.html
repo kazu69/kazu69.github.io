@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2013/08/25/ie-environment-for-virtual-machines/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="相変わらず面倒なie確認用環境。最近はvirtualboxで準備されてるから便利だ。セットアップ関連の備忘録。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="仮想マシンのie確認用環境を整える">
@@ -100,14 +101,14 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>相変わらず面倒なie確認用環境。最近は<a href="https://www.virtualbox.org/" target="_blank" rel="external">virtualbox</a>で準備されてるから便利だ。<br>セットアップ関連の備忘録。</p>
+      <p>相変わらず面倒なie確認用環境。最近は<a href="https://www.virtualbox.org/" target="_blank" rel="noopener">virtualbox</a>で準備されてるから便利だ。<br>セットアップ関連の備忘録。</p>
 <a id="more"></a>
-<h3 id="ievms"><a href="#ievms" class="headerlink" title="ievms"></a>ievms</h3><p>まず、IE6, IE7, IE8, IE9, IE10, IE11 をXPと7でvmで作成できる<a href="https://github.com/xdissent/ievms" target="_blank" rel="external">ievms</a>。</p>
+<h3 id="ievms"><a href="#ievms" class="headerlink" title="ievms"></a>ievms</h3><p>まず、IE6, IE7, IE8, IE9, IE10, IE11 をXPと7でvmで作成できる<a href="https://github.com/xdissent/ievms" target="_blank" rel="noopener">ievms</a>。</p>
 <p>[shell]</p>
-<h1 id="full-install"><a href="#full-install" class="headerlink" title="full install"></a>full install</h1><p>curl -s <a href="https://raw.github.com/xdissent/ievms/master/ievms.sh" target="_blank" rel="external">https://raw.github.com/xdissent/ievms/master/ievms.sh</a> | bash</p>
-<h1 id="specific-version-install"><a href="#specific-version-install" class="headerlink" title="specific version install"></a>specific version install</h1><p>curl -s <a href="https://raw.github.com/xdissent/ievms/master/ievms.sh" target="_blank" rel="external">https://raw.github.com/xdissent/ievms/master/ievms.sh</a> | env IEVMS_VERSIONS=&quot;7 9&quot; bash<br>[/shell]</p>
+<h1 id="full-install"><a href="#full-install" class="headerlink" title="full install"></a>full install</h1><p>curl -s <a href="https://raw.github.com/xdissent/ievms/master/ievms.sh" target="_blank" rel="noopener">https://raw.github.com/xdissent/ievms/master/ievms.sh</a> | bash</p>
+<h1 id="specific-version-install"><a href="#specific-version-install" class="headerlink" title="specific version install"></a>specific version install</h1><p>curl -s <a href="https://raw.github.com/xdissent/ievms/master/ievms.sh" target="_blank" rel="noopener">https://raw.github.com/xdissent/ievms/master/ievms.sh</a> | env IEVMS_VERSIONS=&quot;7 9&quot; bash<br>[/shell]</p>
 <p>でインストール完了。ただし、72GBあるんで寝る前に実行するといいかも。<br>あとはvirtualboxで必要なIEを起動するだけ。</p>
-<h3 id="modern-IE"><a href="#modern-IE" class="headerlink" title="modern.IE"></a>modern.IE</h3><p>次に、ms社のプロジェクト<a href="http://www.modern.ie/ja" target="_blank" rel="external">modern.IE</a>。<br>こちはOSがwin、mac、linux。vm環境がHyper-V、Virtual PC、VMWare Fusion、parallelsとそろってる。</p>
+<h3 id="modern-IE"><a href="#modern-IE" class="headerlink" title="modern.IE"></a>modern.IE</h3><p>次に、ms社のプロジェクト<a href="http://www.modern.ie/ja" target="_blank" rel="noopener">modern.IE</a>。<br>こちはOSがwin、mac、linux。vm環境がHyper-V、Virtual PC、VMWare Fusion、parallelsとそろってる。</p>
 <p>インストールは、SFXまたはRARをダウンロードしてファイルを実行。<br>SFXの場合は</p>
 <p>[shell]<br>chmod +x filename.sfx<br>[/shell]</p>
 <p>で実行権限付与しないといけないっぽい。</p>
@@ -115,7 +116,7 @@ ga('send', 'pageview');
 <h3 id="文字化け"><a href="#文字化け" class="headerlink" title="文字化け"></a>文字化け</h3><p>で、仮想環境のIE起動したら、文字化けした。<br>どうやらフォントがないっぽいので、適当にMSゴシックあたりをフォント環境にインストールしてあげると良さそう。</p>
 <h3 id="localhost"><a href="#localhost" class="headerlink" title="localhost"></a>localhost</h3><p>ローカル環境の表示確認する場合は、mac、virtualboxなら<br>Settings &gt; Network から Enable Network Adapter にチェック<br>Attached to を NATに設定。<br>VMのwindowsの、hostsに</p>
 <p>[text]<br>10.0.2.2        localhost<br>[/text]</p>
-<p>みたいな感じで<a href="http://10.0.2.2" target="_blank" rel="external">http://10.0.2.2</a> にアクセス。<br>とりあえず表示確認できそう。</p>
+<p>みたいな感じで<a href="http://10.0.2.2" target="_blank" rel="noopener">http://10.0.2.2</a> にアクセス。<br>とりあえず表示確認できそう。</p>
 
     
   </div>

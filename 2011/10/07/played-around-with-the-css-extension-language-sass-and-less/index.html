@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2011/10/07/played-around-with-the-css-extension-language-sass-and-less/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="大規模なwebアプリケーションを構築する際にCSS自体の管理も煩雑になりがち。ベンダープレフィックスなどの記述自体も面倒になってきたので、それらを解決する一つの方法として『SASS』と『LESS』を検討してみました。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CSS拡張言語SASSとLESSを触ってみる">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>大規模なwebアプリケーションを構築する際にCSS自体の管理も煩雑になりがち。ベンダープレフィックスなどの記述自体も面倒になってきたので、それらを解決する一つの方法として『<a href="http://sass-lang.com/" target="_blank" rel="external">SASS</a>』と『<a href="http://lesscss.org/" target="_blank" rel="external">LESS</a>』を検討してみました。<br><a id="more"></a><br>両者の違いは<a href="http://dxd8.com/archives/217/" target="_blank" rel="external">CSS拡張メタ言語「SCSS(Sass)」と「LESS」の比較</a>に細かくまとめたれています。</p>
+      <p>大規模なwebアプリケーションを構築する際にCSS自体の管理も煩雑になりがち。ベンダープレフィックスなどの記述自体も面倒になってきたので、それらを解決する一つの方法として『<a href="http://sass-lang.com/" target="_blank" rel="noopener">SASS</a>』と『<a href="http://lesscss.org/" target="_blank" rel="noopener">LESS</a>』を検討してみました。<br><a id="more"></a><br>両者の違いは<a href="http://dxd8.com/archives/217/" target="_blank" rel="noopener">CSS拡張メタ言語「SCSS(Sass)」と「LESS」の比較</a>に細かくまとめたれています。</p>
 <p><strong>LESSを使ってみた</strong><br>LESSはJavaScriptでコンパイルするので、LESSファイルとコンパイラーのJSを読み込めば使用できる。<br>`</p>
 <p><link rel="stylesheet/less" type="text/css" href="style.less"></p>
 <p><script type="text/javascript" src="less-1.1.3.min.js"></script><br>`</p>
@@ -131,10 +132,10 @@ $margin: 16px;
 }</code><br>でコンパイルされます。<br>SassでHTML記号や日本語を使う場合は、@charset “UTF-8” を文頭につけておくとコンパイル後のcssも文字コードが予期しないものにならないっぽい。</p>
 <p>毎回、コンパイルすのも面倒なので<br><code>sass --watch style.scss:style.css</code><br>watch オプションをつけておけばscssファイル編集とともにcssも変更されます。終了する時は Ctrl+c。これは便利です。<br>ディレクトリを指定すれば、ディレクトリ単位で監視もできます。</p>
 <p><code>sass --style compressed --watch style.scss:style.css</code><br>style compressedオプションをつけてやればminifyもしてくれます。これも便利。<br>SASSの場合、関数で定数の演算を扱える、条件分岐や繰り返しも使えるのでLESSより柔軟です。</p>
-<p>あと、<a href="http://haml-lang.com/" target="_blank" rel="external">Haml</a>をインストールしておけば<br><code>css2sass style.css</code><br>とすることで既存のCSSをSASSに変換できるっぽいので、既存環境をSASS化することもできそう。</p>
+<p>あと、<a href="http://haml-lang.com/" target="_blank" rel="noopener">Haml</a>をインストールしておけば<br><code>css2sass style.css</code><br>とすることで既存のCSSをSASSに変換できるっぽいので、既存環境をSASS化することもできそう。</p>
 <p>最近railsを触ってることもあってSASSのほうが気になりました。</p>
-<p>個人的な感想では、SASSはrubykのコンパイルが必要だけど、機能が豊富で柔軟に使用できる。環境構築さえしてしまえば、後は非常にやりやすかった。<br><a href="http://compass-style.org/" target="_blank" rel="external">Compass</a>というSASSフレームワークが便利そう。</p>
-<p>LESSは導入が容易。<a href="http://twitter.github.com/bootstrap/" target="_blank" rel="external">Twitter Bootstrap </a>などにも導入されている。JavaScriptでコンパイルするので、環境などの構築は不要。文法がひと癖あり、SASSにくらべて制限がある。小規模な案件やモバイルウェブアプリ、node.jsを使うときには便利じゃないかな。という感じでした。</p>
+<p>個人的な感想では、SASSはrubykのコンパイルが必要だけど、機能が豊富で柔軟に使用できる。環境構築さえしてしまえば、後は非常にやりやすかった。<br><a href="http://compass-style.org/" target="_blank" rel="noopener">Compass</a>というSASSフレームワークが便利そう。</p>
+<p>LESSは導入が容易。<a href="http://twitter.github.com/bootstrap/" target="_blank" rel="noopener">Twitter Bootstrap </a>などにも導入されている。JavaScriptでコンパイルするので、環境などの構築は不要。文法がひと癖あり、SASSにくらべて制限がある。小規模な案件やモバイルウェブアプリ、node.jsを使うときには便利じゃないかな。という感じでした。</p>
 
     
   </div>

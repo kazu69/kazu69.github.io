@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2009/02/16/do-not-break-the-half-width-alphanumeric-characters-in-the-jquery-measures/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="半角英数で区切ることのできないとき。 たとえば、長いURLやファイルパスなどなどをブラウザで表示すると、 折り返してくれるのと、くれないものがある。 これはブラウザ仕様なのですが、blogとかにURLとかはりつけてみるもレイアウトとか くずれて悲しいことにもなる。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="半角英数の文字が改行しない(jQueryで対策)">
@@ -125,7 +126,7 @@ function wordBreak(selector){
 
 <p>`</p>
 <p>というかんじです。</p>
-<p><a href="http://blog.webcreativepark.net/2008/09/14-211341.html" target="_blank" rel="external">FirefoxとOperaでword-break:break-allを実現する「wordBreak.js」</a>を参考にさせていただきました。</p>
+<p><a href="http://blog.webcreativepark.net/2008/09/14-211341.html" target="_blank" rel="noopener">FirefoxとOperaでword-break:break-allを実現する「wordBreak.js」</a>を参考にさせていただきました。</p>
 <p>selectorを引数に指定しればOK。</p>
 <p>operaの場合は、実体参照で半角英数を一文字ごとに入力。</p>
 <p>IEは独自仕様のbreak-allを利用。</p>

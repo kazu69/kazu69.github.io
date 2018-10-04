@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2015/11/13/create-efk-with-docker/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。Docker 1.8 からFluentdもlog driverに追加されているので、これを使って簡単なサンプルを構築した。">
+<meta property="og:locale" content="ja">
 <meta property="og:image" content="https://gist.githubusercontent.com/kazu69/84e383c0dab2e115352c/raw/3602e3920c3021754b7a8bda17f8b6505cd49b6d/1.png">
 <meta property="og:image" content="https://gist.githubusercontent.com/kazu69/84e383c0dab2e115352c/raw/3602e3920c3021754b7a8bda17f8b6505cd49b6d/2.png">
 <meta property="og:updated_time" content="2015-11-24T16:05:57.000Z">
@@ -103,10 +104,10 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。<br>Docker 1.8 から<a href="http://docs.docker.com/engine/reference/logging/fluentd/" target="_blank" rel="external">Fluentdもlog driver</a>に追加されているので、これを使って簡単なサンプルを構築した。</p>
+      <p>なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。<br>Docker 1.8 から<a href="http://docs.docker.com/engine/reference/logging/fluentd/" target="_blank" rel="noopener">Fluentdもlog driver</a>に追加されているので、これを使って簡単なサンプルを構築した。</p>
 <a id="more"></a>
 <h2 id="構成"><a href="#構成" class="headerlink" title="構成"></a>構成</h2><p>適当なnodeJSアプリケーションのフロントにnginxを立たせて、<br>収集したログをtd-agentで、Fluentdのログ収集コンテナに24224ポートで転送する。<br>あとはElasticsearch、Kibanaで解析・表示する。</p>
-<p>アプリケーションからのログ転送はDockerのlog-driverオプションを使うので、td-agentの導入を省けた。<br><a href="https://github.com/fluent/fluentd-docker-image" target="_blank" rel="external">Fluentd</a>、<a href="https://github.com/dockerfile/elasticsearch" target="_blank" rel="external">Elasticsearch</a>、<a href="https://github.com/eliotk/docker-kibana" target="_blank" rel="external">Kibana</a>はそれぞれオフィシャルのイメージがあるので、そちらを活用した。<br>Elasticsearchは9200ポート、kibanaは5601ポートを使った。</p>
+<p>アプリケーションからのログ転送はDockerのlog-driverオプションを使うので、td-agentの導入を省けた。<br><a href="https://github.com/fluent/fluentd-docker-image" target="_blank" rel="noopener">Fluentd</a>、<a href="https://github.com/dockerfile/elasticsearch" target="_blank" rel="noopener">Elasticsearch</a>、<a href="https://github.com/eliotk/docker-kibana" target="_blank" rel="noopener">Kibana</a>はそれぞれオフィシャルのイメージがあるので、そちらを活用した。<br>Elasticsearchは9200ポート、kibanaは5601ポートを使った。</p>
 <h2 id="ログ収集・解析基盤のセットアップ"><a href="#ログ収集・解析基盤のセットアップ" class="headerlink" title="ログ収集・解析基盤のセットアップ"></a>ログ収集・解析基盤のセットアップ</h2><h3 id="Fluentd"><a href="#Fluentd" class="headerlink" title="Fluentd"></a>Fluentd</h3>
 <script src="https://gist-it.appspot.com/github/kazu69/docker-efk/blob/master/fluentd/Dockerfile"></script>
 
@@ -119,15 +120,15 @@ ga('send', 'pageview');
 
 <script src="https://gist-it.appspot.com/github/kazu69/docker-efk/blob/master/fluentd/entrypoint.sh"></script>
 
-<p>コンテナ間の依存を解消する方法がいまいちわかってないのでこのような手法をとったのだが、もっといい方法がありそう。<br><a href="https://github.com/docker/compose/pull/686" target="_blank" rel="external">docker-compose issue#686</a>にあるようなので、今後解決されるかも。</p>
+<p>コンテナ間の依存を解消する方法がいまいちわかってないのでこのような手法をとったのだが、もっといい方法がありそう。<br><a href="https://github.com/docker/compose/pull/686" target="_blank" rel="noopener">docker-compose issue#686</a>にあるようなので、今後解決されるかも。</p>
 <h2 id="起動してみる"><a href="#起動してみる" class="headerlink" title="起動してみる"></a>起動してみる</h2><script src="//gist.github.com/kazu69/84e383c0dab2e115352c.js?file=exec.sh"></script>
 <p>kibanaにアクセスすると</p>
 <p><img src="https://gist.githubusercontent.com/kazu69/84e383c0dab2e115352c/raw/3602e3920c3021754b7a8bda17f8b6505cd49b6d/1.png" alt=""></p>
 <p>logstash形式のものをフィルタリング</p>
 <p><img src="https://gist.githubusercontent.com/kazu69/84e383c0dab2e115352c/raw/3602e3920c3021754b7a8bda17f8b6505cd49b6d/2.png" alt=""></p>
 <p>ということで、とりあえず最小限の環境は構築できた。</p>
-<p>今回作成したサンプル <a href="https://github.com/kazu69/docker-efk" target="_blank" rel="external">kazu69/docker-efk</a></p>
-<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="http://stackoverflow.com/questions/31212547/passing-bash-code-through-the-environment-for-docker-compose/" target="_blank" rel="external">Passing bash code through the environment (for docker-compose)</a></p>
+<p>今回作成したサンプル <a href="https://github.com/kazu69/docker-efk" target="_blank" rel="noopener">kazu69/docker-efk</a></p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="http://stackoverflow.com/questions/31212547/passing-bash-code-through-the-environment-for-docker-compose/" target="_blank" rel="noopener">Passing bash code through the environment (for docker-compose)</a></p>
 
     
   </div>

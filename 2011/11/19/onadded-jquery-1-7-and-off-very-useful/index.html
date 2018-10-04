@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2011/11/19/onadded-jquery-1-7-and-off-very-useful/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="jQuery1.7がリリースされたのですが、今回追加されたevent apiのon()、off()がとても便利で、on()でイベントを登録し、off()でイベントを削除するするということで、これまでより直感的です。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jQuery 1.7から追加された.on() と .off()がとても便利">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://blog.jquery.com/2011/11/03/jquery-1-7-released/" target="_blank" rel="external">jQuery1.7</a>がリリースされたのですが、今回追加されたevent apiのon()、off()がとても便利で、on()でイベントを登録し、off()でイベントを削除するするということで、これまでより直感的です。<br><a id="more"></a><br>event apiとしてはこれまで、<a href="http://api.jquery.com/bind/" target="_blank" rel="external">bind</a>、<a href="http://api.jquery.com/live/" target="_blank" rel="external">live</a>、<a href="http://api.jquery.com/delegate/" target="_blank" rel="external">delegate</a>が存在していました。今回追加されたon()は、bindやdelegateと置き換わる機能となります。</p>
+      <p><a href="http://blog.jquery.com/2011/11/03/jquery-1-7-released/" target="_blank" rel="noopener">jQuery1.7</a>がリリースされたのですが、今回追加されたevent apiのon()、off()がとても便利で、on()でイベントを登録し、off()でイベントを削除するするということで、これまでより直感的です。<br><a id="more"></a><br>event apiとしてはこれまで、<a href="http://api.jquery.com/bind/" target="_blank" rel="noopener">bind</a>、<a href="http://api.jquery.com/live/" target="_blank" rel="noopener">live</a>、<a href="http://api.jquery.com/delegate/" target="_blank" rel="noopener">delegate</a>が存在していました。今回追加されたon()は、bindやdelegateと置き換わる機能となります。</p>
 <p><code>$(elements).on(events [, selector] [, data], handler);
 $(elements).off(events [, selector] [, data], handler);</code></p>
 <p>例えば使い方としてとしては<br><code>var sayHello = function (event) { alert(&quot;Hello &quot;+event.data.name); }

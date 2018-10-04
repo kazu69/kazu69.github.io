@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/11/13/made-in-the-rails-api-error-handling/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="RailsでAPIを作ったとき、StandardErrorをどのように処理するのがいいのかと考えた。やりたいことは、エラーの内容をjsonで返し、なおかつエラーのstatus codeも返却したいという感じ。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RailsでつくったAPIのエラー処理">
@@ -102,7 +103,7 @@ ga('send', 'pageview');
     
       <p>RailsでAPIを作ったとき、StandardErrorをどのように処理するのがいいのかと考えた。<br>やりたいことは、エラーの内容をjsonで返し、なおかつエラーのstatus codeも返却したいという感じ。</p>
 <a id="more"></a>
-<p>エラー内容は普通にrescueしてexception.messageを返してあげるといいが、statusはどうするか。<br>そこでどこかでエラーのリストを保持しているのではないかとで調べると、<a href="https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/exception_wrapper.rb" target="_blank" rel="external">ActionDispatch::ExceptionWrapper</a>にあるっぽいことがわかった。</p>
+<p>エラー内容は普通にrescueしてexception.messageを返してあげるといいが、statusはどうするか。<br>そこでどこかでエラーのリストを保持しているのではないかとで調べると、<a href="https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/exception_wrapper.rb" target="_blank" rel="noopener">ActionDispatch::ExceptionWrapper</a>にあるっぽいことがわかった。</p>
 <p>これを上手こと利用して動的にエラーをレスポンスを生成したらどうだろうかということで、以下のようにしてみた。</p>
 <script src="https://gist.github.com/kazu69/6b6cb71ff77fbb1f40b4.js?file=api_base_controller.rb"></script>
 
@@ -113,7 +114,7 @@ ga('send', 'pageview');
 <p>この場合、全てのエラーを通知してしまうので、必要になエラーだけ拾うようにしたらいいのかも。</p>
 <script src="https://gist.github.com/kazu69/6b6cb71ff77fbb1f40b4.js?file=api_select_excetion_base_controller.rb"></script>
 
-<p>参考にしたページ: 2014-03-22: <a href="http://diary.sorah.jp/2014/03/22/20140322" target="_blank" rel="external">さんがつにじゅうににち: kosenconf-080tokyo</a></p>
+<p>参考にしたページ: 2014-03-22: <a href="http://diary.sorah.jp/2014/03/22/20140322" target="_blank" rel="noopener">さんがつにじゅうににち: kosenconf-080tokyo</a></p>
 
     
   </div>

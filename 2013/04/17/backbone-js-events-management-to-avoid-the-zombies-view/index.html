@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2013/04/17/backbone-js-events-management-to-avoid-the-zombies-view/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Backbone.jsのイベントの管理についての個人的なメモ。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Backbone.jsのイベントを管理してゾンビviewを回避する">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://lostechies.com/derickbailey/2011/09/15/zombies-run-managing-page-transitions-in-backbone-apps/" target="_blank" rel="external">Backbone.js</a>のイベントの管理についての個人的なメモ。<br><a id="more"></a></p>
+      <p><a href="http://lostechies.com/derickbailey/2011/09/15/zombies-run-managing-page-transitions-in-backbone-apps/" target="_blank" rel="noopener">Backbone.js</a>のイベントの管理についての個人的なメモ。<br><a id="more"></a></p>
 <h2 id="イベントの管理"><a href="#イベントの管理" class="headerlink" title="イベントの管理"></a>イベントの管理</h2><p>画面遷移しないアプリなどでは、Backbone.jsではviewオブジェクトにbindしたイベントを自前管理することが重要になる。<br>viewオブジェクトはそれぞれが独立しつつも、相互バインドしあう関係であることが理想的。</p>
 <p>しかし、イベント管理がうまくいっていないと、削除したはずなのに再び生成されるゾンビのようなviewが残ることになる。<br>この辺りをふまえて、個人的なやり方をメモ。</p>
 <p>まずは基礎となるviewのclass</p>
@@ -141,8 +142,8 @@ super
 <iframe width="100%" height="300" src="http://jsfiddle.net/kazu69/j7qWm/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
 <p>close メソッドを自前で用意して、イベントのbindを管理することにより特定のviewオブジェクトのイベントの参照をきちんと削除することで、ゾンビの様なviewを発生しないようにできている。</p>
-<h2 id="class継承時のコツ"><a href="#class継承時のコツ" class="headerlink" title="class継承時のコツ"></a>class継承時のコツ</h2><p>class継承したときに、backbone.jsの場合は constractorの<strong>super</strong> をたどって継承もと(スーパークラス)にアクセスできる。(プロトタイプチェーンが<strong>proto</strong>をたどる様な感じ)<br><a href="http://coffeescript.org/" target="_blank" rel="external">coffeescript</a>だと super() メソッドを使うことでと継承元クラス(スーパークラス)の同名メソッドを呼べるので、これを利用することでメソッドを拡張できる。</p>
-<p>また、functionオブジェクトはsuperメソッドで継承、拡張できるが、プロパティは継承できずに上書きされる。<br>そこでプロパティに関しては、継承元(スーパークラス)のプロトタイプをたどって、<a href="http://documentcloud.github.io/underscore/" target="_blank" rel="external">underscore.js</a>のextendメソッドで拡張している。</p>
+<h2 id="class継承時のコツ"><a href="#class継承時のコツ" class="headerlink" title="class継承時のコツ"></a>class継承時のコツ</h2><p>class継承したときに、backbone.jsの場合は constractorの<strong>super</strong> をたどって継承もと(スーパークラス)にアクセスできる。(プロトタイプチェーンが<strong>proto</strong>をたどる様な感じ)<br><a href="http://coffeescript.org/" target="_blank" rel="noopener">coffeescript</a>だと super() メソッドを使うことでと継承元クラス(スーパークラス)の同名メソッドを呼べるので、これを利用することでメソッドを拡張できる。</p>
+<p>また、functionオブジェクトはsuperメソッドで継承、拡張できるが、プロパティは継承できずに上書きされる。<br>そこでプロパティに関しては、継承元(スーパークラス)のプロトタイプをたどって、<a href="http://documentcloud.github.io/underscore/" target="_blank" rel="noopener">underscore.js</a>のextendメソッドで拡張している。</p>
 <p>[ruby]<br>class Dog extends Animal</p>
 <p>  initialize: -&gt;</p>
 <pre><code># 継承元classのeventsも継承
@@ -152,7 +153,7 @@ super
 super
 </code></pre><p>[/ruby]</p>
 <p>という感じで、Backboneだとviewを継承するとviewの管理が大変になるが、イベントの管理をなんとかできるとある程度簡単に開発できそうです。</p>
-<p>参考にしたサイト<br><a href="http://lostechies.com/derickbailey/2012/04/03/revisiting-the-backbone-event-aggregator-lessons-learned/" target="_blank" rel="external">http://lostechies.com/derickbailey/2012/04/03/revisiting-the-backbone-event-aggregator-lessons-learned/</a><br><a href="http://lostechies.com/derickbailey/2011/09/15/zombies-run-managing-page-transitions-in-backbone-apps/" target="_blank" rel="external">http://lostechies.com/derickbailey/2011/09/15/zombies-run-managing-page-transitions-in-backbone-apps/</a></p>
+<p>参考にしたサイト<br><a href="http://lostechies.com/derickbailey/2012/04/03/revisiting-the-backbone-event-aggregator-lessons-learned/" target="_blank" rel="noopener">http://lostechies.com/derickbailey/2012/04/03/revisiting-the-backbone-event-aggregator-lessons-learned/</a><br><a href="http://lostechies.com/derickbailey/2011/09/15/zombies-run-managing-page-transitions-in-backbone-apps/" target="_blank" rel="noopener">http://lostechies.com/derickbailey/2011/09/15/zombies-run-managing-page-transitions-in-backbone-apps/</a></p>
 
     
   </div>

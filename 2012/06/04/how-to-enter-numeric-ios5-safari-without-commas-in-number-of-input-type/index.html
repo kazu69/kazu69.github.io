@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2012/06/04/how-to-enter-numeric-ios5-safari-without-commas-in-number-of-input-type/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="以前、仕様がかわっていたので、解決するには・・・とかで回避していたのですが、やっぱり number属性であるべきところをtel属性にするのがおかしいというこころ残りがあったのです。今回、新たな解決方法が紹介されていました。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ios5のsafariでinput typeのnumberでカンマなしで数値を入力させる方法">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://kazu69.net/blog/tec/925/" target="_blank" rel="external">以前、仕様がかわっていたので、解決するには・・・</a>とかで回避していたのですが、やっぱり number属性であるべきところをtel属性にするのがおかしいというこころ残りがあったのです。<br>今回、新たな解決方法が紹介されていました。<br><a id="more"></a><br>この問題は<br>[html]<br>&lt;input type=’number’ value=’’&gt;<br>[/html]<br>とかで「011」や「1001」とか入力すると「11」、「1,000」などで自動変換されるという問題。</p>
+      <p><a href="http://kazu69.net/blog/tec/925/" target="_blank" rel="noopener">以前、仕様がかわっていたので、解決するには・・・</a>とかで回避していたのですが、やっぱり number属性であるべきところをtel属性にするのがおかしいというこころ残りがあったのです。<br>今回、新たな解決方法が紹介されていました。<br><a id="more"></a><br>この問題は<br>[html]<br>&lt;input type=’number’ value=’’&gt;<br>[/html]<br>とかで「011」や「1001」とか入力すると「11」、「1,000」などで自動変換されるという問題。</p>
 <p>number属性を使うと、ソフトウェアキーボードが数字キーボードを表示してくれるということもあり、text属性などを指定してテキストキーボードで入力するよりユーザーにとって操作しやすいという利点もあります。</p>
 <p>ということで、</p>
 <ul>
@@ -111,7 +112,7 @@ ga('send', 'pageview');
 <p>それが以下</p>
 <p>[html]<br>&lt;input type=&quot;text&quot; pattern=&quot;[0-9]<em>&quot;/&gt;<br>[/html]<br>または<br>[html]<br>&lt;input type=&quot;text&quot; pattern=&quot;\d</em>&quot;/&gt;​<br>[/html]</p>
 <p>正規表現で制御してやると、ソフトウェアキーボードも入力できる形式にあわせて表示されるんですね。</p>
-<p><a href="http://d.hatena.ne.jp/takaxi/20111211/1323575933" target="_blank" rel="external">iOS 5(iPhone等)の数字入力用inputフィールドでカンマを表示させない方法</a>に紹介されていました。</p>
+<p><a href="http://d.hatena.ne.jp/takaxi/20111211/1323575933" target="_blank" rel="noopener">iOS 5(iPhone等)の数字入力用inputフィールドでカンマを表示させない方法</a>に紹介されていました。</p>
 
     
   </div>

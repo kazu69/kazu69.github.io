@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/07/18/try-chef-container-0-2-0-beta/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Chef Container 0.2.0 (beta) なるものがリリースされたので、ちょっと触ってみたのでメモ。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-06-14T14:23:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chef Container 0.2.0 (beta)  を試してみた">
@@ -100,10 +101,10 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://www.getchef.com/blog/2014/07/15/release-chef-container-0-2-0-beta/" target="_blank" rel="external">Chef Container 0.2.0 (beta)</a> なるものがリリースされたので、ちょっと触ってみたのでメモ。</p>
+      <p><a href="http://www.getchef.com/blog/2014/07/15/release-chef-container-0-2-0-beta/" target="_blank" rel="noopener">Chef Container 0.2.0 (beta)</a> なるものがリリースされたので、ちょっと触ってみたのでメモ。</p>
 <a id="more"></a>
 <p>ブログにある通りに、apacheのimageを作成した。<br>ちなみにブログのままやるとdemo/apache2というimageなるものは存在しないので、ubuntuをつかった。</p>
-<p>まず、2つのGem、<a href="https://rubygems.org/gems/knife-container" target="_blank" rel="external">knife-container</a>、<a href="https://rubygems.org/gems/chef-container" target="_blank" rel="external">chef-container</a> と berkshelf をインストール。</p>
+<p>まず、2つのGem、<a href="https://rubygems.org/gems/knife-container" target="_blank" rel="noopener">knife-container</a>、<a href="https://rubygems.org/gems/chef-container" target="_blank" rel="noopener">chef-container</a> と berkshelf をインストール。</p>
 <script src="https://gist.github.com/kazu69/285a4416cd7a2e0ee722.js?file=Gemfile"></script>
 
 <p>まずは初期化。initコマンドを実行することでdockerfilesというディレクトリ内に必要なファイル群が生成された。</p>
@@ -132,7 +133,7 @@ ga('send', 'pageview');
 <p>どうやら成功っぽい。</p>
 <p>事前にコンテナを作成して、chefを実行するのはコンテナ同士の通信が必要な際にipが必要だからとか。</p>
 <p>これでより容易に既存のChefの資産を使えるのかな。</p>
-<p>参考にしたページ:<br><a href="http://www.creationline.com/lab/5432" target="_blank" rel="external">Chef Container 0.2.0 (beta) で Docker コンテナを作成する #opschef_ja #getchef_ja #dockerjp</a><br><a href="http://www.creationline.com/lab/5346" target="_blank" rel="external">[和訳] Release: Chef Container 0.2.0 (beta) #opschef_ja #getchef_ja #dockerjp</a></p>
+<p>参考にしたページ:<br><a href="http://www.creationline.com/lab/5432" target="_blank" rel="noopener">Chef Container 0.2.0 (beta) で Docker コンテナを作成する #opschef_ja #getchef_ja #dockerjp</a><br><a href="http://www.creationline.com/lab/5346" target="_blank" rel="noopener">[和訳] Release: Chef Container 0.2.0 (beta) #opschef_ja #getchef_ja #dockerjp</a></p>
 
     
   </div>

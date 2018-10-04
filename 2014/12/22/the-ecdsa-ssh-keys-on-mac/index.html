@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/12/22/the-ecdsa-ssh-keys-on-mac/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Mac OS10.10(Yosemite)にして、sshのたびにpromptがでて毎回パスフレーズを入力すれども、Saving password to keychain failed となりssh-agentが記憶してくれない状況になった。そのときに修正したときのメモ。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MacでSSHの鍵をECDSAにしてみる">
@@ -102,11 +103,11 @@ ga('send', 'pageview');
     
       <p>Mac OS10.10(Yosemite)にして、sshのたびにpromptがでて<br>毎回パスフレーズを入力すれども、<strong>Saving password to keychain failed</strong> となりssh-agentが記憶してくれない状況になった。<br>そのときに修正したときのメモ。</p>
 <a id="more"></a>
-<p>ついでに、sshの鍵をRSA暗号より安全性の高いECDSA(楕円曲線DSA)にしてみた。<br><a href="http://cloud.watch.impress.co.jp/epw/docs/news/20100118_343044.html" target="_blank" rel="external">この記事</a>によると<br>楕円曲線暗号がRSA暗号より、数千倍程度相対的に高い強度であるとか。</p>
+<p>ついでに、sshの鍵をRSA暗号より安全性の高いECDSA(楕円曲線DSA)にしてみた。<br><a href="http://cloud.watch.impress.co.jp/epw/docs/news/20100118_343044.html" target="_blank" rel="noopener">この記事</a>によると<br>楕円曲線暗号がRSA暗号より、数千倍程度相対的に高い強度であるとか。</p>
 <script src="https://gist.github.com/kazu69/8ff08940c74101194b54.js"></script>
 
-<p>ssh-keygen -t ecdsa -b 521 で、あれ512じゃないかなとおもったけど、<br><a href="http://blog.manabusakai.com/2013/08/ecdsa-no-exist-512bit/" target="_blank" rel="external">楕円曲線暗号に 512 bit は存在しない</a>をみるどうやら521bitでいいらしい。</p>
-<p>参考ページ <a href="http://www.dctrwatson.com/2013/07/how-to-update-openssh-on-mac-os-x/" target="_blank" rel="external">How to Update OpenSSH on Mac OS X</a></p>
+<p>ssh-keygen -t ecdsa -b 521 で、あれ512じゃないかなとおもったけど、<br><a href="http://blog.manabusakai.com/2013/08/ecdsa-no-exist-512bit/" target="_blank" rel="noopener">楕円曲線暗号に 512 bit は存在しない</a>をみるどうやら521bitでいいらしい。</p>
+<p>参考ページ <a href="http://www.dctrwatson.com/2013/07/how-to-update-openssh-on-mac-os-x/" target="_blank" rel="noopener">How to Update OpenSSH on Mac OS X</a></p>
 
     
   </div>

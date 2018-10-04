@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2010/05/21/google-web-fonts-google-font-api/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Google Font API(TypeKitとの共同開発)というのがweb fontを簡単に使えそう。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Googleのウェブフォント：Google Font API">
@@ -100,12 +101,12 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://code.google.com/intl/ja/apis/webfonts/" target="_blank" rel="external">Google Font API</a>(<a href="http://typekit.com/" target="_blank" rel="external">TypeKit</a>との共同開発)というのがweb fontを簡単に使えそう。<br><a id="more"></a><br><a href="http://code.google.com/webfonts" target="_blank" rel="external">Google Font APIで使えるフォント</a>はまだ少ないみたいですが、使い方は簡単です。<br><code>&amp;lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://fonts.googleapis.com/css?family=Font+Name&quot;&amp;gt;</code><br>で使いたいフォントを指定するだけ。<br>あとはCSSで<br><code>CSS selector {
+      <p><a href="http://code.google.com/intl/ja/apis/webfonts/" target="_blank" rel="noopener">Google Font API</a>(<a href="http://typekit.com/" target="_blank" rel="noopener">TypeKit</a>との共同開発)というのがweb fontを簡単に使えそう。<br><a id="more"></a><br><a href="http://code.google.com/webfonts" target="_blank" rel="noopener">Google Font APIで使えるフォント</a>はまだ少ないみたいですが、使い方は簡単です。<br><code>&amp;lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://fonts.googleapis.com/css?family=Font+Name&quot;&amp;gt;</code><br>で使いたいフォントを指定するだけ。<br>あとはCSSで<br><code>CSS selector {
   font-family: &#39;Font Name&#39;, serif;
-}</code><br>とかインラインで<br><code>&amp;lt;div style=&quot;font-family: &#39;Font Name&#39;, serif;&quot;&amp;gt;Your text&amp;lt;/div&amp;gt;</code><br>という感じで指定すればいい。<br><em>Italic</em>や<strong>bold</strong>なんかも<br>`<br>bold<br>&lt;link rel=”stylesheet” type=”text/css” href=”<a href="http://fonts.googleapis.com/css?family=Font+Name:bold&quot;&amp;gt" target="_blank" rel="external">http://fonts.googleapis.com/css?family=Font+Name:bold&quot;&amp;gt</a>;</p>
-<p>italic<br>&lt;link rel=”stylesheet” type=”text/css” href=”<a href="http://fonts.googleapis.com/css?family=Font+Name:italic&quot;&amp;gt" target="_blank" rel="external">http://fonts.googleapis.com/css?family=Font+Name:italic&quot;&amp;gt</a>;<br>`<br>みたいにするだけ。<br>ちなみにFont+Nameの「＋」はフォントの名称にスペースのある場合(Font Nameのように)、「＋」で置き換えたもの。</p>
+}</code><br>とかインラインで<br><code>&amp;lt;div style=&quot;font-family: &#39;Font Name&#39;, serif;&quot;&amp;gt;Your text&amp;lt;/div&amp;gt;</code><br>という感じで指定すればいい。<br><em>Italic</em>や<strong>bold</strong>なんかも<br>`<br>bold<br>&lt;link rel=”stylesheet” type=”text/css” href=”<a href="http://fonts.googleapis.com/css?family=Font+Name:bold&quot;&amp;gt" target="_blank" rel="noopener">http://fonts.googleapis.com/css?family=Font+Name:bold&quot;&amp;gt</a>;</p>
+<p>italic<br>&lt;link rel=”stylesheet” type=”text/css” href=”<a href="http://fonts.googleapis.com/css?family=Font+Name:italic&quot;&amp;gt" target="_blank" rel="noopener">http://fonts.googleapis.com/css?family=Font+Name:italic&quot;&amp;gt</a>;<br>`<br>みたいにするだけ。<br>ちなみにFont+Nameの「＋」はフォントの名称にスペースのある場合(Font Nameのように)、「＋」で置き換えたもの。</p>
 <p>複数指定する場合は「｜」で区切る感じ。<br><code>&amp;lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://fonts.googleapis.com/css?family=Font+Name:italic|Font+Name2&quot;&amp;gt;</code></p>
-<p>さらに、<a href="http://code.google.com/intl/ja/apis/webfonts/docs/webfont_loader.html" target="_blank" rel="external">WebFont Loader</a>というJavaScript libraryを使えば、フォントの読み込みも制御できるのでイベント発生時に書体の切り替えや、読み込みまでは代替フォントで表示させる等の対応もできそうです。<br><code>&amp;lt;script type=&quot;text/javascript&quot; src=&quot;http://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js&quot;&amp;gt;
+<p>さらに、<a href="http://code.google.com/intl/ja/apis/webfonts/docs/webfont_loader.html" target="_blank" rel="noopener">WebFont Loader</a>というJavaScript libraryを使えば、フォントの読み込みも制御できるのでイベント発生時に書体の切り替えや、読み込みまでは代替フォントで表示させる等の対応もできそうです。<br><code>&amp;lt;script type=&quot;text/javascript&quot; src=&quot;http://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js&quot;&amp;gt;
 &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
       WebFont.load({
         google: {
@@ -113,7 +114,7 @@ ga('send', 'pageview');
         }
       });
  &amp;lt;/script&amp;gt;</code></p>
-<p>CSS3でweb fontを採用ということもあり、<a href="http://www.fontspring.com/" target="_blank" rel="external">Fontspring</a>や<a href="http://webfonts.fonts.com/" target="_blank" rel="external">Fonts.com</a>のようにウェブフォントを提供するサービスは海外でいくつかあるみたいですが、googleさんも始めちゃったんですね。</p>
+<p>CSS3でweb fontを採用ということもあり、<a href="http://www.fontspring.com/" target="_blank" rel="noopener">Fontspring</a>や<a href="http://webfonts.fonts.com/" target="_blank" rel="noopener">Fonts.com</a>のようにウェブフォントを提供するサービスは海外でいくつかあるみたいですが、googleさんも始めちゃったんですね。</p>
 <p>日本語フォントは「ひらがな」、「カタカナ」、「漢字」もあるので、どれくらい容量を抑えられるかだろうな。Flashの埋め込みフォントみたいな感覚ですかね。</p>
 
     

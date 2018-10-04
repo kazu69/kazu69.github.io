@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2013/10/19/teaspoon-tried-to-test-for-javascript-in-rails/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Rails + BackboneのプロジェクトでのJavaScriptのテストに、今まではjasminericeなどを試したことはあるけど、もっと便利なツールがないか探してみた。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RailsでのJavaScriptのテストにteaspoonを使ってみた">
@@ -100,28 +101,28 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Rails + BackboneのプロジェクトでのJavaScriptのテストに、今までは<a href="https://github.com/bradphelan/jasminerice" target="_blank" rel="external">jasminerice</a>などを試したことはあるけど、もっと便利なツールがないか探してみた。<br><a id="more"></a></p>
+      <p>Rails + BackboneのプロジェクトでのJavaScriptのテストに、今までは<a href="https://github.com/bradphelan/jasminerice" target="_blank" rel="noopener">jasminerice</a>などを試したことはあるけど、もっと便利なツールがないか探してみた。<br><a id="more"></a></p>
 <p>候補として出てきたのが</p>
 <ul>
-<li><a href="https://github.com/searls/jasmine-rails" target="_blank" rel="external">jasmine-rails (Ruby Gem)</a></li>
-<li><a href="https://github.com/jfirebaugh/konacha" target="_blank" rel="external">konacha (Ruby Gem)</a></li>
-<li><a href="https://github.com/modeset/teaspoon" target="_blank" rel="external">teaspoon (Ruby Gem)</a></li>
-<li><a href="https://github.com/karma-runner/karma" target="_blank" rel="external">karma (Node Npm)</a></li>
-<li><a href="https://github.com/ryanseddon/bunyip" target="_blank" rel="external">bunyip (Node Npm)</a></li>
+<li><a href="https://github.com/searls/jasmine-rails" target="_blank" rel="noopener">jasmine-rails (Ruby Gem)</a></li>
+<li><a href="https://github.com/jfirebaugh/konacha" target="_blank" rel="noopener">konacha (Ruby Gem)</a></li>
+<li><a href="https://github.com/modeset/teaspoon" target="_blank" rel="noopener">teaspoon (Ruby Gem)</a></li>
+<li><a href="https://github.com/karma-runner/karma" target="_blank" rel="noopener">karma (Node Npm)</a></li>
+<li><a href="https://github.com/ryanseddon/bunyip" target="_blank" rel="noopener">bunyip (Node Npm)</a></li>
 </ul>
-<p>という感じになった。<br>そこで、今回は<a href="https://github.com/modeset/teaspoon" target="_blank" rel="external">teaspoon</a>を使ってみた。</p>
+<p>という感じになった。<br>そこで、今回は<a href="https://github.com/modeset/teaspoon" target="_blank" rel="noopener">teaspoon</a>を使ってみた。</p>
 <p>teaspoonを選択した理由は、</p>
 <ul>
-<li><a href="http://pivotal.github.com/jasmine" target="_blank" rel="external">jasmine</a>、<a href="http://visionmedia.github.com/mocha" target="_blank" rel="external">Mocha</a>、<a href="http://qunitjs.com/" target="_blank" rel="external">QUnit</a>のテストフレームワークが利用できる</li>
-<li>Spec Runnerに <a href="http://phantomjs.org/" target="_blank" rel="external">PhantomJS</a>か<a href="http://seleniumhq.org/docs/03_webdriver.jsp" target="_blank" rel="external">Selenium</a>が利用できる</li>
-<li>複数のライブラリをサポートしている。<a href="http://sinonjs.org/" target="_blank" rel="external">Sinon.JS</a>、<a href="http://chaijs.com/" target="_blank" rel="external">ChaiJS</a>、<a href="https://github.com/LearnBoost/expect.js" target="_blank" rel="external">expect.js</a>、<a href="https://github.com/velesin/jasmine-jquery" target="_blank" rel="external">jasmine-jquery.js</a>、<a href="https://github.com/angular/angular.js" target="_blank" rel="external">angular-scenario.js</a>。</li>
+<li><a href="http://pivotal.github.com/jasmine" target="_blank" rel="noopener">jasmine</a>、<a href="http://visionmedia.github.com/mocha" target="_blank" rel="noopener">Mocha</a>、<a href="http://qunitjs.com/" target="_blank" rel="noopener">QUnit</a>のテストフレームワークが利用できる</li>
+<li>Spec Runnerに <a href="http://phantomjs.org/" target="_blank" rel="noopener">PhantomJS</a>か<a href="http://seleniumhq.org/docs/03_webdriver.jsp" target="_blank" rel="noopener">Selenium</a>が利用できる</li>
+<li>複数のライブラリをサポートしている。<a href="http://sinonjs.org/" target="_blank" rel="noopener">Sinon.JS</a>、<a href="http://chaijs.com/" target="_blank" rel="noopener">ChaiJS</a>、<a href="https://github.com/LearnBoost/expect.js" target="_blank" rel="noopener">expect.js</a>、<a href="https://github.com/velesin/jasmine-jquery" target="_blank" rel="noopener">jasmine-jquery.js</a>、<a href="https://github.com/angular/angular.js" target="_blank" rel="noopener">angular-scenario.js</a>。</li>
 <li>asset pipelineをサポート</li>
 <li>テストスイートをサポート。</li>
 <li>CIとの統合が可能で容易。</li>
 </ul>
 <p>上記を考慮して、統合環境を最小限の設定で構築できるという優秀なツールじゃないかな。</p>
 <p>導入と設定は次の通り</p>
-<p>phantomJSを使用する場合は<a href="http://phantomjs.org/download.html" target="_blank" rel="external">別途phantomJSのインストール</a>が必要。</p>
+<p>phantomJSを使用する場合は<a href="http://phantomjs.org/download.html" target="_blank" rel="noopener">別途phantomJSのインストール</a>が必要。</p>
 <p>Gemfileに追加して<br>[ruby]</p>
 <h1 id="Gemfile"><a href="#Gemfile" class="headerlink" title="Gemfile"></a>Gemfile</h1><p>group :development, :test do</p>
 <p>  #gem &quot;mocha&quot;, &quot;~&gt; 0.14.0&quot; # mochaを使用する場合のみ必要</p>
@@ -134,7 +135,7 @@ create  spec/teaspoon_env.rb
 create  spec/javascripts/support
 create  spec/javascripts/fixtures
 create  spec/javascripts/spec_helper.js
-</code></pre><p>+============================================================================+<br>Congratulations! Teaspoon was successfully installed. Documentation and more can<br>be found at: <a href="https://github.com/modeset/teaspoon" target="_blank" rel="external">https://github.com/modeset/teaspoon</a></p>
+</code></pre><p>+============================================================================+<br>Congratulations! Teaspoon was successfully installed. Documentation and more can<br>be found at: <a href="https://github.com/modeset/teaspoon" target="_blank" rel="noopener">https://github.com/modeset/teaspoon</a></p>
 <p>[/shell]</p>
 <p>これで基本的なファイルなどまとめて設定、作成される。</p>
 <p>teaspoonの設定は initializers/teaspoon.rb で変更できます。<br>基本は以下になっている。<br>[ruby]<br>Teaspoon.setup do |config|<br>  config.mount_at = &quot;/teaspoon&quot;<br>  config.root = nil<br>  config.asset_paths = [&quot;spec/javascripts&quot;, &quot;spec/javascripts/stylesheets&quot;]<br>  config.fixture_path = &quot;spec/javascripts/fixtures&quot;<br>  config.suite do |suite|<br>    suite.matcher = &quot;{spec/javascripts,app/assets}/<em>*/</em>_spec.{js,js.coffee,coffee}&quot;<br>    suite.helper = &quot;spec_helper&quot;<br>    suite.javascripts = [&quot;teaspoon-jasmine&quot;]<br>    suite.stylesheets = [&quot;teaspoon&quot;]<br>    suite.no_coverage = [%r{/lib/ruby/gems/}, %r{/vendor/assets/}, %r{/support/}, %r{/(.+)_helper.}]<br>  end<br>end if defined?(Teaspoon) &amp;&amp; Teaspoon.respond_to?(:setup)<br>[/ruby]</p>
@@ -148,13 +149,13 @@ create  spec/javascripts/spec_helper.js
 <h1 id="Output"><a href="#Output" class="headerlink" title="Output"></a>Output</h1><p>  #config.formatters          = &quot;dot&quot; # available: dot, tap, tap_y, swayze_or_oprah</p>
 <p>  #config.suppress_log        = false # suppress logs coming from console[log/error/debug]</p>
 <p>  #config.color               = true</p>
-<h1 id="Driver-Options"><a href="#Driver-Options" class="headerlink" title="Driver Options"></a>Driver Options</h1><h1 id="config-driver-cli-options-‘–ssl-protocol-any’"><a href="#config-driver-cli-options-‘–ssl-protocol-any’" class="headerlink" title="config.driver_cli_options  = ‘–ssl-protocol=any’"></a>config.driver_cli_options  = ‘–ssl-protocol=any’</h1><h1 id="Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul"><a href="#Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul" class="headerlink" title="Coverage (requires istanbul – https://github.com/gotwarlost/istanbul)"></a>Coverage (requires istanbul – <a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">https://github.com/gotwarlost/istanbul</a>)</h1><p>  #config.coverage            = true</p>
+<h1 id="Driver-Options"><a href="#Driver-Options" class="headerlink" title="Driver Options"></a>Driver Options</h1><h1 id="config-driver-cli-options-‘–ssl-protocol-any’"><a href="#config-driver-cli-options-‘–ssl-protocol-any’" class="headerlink" title="config.driver_cli_options  = ‘–ssl-protocol=any’"></a>config.driver_cli_options  = ‘–ssl-protocol=any’</h1><h1 id="Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul"><a href="#Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul" class="headerlink" title="Coverage (requires istanbul – https://github.com/gotwarlost/istanbul)"></a>Coverage (requires istanbul – <a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="noopener">https://github.com/gotwarlost/istanbul</a>)</h1><p>  #config.coverage            = true</p>
 <p>  #config.coverage_reports    = &quot;text,html,cobertura&quot;</p>
 <p>  #config.coverage_output_dir = &quot;coverage&quot;<br>end<br>[/ruby]</p>
-<p>テストはconsole<br>[shell]<br>$ bundle exec teaspoon<br>[/shell]<br>または <a href="http://localhost:3000/teaspoon" target="_blank" rel="external">http://localhost:3000/teaspoon</a> でブラウザから実行が可能。</p>
-<p>Coverageレポートは <a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">Istanbul</a>を使用するので別途インストールする必要があります。<br>[shell]<br>$ npm install -g istanbul<br>[/shell]</p>
+<p>テストはconsole<br>[shell]<br>$ bundle exec teaspoon<br>[/shell]<br>または <a href="http://localhost:3000/teaspoon" target="_blank" rel="noopener">http://localhost:3000/teaspoon</a> でブラウザから実行が可能。</p>
+<p>Coverageレポートは <a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="noopener">Istanbul</a>を使用するので別途インストールする必要があります。<br>[shell]<br>$ npm install -g istanbul<br>[/shell]</p>
 <p>teaspoon_env.rbの設定を変更して<br>[ruby]</p>
-<h1 id="Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul-1"><a href="#Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul-1" class="headerlink" title="Coverage (requires istanbul – https://github.com/gotwarlost/istanbul)"></a>Coverage (requires istanbul – <a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="external">https://github.com/gotwarlost/istanbul</a>)</h1><p>  config.coverage            = true<br>  config.coverage_reports    = &quot;text,html,cobertura&quot;<br>  config.coverage_output_dir = &quot;coverage&quot;</p>
+<h1 id="Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul-1"><a href="#Coverage-requires-istanbul-–-https-github-com-gotwarlost-istanbul-1" class="headerlink" title="Coverage (requires istanbul – https://github.com/gotwarlost/istanbul)"></a>Coverage (requires istanbul – <a href="https://github.com/gotwarlost/istanbul" target="_blank" rel="noopener">https://github.com/gotwarlost/istanbul</a>)</h1><p>  config.coverage            = true<br>  config.coverage_reports    = &quot;text,html,cobertura&quot;<br>  config.coverage_output_dir = &quot;coverage&quot;</p>
 <p>[/ruby]</p>
 <p>これでCoverageレポートが出力されます。</p>
 <p>[shell]</p>
@@ -163,7 +164,7 @@ create  spec/javascripts/spec_helper.js
 <p>またはhtmlで出力している場合はcoverageの出力ディレクトリにアクセス。</p>
 <p>実際にテストでサポートしているライブラリを使用する場合は、Sprocketsのrequireディレクティブでロードする。<br>[javascript]<br>//=require support/sinon<br>//=require support/chai<br>//=require support/expect<br>//=require support/jasmine-jquery<br>//=require support/angular-scenario<br>[/javascript]</p>
 <p>fixtureの機能も備えているので、ファイル読込みやviewのレンダリングなどフレームワークに依存することないので<br>テストフレームワークを切り替えるときにも影響が少なくてすみます。</p>
-<p>また、<a href="https://github.com/modeset/guard-teaspoon" target="_blank" rel="external">guard-teaspoon</a>も提供されてるのでこちらもあわせて利用する。</p>
+<p>また、<a href="https://github.com/modeset/guard-teaspoon" target="_blank" rel="noopener">guard-teaspoon</a>も提供されてるのでこちらもあわせて利用する。</p>
 <p>Gemfileに追加して<br>[ruby]<br>group :assets do<br>  gem &quot;guard-teaspoon&quot;<br>  gem &quot;rb-fsevent&quot; # used by guard<br>end<br>[/ruby]</p>
 <p>bundle install</p>
 <p>あとはGuardfileを作成して、Guardをスタート<br>[shell]<br>$ bundle exec guard init teaspoon<br>$ bundle exec guard start<br>[/shell]</p>

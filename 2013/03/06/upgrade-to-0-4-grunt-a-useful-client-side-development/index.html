@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2013/03/06/upgrade-to-0-4-grunt-a-useful-client-side-development/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Grunt v0.4がリリースされて、しばらく経過したけどやっと機会ができたのでアップグレードしてみた。 Grunt 0.4 変更点ドキュメントまんまなんですが、grunt 0.4で変わったことをざっくりまとめてみた。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="クライアントサイド開発に便利な Gruntを 0.4にアップグレード">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://grunt.com" target="_blank" rel="external">Grunt</a> v0.4がリリースされて、しばらく経過したけどやっと機会ができたのでアップグレードしてみた。</p>
+      <p><a href="http://grunt.com" target="_blank" rel="noopener">Grunt</a> v0.4がリリースされて、しばらく経過したけどやっと機会ができたのでアップグレードしてみた。</p>
 <h2 id="Grunt-0-4-変更点"><a href="#Grunt-0-4-変更点" class="headerlink" title="Grunt 0.4 変更点"></a>Grunt 0.4 変更点</h2><p>ドキュメントまんまなんですが、grunt 0.4で変わったことをざっくりまとめてみた。<br><a id="more"></a></p>
 <ul>
 <li>node &gt;= 0.8.0 が必須</li>
@@ -110,12 +111,12 @@ ga('send', 'pageview');
 <li>grunt-cliのみをグローバルにインストールすればいい。grunt-cliインストールしてgruntコマンドが使用できる。</li>
 <li><p>いままで最初から準備されていたコアタスク(init,lint,minなど)はすべてmoduleとなった。</p>
 <blockquote>
-<p>concat → <a href="https://github.com/gruntjs/grunt-contrib-concat" target="_blank" rel="external">grunt-contrib-concat plugin</a><br>init → stand-alone <a href="https://github.com/gruntjs/grunt-init" target="_blank" rel="external">grunt-init</a> utility<br>lint → <a href="https://github.com/gruntjs/grunt-contrib-jshint" target="_blank" rel="external">grunt-contrib-jshint</a> plugin<br>min → <a href="https://github.com/gruntjs/grunt-contrib-uglify" target="_blank" rel="external">grunt-contrib-uglify</a> plugin<br>qunit → <a href="https://github.com/gruntjs/grunt-contrib-qunit" target="_blank" rel="external">grunt-contrib-qunit</a> plugin<br>server → <a href="https://github.com/gruntjs/grunt-contrib-connect" target="_blank" rel="external">grunt-contrib-connect</a> plugin<br>test → <a href="https://github.com/gruntjs/grunt-contrib-nodeunit" target="_blank" rel="external">grunt-contrib-nodeunit</a> plugin<br>watch → <a href="https://github.com/gruntjs/grunt-contrib-watch" target="_blank" rel="external">grunt-contrib-watch</a> plugin<br>また、moduleとなったので、loadNpmTasksで読込む必要がある。</p>
+<p>concat → <a href="https://github.com/gruntjs/grunt-contrib-concat" target="_blank" rel="noopener">grunt-contrib-concat plugin</a><br>init → stand-alone <a href="https://github.com/gruntjs/grunt-init" target="_blank" rel="noopener">grunt-init</a> utility<br>lint → <a href="https://github.com/gruntjs/grunt-contrib-jshint" target="_blank" rel="noopener">grunt-contrib-jshint</a> plugin<br>min → <a href="https://github.com/gruntjs/grunt-contrib-uglify" target="_blank" rel="noopener">grunt-contrib-uglify</a> plugin<br>qunit → <a href="https://github.com/gruntjs/grunt-contrib-qunit" target="_blank" rel="noopener">grunt-contrib-qunit</a> plugin<br>server → <a href="https://github.com/gruntjs/grunt-contrib-connect" target="_blank" rel="noopener">grunt-contrib-connect</a> plugin<br>test → <a href="https://github.com/gruntjs/grunt-contrib-nodeunit" target="_blank" rel="noopener">grunt-contrib-nodeunit</a> plugin<br>watch → <a href="https://github.com/gruntjs/grunt-contrib-watch" target="_blank" rel="noopener">grunt-contrib-watch</a> plugin<br>また、moduleとなったので、loadNpmTasksで読込む必要がある。</p>
 </blockquote>
 </li>
 <li><p>これまでgrunt.jsだったファイルがGrunt.jsまたはGrunt.coffeeになる。タスクがcoffeeの場合は自動でコンパイルされる</p>
 </li>
-<li><p>Gruntテンプレートが変更されてconfigタスクの記法がかわった。templateは<a href="http://lodash.com/docs/#template" target="_blank" rel="external">Lo-Dash template</a>で処理されるっぽい。<br>ということで、&lt;% %&gt;形式がつかえるようになる。</p>
+<li><p>Gruntテンプレートが変更されてconfigタスクの記法がかわった。templateは<a href="http://lodash.com/docs/#template" target="_blank" rel="noopener">Lo-Dash template</a>で処理されるっぽい。<br>ということで、&lt;% %&gt;形式がつかえるようになる。</p>
 <blockquote>
 <p>&lt;config:prop.subprop&gt; → &lt;%= prop.subprop %&gt;<br>&lt;json:file.json&gt; → grunt.file.readJSON(‘file.json’)<br>&lt;file_template:file.js&gt; → grunt.template.process(grunt.file.read(‘file.js’))</p>
 </blockquote>
@@ -127,7 +128,7 @@ ga('send', 'pageview');
 </code></pre><p>grunt.registerTask(‘default’, [‘jshint’, ‘nodeunit’, ‘concat’]);</p>
 </blockquote>
 </li>
-<li><p><a href="http://gruntjs.com/upgrading-from-0.3-to-0.4#api" target="_blank" rel="external">APIも数多く変更</a>された。</p>
+<li><p><a href="http://gruntjs.com/upgrading-from-0.3-to-0.4#api" target="_blank" rel="noopener">APIも数多く変更</a>された。</p>
 </li>
 </ul>
 <p>ということでアップグレーとしてみる。</p>
@@ -149,11 +150,11 @@ ga('send', 'pageview');
 <p>$ grunt-init jquery<br>Running &quot;init:jquery&quot; (init) task<br>This task will create one or more files in the current directory, based on the<br>environment and the answers to a few questions. Note that answering &quot;?&quot; to any<br>question will show question-specific help and answering &quot;none&quot; to most questions<br>will leave its value blank.</p>
 <p>&quot;jquery&quot; template notes:<br>Project name should not contain &quot;jquery&quot; or &quot;js&quot; and should be a unique ID not<br>already in use at plugins.jquery.com. Project title should be a human-readable<br>title, and doesn’t need to contain the word &quot;jQuery&quot;, although it may. For<br>example, a plugin titled &quot;Awesome Plugin&quot; might have the name &quot;awesome-plugin&quot;.</p>
 <p>For more information, please see the following documentation:</p>
-<p>Naming Your Plugin      <a href="http://plugins.jquery.com/docs/names/" target="_blank" rel="external">http://plugins.jquery.com/docs/names/</a><br>Publishing Your Plugin  <a href="http://plugins.jquery.com/docs/publish/" target="_blank" rel="external">http://plugins.jquery.com/docs/publish/</a><br>Package Manifest        <a href="http://plugins.jquery.com/docs/package-manifest/" target="_blank" rel="external">http://plugins.jquery.com/docs/package-manifest/</a></p>
-<p>Please answer the following:<br>[?] Project name (project)<br>[?] Project title (PROJECT)<br>[?] Description (The best jQuery plugin ever.)<br>[?] Version (0.1.0)<br>[?] Project git repository (git://github.com/project.git)<br>[?] Project homepage (<a href="https://github.com/project" target="_blank" rel="external">https://github.com/project</a>)<br>[?] Project issues tracker (<a href="https://github.com/project/issues" target="_blank" rel="external">https://github.com/project/issues</a>)<br>[?] Licenses (MIT)<br>[?] Author name (YOUR-NAME)<br>[?] Author email (YOUR-EMAIL)<br>[?] Author url (none)<br>[?] Required jQuery version (*)<br>[?] Do you need to make any changes to the above before continuing? (y/N) </p>
+<p>Naming Your Plugin      <a href="http://plugins.jquery.com/docs/names/" target="_blank" rel="noopener">http://plugins.jquery.com/docs/names/</a><br>Publishing Your Plugin  <a href="http://plugins.jquery.com/docs/publish/" target="_blank" rel="noopener">http://plugins.jquery.com/docs/publish/</a><br>Package Manifest        <a href="http://plugins.jquery.com/docs/package-manifest/" target="_blank" rel="noopener">http://plugins.jquery.com/docs/package-manifest/</a></p>
+<p>Please answer the following:<br>[?] Project name (project)<br>[?] Project title (PROJECT)<br>[?] Description (The best jQuery plugin ever.)<br>[?] Version (0.1.0)<br>[?] Project git repository (git://github.com/project.git)<br>[?] Project homepage (<a href="https://github.com/project" target="_blank" rel="noopener">https://github.com/project</a>)<br>[?] Project issues tracker (<a href="https://github.com/project/issues" target="_blank" rel="noopener">https://github.com/project/issues</a>)<br>[?] Licenses (MIT)<br>[?] Author name (YOUR-NAME)<br>[?] Author email (YOUR-EMAIL)<br>[?] Author url (none)<br>[?] Required jQuery version (*)<br>[?] Do you need to make any changes to the above before continuing? (y/N) </p>
 <p>Writing .gitignore…OK<br>Writing .jshintrc…OK<br>Writing CONTRIBUTING.md…OK<br>Writing Gruntfile.js…OK<br>Writing README.md…OK<br>Writing libs/jquery-loader.js…OK<br>Writing libs/jquery/jquery.js…OK<br>Writing libs/qunit/qunit.css…OK<br>Writing libs/qunit/qunit.js…OK<br>Writing src/.jshintrc…OK<br>Writing src/project.js…OK<br>Writing test/.jshintrc…OK<br>Writing test/project.html…OK<br>Writing test/project_test.js…OK<br>Writing LICENSE-MIT…OK<br>Writing package.json…OK<br>Writing project.jquery.json…OK</p>
 <p>Initialized from template &quot;jquery&quot;.<br>You should now install project dependencies with npm install. After that, you<br>may execute project tasks with grunt. For more information about installing<br>and configuring Grunt, please see the Getting Started guide:</p>
-<p><a href="http://gruntjs.com/getting-started" target="_blank" rel="external">http://gruntjs.com/getting-started</a></p>
+<p><a href="http://gruntjs.com/getting-started" target="_blank" rel="noopener">http://gruntjs.com/getting-started</a></p>
 <p>Done, without errors.<br>[/shell]</p>
 <p>と対話式にセットアップでき、完了すると以下のようになる。</p>
 <p>[shell]<br>.<br>├── CONTRIBUTING.md<br>├── Gruntfile.js<br>├── LICENSE-MIT<br>├── README.md<br>├── project.jquery.json<br>├── libs<br>├── package.json<br>├── src<br>└── test<br>[/shell]</p>
@@ -179,7 +180,7 @@ ga('send', 'pageview');
 <p>あとは、必要に応じてmoduleを追加して、Gruntfileにタスクを追加していけばいい感じですかね。</p>
 <p>これまでグローバルで管理していたmoduleもプロジェクト単位で管理でき、プロジェクト開発者全員で同じ開発環境を容易に構築できるようになってとても便利になった感じがします。</p>
 <p>とりあえず、クライアントサイドの開発が多い、エンジニアやデザイナーは使うといいですよ、Grunt。</p>
-<h2 id="参考サイト"><a href="#参考サイト" class="headerlink" title="参考サイト"></a>参考サイト</h2><p><a href="http://gruntjs.com/upgrading-from-0.3-to-0.4" target="_blank" rel="external">Grunt Upgrading from 0.3 to 0.4</a></p>
+<h2 id="参考サイト"><a href="#参考サイト" class="headerlink" title="参考サイト"></a>参考サイト</h2><p><a href="http://gruntjs.com/upgrading-from-0.3-to-0.4" target="_blank" rel="noopener">Grunt Upgrading from 0.3 to 0.4</a></p>
 
     
   </div>

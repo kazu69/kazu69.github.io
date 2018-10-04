@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/04/12/created-image-installed-multiple-node-js-docker/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="時間がとれたので、やっとImmutable Infrastructureとやらにふれみた。サーバーを容易に作っては壊すを簡単に行えるDockerを使用して、今回はVagrant上で複数のnode.jsがインストールされたimageを作成してみた。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-06-14T02:43:22.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="複数のnode.jsがインストールされたimageをdockerで作成した">
@@ -100,8 +101,8 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>時間がとれたので、やっとImmutable Infrastructureとやらにふれみた。<br>サーバーを容易に作っては壊すを簡単に行える<a href="https://www.docker.io/" target="_blank" rel="external">Docker</a>を使用して、今回はVagrant上で複数のnode.jsがインストールされたimageを作成してみた。<br><a id="more"></a></p>
-<p><a href="http://www.vagrantup.com/blog/vagrant-1-4.html#toc_0" target="_blank" rel="external">Vagrant 1.4</a> からDocker Provisionerにが使えるので、Vagrantfileは以下のようにした。</p>
+      <p>時間がとれたので、やっとImmutable Infrastructureとやらにふれみた。<br>サーバーを容易に作っては壊すを簡単に行える<a href="https://www.docker.io/" target="_blank" rel="noopener">Docker</a>を使用して、今回はVagrant上で複数のnode.jsがインストールされたimageを作成してみた。<br><a id="more"></a></p>
+<p><a href="http://www.vagrantup.com/blog/vagrant-1-4.html#toc_0" target="_blank" rel="noopener">Vagrant 1.4</a> からDocker Provisionerにが使えるので、Vagrantfileは以下のようにした。</p>
 <script src="http://gist-it.appspot.com/github/kazu69/docker-ndenv/blob/master/Vagrantfile"></script>
 
 <p>Dockerの公式centosのイメージを使ってimageをbuildする。<br>projectディレクトリにはDockerfileとインストールするnode.jsのバージョンを指定した.node-versionファイルをおいてあり、それをsyncするようにしておく。</p>
@@ -114,7 +115,7 @@ ga('send', 'pageview');
 <p>yumのアップデートと必要なパッケージの取得</p>
 <script src="http://gist-it.appspot.com/github/kazu69/docker-ndenv/blob/master/project/Dockerfile?slice=15"></script>
 
-<p><a href="https://github.com/riywo/ndenv" target="_blank" rel="external">ndenv</a>をインストール</p>
+<p><a href="https://github.com/riywo/ndenv" target="_blank" rel="noopener">ndenv</a>をインストール</p>
 <script src="http://gist-it.appspot.com/github/kazu69/docker-ndenv/blob/master/project/Dockerfile?slice=17:23"></script>
 
 <p>ndenvのパスを通す</p>
@@ -130,7 +131,7 @@ ga('send', 'pageview');
 <script src="http://gist-it.appspot.com/github/kazu69/docker-ndenv/blob/master/project/Dockerfile?slice=28"></script>
 
 <p>として回避した。<br>とりあえず、これで必要なnod.jsのはいったimageはできるっぽい。</p>
-<p>参考にしたページ: <a href="http://www.ducea.com/2009/02/18/linux-tips-bash-completion-devfd62-no-such-file-or-directory/" target="_blank" rel="external">http://www.ducea.com/2009/02/18/linux-tips-bash-completion-devfd62-no-such-file-or-directory/</a><br>repository: <a href="https://github.com/kazu69/docker-ndenv" target="_blank" rel="external">https://github.com/kazu69/docker-ndenv</a></p>
+<p>参考にしたページ: <a href="http://www.ducea.com/2009/02/18/linux-tips-bash-completion-devfd62-no-such-file-or-directory/" target="_blank" rel="noopener">http://www.ducea.com/2009/02/18/linux-tips-bash-completion-devfd62-no-such-file-or-directory/</a><br>repository: <a href="https://github.com/kazu69/docker-ndenv" target="_blank" rel="noopener">https://github.com/kazu69/docker-ndenv</a></p>
 
     
   </div>

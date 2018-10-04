@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2010/01/21/send-to-twitter-javascript/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="たいしたことないけど、わすれないために。Twitterに送るボタン作るときのJavaScript。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Twitterに送る Javascript">
@@ -107,7 +108,7 @@ ga('send', 'pageview');
     var tg_url     = &quot;http://twitter.com/home/?status=&quot;;
     var twurl = tg_url + title + &#39; &#39; + url;
     window.open(twurl);
-}</code><br>ちなみに、<a href="http://logpi.jp/" target="_blank" rel="external">Logpi</a>に送るなら<br><code>function sendLogpi() {
+}</code><br>ちなみに、<a href="http://logpi.jp/" target="_blank" rel="noopener">Logpi</a>に送るなら<br><code>function sendLogpi() {
     var title = document.title;
         title = encodeURIComponent(title);
     var url = location.href;

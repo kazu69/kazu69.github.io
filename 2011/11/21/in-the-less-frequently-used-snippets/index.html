@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2011/11/21/in-the-less-frequently-used-snippets/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="css拡張メタ言語Less。個人的によく使うスニペットの備忘録。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Lessでよく使うスニペット">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>css拡張メタ言語<a href="http://lesscss.org/" target="_blank" rel="external">Less</a>。個人的によく使うスニペットの備忘録。<br><a id="more"></a><br>`<br>/<em>round box</em>/<br>.border-radius (@topLeft: 0,@topRight: 0,@bottomLeft: 0,@bottomRight: 0){<br>    -webkit-border-radius: @arguments;<br>    -moz-border-radius: @arguments;<br>    -mes-border-radius:@arguments;<br>    border-radius: @arguments;<br>}<br>/<em>  useage<br>   .someclass {<br>        .border-radius(3px, 3px, 3px, 3px);<br>    }
+      <p>css拡張メタ言語<a href="http://lesscss.org/" target="_blank" rel="noopener">Less</a>。個人的によく使うスニペットの備忘録。<br><a id="more"></a><br>`<br>/<em>round box</em>/<br>.border-radius (@topLeft: 0,@topRight: 0,@bottomLeft: 0,@bottomRight: 0){<br>    -webkit-border-radius: @arguments;<br>    -moz-border-radius: @arguments;<br>    -mes-border-radius:@arguments;<br>    border-radius: @arguments;<br>}<br>/<em>  useage<br>   .someclass {<br>        .border-radius(3px, 3px, 3px, 3px);<br>    }
 </em>/</p>
 <p>/<em>box shadow</em>/<br>.boxshadow (@x:0,@y:0,@blur:0,@color:#000) {<br>    -webkit-box-shadow:  @arguments;<br>    -moz-box-shadow:  @arguments;<br>    -o-box-shadow:  @arguments;<br>    -ms-box-shadow:  @arguments;<br>    box-shadow:  @arguments;<br>}<br>/<em>  useage<br>   .someclass {<br>        .boxshadow (1px, 1px, 1px, rgba(0, 0, 0, 0.5));<br>    }<br>   .insetclass {<br>        .boxshadow (1px, 1px, 1px, rgba(0, 0, 0, 0.5), inset);<br>    }
 </em>/</p>

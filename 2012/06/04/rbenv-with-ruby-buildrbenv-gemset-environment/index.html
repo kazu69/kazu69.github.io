@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2012/06/04/rbenv-with-ruby-buildrbenv-gemset-environment/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="いままでrvmを使っていたけど、rbenvに移行したのでそのときの環境設定のメモを残しておこうと思います。rbenv + ruby-build + rbenv-gemset 環境を構築したいと思います。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="rbenv + ruby-build + rbenv-gemset の環境構築をしてみた">
@@ -100,7 +101,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>いままでrvmを使っていたけど、rbenvに移行したのでそのときの環境設定のメモを残しておこうと思います。<br><a href="https://github.com/sstephenson/rbenv" target="_blank" rel="external">rbenv</a> + <a href="https://github.com/sstephenson/ruby-build" target="_blank" rel="external">ruby-build</a> + <a href="https://github.com/jamis/rbenv-gemset" target="_blank" rel="external">rbenv-gemset</a> 環境を構築したいと思います。<br><a id="more"></a><br>まず、rubyのバージョン管理をrvmからrbenvに移行しました。<br>まずはrvmを削除。<br>[shell]<br>rvm implode<br>[/shell]</p>
+      <p>いままでrvmを使っていたけど、rbenvに移行したのでそのときの環境設定のメモを残しておこうと思います。<br><a href="https://github.com/sstephenson/rbenv" target="_blank" rel="noopener">rbenv</a> + <a href="https://github.com/sstephenson/ruby-build" target="_blank" rel="noopener">ruby-build</a> + <a href="https://github.com/jamis/rbenv-gemset" target="_blank" rel="noopener">rbenv-gemset</a> 環境を構築したいと思います。<br><a id="more"></a><br>まず、rubyのバージョン管理をrvmからrbenvに移行しました。<br>まずはrvmを削除。<br>[shell]<br>rvm implode<br>[/shell]</p>
 <p>.bash_profileとかにある設定も同じく削除しました。<br>でrbenvのインストール。<br>Homebrewをつかってるので、<br>[shell]<br>brew install rbenv<br>[/shell]<br>githubからcloneするなら<br>[shell]<br>git clone git://github.com/sstephenson/rbenv.git .rbenv<br>[/shell]</p>
 <p>つづいてパスを通します。<br>[shell]<br>echo ‘export PATH=&quot;$HOME/.rbenv/bin:$PATH&quot;’ &gt;&gt; ~/.bash_profile<br>echo ‘eval &quot;$(rbenv init -)&quot;’ &gt;&gt; ~/.bash_profile<br>[/shell]</p>
 <p>続いてRubyのビルドツールruby-buildをいれます。<br>brewを使ってるなら、<br>[shell]<br>brew install ruby-build<br>[/shell]</p>
@@ -126,7 +127,7 @@ ga('send', 'pageview');
 <p>.rbenv-gemsetsの存在を確認するには<br>[shell]<br>rbenv gemset file<br>[/shell]</p>
 <p>gemsetを削除するには<br>[shell]<br>rbenv gemset delete 1.9.3-p125 my-set<br>[/shell]</p>
 <p>で一通り良さそうでした。</p>
-<p>これで複数バージョンのRubyでの開発環境ができました。<br>ちなみに自分は管理ができてなくてカオスな状況だったので、ワイルドにもインストールされているgemをすべてアンインストールして再構築しました。<br><a href="http://qiita.com/items/e135d3c88a5f86f08435" target="_blank" rel="external">gemをすべてアンインストールするワンライナー</a>を参考にして、<br>[shell]<br> for gem in <code>gem list | cut -d &amp;quot; &amp;quot; -f 1</code>; do yes | gem uninstall $gem -a; done<br>[/shell]</p>
+<p>これで複数バージョンのRubyでの開発環境ができました。<br>ちなみに自分は管理ができてなくてカオスな状況だったので、ワイルドにもインストールされているgemをすべてアンインストールして再構築しました。<br><a href="http://qiita.com/items/e135d3c88a5f86f08435" target="_blank" rel="noopener">gemをすべてアンインストールするワンライナー</a>を参考にして、<br>[shell]<br> for gem in <code>gem list | cut -d &amp;quot; &amp;quot; -f 1</code>; do yes | gem uninstall $gem -a; done<br>[/shell]</p>
 <p>以上、備忘録でした。</p>
 
     

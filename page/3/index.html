@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/page/3/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="福岡でwebの仕事をしています">
+<meta property="og:locale" content="ja">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="69log">
 <meta name="twitter:description" content="福岡でwebの仕事をしています">
@@ -73,6 +74,47 @@ ga('send', 'pageview');
     <main role="main" id="main">
       <section>
   
+    <article id="post-protect-bypass-form-action-reflected-xss" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/10/protect-bypass-form-action-reflected-xss/">form-actionを使ったCSPのXSS攻撃手法を学んだ</a>
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2016-09-09T16:23:00.000Z" itemprop="datePublished">2016-09-10</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/web/">web</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>XSS攻撃の検出と軽減手法として<a href="https://developer.mozilla.org/ja/docs/Web/Security/CSP" target="_blank" rel="noopener">CSP(Content Security Policy)</a>を設定することはよく取られている手法。<br>しかし、これは決して万全ではないということを改めて学んだ。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-target-blank-vulnerability-tabnabbing-and-countermeasures" class="article article-type-post" itemscope itemprop="blogPost">
   <header class="article-header">
     
@@ -101,7 +143,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="https://mathiasbynens.github.io/rel-noopener/" target="_blank" rel="external">About rel=noopener</a>の記事を見て、フィッシング詐欺の手法Tabnabbing(タブナビング)について、<br>以前にそれっぽい記事読んだけど、すっかり忘れていた。</p>
+      <p><a href="https://mathiasbynens.github.io/rel-noopener/" target="_blank" rel="noopener">About rel=noopener</a>の記事を見て、フィッシング詐欺の手法Tabnabbing(タブナビング)について、<br>以前にそれっぽい記事読んだけど、すっかり忘れていた。</p>
 <p>改めて見直してみて、その内容と対策がまとまっていたのでおさらい。</p>
       
     
@@ -307,7 +349,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>nodejsのプロセスバックグラウンドで実行する(デーモン化)する場合、だいたい<a href="https://www.npmjs.com/package/forever" target="_blank" rel="external">forever</a>などが選択されると思う。<br>今回は、Fedora、CentOS 7のデーモンとなるsystemdを使ってデーモン化してみた。<br>
+      <p>nodejsのプロセスバックグラウンドで実行する(デーモン化)する場合、だいたい<a href="https://www.npmjs.com/package/forever" target="_blank" rel="noopener">forever</a>などが選択されると思う。<br>今回は、Fedora、CentOS 7のデーモンとなるsystemdを使ってデーモン化してみた。<br>
       
     
   </div>
@@ -348,7 +390,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>サーバーレスでアプリケーションを構築するためのNode.jsのフレームワーク<a href="">Serverless</a>を使って、<br><a href="https://aws.amazon.com/lambda/" target="_blank" rel="external">AWS Lambda</a>と<a href="https://aws.amazon.com/jp/api-gateway/" target="_blank" rel="external">Amazon API Gateway</a>をつかってSlack Botを試してみたときのメモ。</p>
+      <p>サーバーレスでアプリケーションを構築するためのNode.jsのフレームワーク<a href="">Serverless</a>を使って、<br><a href="https://aws.amazon.com/lambda/" target="_blank" rel="noopener">AWS Lambda</a>と<a href="https://aws.amazon.com/jp/api-gateway/" target="_blank" rel="noopener">Amazon API Gateway</a>をつかってSlack Botを試してみたときのメモ。</p>
       
     
   </div>
@@ -389,7 +431,7 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>これまでanalyticsdではJavaScriptの無効のユーザー、メールの開封率、サーバーイベント、POSシステムなどは通常のトラッキングタグでは計測できなかった。<br>しかし、新たに追加された<a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/" target="_blank" rel="external">Measurement Protocol</a>を使うことで、直接イベントをトラッキングができる。</p>
+      <p>これまでanalyticsdではJavaScriptの無効のユーザー、メールの開封率、サーバーイベント、POSシステムなどは通常のトラッキングタグでは計測できなかった。<br>しかし、新たに追加された<a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/" target="_blank" rel="noopener">Measurement Protocol</a>を使うことで、直接イベントをトラッキングができる。</p>
       
     
   </div>
@@ -431,47 +473,6 @@ ga('send', 'pageview');
     </div>
     
       <p>開発やCIでやDockerイメージをbuildする際にnpm installすると、cacheがないため時間がかかる。<br>これはpackageの数が多くなると結構辛いことになるので、なんとかできないかと試してみた。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-rendering_reactjs_template_server_side_in_php_application" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/17/rendering_reactjs_template_server_side_in_php_application/">PHPアプリケーションでのReact.jsのサーバーレンダリング考える</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2016-04-17T09:08:21.000Z" itemprop="datePublished">2016-04-17</time>
-
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/tec/">tec</a>
-  </div>
-
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>PHPでReact.jsなアプリケーションを導入する時に眺めてみた時のメモ。</p>
       
     
   </div>

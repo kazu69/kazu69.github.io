@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2014/03/04/to-fix-the-first-commit-in-git/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="個人的なメモ。gitの最初のコミットをrebase -iで修正しようとしたけどできなかった。">
+<meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="git のfirst commitを修正する">
@@ -104,12 +105,12 @@ ga('send', 'pageview');
 <script src="https://gist.github.com/kazu69/9340353.js?file=fail.sh"></script>
 
 <a id="more"></a>
-<p>さすがに最初の履歴は変更できないのかなと思って、一応調べたら<br><a href="https://github.com/git/git/blob/master/Documentation/RelNotes/1.7.12.txt#L59" target="_blank" rel="external">https://github.com/git/git/blob/master/Documentation/RelNotes/1.7.12.txt#L59</a></p>
+<p>さすがに最初の履歴は変更できないのかなと思って、一応調べたら<br><a href="https://github.com/git/git/blob/master/Documentation/RelNotes/1.7.12.txt#L59" target="_blank" rel="noopener">https://github.com/git/git/blob/master/Documentation/RelNotes/1.7.12.txt#L59</a></p>
 <p>とかあるっぽいので</p>
 <script src="https://gist.github.com/kazu69/9340353.js?file=success.sh"></script>
 
 <p>git rebase -i –root でした。<br>変更でいきない歴史はなかった。</p>
-<p>参考にしたページ: <a href="http://stackoverflow.com/questions/2246208/change-first-commit-of-project-with-git" target="_blank" rel="external">http://stackoverflow.com/questions/2246208/change-first-commit-of-project-with-git</a></p>
+<p>参考にしたページ: <a href="http://stackoverflow.com/questions/2246208/change-first-commit-of-project-with-git" target="_blank" rel="noopener">http://stackoverflow.com/questions/2246208/change-first-commit-of-project-with-git</a></p>
 
     
   </div>

@@ -11,6 +11,7 @@
 <meta property="og:url" content="http://blog.kazu69.net/2010/10/12/tried-wordpress-facebook-like-button-without-a-plugin/index.html">
 <meta property="og:site_name" content="69log">
 <meta property="og:description" content="Facebookの”like”ボタン（「いいね」ってやつ）をつけてみました。 WordPressだと該当のプラグインがたくさんあるので、簡単につけれるみたいですが、 今回はカスタムとかしやすいように、プラグインなしでつけてみることにしました。">
+<meta property="og:locale" content="ja">
 <meta property="og:image" content="http://blog.kazu69.net/images/2010/10/2010101201.png">
 <meta property="og:image" content="http://blog.kazu69.net/images/2010/10/2010101202.png">
 <meta property="og:image" content="http://blog.kazu69.net/images/2010/10/2010100203.png">
@@ -104,13 +105,13 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://www.facebook.com/" target="_blank" rel="external">Facebook</a>の”like”ボタン（「いいね」ってやつ）をつけてみました。</p>
-<p>WordPressだと<a href="http://wordpress.org/extend/plugins/search.php?q=facebook+like+button&amp;sort=" target="_blank" rel="external">該当のプラグイン</a>がたくさんあるので、簡単につけれるみたいですが、</p>
+      <p><a href="http://www.facebook.com/" target="_blank" rel="noopener">Facebook</a>の”like”ボタン（「いいね」ってやつ）をつけてみました。</p>
+<p>WordPressだと<a href="http://wordpress.org/extend/plugins/search.php?q=facebook+like+button&amp;sort=" target="_blank" rel="noopener">該当のプラグイン</a>がたくさんあるので、簡単につけれるみたいですが、</p>
 <p>今回はカスタムとかしやすいように、プラグインなしでつけてみることにしました。</p>
 <a id="more"></a>
 <ol>
 <li><p><strong>まずはアプリケーションの登録</strong></p>
-<p><a href="http://developers.facebook.com/setup/" target="_blank" rel="external">アプリケーションを作成</a>よりアプリケーションを作成します。</p>
+<p><a href="http://developers.facebook.com/setup/" target="_blank" rel="noopener">アプリケーションを作成</a>よりアプリケーションを作成します。</p>
 <p>サイト名、サイトURLをいれて、地域は「日本」を選択して、アプリケーションを作成。</p>
 <p><img src="/images/2010/10/2010101201.png" alt="アプリケーションの登録"></p>
 </li>
@@ -138,11 +139,11 @@ document.getElementById(&#39;fb-root&#39;).appendChild(e);
 </li>
 </ol>
 <p>以上で、設置完了です。</p>
-<p><a href="http://www.facebook.com/developers/apps.php" target="_blank" rel="external">アプリケーションページ</a>で設定の変更などができます。</p>
+<p><a href="http://www.facebook.com/developers/apps.php" target="_blank" rel="noopener">アプリケーションページ</a>で設定の変更などができます。</p>
 <p><img src="/images/2010/10/2010100203.png" alt="アプリケーションページ"></p>
-<p>ここまでしたので、つぎに<a href="http://opengraphprotocol.org/" target="_blank" rel="external">Open Graph Protocol</a>に対応させます。</p>
+<p>ここまでしたので、つぎに<a href="http://opengraphprotocol.org/" target="_blank" rel="noopener">Open Graph Protocol</a>に対応させます。</p>
 <p>Open Graph Protocolとは、Facebook以外のwebコンテンツ（webサイトやブログなど）をFacebookと統合するための仕様。みたいなものらしい。</p>
-<p>詳しくは<a href="http://developers.facebook.com/docs/opengraph" target="_blank" rel="external">Facebookのページ</a>をみてください。</p>
+<p>詳しくは<a href="http://developers.facebook.com/docs/opengraph" target="_blank" rel="noopener">Facebookのページ</a>をみてください。</p>
 <p>とりあえず、仕様に沿ってmetaタグのあるheader.phpに追加。</p>
 <p><code>&amp;lt;meta property=&quot;og:title&quot; content=&quot;&amp;lt;?php bloginfo(&#39;name&#39;); ?&amp;gt; | &amp;lt;?php the_title_attribute(); ?&amp;gt;&quot;/&amp;gt;
 &amp;lt;meta property=&quot;og:type&quot; content=&quot;blog&quot;/&amp;gt;
@@ -158,7 +159,7 @@ document.getElementById(&#39;fb-root&#39;).appendChild(e);
 <ul>
 <li><strong>og:type</strong></li>
 </ul>
-<p>オブジェクトのタイプ。ブログなのでblogを使用しました。一覧は<a href="http://developers.facebook.com/docs/opengraph#types" target="_blank" rel="external">こちら</a>にあります。</p>
+<p>オブジェクトのタイプ。ブログなのでblogを使用しました。一覧は<a href="http://developers.facebook.com/docs/opengraph#types" target="_blank" rel="noopener">こちら</a>にあります。</p>
 <ul>
 <li><strong>og:url</strong></li>
 </ul>
@@ -180,7 +181,7 @@ document.getElementById(&#39;fb-root&#39;).appendChild(e);
 </ul>
 <p>FacebookユーザIDかFacebook PlatformアプリケーションIDを登録します。</p>
 <p>以上で、たぶんOpen Graph Protocolに必要な最低限のことはできたと思う。</p>
-<p>ただしく設定出来ているかは、<a href="http://developers.facebook.com/tools/lint/" target="_blank" rel="external">URLリンター</a>というものでチェックできます。</p>
+<p>ただしく設定出来ているかは、<a href="http://developers.facebook.com/tools/lint/" target="_blank" rel="noopener">URLリンター</a>というものでチェックできます。</p>
 
     
   </div>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>React HOC(Higher-order component)をTypeScriptで使う | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ReactのComponentのリファクタリングなどの際に、HOC(Higher-order component)でコンポーネントを拡張することがあるが、TypeScriptでの実装をするにあたりお試しした備忘録。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React HOC(Higher-order component)をTypeScriptで使う">
+<meta property="og:url" content="http://blog.kazu69.net/2018/09/22/react-hoc-with-typescript/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="ReactのComponentのリファクタリングなどの際に、HOC(Higher-order component)でコンポーネントを拡張することがあるが、TypeScriptでの実装をするにあたりお試しした備忘録。">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2018-10-04T15:51:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React HOC(Higher-order component)をTypeScriptで使う">
+<meta name="twitter:description" content="ReactのComponentのリファクタリングなどの際に、HOC(Higher-order component)でコンポーネントを拡張することがあるが、TypeScriptでの実装をするにあたりお試しした備忘録。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-react-hoc-with-typescript" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      React HOC(Higher-order component)をTypeScriptで使う
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2018-09-22T02:32:13.000Z" itemprop="datePublished">2018-09-22</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>ReactのComponentのリファクタリングなどの際に、HOC(Higher-order component)で<br>コンポーネントを拡張することがあるが、TypeScriptでの実装をするにあたりお試しした備忘録。</p>
+<a id="more"></a>
+<h3 id="HOCのおさらい"><a href="#HOCのおさらい" class="headerlink" title="HOCのおさらい"></a>HOCのおさらい</h3><p>HOC(Higher-order component)はcomponentを引数にとり、新しいコンポーネントを返す関数であり、コンポーネント間のコードを再利用可能にする際に利用される手法。</p>
+<p>ざっくり以下のような感じのこと。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> composedComponent = hightOrderComponent(Component)</span><br></pre></td></tr></table></figure>
+<p>またはコンポーネントにpropsを渡すなら</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> composedComponent = hightOrderComponent(injectProps)(Component)</span><br></pre></td></tr></table></figure>
+<p>という感じのもの。</p>
+<p>以下の点が確保されている必要がある。</p>
+<ul>
+<li>純粋関数であり参照透過性を保持することで副作用を避ける。</li>
+<li>HOC内でprototype拡張をしない。これはHOC利用側がHOCでのprototype変更の内部実装を知る必要が出てくる。</li>
+<li>renderメソッドないでHOCを使用しない。render内でHOCを使うことで毎回新しいコンポーネントが生成されるため、パフォーマンスに影響するため。</li>
+</ul>
+<hr>
+<h3 id="TypeScriptでの実装"><a href="#TypeScriptでの実装" class="headerlink" title="TypeScriptでの実装"></a>TypeScriptでの実装</h3><h4 id="Proxy-props"><a href="#Proxy-props" class="headerlink" title="Proxy props"></a>Proxy props</h4><p>一般的なものはpropsをproxyするパターン</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// HOCに渡すProps</span></span><br><span class="line"><span class="keyword">type</span> ExternalProps = &#123;</span><br><span class="line">  age: <span class="built_in">number</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> InjectedProps &#123;</span><br><span class="line">  name: <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Options = &#123;</span><br><span class="line">  name: <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> propsProxyHOC = <span class="function">(<span class="params">&#123; name = 'James' &#125;: Partial&lt;Options&gt; = &#123;&#125;</span>) =&gt;</span> &lt;OriginalProps <span class="keyword">extends</span> &#123;&#125;&gt;(</span><br><span class="line">  WrappedComponent: React.ComponentType&lt;OriginalProps &amp; InjectedProps&gt;</span><br><span class="line">) =&gt; &#123;</span><br><span class="line">  <span class="keyword">class</span> PropsProxyHOC <span class="keyword">extends</span> React.Component&lt;OriginalProps &amp; ExternalProps&gt; &#123;</span><br><span class="line">    <span class="keyword">public</span> render() &#123;</span><br><span class="line">      <span class="keyword">const</span> InjectedProps = &#123;</span><br><span class="line">        name,</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> (</span><br><span class="line">        &lt;div&gt;</span><br><span class="line">          &lt;WrappedComponent &#123;...this.props&#125; &#123;...InjectedProps&#125; /&gt;</span><br><span class="line">          &#123;<span class="keyword">this</span>.props.age&#125;</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">      )</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  if (WrappedComponent.displayName) &#123;</span></span><br><span class="line"><span class="regexp">    PropsProxyHOC.displayName = `$&#123;</span></span><br><span class="line"><span class="regexp">      WrappedComponent.displayName</span></span><br><span class="line"><span class="regexp">    &#125;WrappedPropsProxyHOC`</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">  return PropsProxyHOC</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> propsProxyHOC = <span class="function">(<span class="params">&#123; name = 'James' &#125;: Partial&lt;Options&gt; = &#123;&#125;</span>) =&gt;</span> &lt;OriginalProps <span class="keyword">extends</span> &#123;&#125;&gt;</span><br></pre></td></tr></table></figure>
+<p>default引数を指定する。引数オブジェクトのnameメンバが省略されている場合は、default値(James)を。引数自体がない場合は空のオブジェクトが渡るようになる。<br><code>Partial</code> keywordを使いOptionsのパラメーターをオプショナルにする。これにより引数オブジェクトのメンバを把握しておく必要性がなくなる。</p>
+<p>つまりPartialにより引数の型は以下のようになる。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Options = &#123;</span><br><span class="line">  name?: <span class="built_in">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>render部分では</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> render() &#123;</span><br><span class="line">  <span class="keyword">const</span> InjectedProps = &#123;</span><br><span class="line">    name,</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;WrappedComponent &#123;...this.props&#125; &#123;...InjectedProps&#125; /&gt;</span><br><span class="line">      &#123;<span class="keyword">this</span>.props.age&#125;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>propsを追加してcomponentを拡張する。<br>また、componet自体を別要素でwrapすることもできる。</p>
+<p>以下のようにして利用する。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> composedComponent = propsProxyHOC(&#123; name: <span class="string">'John'</span> &#125;)(Component)</span><br><span class="line"></span><br><span class="line">React.render(</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;composedComponent age=&#123;<span class="number">10</span>&#125; /&gt;</span><br><span class="line">  )</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="Inheritance"><a href="#Inheritance" class="headerlink" title="Inheritance"></a>Inheritance</h3><p>またprops proxyするだけではなく、inheritanceすることも可能である。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ExternalProps = &#123;</span><br><span class="line">  style?: React.CSSProperties</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> InjectedProps &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Options = &#123;</span><br><span class="line">  message: <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> inheritanceInversionHOC = <span class="function">(<span class="params">&#123; message = '<span class="keyword">default</span> message' &#125;: Partial&lt;Options&gt; = &#123;&#125;</span>) =&gt;</span></span><br><span class="line">  &lt;OriginalProps <span class="keyword">extends</span> &#123;&#125;&gt;<span class="function">(<span class="params">WrappedComponent: React.ComponentType&lt;OriginalProps &amp; InjectedProps&gt;</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">class</span> WrapedComponentHOC <span class="keyword">extends</span> WrappedComponent&lt;OriginalProps &amp; ExternalProps&gt;  &#123;</span><br><span class="line">    componentWillMount() &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">super</span>.componentWillMount) &#123;</span><br><span class="line">        <span class="keyword">super</span>.componentWillMount()</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    render() &#123;</span><br><span class="line">     <span class="keyword">const</span> injectProps = &#123;</span><br><span class="line">       message</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">const</span> elementsTree = &lt;WrappedComponent &#123;...this.props&#125; &#123;...injectProps&#125; /&gt;</span><br><span class="line">     <span class="keyword">const</span> &#123; children, ...rest &#125; = elementsTree.props</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> (</span><br><span class="line">       &lt;div &#123;...rest&#125;&gt;</span><br><span class="line">         &lt;h1&gt;&#123;injectProps.message&#125;&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">         &#123;children&#125;</span></span><br><span class="line"><span class="regexp">       &lt;/</span>div&gt;</span><br><span class="line">     )</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (WrappedComponent.displayName) &#123;</span><br><span class="line">    WrapedComponentHOC.displayName = <span class="string">`<span class="subst">$&#123;</span></span></span><br><span class="line"><span class="string"><span class="subst">      WrappedComponent.displayName</span></span></span><br><span class="line"><span class="string"><span class="subst">      &#125;</span>WithWrapedComponentHOC`</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> WrapedComponentHOC</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>継承することでComponentのlifecycleにアクセスできるようになる。</p>
+<p>ということTypescriptでのReact HOCのパターンを触れてみた。</p>
+<h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://postd.cc/react-higher-order-components-in-depth/" target="_blank" rel="noopener">ReactのHigher Order Components詳解 : 実装の2つのパターンと、親Componentとの比較</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2018/09/22/react-hoc-with-typescript/" class="hatena-bookmark-button" data-hatena-bookmark-title="React HOC(Higher-order component)をTypeScriptで使う" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2018/09/22/react-hoc-with-typescript/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2018/09/13/reaffirming-typescript-react-pattern/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            Typescript React Patternを再確認
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2018 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2018/09/22/react-hoc-with-typescript/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
