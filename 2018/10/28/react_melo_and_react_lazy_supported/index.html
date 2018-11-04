@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>React v16.6で追加されたReact.memoとReact.lazyを眺める | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="React v16.6でReact.memoとReact.lazyというAPIが機能が追加されていた。 該当の変更は以下を参照  React.memo() React.lazy()">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React v16.6で追加されたReact.memoとReact.lazyを眺める">
+<meta property="og:url" content="http://blog.kazu69.net/2018/10/28/react_melo_and_react_lazy_supported/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="React v16.6でReact.memoとReact.lazyというAPIが機能が追加されていた。 該当の変更は以下を参照  React.memo() React.lazy()">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2018-11-04T14:11:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React v16.6で追加されたReact.memoとReact.lazyを眺める">
+<meta name="twitter:description" content="React v16.6でReact.memoとReact.lazyというAPIが機能が追加されていた。 該当の変更は以下を参照  React.memo() React.lazy()">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-react_melo_and_react_lazy_supported" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      React v16.6で追加されたReact.memoとReact.lazyを眺める
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2018-10-28T09:33:28.000Z" itemprop="datePublished">2018-10-28</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>React v16.6で<a href="https://reactjs.org/docs/react-api.html#reactmemo" target="_blank" rel="noopener">React.memo</a>と<a href="https://reactjs.org/docs/code-splitting.html#reactlazy" target="_blank" rel="noopener">React.lazy</a>というAPIが機能が追加されていた。</p>
+<p>該当の変更は以下を参照</p>
+<ul>
+<li><a href="https://github.com/facebook/react/pull/13748" target="_blank" rel="noopener">React.memo()</a></li>
+<li><a href="https://github.com/facebook/react/pull/13885" target="_blank" rel="noopener">React.lazy()</a></li>
+</ul>
+<a id="more"></a>
+<h3 id="React-memo"><a href="#React-memo" class="headerlink" title="React.memo"></a>React.memo</h3><p>PureComponentはstateを<code>shallow Equal</code>によってupdateするのかを決める機能を持っているが、class Componentでしか利用できない。</p>
+<p>React.memoは<code>function componen</code>をラップしてPureComponentと同じく、<code>shallow Equal</code>でコンポーネントをupdateする機能を提供するAPIである。<br><a href="https://github.com/facebook/react/pull/13748/files#diff-d8411e2e9d23bdea09f0c01d01cbf389R202" target="_blank" rel="noopener">このあたりがそれっぽい</a></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Messages = &#123;</span><br><span class="line">  messages: <span class="built_in">string</span>[]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Message = &#123;</span><br><span class="line">  message: <span class="built_in">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> SFCComponent: React.SFC&lt;Message&gt; = <span class="function"><span class="params">props</span> =&gt;</span> &lt;li&gt;&#123;props.message&#125;&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ defineTtyped not support `memo`</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ https:/</span><span class="regexp">/github.com/</span>DefinitelyTyped/DefinitelyTyped/pull/<span class="number">29990</span></span><br><span class="line"><span class="keyword">const</span> MemoComponent = (React <span class="keyword">as</span> <span class="built_in">any</span>).memo(SFCComponent)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> InputHistoryWithMemo: React.SFC&lt;Messages&gt; = <span class="function">(<span class="params">props</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">        &#123;props.messages.map( <span class="function">(<span class="params">m, i</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> (</span><br><span class="line">              &lt;React.Fragment&gt;</span><br><span class="line">                &lt;MemoComponent key=&#123;i&#125; message=&#123;m&#125; /&gt;</span><br><span class="line">              &lt;<span class="regexp">/React.Fragment&gt;</span></span><br><span class="line"><span class="regexp">            )</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">        )&#125;</span></span><br><span class="line"><span class="regexp">    &lt;/u</span>l&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> InputApp <span class="keyword">extends</span> React.Component&lt;&#123;&#125;, Messages&gt; &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params">props = &#123;&#125;</span>) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props)</span><br><span class="line">    <span class="keyword">this</span>.state = &#123; messages: [] &#125;</span><br><span class="line">    <span class="keyword">this</span>._getLastMessage = <span class="keyword">this</span>._getLastMessage.bind(<span class="keyword">this</span>)</span><br><span class="line">    <span class="keyword">this</span>._onMessageChange = <span class="keyword">this</span>._onMessageChange.bind(<span class="keyword">this</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _getLastMessage() &#123;</span><br><span class="line">    <span class="keyword">const</span> lastMessage = <span class="keyword">this</span>.state.messages[<span class="keyword">this</span>.state.messages.length - <span class="number">1</span>]</span><br><span class="line">    <span class="keyword">return</span> lastMessage === <span class="literal">undefined</span> ? <span class="string">""</span> : lastMessage</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _onMessageChange(event: React.ChangeEvent&lt;HTMLInputElement&gt;) &#123;</span><br><span class="line">    <span class="keyword">const</span> messages = [...this.state.messages]</span><br><span class="line">    messages.push(event.target.value)</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123; messages &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">const</span> componetnStyle = &#123;</span><br><span class="line">      display: <span class="string">'inline-block'</span>,</span><br><span class="line">      marginLeft: <span class="string">'30px'</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> inputStyle = &#123;</span><br><span class="line">      display: <span class="string">'inline-block'</span>,</span><br><span class="line">      verticalAlign: <span class="string">'top'</span>,</span><br><span class="line">      marginLeft: <span class="string">'30px'</span>,</span><br><span class="line">      top: <span class="string">'0'</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;div style=&#123;inputStyle&#125; &gt;</span><br><span class="line">          &lt;input</span><br><span class="line">            <span class="keyword">type</span>=<span class="string">"text"</span></span><br><span class="line">            value=&#123;<span class="keyword">this</span>._getLastMessage()&#125;</span><br><span class="line">            onChange=&#123;<span class="keyword">this</span>._onMessageChange&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">        &lt;div style=&#123;componetnStyle&#125;&gt;</span></span><br><span class="line"><span class="regexp">          &lt;strong&gt;Memo Compoennt&lt;/</span>strong&gt;</span><br><span class="line">          &lt;br /&gt;</span><br><span class="line">          &lt;InputHistoryWithMemo messages=&#123;<span class="keyword">this</span>.state.messages&#125; /&gt;</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="React-lazy"><a href="#React-lazy" class="headerlink" title="React.lazy"></a>React.lazy</h3><p>任意のComponentの動的なimportを可能にするAPI。<br>(ただし現時点ではSSRでは利用できない)<br><code>Suspense</code>でfallbackを定義できる。<br>つまり読み込みが完了してない場合にloading spinnerなどのコンテンツを配置しておくなど。</p>
+<p>ネットワークの問題などによりComponentがうまくimportできないときを考慮して、<br><a href="https://reactjs.org/blog/2017/07/26/error-handling-in-react-16.html" target="_blank" rel="noopener">ErrorBoundy</a>でFallbackしておくことで、ユーザーにエラー通知UIも提供することができる。</p>
+<p>以下のような感じ</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span></span><br><span class="line"><span class="comment">// https://reactjs.org/blog/2017/07/26/error-handling-in-react-16.html</span></span><br><span class="line"><span class="keyword">import</span> ErrorboundyComponent <span class="keyword">from</span> <span class="string">'./ErrorboundyComponent'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// defineTyped not support `lazy`</span></span><br><span class="line"><span class="comment">// https://github.com/DefinitelyTyped/DefinitelyTyped/pull/30110</span></span><br><span class="line"><span class="keyword">const</span> OtherComponent = <span class="function">(<span class="params">React <span class="keyword">as</span> <span class="built_in">any</span></span>).<span class="params">lazy</span>(<span class="params">(<span class="params"></span>) =&gt; <span class="keyword">import</span>(<span class="params">'./OtherComponent'</span>)</span>);</span></span><br><span class="line"><span class="function"><span class="params">const</span> <span class="params">AnotherComponent</span> = (<span class="params">React <span class="keyword">as</span> <span class="built_in">any</span></span>).<span class="params">lazy</span>(<span class="params">(<span class="params"></span>) =&gt; <span class="keyword">import</span>(<span class="params">'./AnotherComponent'</span>)</span>);</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">// <span class="params">defineTyped</span> <span class="params">not</span> <span class="params">support</span> `<span class="params">Suspense</span>`</span></span><br><span class="line"><span class="function"><span class="params">const</span> <span class="params">Suspense</span> = (<span class="params">React <span class="keyword">as</span> <span class="built_in">any</span></span>).<span class="params">Suspense</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="params">const</span> <span class="params">LazyComponent</span>: <span class="params">React</span>.<span class="params">SFC</span> = _ =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        <span class="comment">// ErrorBoundy でエラーの追跡とFallback UIを提供</span></span><br><span class="line">        &lt;ErrorboundyComponent&gt;</span><br><span class="line">            &#123;<span class="comment">/* 複数のlazyコンポーネントを Suspense で束ねることができる */</span>&#125;</span><br><span class="line">            &lt;Suspense fallback=&#123;&lt;div&gt;Loading...&lt;<span class="regexp">/div&gt;&#125;&gt;</span></span><br><span class="line"><span class="regexp">                &lt;OtherComponent message="Hello" /</span>&gt;</span><br><span class="line">                &lt;AnotherComponent message=<span class="string">"Hola"</span> /&gt;</span><br><span class="line">            &lt;<span class="regexp">/Suspense&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>ErrorboundyComponent&gt;</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="デモコード"><a href="#デモコード" class="headerlink" title="デモコード"></a>デモコード</h3><p><a href="https://github.com/kazu69/Scripts_Notes/tree/master/react/memo-lazy" target="_blank" rel="noopener">memo-lazy</a></p>
+<p>React.memoに関しては、Component, PureCompoent, memoと比較できるようにして、<br><a href="https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi" target="_blank" rel="noopener">React Developer Tools</a>の<code>Highlight Update</code>を有効にするとComponentのupdateの具合を比較できます。</p>
+<h3 id="参考ページ"><a href="#参考ページ" class="headerlink" title="参考ページ"></a>参考ページ</h3><p><a href="https://reactjs.org/blog/2018/10/23/react-v-16-6.html" target="_blank" rel="noopener">React v16.6.0: lazy, memo and contextType</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2018/10/28/react_melo_and_react_lazy_supported/" class="hatena-bookmark-button" data-hatena-bookmark-title="React v16.6で追加されたReact.memoとReact.lazyを眺める" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2018/10/28/react_melo_and_react_lazy_supported/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2018/09/22/react-hoc-with-typescript/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            React HOC(Higher-order component)をTypeScriptで使う
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2018 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2018/10/28/react_melo_and_react_lazy_supported/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
