@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Node.js child_process, cluster, worker_thredsを確認した | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Node.jsにおけるいわゆる並行処理に関して再確認。Node.jsは一般的にシングルスレッド、非同期IOとして認識されている。これは言語としてマルチスレッドによる複雑性を排除した処理を選択した経緯があるらしい。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js child_process, cluster, worker_thredsを確認した">
+<meta property="og:url" content="http://blog.kazu69.net/2019/01/29/multiprocess_multithread_processing_of_nodejs/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="Node.jsにおけるいわゆる並行処理に関して再確認。Node.jsは一般的にシングルスレッド、非同期IOとして認識されている。これは言語としてマルチスレッドによる複雑性を排除した処理を選択した経緯があるらしい。">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-02-24T02:02:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node.js child_process, cluster, worker_thredsを確認した">
+<meta name="twitter:description" content="Node.jsにおけるいわゆる並行処理に関して再確認。Node.jsは一般的にシングルスレッド、非同期IOとして認識されている。これは言語としてマルチスレッドによる複雑性を排除した処理を選択した経緯があるらしい。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-multiprocess_multithread_processing_of_nodejs" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Node.js child_process, cluster, worker_thredsを確認した
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2019-01-29T14:34:21.000Z" itemprop="datePublished">2019-01-29</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Node.jsにおけるいわゆる並行処理に関して再確認。<br>Node.jsは一般的にシングルスレッド、非同期IOとして認識されている。<br>これは言語としてマルチスレッドによる複雑性を排除した処理を選択した経緯があるらしい。</p>
+<a id="more"></a>
+<p><a href="https://nodejs.org/en/blog/release/v11.7.0/" target="_blank" rel="noopener">v11.7.0</a>で<code>worker_threads</code>が取り込まれたことで、スレッド処理が可能になった。</p>
+<p><a href="https://github.com/nodejs/node/pull/25361" target="_blank" rel="noopener">https://github.com/nodejs/node/pull/25361</a></p>
+<p>ちなみにv11.7.0 以前では <code>worker_threads</code> の利用の際には<a href="https://github.com/nodejs/node/blob/3a4521a4a2af30bac7f67b5a02b4433a51e9d169/src/node_options.cc#L189" target="_blank" rel="noopener"><code>--experimental-worker</code>オプション付き</a>で利用できていた。</p>
+<h2 id="並行処理"><a href="#並行処理" class="headerlink" title="並行処理"></a>並行処理</h2><h3 id="EventLoop"><a href="#EventLoop" class="headerlink" title="EventLoop"></a>EventLoop</h3><p><a href="https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/#event-loop-explained" target="_blank" rel="noopener">Event Loop Explained</a></p>
+<p>IOバウンドな処理を考慮した場合、処理の実行タイミングを変更することで、回避することができる。<br>一般的なEventloopを利用したバックグラウンド処理がそれにあたる。<br>負荷の高いコードを分割して、<code>setImmediate</code>を活用し、IOの後で評価することができる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"><span class="keyword">const</span> num = [],</span><br><span class="line">      start = <span class="number">0</span>,</span><br><span class="line">      end = <span class="number">50000</span>;</span><br><span class="line"></span><br><span class="line">process.on(<span class="string">'count'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">c</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (c &gt; end) &#123;</span><br><span class="line">    <span class="keyword">const</span> result = num.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">prev, current, _, __</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> prev + current;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="built_in">console</span>.log(result);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  num.push(c);</span><br><span class="line"></span><br><span class="line">  setImmediate(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    process.emit(<span class="string">'count'</span>, ++c);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">process.emit(<span class="string">'count'</span>, start);</span><br></pre></td></tr></table></figure>
+<h3 id="child-process"><a href="#child-process" class="headerlink" title="child_process"></a>child_process</h3><p>CPUバウンドな処理が渡されるとJavaScriptはシングルスレッドなので、WebアプリケーションだとUIがフリーズし、他の処理がキューイングされる。<br>そこで、CPUバウンドな処理の場合はマルチプロセス機構を使い処理することも可能。<br>マルチプロセスなので子プロセスは独自のメモリを持っているが、プロセス間に共有メモリはない。<br>また、プロセス間のメッセージングは<code>IPC</code>となる。</p>
+<p><a href="https://github.com/nodejs/node/blob/2c84f6e75cc513fe6e958f0489d104ee883db232/lib/child_process.js#L117" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/2c84f6e75cc513fe6e958f0489d104ee883db232/lib/child_process.js#L117</a></p>
+<p>起動時にモジュール、を割り当て(その他のオプションも)、プロセスを起動する。</p>
+<p><a href="https://github.com/nodejs/node/blob/2c84f6e75cc513fe6e958f0489d104ee883db232/lib/child_process.js#L59" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/2c84f6e75cc513fe6e958f0489d104ee883db232/lib/child_process.js#L59</a></p>
+<p>起動時のメモリ割り当てが高価な点やリアルタイム性から利用できるシーンが決まってくる。</p>
+<p>複数プロセス利用は<a href="https://github.com/facebook/jest/tree/master/packages/jest-worker" target="_blank" rel="noopener">jest-worker</a>などで利用されている<a href="https://github.com/rvagg/node-worker-farm" target="_blank" rel="noopener"><code>node-worker-farm</code></a>のモジュール利用することが現在のところ良さそう。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"><span class="keyword">let</span> workerFarm = <span class="built_in">require</span>(<span class="string">'worker-farm'</span>),</span><br><span class="line">    process    = <span class="built_in">require</span>(<span class="string">'process'</span>),</span><br><span class="line">    workers    = workerFarm(<span class="built_in">require</span>.resolve(<span class="string">'./child'</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> num = [];</span><br><span class="line"><span class="keyword">const</span> start = <span class="number">0</span>,</span><br><span class="line">      end = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> child_prosess = <span class="built_in">require</span>(<span class="string">'os'</span>).cpus().length;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> range = <span class="function">(<span class="params">start, end, separate</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> result = [];</span><br><span class="line">  <span class="keyword">const</span> count = (end - start) / separate;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; separate; i++) &#123;</span><br><span class="line">    <span class="keyword">let</span> tmp = &#123;&#125;;</span><br><span class="line">    <span class="keyword">if</span> (i == <span class="number">0</span>) &#123;</span><br><span class="line">      tmp = &#123;</span><br><span class="line">        start,</span><br><span class="line">        end: count,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      tmp = &#123;</span><br><span class="line">        start: result[i - <span class="number">1</span>].end + <span class="number">1</span>,</span><br><span class="line">        end: result[i - <span class="number">1</span>].end + count,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    result.push(tmp);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> ranges = range(start, end, child_prosess);</span><br><span class="line">ranges[ranges.length - <span class="number">1</span>].end += (end % child_prosess);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= child_prosess; i++) &#123;</span><br><span class="line">  workers(ranges[i], <span class="function"><span class="keyword">function</span> (<span class="params">err, outp</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      <span class="built_in">console</span>.error(err);</span><br><span class="line">    &#125;</span><br><span class="line">    num = num.concat(outp)</span><br><span class="line">    <span class="keyword">if</span> (i == child_prosess - <span class="number">1</span>) &#123;</span><br><span class="line">      workerFarm.end(workers);</span><br><span class="line">      <span class="keyword">const</span> result = num.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">prev, current, _, __</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> prev + current;</span><br><span class="line">      &#125;);</span><br><span class="line">      <span class="built_in">console</span>.log(result);</span><br><span class="line">      process.on(<span class="string">'exit'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        process.exit(<span class="number">0</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// child.js</span></span><br><span class="line"><span class="meta">'use strict'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> num = [];</span><br><span class="line"><span class="keyword">const</span> count = <span class="function"><span class="keyword">function</span>(<span class="params">start, end</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> i = start; i &lt;= end; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (num.some(<span class="function"><span class="keyword">function</span>(<span class="params">v</span>) </span>&#123; <span class="keyword">return</span> v === i &#125;) === <span class="literal">false</span>) &#123;</span><br><span class="line">      num.push(i)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">inp, callback</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!inp) &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">  <span class="keyword">const</span> &#123;start, end&#125; = inp;</span><br><span class="line">  count(start, end);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;process.pid&#125;</span> running`</span>);</span><br><span class="line">  callback(<span class="literal">null</span>, num);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="cluster"><a href="#cluster" class="headerlink" title="cluster"></a>cluster</h3><p>child_processと同じく、子プロセスをforkする。</p>
+<p><a href="https://github.com/nodejs/node/blob/2c84f6e75cc513fe6e958f0489d104ee883db232/lib/internal/cluster/master.js#L162" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/2c84f6e75cc513fe6e958f0489d104ee883db232/lib/internal/cluster/master.js#L162</a></p>
+<p><a href="https://github.com/nodejs/node/blob/2c84f6e75cc513fe6e958f0489d104ee883db232/lib/internal/cluster/master.js#L102" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/2c84f6e75cc513fe6e958f0489d104ee883db232/lib/internal/cluster/master.js#L102</a></p>
+<p>child_processでは実行モジュールなどをオプションとして渡す必要があるが、<br>clusterは親プロセスと同じモジュールの先頭から実行するため不要になる。</p>
+<p><a href="https://github.com/nodejs/node/blob/2c84f6e75cc513fe6e958f0489d104ee883db232/lib/internal/cluster/master.js#L284" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/2c84f6e75cc513fe6e958f0489d104ee883db232/lib/internal/cluster/master.js#L284</a></p>
+<p>Nodejsのアプリケーション自体を並列化する。<br><a href="https://nodejs.org/api/cluster.html" target="_blank" rel="noopener"><code>clusterモジュール</code></a>が利用できる。<br>マスタープロセスにリクエストが来ると、ワーカープロセスに処理を委譲する。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> cluster = <span class="built_in">require</span>(<span class="string">'cluster'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> num = [];</span><br><span class="line"><span class="keyword">const</span> start = <span class="number">0</span>,</span><br><span class="line">      end = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> count = <span class="function">(<span class="params">start, end</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> tmp = [];</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> i = start; i &lt;= end; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (num.some(<span class="function">(<span class="params">v</span>)  =&gt;</span> &#123; <span class="keyword">return</span> v === i &#125;) === <span class="literal">false</span>) &#123;</span><br><span class="line">      tmp.push(i)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> tmp;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> range = <span class="function">(<span class="params">start, end, separate</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> result = [];</span><br><span class="line">  <span class="keyword">const</span> count = (end - start) / separate;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; separate; i++) &#123;</span><br><span class="line">    <span class="keyword">let</span> tmp = &#123;&#125;;</span><br><span class="line">    <span class="keyword">if</span> (i == <span class="number">0</span>) &#123;</span><br><span class="line">      tmp = &#123;</span><br><span class="line">        start,</span><br><span class="line">        end: count,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      tmp = &#123;</span><br><span class="line">        start: result[i - <span class="number">1</span>].end + <span class="number">1</span>,</span><br><span class="line">        end: result[i - <span class="number">1</span>].end + count,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    result.push(tmp);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> child_prosess = <span class="built_in">require</span>(<span class="string">'os'</span>).cpus().length;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> messageReceive = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> finichProcess = <span class="number">0</span>;</span><br><span class="line">    cluster.on(<span class="string">'message'</span>, (worker ,message, handle) =&gt; &#123;</span><br><span class="line">      finichProcess++;</span><br><span class="line">      num = num.concat(message)</span><br><span class="line">      <span class="keyword">if</span> (finichProcess === child_prosess) &#123;</span><br><span class="line">        resolve(num);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mainFunction = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> ranges = range(start, end, child_prosess);</span><br><span class="line">  ranges[ranges.length - <span class="number">1</span>].end += (end % child_prosess);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; child_prosess; i++) &#123;</span><br><span class="line">    <span class="keyword">let</span> worker = cluster.fork();</span><br><span class="line">    worker.on(<span class="string">'online'</span>, () =&gt; &#123;</span><br><span class="line">      worker.send(ranges[i]);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> promise = messageReceive();</span><br><span class="line">  promise.then(<span class="function">(<span class="params">num</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> result =  num.reduce(<span class="function">(<span class="params">prev, current, _, __</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> prev + current;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="built_in">console</span>.log(result);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> childProcessFunc = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  process.on(<span class="string">'message'</span>, (data) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> response = count(data.start, data.end);</span><br><span class="line">    process.send(response);</span><br><span class="line">    cluster.worker.disconnect();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span> (cluster.isMaster) &#123;</span><br><span class="line">    mainFunction();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    childProcessFunc();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<h3 id="マルチスレッド"><a href="#マルチスレッド" class="headerlink" title="マルチスレッド"></a>マルチスレッド</h3><p>マルチプロセスを利用した場合は、プロセス生成時に起動時に大量のメモリが消費される。<br>そこで共有メモリを利用し、マルチプロセスより軽量なマルチスレッドを使うことになる。</p>
+<p><a href="https://github.com/nodejs/node/blob/master/lib/worker_threads.js" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/master/lib/worker_threads.js</a></p>
+<p><code>Worker</code>コンストラクタ。実行するファイルのパスが引数。</p>
+<p><a href="https://github.com/nodejs/node/blob/ba4df925eb7143606d5a57f49e4ecb179dd7743b/lib/internal/worker.js#L51" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/ba4df925eb7143606d5a57f49e4ecb179dd7743b/lib/internal/worker.js#L51</a></p>
+<p><code>isMainThread</code>でマインスレッドか判定。<br><code>parentPort.postMessage()</code>メインスレッドにメッセージング。<br><code>IPC</code>でのメッセージングではない。</p>
+<p><a href="https://github.com/nodejs/node/blob/master/lib/internal/worker.js#L106" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/master/lib/internal/worker.js#L106</a></p>
+<p>メッセージの処理は以下にまとまっている</p>
+<p><a href="https://github.com/nodejs/node/blob/master/lib/internal/worker/io.js" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/master/lib/internal/worker/io.js</a><br><a href="https://github.com/nodejs/node/blob/8375c706ad51a399451e4f43b075f3795c440dad/src/node_messaging.cc#L802" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/8375c706ad51a399451e4f43b075f3795c440dad/src/node_messaging.cc#L802</a></p>
+<p> HTML structured clone algorithmと互換性のある形式のものが転送される。<br> <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm#Supported_types" target="_blank" rel="noopener">https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm#Supported_types</a></p>
+<p><code>workerData</code> JavaScriptの値で、Workerコンストラクタに渡されたデータのクローン。</p>
+<p><a href="https://github.com/nodejs/node/blob/ba4df925eb7143606d5a57f49e4ecb179dd7743b/lib/internal/worker.js#L116" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/ba4df925eb7143606d5a57f49e4ecb179dd7743b/lib/internal/worker.js#L116</a></p>
+<p>関連するN-APIは以下なのかな？</p>
+<ul>
+<li>napi_threadsafe_function<br><a href="https://github.com/nodejs/node/blob/11387e1454d8b8311dfdb1bac6a7ec1a1494946d/doc/api/n-api.md#napi_threadsafe_function" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/11387e1454d8b8311dfdb1bac6a7ec1a1494946d/doc/api/n-api.md#napi_threadsafe_function</a></li>
+</ul>
+<p>workser threadから非同期的にJavaScript関数を呼び出す。</p>
+<ul>
+<li>napi_threadsafe_function_release_mode<br><a href="https://github.com/nodejs/node/blob/11387e1454d8b8311dfdb1bac6a7ec1a1494946d/doc/api/n-api.md#napi_threadsafe_function_release_mode" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/11387e1454d8b8311dfdb1bac6a7ec1a1494946d/doc/api/n-api.md#napi_threadsafe_function_release_mode</a></li>
+</ul>
+<p>workser threadが即時終了状態か</p>
+<ul>
+<li>napi_threadsafe_function_call_mode<br><a href="https://github.com/nodejs/node/blob/11387e1454d8b8311dfdb1bac6a7ec1a1494946d/doc/api/n-api.md#napi_threadsafe_function_call_mode" target="_blank" rel="noopener">https://github.com/nodejs/node/blob/11387e1454d8b8311dfdb1bac6a7ec1a1494946d/doc/api/n-api.md#napi_threadsafe_function_call_mode</a></li>
+</ul>
+<p>スレッドセーフ関数のキューがいっぱいになった時にブロックするか</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"><span class="keyword">const</span> &#123;</span><br><span class="line">  Worker,</span><br><span class="line">  isMainThread,</span><br><span class="line">  parentPort,</span><br><span class="line">  workerData</span><br><span class="line">&#125; = <span class="built_in">require</span>(<span class="string">'worker_threads'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> num = [];</span><br><span class="line"><span class="keyword">let</span> start = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">let</span> end = <span class="number">50000</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> count = <span class="function"><span class="keyword">function</span>(<span class="params">start, end</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> i = start; i &lt;= end; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (num.some(<span class="function"><span class="keyword">function</span>(<span class="params">v</span>) </span>&#123; <span class="keyword">return</span> v === i &#125;) === <span class="literal">false</span>) &#123;</span><br><span class="line">      num.push(i)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> range = <span class="function">(<span class="params">start, end, separate</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> result = [];</span><br><span class="line">  <span class="keyword">const</span> count = (end - start) / separate;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; separate; i++) &#123;</span><br><span class="line">    <span class="keyword">let</span> tmp = &#123;&#125;;</span><br><span class="line">    <span class="keyword">if</span> (i == <span class="number">0</span>) &#123;</span><br><span class="line">      tmp = &#123;</span><br><span class="line">        start,</span><br><span class="line">        end: count,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      tmp = &#123;</span><br><span class="line">        start: result[i - <span class="number">1</span>].end + <span class="number">1</span>,</span><br><span class="line">        end: result[i - <span class="number">1</span>].end + count,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    result.push(tmp);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (isMainThread) &#123;</span><br><span class="line">  <span class="keyword">const</span> threadCount = +process.argv[<span class="number">2</span>] || <span class="number">2</span>,</span><br><span class="line">        ranges = range(start, end, threadCount),</span><br><span class="line">        threads = <span class="keyword">new</span> <span class="built_in">Set</span>();</span><br><span class="line"></span><br><span class="line">  ranges[ranges.length - <span class="number">1</span>].end += (end % threadCount);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; threadCount; i++) &#123;</span><br><span class="line">    threads.add(<span class="keyword">new</span> Worker(__filename, &#123; <span class="attr">workerData</span>: &#123; <span class="attr">start</span>: ranges[i].start, <span class="attr">end</span>: ranges[i].end &#125;&#125;));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  threads.add(<span class="keyword">new</span> Worker(__filename, &#123; <span class="attr">workerData</span>: &#123; <span class="attr">start</span>: ranges[<span class="number">0</span>].start, <span class="attr">end</span>: ranges[<span class="number">0</span>].end &#125;&#125;));</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> worker <span class="keyword">of</span> threads) &#123;</span><br><span class="line">    worker.on(<span class="string">'error'</span>, (err) =&gt; &#123; <span class="keyword">throw</span> err; &#125;);</span><br><span class="line">    worker.on(<span class="string">'online'</span>, () =&gt; &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">`Thread running start ID: <span class="subst">$&#123;worker.threadId&#125;</span> ...`</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    worker.on(<span class="string">'exit'</span>, () =&gt; &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">`Total thread, <span class="subst">$&#123;threads.size&#125;</span> running ...`</span>);</span><br><span class="line">      threads.delete(worker);</span><br><span class="line">      <span class="keyword">if</span> (threads.size === <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> result = num.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">prev, current, _, __</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> prev + current;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="built_in">console</span>.log(result)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    worker.on(<span class="string">'message'</span>, (msg) =&gt; &#123;</span><br><span class="line">      num = num.concat(msg);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  count(workerData.start, workerData.end);</span><br><span class="line">  parentPort.postMessage(num);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="参考ページ"><a href="#参考ページ" class="headerlink" title="参考ページ"></a>参考ページ</h3><p><a href="https://nodejs.org/dist/latest-v10.x/docs/api/worker_threads.html" target="_blank" rel="noopener">Node.js v10.15.1 Documentation Worker Threads</a></p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+   style="display:block"
+   data-ad-client="ca-pub-4054575508733221"
+   data-ad-slot="9493597992"
+   data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2019/01/29/multiprocess_multithread_processing_of_nodejs/" class="hatena-bookmark-button" data-hatena-bookmark-title="Node.js child_process, cluster, worker_thredsを確認した" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2019/01/29/multiprocess_multithread_processing_of_nodejs/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2018/12/01/try-react-hook-api/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            React Hooks api を眺める
+          
+        </span>
+        </span>
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2019 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2019/01/29/multiprocess_multithread_processing_of_nodejs/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
