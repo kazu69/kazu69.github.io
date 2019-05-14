@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
   <title>Serverless Frameworkを使ってAWS LambdaとAPI Gatewayを試した | 69log</title>
@@ -47,7 +47,7 @@ ga('send', 'pageview');
 <!-- End Google Analytics -->
 
 
-</head>
+</head></html>
 <body>
     <header role="header">
   <div class="header cf">
@@ -109,20 +109,20 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>サーバーレスでアプリケーションを構築するためのNode.jsのフレームワーク<a href="">Serverless</a>を使って、<br><a href="https://aws.amazon.com/lambda/" target="_blank" rel="noopener">AWS Lambda</a>と<a href="https://aws.amazon.com/jp/api-gateway/" target="_blank" rel="noopener">Amazon API Gateway</a>をつかってSlack Botを試してみたときのメモ。</p>
+      <p>サーバーレスでアプリケーションを構築するためのNode.jsのフレームワーク<a href>Serverless</a>を使って、<br><a href="https://aws.amazon.com/lambda/" target="_blank" rel="noopener">AWS Lambda</a>と<a href="https://aws.amazon.com/jp/api-gateway/" target="_blank" rel="noopener">Amazon API Gateway</a>をつかってSlack Botを試してみたときのメモ。</p>
 <a id="more"></a>
 <p>SlackのメッセージをAPI GatewayにPOSTして、AWS Lambdaで処理をして、webhookを使ってslackに投稿する。</p>
-<p><img src="/images/2016/05/12/serverless8.png" alt=""></p>
+<p><img src="/images/2016/05/12/serverless8.png" alt></p>
 <h2 id="AWS-CLIを端末-Mac-にインストールする"><a href="#AWS-CLIを端末-Mac-にインストールする" class="headerlink" title="AWS CLIを端末(Mac)にインストールする"></a>AWS CLIを端末(Mac)にインストールする</h2><p>なにはともあれ、AWSのコマンドラインインターフェイスを使うので端末にインストールする。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">curl <span class="string">"https://bootstrap.pypa.io/get-pip.py"</span> -o <span class="string">"get-pip.py"</span></span><br><span class="line">sudo python get-pip.py</span><br><span class="line"></span><br><span class="line">The directory <span class="string">'/Users/YOU/Library/Caches/pip/http'</span> or its parent directory is not owned by the current user and the cache has been disabled. Please check the permissions and owner of that directory. If executing pip with sudo, you may want sudo<span class="string">'s -H flag.</span></span><br><span class="line"><span class="string">The directory '</span>/Users/YOU/Library/Caches/pip<span class="string">' or its parent directory is not owned by the current user and caching wheels has been disabled. check the permissions and owner of that directory. If executing pip with sudo, you may want sudo'</span>s -H flag.</span><br><span class="line">Requirement already up-to-date: pip <span class="keyword">in</span> /Library/Python/2.7/site-packages/pip-8.1.1-py2.7.egg</span><br><span class="line">Collecting wheel</span><br><span class="line">  Downloading wheel-0.29.0-py2.py3-none-any.whl (66kB)</span><br><span class="line">    100% |████████████████████████████████| 71kB 1.3MB/s</span><br><span class="line">Installing collected packages: wheel</span><br><span class="line">Successfully installed wheel-0.29.0</span><br><span class="line"></span><br><span class="line">sudo pip install awscli</span><br><span class="line"></span><br><span class="line">aws configure</span><br><span class="line">AWS Access Key ID [None]: XXXXXXXXXXXXXXXXXXX</span><br><span class="line">AWS Secret Access Key [None]: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span><br><span class="line">Default region name [None]: tokyo</span><br><span class="line">Default output format [None]: json</span><br><span class="line"></span><br><span class="line">ls -la ~/.aws</span><br><span class="line">total 16</span><br><span class="line">-rw-------    1 YOU  staff    39  5  1 08:32 config</span><br><span class="line">-rw-------    1 YOU  staff   116  5  1 08:32 credentials</span><br></pre></td></tr></table></figure>
 <h2 id="IAM-Identity-and-Access-Management-ユーザーとポリシーの作成"><a href="#IAM-Identity-and-Access-Management-ユーザーとポリシーの作成" class="headerlink" title="IAM(Identity and Access Management)ユーザーとポリシーの作成"></a>IAM(Identity and Access Management)ユーザーとポリシーの作成</h2><p>AWSのダッシュボードの <a href="https://console.aws.amazon.com/iam/home" target="_blank" rel="noopener">IAM</a> からユーザーを作成する。<br>今回は<code>serverless-admin</code> という名前で作成する。</p>
-<p><img src="/images/2016/05/12/serverless1.png" alt=""></p>
+<p><img src="/images/2016/05/12/serverless1.png" alt></p>
 <p>認証情報は後ほど必要なので認証情報はダウンロードしておく。</p>
-<p><img src="/images/2016/05/12/serverless2.png" alt=""></p>
+<p><img src="/images/2016/05/12/serverless2.png" alt></p>
 <p>続いてポリシーをアタッチする。</p>
 <p>IAMページのポリシーを選択し、<code>AdministratorAccess</code> を選んでアタッチする。</p>
-<p><img src="/images/2016/05/12/serverless3.png" alt=""></p>
-<p><img src="/images/2016/05/12/serverless4.png" alt=""></p>
+<p><img src="/images/2016/05/12/serverless3.png" alt></p>
+<p><img src="/images/2016/05/12/serverless4.png" alt></p>
 <h2 id="Serverlessのインストールとプロジェクト作成"><a href="#Serverlessのインストールとプロジェクト作成" class="headerlink" title="Serverlessのインストールとプロジェクト作成"></a>Serverlessのインストールとプロジェクト作成</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">v5.10.1</span><br><span class="line"></span><br><span class="line">npm i -g serverless</span><br><span class="line"></span><br><span class="line">serverless</span><br><span class="line"> _______                             __</span><br><span class="line">|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.</span><br><span class="line">|   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|</span><br><span class="line">|____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|</span><br><span class="line">|   |   |             The Serverless Application Framework</span><br><span class="line">|       |                           serverless.com, v0.5.5</span><br><span class="line">`-------<span class="string">'</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Commands</span></span><br><span class="line"><span class="string">* Serverless documentation: http://docs.serverless.com</span></span><br><span class="line"><span class="string">* You can run commands with "serverless" or the shortcut "sls"</span></span><br><span class="line"><span class="string">* Pass "--help" after any &lt;context&gt; &lt;action&gt; for contextual help</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"project" actions:</span></span><br><span class="line"><span class="string">  create</span></span><br><span class="line"><span class="string">  install</span></span><br><span class="line"><span class="string">  init</span></span><br><span class="line"><span class="string">  remove</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"function" actions:</span></span><br><span class="line"><span class="string">  run</span></span><br><span class="line"><span class="string">  create</span></span><br><span class="line"><span class="string">  deploy</span></span><br><span class="line"><span class="string">  logs</span></span><br><span class="line"><span class="string">  remove</span></span><br><span class="line"><span class="string">  rollback</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"endpoint" actions:</span></span><br><span class="line"><span class="string">  deploy</span></span><br><span class="line"><span class="string">  remove</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"event" actions:</span></span><br><span class="line"><span class="string">  deploy</span></span><br><span class="line"><span class="string">  remove</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"dash" actions:</span></span><br><span class="line"><span class="string">  deploy</span></span><br><span class="line"><span class="string">  summary</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"stage" actions:</span></span><br><span class="line"><span class="string">  create</span></span><br><span class="line"><span class="string">  remove</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"region" actions:</span></span><br><span class="line"><span class="string">  create</span></span><br><span class="line"><span class="string">  remove</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"resources" actions:</span></span><br><span class="line"><span class="string">  deploy</span></span><br><span class="line"><span class="string">  remove</span></span><br><span class="line"><span class="string">  diff</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"plugin" actions:</span></span><br><span class="line"><span class="string">  create</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"variables" actions:</span></span><br><span class="line"><span class="string">  list</span></span><br><span class="line"><span class="string">  set</span></span><br><span class="line"><span class="string">  unset</span></span><br></pre></td></tr></table></figure>
 <p>You can run commands with “serverless” or the shortcut “sls” とあるように<br><code>serverless</code>は<code>sls</code>でaliasされているとのこと。</p>
 <p>つづいて、プロジェクトの作成を行う。</p>
@@ -204,7 +204,7 @@ ga('send', 'pageview');
 </table>
 <p>ここで作成したURLに対してPOSTすることでSlackに通知される。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST -H <span class="string">'Content-type: application/json'</span> --data <span class="string">'&#123;"text": "@here This is posted to &lt;#general&gt; and comes from *monkey-bot*.", "channel": "#general", "username": "monkey-bot", "icon_emoji": ":monkey_face:", "link_names": 1&#125;'</span> https://hooks.slack.com/services/XXXXXX/YYYYYY/ZZZZZZ</span><br></pre></td></tr></table></figure>
-<p><img src="/images/2016/05/12/serverless6.png" alt=""></p>
+<p><img src="/images/2016/05/12/serverless6.png" alt></p>
 <p>続いて、Slack BotがメッセージをAWSに送信するために使うHookとなる<a href="https://api.slack.com/outgoing-webhooks" target="_blank" rel="noopener">Outgoing WebHook</a>を作成する。</p>
 <table>
 <thead>
@@ -238,7 +238,7 @@ ga('send', 'pageview');
 </table>
 <p><code>Trigger Word</code>でslackに投稿すると、URLにpostされるようになる。</p>
 <p>ここまでできたので、実際にBotで遊んでみる。</p>
-<p><img src="/images/2016/05/12/serverless7.png" alt=""></p>
+<p><img src="/images/2016/05/12/serverless7.png" alt></p>
 <p>ということで、Serverless を使って、Amazon Gate Way API &amp; AWS LambdaでSlack Botができた。<br>サーバーを作り、管理することないため、アプリケーションに注力できるたりが素晴らしい。</p>
 <p>AWS Lambdaのようなイベントドリブンなサービスを使うことで、Botやインターネットに接続する機器からのリクエストを受け付けるアプリケーションが容易に作成できる。<br>またイベント数によりオートスケールしていくので、サーバー管理も気にすることはない。</p>
 <p>AWS Lambdaの他にもMicrosoftは<a href="https://azure.microsoft.com/ja-jp/documentation/services/functions/" target="_blank" rel="noopener">Azure Functions</a>というイベント駆動システムを提供している。</p>
@@ -256,11 +256,7 @@ ga('send', 'pageview');
           
 <!-- Google Adsence -->
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<ins class="adsbygoogle"
-   style="display:block"
-   data-ad-client="ca-pub-4054575508733221"
-   data-ad-slot="9493597992"
-   data-ad-format="auto"></ins>
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4054575508733221" data-ad-slot="9493597992" data-ad-format="auto"></ins>
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
@@ -323,7 +319,7 @@ ga('send', 'pageview');
             Google AnalyticsのMeasurement ProtocolでJavaScript無効なユーザーをトラッキング
           
         </span>
-        </span>
+        
       </a>
     
   </div>

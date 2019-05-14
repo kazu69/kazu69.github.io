@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>GraphQLについて再入門 | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="知ったつもりだったけど、いざとなると知らないこと多かったのでもう少しだけ突っ込んで入門したときの走り書き。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GraphQLについて再入門">
+<meta property="og:url" content="http://blog.kazu69.net/2019/02/21/learning-graphql/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="知ったつもりだったけど、いざとなると知らないこと多かったのでもう少しだけ突っ込んで入門したときの走り書き。">
+<meta property="og:locale" content="ja">
+<meta property="og:image" content="https://www.apollographql.com/docs/img/platform-diagram.png">
+<meta property="og:image" content="https://www.apollographql.com/docs/apollo-server/images/index-diagram.svg">
+<meta property="og:updated_time" content="2019-05-14T15:44:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GraphQLについて再入門">
+<meta name="twitter:description" content="知ったつもりだったけど、いざとなると知らないこと多かったのでもう少しだけ突っ込んで入門したときの走り書き。">
+<meta name="twitter:image" content="https://www.apollographql.com/docs/img/platform-diagram.png">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head></html>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-learning-graphql" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      GraphQLについて再入門
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2019-02-20T15:12:25.000Z" itemprop="datePublished">2019-02-21</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>知ったつもりだったけど、いざとなると知らないこと多かったので<br>もう少しだけ突っ込んで入門したときの走り書き。</p>
+<a id="more"></a>
+<p><a href="http://shop.oreilly.com/product/0636920137269.do" target="_blank" rel="noopener">Learning GraphQL</a> を読むんで再認識したことも中心にメモした。</p>
+<h3 id="グラフ理論"><a href="#グラフ理論" class="headerlink" title="グラフ理論"></a>グラフ理論</h3><p>GraphQLはこのグラフ理論に基づく考え方を知っておく必要がある。<br>ノード（節点・頂点）の集合とエッジ（枝・辺）の集合で構成されるグラフに関する数学の理論。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">G(グラフ) = (V(頂点)、E(頂点))</span><br></pre></td></tr></table></figure>
+<p>で表すことができる。</p>
+<p>ノード間に方向や階層がないものを<code>無向グラフ</code>という。</p>
+<p>ノード間の移動はどこからでもできて、方向は任意。非線形データ構造。<br>また、辺が順序付けられたペアであるときは<code>有向グラフ</code>になる</p>
+<h3 id="実世界のグラフ"><a href="#実世界のグラフ" class="headerlink" title="実世界のグラフ"></a>実世界のグラフ</h3><p>Facebookの各ユーザーの結びつきは、相互に関連し合う多数の関係を持つ構造で無向グラフ。<br>それに対してTwitterは有向グラフ。フォローするが、フォローされるわけではないため。</p>
+<h2 id="GraphQL"><a href="#GraphQL" class="headerlink" title="GraphQL"></a>GraphQL</h2><h3 id="GraphQLとは"><a href="#GraphQLとは" class="headerlink" title="GraphQLとは"></a>GraphQLとは</h3><p>GraphQLはクエリ言語および実行エンジンであり、クエリを使用してデータを変更または削除できる。<br>GraphQLクエリをAPIに送信し、1つ以上のデータベース、REST API、WebSocketなどにデータを格納する。<br>MySQLのINSERT、UPDATE、DELETEと違いデータ変更を1つのMutation型にまとめ、データ型にまとめ実行するなどが可能。<br>ソケットを介しデータ変更を監視するためのsubscribe型がある。</p>
+<h3 id="GraphQLの操作"><a href="#GraphQLの操作" class="headerlink" title="GraphQLの操作"></a>GraphQLの操作</h3><p>Graphqlの操作タイプは3種類ある。</p>
+<ul>
+<li>query: 問い合わせクエリ</li>
+<li>mutation: 作成、更新、削除クエリ</li>
+<li>subscription: websocketを介した変更監視クエリ</li>
+</ul>
+<p>GraphQLのqueryの例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">query &#123;</span><br><span class="line">  person &#123;</span><br><span class="line">    name</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上記は以下のようなhttpリクエストを通じて実行できる。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ curl <span class="string">'http://my.graphql.com'</span></span><br><span class="line">  -H <span class="string">'Content-Type：application/json'</span></span><br><span class="line">  --data <span class="string">'&#123;"query"： "&#123;person &#123;name&#125;&#125;"&#125;'</span></span><br></pre></td></tr></table></figure>
+<p>データ更新する場合は次の雰囲気のクエリを実行する。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mutation &#123;</span><br><span class="line">  healthStatus(id: &quot;TOM&quot; status: &apos;OK&apos;) &#123;</span><br><span class="line">    name</span><br><span class="line">    status</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>こちらは以下のhttpリクエストで行える</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl <span class="string">'http://my.graphql.com'</span></span><br><span class="line">  -H <span class="string">'Content-Type: application/json'</span></span><br><span class="line">  --data <span class="string">'&#123;"query":"mutation &#123;healthStatus(id: \"TOM\" status: \"OK\") &#123;name status&#125;&#125;"&#125;'</span></span><br></pre></td></tr></table></figure>
+<p>フィールドには引数を受け付けることもできる</p>
+<h3 id="Fragmant"><a href="#Fragmant" class="headerlink" title="Fragmant"></a>Fragmant</h3><p>再利用可能なクエリの実行単位。<br>大きなクエリや頻繁に利用されるデータ要件を分割管理することができる。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">fragment somethingFields on Person &#123;</span><br><span class="line">  name</span><br><span class="line">  likes &#123;</span><br><span class="line">    foods</span><br><span class="line">    books</span><br><span class="line">    sports</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Introspection"><a href="#Introspection" class="headerlink" title="Introspection"></a>Introspection</h3><p>ざっくりGraphQLがどのようなクエリやフィールドをサポートしているのかを問合る機能。</p>
+<p><strong>Schema、</strong>Type、<strong>TypeKind、</strong>Field、<strong>nputValue、</strong>EnumValue、<strong>Directive<br>アンダースコア(</strong>)で始まるこれらはすべてイントロスペクションを表す。<br>内部の情報をクエリ経由で参照できる。つまりそのgraphqlサービスが提供するすべてを知ることができる。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">__type(name: &quot;Node&quot;) &#123;</span><br><span class="line">  name</span><br><span class="line">  kind</span><br><span class="line">  fields &#123;</span><br><span class="line">    name</span><br><span class="line">    type &#123;</span><br><span class="line">      kind</span><br><span class="line">      ofType &#123;</span><br><span class="line">        name</span><br><span class="line">        kind</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"__type"</span>: &#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"Node"</span>,</span><br><span class="line">    <span class="attr">"kind"</span>: <span class="string">"INTERFACE"</span>,</span><br><span class="line">    <span class="attr">"fields"</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">"name"</span>: <span class="string">"id"</span>,</span><br><span class="line">        <span class="attr">"type"</span>: &#123;</span><br><span class="line">          <span class="attr">"kind"</span>: <span class="string">"NON_NULL"</span>,</span><br><span class="line">          <span class="attr">"ofType"</span>: &#123;</span><br><span class="line">            <span class="attr">"name"</span>: <span class="string">"ID"</span>,</span><br><span class="line">            <span class="attr">"kind"</span>: <span class="string">"SCALAR"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Directive"><a href="#Directive" class="headerlink" title="Directive"></a>Directive</h2><p>Directiveを利用することで既存の型システムに注釈をつけることができる。<br>ただしこればGraphqlサーバーの実装による。<br><a href="https://graphql.org/learn/queries/#directives" target="_blank" rel="noopener">https://graphql.org/learn/queries/#directives</a></p>
+<h3 id="deprecatedディレクティブ"><a href="#deprecatedディレクティブ" class="headerlink" title="@deprecatedディレクティブ"></a>@deprecatedディレクティブ</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">directive @deprecated(</span><br><span class="line">  reason: String = &quot;No longer supported&quot;</span><br><span class="line">) on FIELD_DEFINITION | ENUM_VALUE</span><br><span class="line"></span><br><span class="line">type ExampleType &#123;</span><br><span class="line">  newField: String</span><br><span class="line">  oldField: String @deprecated(reason: &quot;Use `newField`.&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上記の場合@deprecatedディレクティブ宣言が与えられると、引数types(reason: String)とlocations(FIELD_DEFINITION | ENUM_VALUE)を適用するかどうかはサーバーの実装次第になる。</p>
+<p>@exampleディレクティ部はフィールド<code>FIELD_DEFINITION</code>と引数定義<code>ARGUMENT_DEFINITION</code>に注釈をつけることができる。</p>
+<h3 id="skipディレクティブ"><a href="#skipディレクティブ" class="headerlink" title="@skipディレクティブ"></a>@skipディレクティブ</h3><p>クエリの実行をスキップする。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT</span><br><span class="line"></span><br><span class="line">query myQuery($isStatus: Boolean) &#123;</span><br><span class="line">  experimentalField @skip(if: $isStatus)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>$isStatusがtrueの場合のみクエリが実行される。</p>
+<h3 id="includeディレクティブ"><a href="#includeディレクティブ" class="headerlink" title="@includeディレクティブ"></a>@includeディレクティブ</h3><p>@skipとは逆にクエリの条件にふくめることになる</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT</span><br><span class="line"></span><br><span class="line">query myQuery($isStatus: Boolean) &#123;</span><br><span class="line">  experimentalField @include(if: $isStatus)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="クエリでの再帰的検索"><a href="#クエリでの再帰的検索" class="headerlink" title="クエリでの再帰的検索"></a>クエリでの再帰的検索</h2><p>GraphQLはデータを無限に再帰検索しない。<br>Graphデータが無限再起でないことを保証する方法がない。<br>また再帰的にしても、クエリを利用するアプリケーションの制約があるため利用できないことがある。<br>対策法として、任意の深さまでデータを取得し、更に追加の情報を取得する必要がある場合は「もっと見る」などのリンクを追加することがよい。</p>
+<p><a href="https://github.com/facebook/graphql/issues/91#issuecomment-254895093" target="_blank" rel="noopener">この辺の議論</a></p>
+<h2 id="ID型について"><a href="#ID型について" class="headerlink" title="ID型について"></a>ID型について</h2><p>IDがintなのかstringがいいのかとかの話につながるが、<a href="https://facebook.github.io/graphql/June2018/#sec-ID" target="_blank" rel="noopener">Scaler-ID</a>を読むと以下の通り。</p>
+<blockquote>
+<p>The ID type is serialized in the same way as a String; however, it is not intended to be human‐readable. While it is often numeric, it should always serialize as a String.</p>
+</blockquote>
+<p>IDはStringと同じ方法でシリアライズされます。ただし、人間が読める形式ではありません。<br>多くの場合数値ですが、常にStringとしてシリアル化する必要がある。</p>
+<h3 id="言語実装"><a href="#言語実装" class="headerlink" title="言語実装"></a>言語実装</h3><p><a href="https://github.com/graphql/graphql-js" target="_blank" rel="noopener">graphql.js</a>を例にすると、<a href="https://github.com/graphql/graphql-js/blob/master/src/language/lexer.js" target="_blank" rel="noopener">lexer</a>, <a href="https://github.com/graphql/graphql-js/blob/master/src/language/ast.js" target="_blank" rel="noopener">ast</a>, <a href="https://github.com/graphql/graphql-js/blob/master/src/language/parser.js" target="_blank" rel="noopener">parser</a>があることから、これを基準に各言語でも言語処理が可能。</p>
+<h3 id="GraphQL周辺のコミュニティ"><a href="#GraphQL周辺のコミュニティ" class="headerlink" title="GraphQL周辺のコミュニティ"></a>GraphQL周辺のコミュニティ</h3><p>GraphQLは既にFaceBookを離れて<a href="https://gql.foundation/" target="_blank" rel="noopener"><code>GraphQL Foundation</code></a>となっている。</p>
+<p><a href="https://www.apollographql.com/" target="_blank" rel="noopener">Apollo GraphQL</a>でGraphQL界隈のツールを多く提供している。<code>Meteor Development Group Inc.</code>が母体。</p>
+<p><a href="https://www.prisma.io/" target="_blank" rel="noopener">prisma</a></p>
+<h3 id="GraphQLをとり言えれたアプリケーションのアーキテクチャ"><a href="#GraphQLをとり言えれたアプリケーションのアーキテクチャ" class="headerlink" title="GraphQLをとり言えれたアプリケーションのアーキテクチャ"></a>GraphQLをとり言えれたアプリケーションのアーキテクチャ</h3><p>REST APIでは、複数のエンドポイントにアクセスしてデータを収集する。<br>GraphQLはデータ要件を含む単一のクエリをGraphQLサーバーに送信するだけになる。<br>よって、複数のエンドポイントを束ねたエンドポイントを構築するよりも、ミドルウェアとしてGraphQLを導入する。<br>また、スキーマファーストでの開発となる。既にあるリソースを用い、データ構造を抽象化していくことになる。<br>あらかじめ各データのスキーマを定義しておくことでデータ結合のためのビジネスロジックの開発から解放される。</p>
+<p><a href="https://netflix.github.io/falcor/" target="_blank" rel="noopener">Falcor</a>のような解決方法もあるが<code>GraphQL</code>のエコシステムを選ぶことが懸命になっている。</p>
+<h3 id="セキュリティ上検討すべきこと"><a href="#セキュリティ上検討すべきこと" class="headerlink" title="セキュリティ上検討すべきこと"></a>セキュリティ上検討すべきこと</h3><h4 id="認証"><a href="#認証" class="headerlink" title="認証"></a>認証</h4><p>実行クライアントを制限。認証Tokenなどを使い実行クライアントを認証することができる。<br>(Githubなど)</p>
+<h4 id="SlowQuery"><a href="#SlowQuery" class="headerlink" title="SlowQuery"></a>SlowQuery</h4><p>Slowクエリなどの問題は適切なタイムアウトを設定しておく必要がある。<br>ただし、jmutationなどが実行された場合、すでにデータに不整合が発生していることもある。</p>
+<h4 id="Max-Depth"><a href="#Max-Depth" class="headerlink" title="Max Depth"></a>Max Depth</h4><p>クエリの深度を限定する。再帰的に検索することにもなるため、クエリ実行時にAST分析を行い、最大深度以上のフィールをを無視する。(またはエラーにする)実装が必要。<br>DoSなどでネスとクエリで攻撃をかけることも可能。</p>
+<h4 id="Complex-Query"><a href="#Complex-Query" class="headerlink" title="Complex Query"></a>Complex Query</h4><p>複雑なクエリも定義できるが、実装は難しくなることもある。<br>また、複雑ゆえに本来隠匿されるべきデータへのアクセスにより、情報が漏洩することや、<br>データ構造からSQL/NoSQLへのInjectionも起こりえそうなため<br>できるだけクエリはシンプルに保つことが望ましそう。</p>
+<h4 id="Validation"><a href="#Validation" class="headerlink" title="Validation"></a>Validation</h4><p>アカウント認証、パスワード認証などの検証機構は提供されてない(あくまでクエリ言語なのため)。<br>実装するやり方にもよるが、自前でタイプなどの実装が必要になることも。<br>Validation不備の場合、webのアプリケーションと同じく、injectionやXSSの脆弱性を生むことにもつながる。</p>
+<p>そもそもGraphQLで実現すべき機能なのかも踏まえて検討するべき。</p>
+<h2 id="実装に関して"><a href="#実装に関して" class="headerlink" title="実装に関して"></a>実装に関して</h2><h3 id="Apollo界隈のtool中心に"><a href="#Apollo界隈のtool中心に" class="headerlink" title="Apollo界隈のtool中心に"></a>Apollo界隈のtool中心に</h3><p>Apollo Server利用にしている場合。<br><a href="https://github.com/apollographql/graphql-tools/blob/wip-schema-directives/src/schemaVisitor.ts" target="_blank" rel="noopener"><code>SchemaDirectiveVisitor</code></a>を利用する。<br>このクラスにはl<a href="https://github.com/apollographql/graphql-tools/blob/wip-schema-directives/src/schemaVisitor.ts#L82-L99" target="_blank" rel="noopener">locationsに対応するメソッド</a>が準備されているのでそれをオーバーライドすることになる。</p>
+<p><code>SchemaDirectiveVisitor</code>を継承した<code>DeprecatedDirective</code>を作成。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// directive @deprecated(</span></span><br><span class="line"><span class="comment">//   reason: String = "No longer supported"</span></span><br><span class="line"><span class="comment">// ) on FIELD_DEFINITION | ENUM_VALUE</span></span><br><span class="line"><span class="comment">// 上記を実装する場合</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; SchemaDirectiveVisitor &#125; <span class="keyword">from</span> <span class="string">'graphql-tools'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> DeprecatedDirective <span class="keyword">extends</span> SchemaDirectiveVisitor &#123;</span><br><span class="line">  <span class="keyword">public</span> visitFieldDefinition(field: GraphQLField&lt;<span class="built_in">any</span>, <span class="built_in">any</span>&gt;) &#123;</span><br><span class="line">    field.isDeprecated = <span class="literal">true</span>;</span><br><span class="line">    field.deprecationReason = <span class="keyword">this</span>.args.reason;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> visitEnumValue(value: GraphQLEnumValue) &#123;</span><br><span class="line">    value.isDeprecated = <span class="literal">true</span>;</span><br><span class="line">    value.deprecationReason = <span class="keyword">this</span>.args.reason;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; makeExecutableSchema &#125; <span class="keyword">from</span> <span class="string">'graphql-tools'</span>;</span><br><span class="line"><span class="keyword">import</span> DeprecatedDirective <span class="keyword">from</span> <span class="string">'directive/DeprecatedDirective'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> typeDefs = <span class="string">`</span></span><br><span class="line"><span class="string">type ExampleType &#123;</span></span><br><span class="line"><span class="string">  newField: String</span></span><br><span class="line"><span class="string">  oldField: String @deprecated(reason: "No longer supported")</span></span><br><span class="line"><span class="string">&#125;`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> schema = makeExecutableSchema(&#123;</span><br><span class="line">  typeDefs,</span><br><span class="line">  schemaDirectives: &#123;</span><br><span class="line">    deprecated: DeprecatedDirective</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>ユースケーストして日付フォーマットの変更の場合</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defaultFieldResolver &#125; <span class="keyword">from</span> <span class="string">"graphql"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> typeDefs = <span class="string">`</span></span><br><span class="line"><span class="string">directive @date(format: String) on FIELD_DEFINITION</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">scalar Date</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">type Post &#123;</span></span><br><span class="line"><span class="string">  published: Date @date(format: "mmmm d, yyyy")</span></span><br><span class="line"><span class="string">&#125;`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> DateFormatDirective <span class="keyword">extends</span> SchemaDirectiveVisitor &#123;</span><br><span class="line">  visitFieldDefinition(field) &#123;</span><br><span class="line">    <span class="comment">// https://github.com/graphql/graphql-js/blob/master/src/execution/execute.js#L1238</span></span><br><span class="line">    <span class="comment">// fileld is `resolve`</span></span><br><span class="line">    <span class="keyword">const</span> &#123; resolve = defaultFieldResolver &#125; = field;</span><br><span class="line">    <span class="keyword">const</span> &#123; format &#125; = <span class="keyword">this</span>.args;</span><br><span class="line">    <span class="comment">// overwrite resolve filed method</span></span><br><span class="line">    field.resolve = <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">const</span> date = <span class="keyword">await</span> resolve.apply(<span class="keyword">this</span>, args);</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">require</span>(<span class="string">'dateformat'</span>)(date, format);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// The formatted Date becomes a String, so the field type must change:</span></span><br><span class="line">    field.type = GraphQLString;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> schema = makeExecutableSchema(&#123;</span><br><span class="line">  typeDefs,</span><br><span class="line">  schemaDirectives: &#123;</span><br><span class="line">    date: DateFormatDirective</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="Apollo-GraphQL-Platform"><a href="#Apollo-GraphQL-Platform" class="headerlink" title="Apollo GraphQL Platform"></a>Apollo GraphQL Platform</h2><p><img src="https://www.apollographql.com/docs/img/platform-diagram.png" alt></p>
+<h3 id="Apollo-Client"><a href="#Apollo-Client" class="headerlink" title="Apollo Client"></a>Apollo Client</h3><p>名前の通り。<br><a href="https://github.com/apollographql/apollo-client" target="_blank" rel="noopener">https://github.com/apollographql/apollo-client</a><br>アプリのデータと状態を管理するClient。</p>
+<h3 id="InMemoryCache"><a href="#InMemoryCache" class="headerlink" title="InMemoryCache"></a>InMemoryCache</h3><p>Apollo Clientのキャッシュ機構。<br>Apollo ClientのDataProxyを通して、<br><code>readQuery</code>, <code>readFragment</code>, <code>writeQuery</code>, <code>writeFragment</code> インターフェイスを経由してcacheとやり取りする。</p>
+<h4 id="readQuery"><a href="#readQuery" class="headerlink" title="readQuery"></a>readQuery</h4><p><code>query</code>の場合は、サーバーにリクエストするが、<code>readQuery</code>はApplicationにcacheあがない場合はエラーを投げる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; todo &#125; = client.readQuery(&#123;</span><br><span class="line">  query: gql<span class="string">`</span></span><br><span class="line"><span class="string">    query ReadTodo &#123;</span></span><br><span class="line"><span class="string">      todo(id: 5) &#123;</span></span><br><span class="line"><span class="string">        id</span></span><br><span class="line"><span class="string">        text</span></span><br><span class="line"><span class="string">        completed</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  `</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">client.writeFragment(&#123;</span><br><span class="line">  id: <span class="string">'5'</span>,</span><br><span class="line">  fragment: gql<span class="string">`</span></span><br><span class="line"><span class="string">    fragment myTodo on Todo &#123;</span></span><br><span class="line"><span class="string">      completed</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  `</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    completed: <span class="literal">true</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="Appolo-Link"><a href="#Appolo-Link" class="headerlink" title="Appolo Link"></a>Appolo Link</h3><p>GraphQLサーバーへのリクエストを制御するインターフェイス。<br>GraphQLリクエストを実行すると、各Linkの機能が次々に適用されます。<br>Apollo Clientコアにある機能をモジュラーリンクに移行する予定。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ApolloLink.from([...])</span><br></pre></td></tr></table></figure>
+<p><code>from</code>で配列を受け取りそれらを単一のリンクに統合する。<br>内部的にreduceする。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ApolloLink.concat(x, y)</span><br></pre></td></tr></table></figure>
+<p><code>concat</code>でリンクを結合して1つにする。</p>
+<p>状況によってことなるリンクを使うのであれば</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ApolloLink.spilit(conditon, condition_is_true, condition_is_false)</span><br></pre></td></tr></table></figure>
+<p><code>spilit</code>のオプションは第一引数に条件、第二引数にtrueの場合のリンク、第三引数にfalseの場合のリンク</p>
+<h4 id="apollo-link-state"><a href="#apollo-link-state" class="headerlink" title="apollo-link-state"></a>apollo-link-state</h4><p>ローカルの状態を管理する。<br>起動時に<code>withClientState</code>でローカルのデータストアに状態を登録する。</p>
+<h4 id="apollo-cache-persist"><a href="#apollo-cache-persist" class="headerlink" title="apollo-cache-persist"></a>apollo-cache-persist</h4><p>clientの永続化ストレージにstateを自動的に保存または復元する。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; InMemoryCache &#125; <span class="keyword">from</span> <span class="string">'apollo-cache-inmemory'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; persistCache &#125; <span class="keyword">from</span> <span class="string">'apollo-cache-persist'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> cache = <span class="keyword">new</span> InMemoryCache(&#123;...&#125;);</span><br><span class="line"></span><br><span class="line">persistCache(&#123;</span><br><span class="line">  cache,</span><br><span class="line">  storage: <span class="built_in">window</span>.localStorage,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Continue setting up Apollo as usual.</span></span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> ApolloClient(&#123;</span><br><span class="line">  cache,</span><br><span class="line">  ...</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="apollo-link-error"><a href="#apollo-link-error" class="headerlink" title="apollo-link-error"></a>apollo-link-error</h3><p>GraphQLまたはネットワークエラー発生時のロジックを提供する。<br>以下のオブジェクトキーが利用できる。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>operation</td>
+<td>エラーとなった操作</td>
+</tr>
+<tr>
+<td>response</td>
+<td>次のリンクチェーンに渡されるレスポンス</td>
+</tr>
+<tr>
+<td>graphQLErrors</td>
+<td>GraphQLエンドポイントからのエラー配列</td>
+</tr>
+<tr>
+<td>networkError</td>
+<td>errorsGraphQLサーバーのレスポンスエラーまたは結果のパースエラー</td>
+</tr>
+<tr>
+<td>forward</td>
+<td>チェーン内の次のリンクへの参照。return forward(operation)コールバックを呼び出すとリクエストが再試行される</td>
+</tr>
+</tbody>
+</table>
+<h2 id="GraphQL-Server"><a href="#GraphQL-Server" class="headerlink" title="GraphQL Server"></a>GraphQL Server</h2><h3 id="apollo-server"><a href="#apollo-server" class="headerlink" title="apollo-server"></a>apollo-server</h3><p>名前の通り。<br><a href="https://github.com/apollographql/apollo-server" target="_blank" rel="noopener">https://github.com/apollographql/apollo-server</a><br>JavaScript GraphQLサーバー。schmemeとresolverを定義。</p>
+<p><img src="https://www.apollographql.com/docs/apollo-server/images/index-diagram.svg" alt></p>
+<p>バックエンドに既存のREST API、Database, Microserviceの場合、それぞれが持っているミドルウェアと一緒に組み込むことが可能。<br>またAmazon LambdaやMicrosoft Azure Functionsなどのサーバーレス(Faas)をバックエンドに使うことも可能。</p>
+<p>apllo-serverのintegrationには以下がある。</p>
+<ul>
+<li>apollo-server-express</li>
+<li>apollo-server-koa</li>
+<li>apollo-server-hapi</li>
+<li>apollo-server-lambda</li>
+<li>apollo-server-azure-functions</li>
+<li>apollo-server-cloud-functions</li>
+<li>apollo-server-cloudflare</li>
+</ul>
+<h3 id="Mocking"><a href="#Mocking" class="headerlink" title="Mocking"></a>Mocking</h3><p>フロントエンドの開発者がバックエンドの実装を待つことなくUIコンポーネントと機能を構築できるようにするためにmocking機能がある。</p>
+<p>モックの例</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; ApolloServer, gql &#125; = <span class="built_in">require</span>(<span class="string">'apollo-server'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> typeDefs = gql<span class="string">`</span></span><br><span class="line"><span class="string">  type Query &#123;</span></span><br><span class="line"><span class="string">    hello: String</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mocks = &#123;</span><br><span class="line">  Person: <span class="function"><span class="params">()</span> =&gt;</span> (&#123;</span><br><span class="line">    name: casual.name,</span><br><span class="line">    age: <span class="function"><span class="params">()</span> =&gt;</span> casual.integer(<span class="number">0</span>, <span class="number">120</span>),</span><br><span class="line">  &#125;),</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = <span class="keyword">new</span> ApolloServer(&#123;</span><br><span class="line">  typeDefs,</span><br><span class="line">  mocks,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.listen().then(<span class="function">(<span class="params">&#123; url &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`Server ready at <span class="subst">$&#123;url&#125;</span>`</span>)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="MockList-Resolver"><a href="#MockList-Resolver" class="headerlink" title="MockList Resolver"></a>MockList Resolver</h4><p>モックの作成を自動化するために<code>MockList</code>クラスを利用できる。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; MockList &#125; = <span class="built_in">require</span>(<span class="string">'apollo-server'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mocks = &#123;</span><br><span class="line">  Person: <span class="function"><span class="params">()</span> =&gt;</span> (&#123;</span><br><span class="line">    <span class="comment">// a list of length between 2 and 6 (inclusive)</span></span><br><span class="line">    friends: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">new</span> MockList([<span class="number">2</span>,<span class="number">6</span>]),</span><br><span class="line">    <span class="comment">// a list of three lists each with two items: [[1, 1], [2, 2], [3, 3]]</span></span><br><span class="line">    listOfLists: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">new</span> MockList(<span class="number">3</span>, () =&gt; <span class="keyword">new</span> MockList(<span class="number">2</span>)),</span><br><span class="line">  &#125;),</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="Resolver"><a href="#Resolver" class="headerlink" title="Resolver"></a>Resolver</h4><p>リゾルバーはGraphQL操作をデータに変換するための方法を提供します。</p>
+<h4 id="Resolver-Map"><a href="#Resolver-Map" class="headerlink" title="Resolver Map"></a>Resolver Map</h4><p>すべてのクエリに対応するために、スキーマはすべてのフィールドに対して解決関数を持っている。<br>この関数の集合を<code>Resolver Map</code>という。<br>スキーマのフィールドと型を関数で紐付ける。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; gql &#125; = <span class="built_in">require</span>(<span class="string">'apollo-server'</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; find, filter &#125; = <span class="built_in">require</span>(<span class="string">'lodash'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> schema = gql<span class="string">`</span></span><br><span class="line"><span class="string">  type Book &#123;</span></span><br><span class="line"><span class="string">    title: String</span></span><br><span class="line"><span class="string">    author: Author</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  type Author &#123;</span></span><br><span class="line"><span class="string">    books: [Book]</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  type Query &#123;</span></span><br><span class="line"><span class="string">    author: Author</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> resolvers = &#123;</span><br><span class="line">  Query: &#123;</span><br><span class="line">    author(parent, args, context, info) &#123;</span><br><span class="line">      <span class="keyword">return</span> find(authors, &#123; <span class="attr">id</span>: args.id &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  Author: &#123;</span><br><span class="line">    books(author) &#123;</span><br><span class="line">      <span class="keyword">return</span> filter(books, &#123; <span class="attr">author</span>: author.name &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>型とリゾルバは組み合わせることができるので、複数に分けて管理することは可能。</p>
+<h4 id="リゾルバ関数"><a href="#リゾルバ関数" class="headerlink" title="リゾルバ関数"></a>リゾルバ関数</h4><p>schemeで定義されたフィールを返すPromise関数。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>parent</td>
+<td>親引数。親フィールドでリゾルバから返された結果を含むオブジェクト。最上位の場合は<code>rootValue</code>から渡された値。</td>
+</tr>
+<tr>
+<td>args</td>
+<td>クエリ引数。クエリ関数に渡される引数。</td>
+</tr>
+<tr>
+<td>context</td>
+<td>クエリ、リゾルバで共有されるオブジェクト。認証スコープ、データベース接続、カスタムフェッチなど複数のリゾルバで共有されるオブジェクト。</td>
+</tr>
+<tr>
+<td>info</td>
+<td>フィールド名、ルートからのパス、クエリの実行状態などが含まれる。<a href="https://github.com/graphql/graphql-js/blob/c82ff68f52722c20f10da69c9e50a030a1f218ae/src/type/definition.js#L489-L500" target="_blank" rel="noopener">参照</a></td>
+</tr>
+</tbody>
+</table>
+<p>contextの例</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> server = <span class="keyword">new</span> ApolloServer(&#123;</span><br><span class="line">  typeDefs,</span><br><span class="line">  resolvers,</span><br><span class="line">  context: <span class="function">(<span class="params">&#123; req &#125;</span>) =&gt;</span> (&#123;</span><br><span class="line">    authScope: getScope(req.headers.authorization)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;));</span><br><span class="line"></span><br><span class="line"><span class="comment">// resolver</span></span><br><span class="line">(parent, _, context) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span>(context.authScope !== ADMIN) <span class="keyword">throw</span> AuthenticationError(<span class="string">'not admin'</span>);</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="react-apollo"><a href="#react-apollo" class="headerlink" title="react-apollo"></a>react-apollo</h3><p>ReactのためのApolloClient拡張。<br>GraphQLサーバーからデータを取得し、ReactのComponentにprops経由で接続する。<br>よく見られる高階関数パターン。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ApolloClient <span class="keyword">from</span> <span class="string">'apollo-boost'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; ApolloProvider &#125; <span class="keyword">from</span> <span class="string">'react-apollo'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> ApolloClient();</span><br><span class="line"></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;ApolloProvider client=&#123;client&#125;&gt;</span><br><span class="line">    &lt;MyRootComponent /&gt;</span><br><span class="line">  &lt;<span class="regexp">/ApolloProvider&gt;,</span></span><br><span class="line"><span class="regexp">  document.getElementById('root'),</span></span><br><span class="line"><span class="regexp">);</span></span><br></pre></td></tr></table></figure>
+<p>でコンポーネントにclientを渡すことができる<br><a href="https://github.com/apollographql/react-apollo/blob/master/src/ApolloProvider.tsx#L9" target="_blank" rel="noopener">https://github.com/apollographql/react-apollo/blob/master/src/ApolloProvider.tsx#L9</a></p>
+<p>各コンポーネントからクエリを発行する。<br>複数のクエリをcomposeして発行することも可能。</p>
+<hr>
+<p>ということでここまでで時間切れ。</p>
+<h3 id="参考ページ"><a href="#参考ページ" class="headerlink" title="参考ページ"></a>参考ページ</h3><ul>
+<li><a href="https://graphql.org/" target="_blank" rel="noopener">https://graphql.org/</a></li>
+<li><a href="https://www.apollographql.com/docs/" target="_blank" rel="noopener">https://www.apollographql.com/docs/</a></li>
+<li><a href="https://graphql.github.io/graphql-spec/" target="_blank" rel="noopener">https://graphql.github.io/graphql-spec/</a></li>
+<li><a href="https://gql.foundation/" target="_blank" rel="noopener">https://gql.foundation/</a></li>
+</ul>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4054575508733221" data-ad-slot="9493597992" data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2019/02/21/learning-graphql/" class="hatena-bookmark-button" data-hatena-bookmark-title="GraphQLについて再入門" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2019/02/21/learning-graphql/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2019/01/29/multiprocess_multithread_processing_of_nodejs/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            Node.js child_process, cluster, worker_thredsを確認した
+          
+        </span>
+        
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2019 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2019/02/21/learning-graphql/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
   <title>ブラウザに実装されている ECMAScript modules について | 69log</title>
@@ -39,7 +39,7 @@ ga('send', 'pageview');
 <!-- End Google Analytics -->
 
 
-</head>
+</head></html>
 <body>
     <header role="header">
   <div class="header cf">
@@ -101,7 +101,7 @@ ga('send', 'pageview');
 <a id="more"></a>
 <h3 id="従来のECMAScript-modulesのセットアップ"><a href="#従来のECMAScript-modulesのセットアップ" class="headerlink" title="従来のECMAScript modulesのセットアップ"></a>従来のECMAScript modulesのセットアップ</h3><p>まずは従来のモジュールのセットアップ方法。<br>下記のようにシンプルな依存関係のあるファイルが存在する場合</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// app/someone.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Someone</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name) &#123;</span><br><span class="line">       <span class="keyword">this</span>.name = name || <span class="string">'bob'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    callme() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// app/entry.js</span></span><br><span class="line"><span class="keyword">import</span> Someon <span class="keyword">from</span> <span class="string">'./someon'</span>;</span><br><span class="line"><span class="keyword">const</span> someone = <span class="keyword">new</span> Someon(<span class="string">'Joe'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">"DOMContentLoaded"</span>, event =&gt; &#123;</span><br><span class="line">    <span class="built_in">document</span>.body.innerHTML(someone.callme());</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>依存性の解決のために <a href="">browserify</a> または <a href="">webpack</a> などを使って、依存ファイルをbundle(一つに結合して)する。<br>ここでは、上記の依存関係のあるファイルを <code>dist/bundle.js</code> という形でbundleする。</p>
+<p>依存性の解決のために <a href>browserify</a> または <a href>webpack</a> などを使って、依存ファイルをbundle(一つに結合して)する。<br>ここでは、上記の依存関係のあるファイルを <code>dist/bundle.js</code> という形でbundleする。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: <span class="string">'./app/entry.js'</span>,</span><br><span class="line">  output: &#123;</span><br><span class="line">    filename: <span class="string">'bundle.js'</span>,</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        exclude: <span class="regexp">/node_modules/</span>,</span><br><span class="line">        loader: <span class="string">'babel-loader'</span>,</span><br><span class="line">        query: &#123;</span><br><span class="line">          presets: [<span class="string">'env'</span>]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>これらをhtmlから参照する必要があった。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Someone Class module depends<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"/dist/bundle.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -184,11 +184,7 @@ ga('send', 'pageview');
           
 <!-- Google Adsence -->
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<ins class="adsbygoogle"
-   style="display:block"
-   data-ad-client="ca-pub-4054575508733221"
-   data-ad-slot="9493597992"
-   data-ad-format="auto"></ins>
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4054575508733221" data-ad-slot="9493597992" data-ad-format="auto"></ins>
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
@@ -251,7 +247,7 @@ ga('send', 'pageview');
             Cross-Origin Resource Sharing(CORS)を使用したHTTPリクエスト
           
         </span>
-        </span>
+        
       </a>
     
   </div>

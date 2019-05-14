@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
   <title>React FluxアプリをReact Redux(ES2015)で書き直した時のメモ | 69log</title>
@@ -43,7 +43,7 @@ ga('send', 'pageview');
 <!-- End Google Analytics -->
 
 
-</head>
+</head></html>
 <body>
     <header role="header">
   <div class="header cf">
@@ -123,7 +123,7 @@ ga('send', 'pageview');
 <h2 id="Reduxを使う"><a href="#Reduxを使う" class="headerlink" title="Reduxを使う"></a>Reduxを使う</h2><p><a href="https://github.com/facebook/flux" target="_blank" rel="noopener">Flux</a>などの思想をもとに作成されたJavaScripアプリの状態管理のライブラリ。<br>1つのStoreオブジェクトでstateは管理され、データフローはFluxと同じく一方向。<br>アプリケーション全体の状態を管理している<strong>state</strong>の変更はactionオブジェクトから渡されるデータをもとに、reducerを通してのみ行われる。</p>
 <p>Reduxを利用するにあたり、<a href="http://rackt.org/redux/docs/basics/index.html" target="_blank" rel="noopener">document</a>を参考に登場人物たちを一旦整理する。</p>
 <p>ちなみにFluxのdata flowは</p>
-<p><img src="/images/2016/02/04/flux.png" alt=""></p>
+<p><img src="/images/2016/02/04/flux.png" alt></p>
 <h3 id="actions"><a href="#actions" class="headerlink" title="actions"></a>actions</h3><p>plainなオブジェクトであり、stateの状態を変更する情報(type)を持つ必要がある。</p>
 <h3 id="reducers"><a href="#reducers" class="headerlink" title="reducers"></a>reducers</h3><p>reducersはシンプルな関数である(Changes are made with pure functions)。<br>actionから送られたtypeをもとに、実際にstateを変更する。</p>
 <h3 id="states"><a href="#states" class="headerlink" title="states"></a>states</h3><p>アプリケーション全体の状態を管理するシングルオブジェクト。<br>stateはImuutable(State is read-only)である必要があるので、stateを直接変更しないで、<strong>Object.assign()</strong>などを使って必ずコピーする。</p>
@@ -131,7 +131,7 @@ ga('send', 'pageview');
 <h3 id="container"><a href="#container" class="headerlink" title="container"></a>container</h3><p>Reduxの最上位のレイヤーであり、ここでReduxのstateとcomponentをつなぐ役割を果たす。</p>
 <h3 id="components"><a href="#components" class="headerlink" title="components"></a>components</h3><p>Reduxとは関連しないView。<br>storeのdataをcontainerよりpropsのバケツリレーで受け取る。</p>
 <p>Reduxのデータフローは</p>
-<p><img src="/images/2016/02/04/redux.png" alt=""></p>
+<p><img src="/images/2016/02/04/redux.png" alt></p>
 <h3 id="移行にあたり変わる箇所"><a href="#移行にあたり変わる箇所" class="headerlink" title="移行にあたり変わる箇所"></a>移行にあたり変わる箇所</h3><p>ActionCreatorはReduxと違いシンプルな関数であり、FluxではComponentで呼ばれているが、<br>ReduxではContainerでDispatchされるようになる。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// flux action</span></span><br><span class="line"><span class="keyword">var</span> TodoActions = &#123;</span><br><span class="line">  create: <span class="function"><span class="keyword">function</span>(<span class="params">text</span>) </span>&#123; ... &#125;,</span><br><span class="line">  update: <span class="function"><span class="keyword">function</span>(<span class="params">text</span>) </span>&#123; ... &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// redux action</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">create</span>(<span class="params">text</span>) </span>&#123; ... &#125;,</span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">update</span>(<span class="params">text</span>) </span>&#123; ... &#125;,</span><br></pre></td></tr></table></figure>
@@ -157,11 +157,7 @@ ga('send', 'pageview');
           
 <!-- Google Adsence -->
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<ins class="adsbygoogle"
-   style="display:block"
-   data-ad-client="ca-pub-4054575508733221"
-   data-ad-slot="9493597992"
-   data-ad-format="auto"></ins>
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4054575508733221" data-ad-slot="9493597992" data-ad-format="auto"></ins>
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
@@ -226,7 +222,7 @@ ga('send', 'pageview');
             docker上のmysqlを使うにあたりよくあるパターン
           
         </span>
-        </span>
+        
       </a>
     
   </div>
