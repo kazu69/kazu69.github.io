@@ -5,17 +5,17 @@
   
   <title>load-grunt-configをつかってGruntタスクを分割する | 69log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="。Gruntfileの設定情報が増えてファイルサイズが大きく、複雑になってきたので、タスクモジュールを分割して管理するためにload-grunt-configを使ってみた。">
+  <meta name="description" content="。 Gruntfileの設定情報が増えてファイルサイズが大きく、複雑になってきたので、タスクモジュールを分割して管理するためにload-grunt-configを使ってみた。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="load-grunt-configをつかってGruntタスクを分割する">
 <meta property="og:url" content="http://blog.kazu69.net/2014/02/15/to-split-a-grunt-tasks-using-load-grunt-config/index.html">
 <meta property="og:site_name" content="69log">
-<meta property="og:description" content="。Gruntfileの設定情報が増えてファイルサイズが大きく、複雑になってきたので、タスクモジュールを分割して管理するためにload-grunt-configを使ってみた。">
+<meta property="og:description" content="。 Gruntfileの設定情報が増えてファイルサイズが大きく、複雑になってきたので、タスクモジュールを分割して管理するためにload-grunt-configを使ってみた。">
 <meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="load-grunt-configをつかってGruntタスクを分割する">
-<meta name="twitter:description" content="。Gruntfileの設定情報が増えてファイルサイズが大きく、複雑になってきたので、タスクモジュールを分割して管理するためにload-grunt-configを使ってみた。">
+<meta name="twitter:description" content="。 Gruntfileの設定情報が増えてファイルサイズが大きく、複雑になってきたので、タスクモジュールを分割して管理するためにload-grunt-configを使ってみた。">
   
     <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
   
@@ -101,16 +101,14 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>。<br>Gruntfileの設定情報が増えてファイルサイズが大きく、複雑になってきたので、タスクモジュールを分割して管理するために<a href="https://github.com/firstandthird/load-grunt-config" target="_blank" rel="noopener">load-grunt-config</a>を使ってみた。<br><a id="more"></a><br>Gruntのタスクをファイルごとに分割して、自動で読み込んで利用できるようになる。<br>ファイルもjsのほかにcoffeeやyaml形式でも使える。また、タスクも定義できるできるっぽい。</p>
+      <p>。
+Gruntfileの設定情報が増えてファイルサイズが大きく、複雑になってきたので、タスクモジュールを分割して管理するために<a href="https://github.com/firstandthird/load-grunt-config" target="_blank" rel="noopener">load-grunt-config</a>を使ってみた。</p>
+<a id="more"></a>
+<p>Gruntのタスクをファイルごとに分割して、自動で読み込んで利用できるようになる。<br>ファイルもjsのほかにcoffeeやyaml形式でも使える。また、タスクも定義できるできるっぽい。</p>
 <script src="https://gist.github.com/kazu69/9014680.js?file=Gruntfile.js"></script>
-Gruntfileに設定を追加する。
-分割したタスクのファイルはデフォルトではgruntディレクトリに格納することになる。
-タスクモジュールを自動読み込みする場合は、loadGruntTasksオプションでpackage.jsonファイルのパス、scopeの設定などができる。
-あまりないけど、タスクの自動読込みをしない場合はfalseを設定するっぽい。
-
-このあたりの機能はほかには[load-grunt-tasks](https://github.com/sindresorhus/load-grunt-tasks)などがある。
-
-以下のようにファイルタスクを分割して
+<p>Gruntfileに設定を追加する。<br>分割したタスクのファイルはデフォルトではgruntディレクトリに格納することになる。<br>タスクモジュールを自動読み込みする場合は、loadGruntTasksオプションでpackage.jsonファイルのパス、scopeの設定などができる。<br>あまりないけど、タスクの自動読込みをしない場合はfalseを設定するっぽい。</p>
+<p>このあたりの機能はほかには<a href="https://github.com/sindresorhus/load-grunt-tasks" target="_blank" rel="noopener">load-grunt-tasks</a>などがある。</p>
+<p>以下のようにファイルタスクを分割して</p>
 <script src="https://gist.github.com/kazu69/9014680.js?file=tree.sh"></script>
 
 <p>defaultのタスクをaliases.yamlで定義</p>

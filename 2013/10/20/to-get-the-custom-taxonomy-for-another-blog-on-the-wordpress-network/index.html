@@ -103,10 +103,13 @@ ga('send', 'pageview');
     
       <p>マルチサイトで運用しているwordpressにおいて、同じネットワーク上のcustom taxonomyを取得する方法の備忘録。</p>
 <a id="more"></a>
+
 <p>はじめに switch_to_blog でブログを切り替えて get_taxonomies をで取得するつもりだった。<br>しかし、取得できない上にエラーも発生しないという状況になりました。</p>
 <p>勘違いしていたのが switch_to_blog では自動でロードされるオプションやオブジェクトなどは切り替えることができない。そのため別のブログのカスタムタクソノミーへのアクセスができない状況でした。</p>
 <p>素直にsqlを使って以下のように取得しました。</p>
-<p>[php]<br>// get custom taxonomy from another blog on the same network<br>function get_taxonomies_from_blog($blog_id) {<br>  switch_to_blog($blog_id);<br>  global $wpdb;<br>  $query = &quot;<br>    SELECT *<br>    FROM $wpdb-&gt;terms<br>    JOIN $wpdb-&gt;term_taxonomy<br>    USING(term_id)<br>  &quot;;<br>  $taxonomies = $wpdb-&gt;get_results($wpdb-&gt;prepare($query));<br>  restore_current_blog();<br>  return $taxonomies;<br>}<br>[/php]</p>
+<p>[php]<br>// get custom taxonomy from another blog on the same network<br>function get_taxonomies_from_blog($blog_id) {<br>  switch_to_blog($blog_id);<br>  global $wpdb;<br>  $query = &quot;<br>    SELECT * 
+    FROM $wpdb-&gt;terms<br>    JOIN $wpdb-&gt;term_taxonomy<br>    USING(term_id)<br>  &quot;;<br>  $taxonomies = $wpdb-&gt;get_results($wpdb-&gt;prepare($query));<br>  restore_current_blog();<br>  return $taxonomies;<br>}
+[/php]</p>
 <p>という感じです。<br>勘違いしてた。</p>
 
     

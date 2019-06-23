@@ -101,17 +101,16 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>気になっていた、nodejsのWebアプリケーションフレームワークの<a href="http://koajs.com/" target="_blank" rel="noopener">Koajs</a>を使って、簡単なアプリケーションを作成してみた。<br><a id="more"></a><br>koajsはECMAScript6 Harmonyのgeneratorsを使って実装されているため、Expressのように悩ましいcallbackを多用せずに開発できる。</p>
+      <p>気になっていた、nodejsのWebアプリケーションフレームワークの<a href="http://koajs.com/" target="_blank" rel="noopener">Koajs</a>を使って、簡単なアプリケーションを作成してみた。</p>
+<a id="more"></a>
+<p>koajsはECMAScript6 Harmonyのgeneratorsを使って実装されているため、Expressのように悩ましいcallbackを多用せずに開発できる。</p>
 <p>ECMAScript6 Harmonyを使うのでので node.js v0.11 以上が必要。</p>
 <p>generator構文は <strong>function* func() {}</strong> と定義することで利用できる。<br>generator functionでは yield が利用できる。これを利用することで処理を同期的に扱うことができるようになる。</p>
 <p>generatorを実行させる簡単な例。</p>
 <script src="https://gist.github.com/kazu69/9500860.js?file=g.js"></script>
 <script src="https://gist.github.com/kazu69/9500860.js?file=d.js"></script>
-next()をつかって、イテレーターを順番に実行していく。
-
-koa.jsの場合も同じで、yieldがあると関数が中断され、
-nextで次の関数を実行し、実行後に続きから処理を再開可能となる。
-
+<p>next()をつかって、イテレーターを順番に実行していく。</p>
+<p>koa.jsの場合も同じで、yieldがあると関数が中断され、<br>nextで次の関数を実行し、実行後に続きから処理を再開可能となる。</p>
 <script src="https://gist.github.com/kazu69/9501012.js?file=example.js"></script>
 
 <p>とかだと</p>
@@ -153,7 +152,7 @@ nextで次の関数を実行し、実行後に続きから処理を再開可能�
 <script src="http://gist-it.appspot.com/github/kazu69/koa-todo-app/blob/master/app.js?slice=96:97"></script>
 
 <p>koa アプリを動かすには、起動オプションで –harmonyをつけて起動する必要がある。</p>
-<p><strong> node –harmony app.js </strong></p>
+<p>** node –harmony app.js **</p>
 <p>触ってみて、callbackで複雑になることないので、見通しがいい。<br>generators function を使うことで非同期処理を同期的に記述できるのがいい感じ。</p>
 <p>repository - <a href="https://github.com/kazu69/koa-todo-app/" target="_blank" rel="noopener">koa-todo-app</a></p>
 

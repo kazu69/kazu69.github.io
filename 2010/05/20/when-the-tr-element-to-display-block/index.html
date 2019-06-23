@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>たまにtr要素のdisplay要素で困るので、メモ。<br><a id="more"></a><br>javascriptでtr要素のdisplayの「block」と「none」で表示切替できるのはIEの間違った解釈で、普通(firefoxやsafari)は「block」と「table-row」。</p>
+      <p>たまにtr要素のdisplay要素で困るので、メモ。</p>
+<a id="more"></a>
+<p>javascriptでtr要素のdisplayの「block」と「none」で表示切替できるのはIEの間違った解釈で、普通(firefoxやsafari)は「block」と「table-row」。</p>
 <p>でも、ブラウザで条件分岐するのは面倒なので、まとめて</p>
 <p><code>(dom.style.display == &#39;none&#39;)  ? &#39;&#39; : &#39;none&#39;;</code></p>
 <p>でいいじゃないか。<br>つまり、空(値なし)と「none」で切り替えれば条件分岐いらない。</p>

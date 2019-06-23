@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://lostechies.com/derickbailey/2011/09/15/zombies-run-managing-page-transitions-in-backbone-apps/" target="_blank" rel="noopener">Backbone.js</a>のイベントの管理についての個人的なメモ。<br><a id="more"></a></p>
+      <p><a href="http://lostechies.com/derickbailey/2011/09/15/zombies-run-managing-page-transitions-in-backbone-apps/" target="_blank" rel="noopener">Backbone.js</a>のイベントの管理についての個人的なメモ。</p>
+<a id="more"></a>
+
 <h2 id="イベントの管理"><a href="#イベントの管理" class="headerlink" title="イベントの管理"></a>イベントの管理</h2><p>画面遷移しないアプリなどでは、Backbone.jsではviewオブジェクトにbindしたイベントを自前管理することが重要になる。<br>viewオブジェクトはそれぞれが独立しつつも、相互バインドしあう関係であることが理想的。</p>
 <p>しかし、イベント管理がうまくいっていないと、削除したはずなのに再び生成されるゾンビのようなviewが残ることになる。<br>この辺りをふまえて、個人的なやり方をメモ。</p>
 <p>まずは基礎となるviewのclass</p>
@@ -131,12 +133,10 @@ ga('send', 'pageview');
 # イベントが通知されたら発火
 @vent.on &amp;quot;animal&amp;quot;, @barks, @
 
-super
-</code></pre><p>  barks: (dog_barks) -&gt;<br>    console.log dog_barks<br>    console.log &quot;meow&quot;<br>    @close()</p>
+super</code></pre><p>  barks: (dog_barks) -&gt;<br>    console.log dog_barks<br>    console.log &quot;meow&quot;<br>    @close()</p>
 <p>class Dog extends Animal</p>
 <p>  initialize: -&gt;<br>    @events = _.extend @events, Animal::events</p>
-<pre><code>super
-</code></pre><p>  barks: -&gt;<br>    @vent.trigger &quot;animal&quot;, &quot;bow&quot;<br>    @close()</p>
+<pre><code>super</code></pre><p>  barks: -&gt;<br>    @vent.trigger &quot;animal&quot;, &quot;bow&quot;<br>    @close()</p>
 <p>cat = new Cat()<br>dog = new Dog()<br>dog.barks()</p>
 <p>[/ruby]</p>
 <iframe width="100%" height="300" src="http://jsfiddle.net/kazu69/j7qWm/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
@@ -150,8 +150,7 @@ super
 @events = _.extend @events, Animal::events
 
 # 継承元classの同名のメソッド呼ぶ
-super
-</code></pre><p>[/ruby]</p>
+super</code></pre><p>[/ruby]</p>
 <p>という感じで、Backboneだとviewを継承するとviewの管理が大変になるが、イベントの管理をなんとかできるとある程度簡単に開発できそうです。</p>
 <p>参考にしたサイト<br><a href="http://lostechies.com/derickbailey/2012/04/03/revisiting-the-backbone-event-aggregator-lessons-learned/" target="_blank" rel="noopener">http://lostechies.com/derickbailey/2012/04/03/revisiting-the-backbone-event-aggregator-lessons-learned/</a><br><a href="http://lostechies.com/derickbailey/2011/09/15/zombies-run-managing-page-transitions-in-backbone-apps/" target="_blank" rel="noopener">http://lostechies.com/derickbailey/2011/09/15/zombies-run-managing-page-transitions-in-backbone-apps/</a></p>
 

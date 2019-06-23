@@ -105,10 +105,13 @@ ga('send', 'pageview');
     </div>
     
       <p><img src="/images/2010/04/20100426-01.png" alt="@anywhere"><br><img src="/images/2010/04/20100426-02-300x210.png" alt></p>
-<p>簡単設置できて、その場でつぶやけるらしい<a href="http://dev.twitter.com/anywhere" target="_blank" rel="noopener">@Anywhere</a>を埋め込んでみた。<br><a id="more"></a></p>
+<p>簡単設置できて、その場でつぶやけるらしい<a href="http://dev.twitter.com/anywhere" target="_blank" rel="noopener">@Anywhere</a>を埋め込んでみた。</p>
+<a id="more"></a>
+
 <p>設置方法には、アプリケーションの登録が必要です。</p>
 <ol>
-<li><a href="http://dev.twitter.com/anywhere" target="_blank" rel="noopener">@Anywhere</a>のサイトのページ下部にある「Start it using now」をクリック。</li>
+<li><p><a href="http://dev.twitter.com/anywhere" target="_blank" rel="noopener">@Anywhere</a>のサイトのページ下部にある「Start it using now」をクリック。</p>
+</li>
 <li><p>必須項目の「Application Name」(Tweetした時に表示されるアプリケーション名)<br>「Application Website」(設置するサイトの名前)<br>「Callback URL」を入力(OAuthを使う時に利用するみたいですが、設置するサイトのURLで)<br>「Default Access type」(followやretweetを使うならRead &amp; Writeを選択)</p>
 </li>
 <li><p>スクリプトが提示されるので、それをコピー。</p>
@@ -124,30 +127,19 @@ twttr.anywhere(function (twitter) {
         twitter("#sample").hovercards();
     });
 </script>
-を追加するとid="hovercards"を付与した場所でツールチップが表示されます。
-こんなかんじ <span id="sample">@kazu69</span>。
-
-Follow me ボタンも簡単につけることができます。
-`
-twttr.anywhere(function(twitter) {
-    twitter("#followButton").followButton("kazu69");
-});
-`
+<p>を追加するとid=”hovercards”を付与した場所でツールチップが表示されます。<br>こんなかんじ <span id="sample">@kazu69</span>。</p>
+<p>Follow me ボタンも簡単につけることができます。<br><code>twttr.anywhere(function(twitter) {
+    twitter(&quot;#followButton&quot;).followButton(&quot;kazu69&quot;);
+});</code></p>
 <script type="text/javascript">
 twttr.anywhere(function(twitter) {
     twitter("#sampleBtn").followButton("kazu69");
 });
 </script>
-でid="followButton"を付与した場所にボタンが表示されます。
-こんな感じ <span id="sampleBtn"></span>
-
-Tweet Boxも簡単に設置できます。
-`
- twttr.anywhere(function (T) {
-    T("#tbox").tweetBox();
-  });
-`
-こんな感じで、同じくd="tbox"を付与した場所にTweet Boxが設置できます。
+<p>でid=”followButton”を付与した場所にボタンが表示されます。<br>こんな感じ <span id="sampleBtn"></span></p>
+<p>Tweet Boxも簡単に設置できます。<br><code>twttr.anywhere(function (T) {
+    T(&quot;#tbox&quot;).tweetBox();
+  });</code><br>こんな感じで、同じくd=”tbox”を付与した場所にTweet Boxが設置できます。</p>
 <div id="sampleBox"></div>
 <script type="text/javascript">
  twttr.anywhere(function (T) {

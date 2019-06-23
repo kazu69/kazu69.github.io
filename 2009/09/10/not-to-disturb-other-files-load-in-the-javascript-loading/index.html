@@ -103,7 +103,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>javascriptのロード中は基本的にほかのファイルのロードが行われないのは、一般的なお話ですが(最新のブラウザはパラレルでロードできるからこの範疇ではない)、少しでもサイトの最適化を行うならばパラッルダウンロードはしておきたいところ。<br><a id="more"></a><br>ということで、ほかのファイルのロードを邪魔せずに、ロード完了時にスクリプトが動作する方法がありました。<br><code>domscript.onload = function() { 
+      <p>javascriptのロード中は基本的にほかのファイルのロードが行われないのは、一般的なお話ですが(最新のブラウザはパラレルでロードできるからこの範疇ではない)、少しでもサイトの最適化を行うならばパラッルダウンロードはしておきたいところ。</p>
+<a id="more"></a>
+<p>ということで、ほかのファイルのロードを邪魔せずに、ロード完了時にスクリプトが動作する方法がありました。<br><code>domscript.onload = function() { 
     domscript.onloadDone = true; 
     init(); 
 };
@@ -113,7 +115,8 @@ domscript.onreadystatechange = function() {
         init();
     }
 }</code><br>onreadystatechangeやonloadイベントを使って、ロードを状態をみてロード完了時にinit関数を実行ですかね。へー、これでパラレルロードができるのかという感じです。<del datetime="2009-09-29T14:44:22+00:00">実証してないのです。</del>ちなみに、single scriptの場合です。</p>
-<p>実証してみました。<br>`<br>function init(){<br>        alert(“init”);<br>    }</p>
+<p>実証してみました。<br>`
+function init(){<br>        alert(“init”);<br>    }</p>
 <pre><code>var domscript = document.createElement(&apos;script&apos;);
 domscript.src =&quot;script.js&quot;;
 
@@ -128,8 +131,8 @@ domscript.onreadystatechange = function() {
         init();
     }
 }
-document.getElementsByTagName(&apos;head&apos;)[0].appendChild(domscript);
-</code></pre><p>`<br>という感じで実行すると、</p>
+document.getElementsByTagName(&apos;head&apos;)[0].appendChild(domscript);</code></pre><p>`
+という感じで実行すると、</p>
 <p><img src="/images/090929.png" alt><br>という具合にjsとimgがパラレルでダウンロードされました。</p>
 <p><a href="http://stevesouders.com/efws/script-onload.php" target="_blank" rel="noopener"><br>stevesouders.com</a>より</p>
 

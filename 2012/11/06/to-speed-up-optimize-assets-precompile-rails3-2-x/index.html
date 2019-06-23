@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Rails3.2.x で開発時にassets precompileに時間を要していたので、なんとか早くすべく調べていたら、<a href="http://stackoverflow.com/questions/11390447/speedup-rails-asset-pipeline-precompile-process/11390454" target="_blank" rel="noopener">stackoverflow</a>に以下の記述があったので実際に試してみたらスピードアップしたので忘れないうちまとめてみた。<br><a id="more"></a></p>
+      <p>Rails3.2.x で開発時にassets precompileに時間を要していたので、なんとか早くすべく調べていたら、<a href="http://stackoverflow.com/questions/11390447/speedup-rails-asset-pipeline-precompile-process/11390454" target="_blank" rel="noopener">stackoverflow</a>に以下の記述があったので実際に試してみたらスピードアップしたので忘れないうちまとめてみた。</p>
+<a id="more"></a>
+
 <ul>
 <li><p><strong>Capistranoを利用している場合は、Capistranoのビルトインタスクである ‘deploy/assets’ を使用する。</strong><br>Capistranoのビルトインタスクを利用することで、assetsのみをプリコンパイルするためアプリ全体を対象にプリコンパイルするよりも早くなります。</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bundle exec rake RAILS_ENV=production RAILS_GROUPS=assets <span class="symbol">assets:</span>precompile</span><br></pre></td></tr></table></figure>
@@ -112,6 +114,7 @@ ga('send', 'pageview');
 </li>
 <li><p><strong>partialを使用しない</strong><br>変数や依存ファイルを読込む場合も @import ではなく require で読込む方がより早いそうです。</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@import <span class="string">"reset"</span>;</span><br><span class="line">@import <span class="string">"base"</span>;</span><br><span class="line">@import <span class="string">"product"</span>;</span><br></pre></td></tr></table></figure>
+
 <p>よりも</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/<span class="regexp">/= require "reset"</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/= require "base"</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/= require "product"</span></span><br></pre></td></tr></table></figure>
 </li>

@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>rubyの軽量フレームワーク<a href="http://www.sinatrarb.com/" target="_blank" rel="noopener">sinatra</a>と<a href="http://documentcloud.github.com/backbone/" target="_blank" rel="noopener">Backbonejs</a>でpjaxをやってみたので備忘録。<br><a id="more"></a><br>HTML5からはhistoryオブジェクトにpushStateやreplaceStateメソッドが追加され、履歴のスタックを操作できるようになりました。pjaxは、そのpushStateとAjaxを利用したブラウザの戻る・進む機能が使える技術。<br>通常のリクエストと異なり、必要な箇所だけをAjaxで取得するためデータの転送量を削減できる。<br>具体例でいうと、あの<a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>で使われてるやつ。</p>
+      <p>rubyの軽量フレームワーク<a href="http://www.sinatrarb.com/" target="_blank" rel="noopener">sinatra</a>と<a href="http://documentcloud.github.com/backbone/" target="_blank" rel="noopener">Backbonejs</a>でpjaxをやってみたので備忘録。</p>
+<a id="more"></a>
+<p>HTML5からはhistoryオブジェクトにpushStateやreplaceStateメソッドが追加され、履歴のスタックを操作できるようになりました。pjaxは、そのpushStateとAjaxを利用したブラウザの戻る・進む機能が使える技術。<br>通常のリクエストと異なり、必要な箇所だけをAjaxで取得するためデータの転送量を削減できる。<br>具体例でいうと、あの<a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>で使われてるやつ。</p>
 <script src="https://gist.github.com/2029789.js"> </script>
 
 <p>以下は個人的なメモ。<br>ヘッダー情報にHTTP_X_PJAXが付与されている場合はpjaxの処理をさせる<br><code>[sourcecode language=&quot;ruby&quot;]

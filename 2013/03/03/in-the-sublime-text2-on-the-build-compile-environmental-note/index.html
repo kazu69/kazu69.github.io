@@ -101,23 +101,32 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>個人的メモ。エディターの設定ファイルを誤操作してしまって。<br>再度構築していたんですが、どうやるんだっけってのをメモしておく。<br><a id="more"></a><br>Sublime Text2でcoffeeスクリプトとかをコンパイルできるんですが、パッケージインストーラーで入れただけだとエラーになっていたので調べてみた。</p>
+      <p>個人的メモ。エディターの設定ファイルを誤操作してしまって。<br>再度構築していたんですが、どうやるんだっけってのをメモしておく。</p>
+<a id="more"></a>
+<p>Sublime Text2でcoffeeスクリプトとかをコンパイルできるんですが、パッケージインストーラーで入れただけだとエラーになっていたので調べてみた。</p>
 <p>ちなみに今回は<a href="https://github.com/surjikal/sublime-coffee-compile" target="_blank" rel="noopener">sublime-coffee-compile</a>を使いたかったんです。</p>
-<p>たとえばcoffee scriptの設定ファイル(CoffeeScript.sublime-build)をみてみると<br>[javascript]<br>{<br>    &quot;cmd&quot;: [&quot;coffee&quot;,&quot;-c&quot;,&quot;$file&quot;]<br>,    &quot;path&quot;: &quot;/usr/local/bin:$PATH&quot;<br>,    &quot;selector&quot;: &quot;source.coffee&quot;<br>}<br>[/javascript]</p>
+<p>たとえばcoffee scriptの設定ファイル(CoffeeScript.sublime-build)をみてみると<br>[javascript]<br>{
+    &quot;cmd&quot;: [&quot;coffee&quot;,&quot;-c&quot;,&quot;$file&quot;]<br>,    &quot;path&quot;: &quot;/usr/local/bin:$PATH&quot;<br>,    &quot;selector&quot;: &quot;source.coffee&quot;<br>}
+[/javascript]</p>
 <p>こんな感じのjson形式。コマンドとパス、セレクターが指定されてるだけ。<br>では早速ビルド(cmd+B)すると</p>
 <p> [Errno 2] No such file or directory</p>
 <p>どうやらcoffeeコマンドが見当たらないとかっぽい。<br>[shell]<br>$ which coffee<br>/Users/hoge/YOUR/PATH/bin/coffee<br>[/shell]</p>
 <p>これをパスに突っ込めば行けそう。</p>
-<p>[javascript]<br>{<br>    &quot;cmd&quot;: [&quot;coffee&quot;,&quot;-c&quot;,&quot;$file&quot;]<br>,    &quot;path&quot;: &quot;$HOME/YOUR/PATH/bin/coffee:/usr/local/bin:$PATH&quot;<br>,    &quot;selector&quot;: &quot;source.coffee&quot;<br>}<br>[/javascript]</p>
+<p>[javascript]<br>{
+    &quot;cmd&quot;: [&quot;coffee&quot;,&quot;-c&quot;,&quot;$file&quot;]<br>,    &quot;path&quot;: &quot;$HOME/YOUR/PATH/bin/coffee:/usr/local/bin:$PATH&quot;<br>,    &quot;selector&quot;: &quot;source.coffee&quot;<br>}
+[/javascript]</p>
 <p>再びビルド(cmd+B)</p>
 <p>で行けました。</p>
 <p>ここでエラーになる場合はnodeのパスが通っていない可能性があるので、</p>
 <p>[shell]<br>$ which node<br>/Users/hoge/YOUR/PATH/bin/node<br>[/shell]</p>
 <p>のパスを追加しておけば良さそう。</p>
-<p>ただ、開発環境ごとにパスを通すのが面倒なので、ユーザーの環境設定にパスを通しておく。<br>設定ファイル(cmd+,)でひらいて<br>[javascript]<br>{<br>…<br>&quot;build_env&quot;:{<br>        &quot;PATH&quot;: &quot;/usr/local/bin:/usr/local/sbin:/usr/local/share/python:$HOME/.nodebrew/current/bin:$HOME/.phpenv/bin:$HOME/.nodebrew/current/bin&quot;<br>    }<br>…<br>}<br>[/javascript]</p>
+<p>ただ、開発環境ごとにパスを通すのが面倒なので、ユーザーの環境設定にパスを通しておく。<br>設定ファイル(cmd+,)でひらいて<br>[javascript]<br>{
+…<br>&quot;build_env&quot;:{<br>        &quot;PATH&quot;: &quot;/usr/local/bin:/usr/local/sbin:/usr/local/share/python:$HOME/.nodebrew/current/bin:$HOME/.phpenv/bin:$HOME/.nodebrew/current/bin&quot;<br>    }<br>…<br>}
+[/javascript]</p>
 <p>でいいかな。</p>
 <p>OSごとにかえるなら<a href="http://docs.sublimetext.info/en/latest/reference/build_systems.html#platform-specific-options" target="_blank" rel="noopener">Platform option</a>とかですかね。</p>
-<p>[javascript]<br>{<br>    &quot;cmd&quot;: [&quot;ant&quot;],<br>    &quot;file_regex&quot;: &quot;^ <em>\[javac\] (.+):([0-9]+):() (.</em>)$&quot;,<br>    &quot;working_dir&quot;: &quot;${project_path:${folder}}&quot;,<br>    &quot;selector&quot;: &quot;source.java&quot;,</p>
+<p>[javascript]<br>{
+    &quot;cmd&quot;: [&quot;ant&quot;],<br>    &quot;file_regex&quot;: &quot;^ <em>\[javac\] (.+):([0-9]+):() (.</em>)$&quot;,<br>    &quot;working_dir&quot;: &quot;${project_path:${folder}}&quot;,<br>    &quot;selector&quot;: &quot;source.java&quot;,</p>
 <pre><code>&amp;quot;windows&amp;quot;:
 {
     &amp;quot;cmd&amp;quot;: [&amp;quot;ant.bat&amp;quot;]
@@ -129,8 +138,8 @@ ga('send', 'pageview');
 &amp;quot;mac&amp;quot;:
 {
   &amp;quot;linux&amp;quot;: [&amp;quot;ant&amp;quot;]
-}
-</code></pre><p>}<br>[/javascript]</p>
+}</code></pre><p>}
+[/javascript]</p>
 
     
   </div>

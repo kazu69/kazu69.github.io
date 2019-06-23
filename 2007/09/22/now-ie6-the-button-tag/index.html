@@ -112,7 +112,9 @@ ga('send', 'pageview');
 </blockquote>
 <p>あとはCSSで実装</p>
 <blockquote>
-<p>#SubmitBtn {<br>width:100px;<br>height:30px;<br>background:url(<strong><strong><em>**</em></strong></strong>) no-repeat 0 0;<br>border:none;<br>cursor:pointer;<br>/<em> for IE </em>/<br>text-indent:-9999em;<br>/<em> for opera </em>/<br>padding-bottm:50px;<br>}<br>ちなみに、IE6(win)ではtext-indent:-9999em;でボタンごと画面外へいっっちゃうみたい。<br>inputタグの前に半角スペース(<pre>&nbsp;</pre>)で解決しました。</p>
+<p>#SubmitBtn {<br>width:100px;<br>height:30px;<br>background:url(<strong><strong>****</strong></strong>) no-repeat 0 0;<br>border:none;<br>cursor:pointer;<br>/* for IE <em>/
+text-indent:-9999em;<br>/</em> for opera */<br>padding-bottm:50px;<br>}
+ちなみに、IE6(win)ではtext-indent:-9999em;でボタンごと画面外へいっっちゃうみたい。<br>inputタグの前に半角スペース(<pre>&nbsp;</pre>)で解決しました。</p>
 </blockquote>
 <p>Operaはtext-indentが無効らしいので、paddingで文字を非表示。</p>
 <p>といった具合にしました。</p>

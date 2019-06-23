@@ -103,15 +103,19 @@ ga('send', 'pageview');
     
       <p>WordPressを使ってみて、よく使った処理の個人的な備忘録です。</p>
 <a id="more"></a>
+
 <p>個人的なメモなので、あれなのはご勘弁ください。</p>
 <p>記事IDからカスタムフィールドを取得する</p>
-<p>[php]<br>function getPostmetaList($post_id){<br>global $wpdb;<br>        $sql = &quot;SELECT meta_value FROM $wpdb-&gt;postmeta WHERE post_id = ‘&quot; . $post_id . &quot;’&quot;;<br>        $result = $wpdb-&gt;get_results($sql);<br>        return $result;<br>}<br>[/php]</p>
+<p>[php]<br>function getPostmetaList($post_id){<br>global $wpdb;<br>        $sql = &quot;SELECT meta_value FROM $wpdb-&gt;postmeta WHERE post_id = ‘&quot; . $post_id . &quot;’&quot;;<br>        $result = $wpdb-&gt;get_results($sql);<br>        return $result;<br>}
+[/php]</p>
 <p>単体ページ(single.php)内で同じカテゴリに属するひとつ前の投稿とひとつ後の投稿を取得する</p>
-<p>[php]<br>function getRerationPosts($cat_id,$post_id){<br>        global $wpdb;<br>        $sql = &quot;SELECT object_id FROM $wpdb-&gt;term_relationships WHERE term_taxonomy_id IN (‘&quot;.$cat_id.&quot;’)&quot;;<br>        $posts = $wpdb-&gt;get_results($wpdb-&gt;prepare( $sql ));<br>        $rerationPosts= array();<br>        foreach($posts as $val){<br>            if( $post_id &lt; $val-&gt;object_id ):<br>                array_push($nexts,$val-&gt;object_id);<br>            endif;<br>            if( $post_id &gt; $val-&gt;object_id ):<br>                array_push($prevs,$val-&gt;object_id);<br>            endif;<br>        }<br>        $rerationPosts[&quot;next&quot;] = min($nexts);<br>        $rerationPosts[&quot;prev&quot;] = max($prevs);<br>        return $rerationPosts;<br>}<br>[/php]</p>
+<p>[php]<br>function getRerationPosts($cat_id,$post_id){<br>        global $wpdb;<br>        $sql = &quot;SELECT object_id FROM $wpdb-&gt;term_relationships WHERE term_taxonomy_id IN (‘&quot;.$cat_id.&quot;’)&quot;;<br>        $posts = $wpdb-&gt;get_results($wpdb-&gt;prepare( $sql ));<br>        $rerationPosts= array();<br>        foreach($posts as $val){<br>            if( $post_id &lt; $val-&gt;object_id ):<br>                array_push($nexts,$val-&gt;object_id);<br>            endif;<br>            if( $post_id &gt; $val-&gt;object_id ):<br>                array_push($prevs,$val-&gt;object_id);<br>            endif;<br>        }<br>        $rerationPosts[&quot;next&quot;] = min($nexts);<br>        $rerationPosts[&quot;prev&quot;] = max($prevs);<br>        return $rerationPosts;<br>}
+[/php]</p>
 <p>stdClassをArrayに変換</p>
 <p>[php]<br>function stdclassToArray($obj) {<br>        $array = (array) $obj;<br>        $ｋeys = array_keys($array );<br>        $count = count($ｋeys );<br>        for($i=0;$i&lt;$count ;$i++){<br>            $array [$ｋeys [$i]] = (array) $array [$ｋeys [$i]];<br>        }<br>    return $array ;<br> }<br>[/php]</p>
 <p>記事IDからギャラリーに登録された画像URL一覧を取得する</p>
-<p>[php]<br>function attachmentFile($post_id,$type){<br>/<em>$type thumbnail, medium, large, full のいづれか</em>/<br>        $args = array(<br>            ‘post_parent’ =&gt; $post_id,<br>            ‘post_type’   =&gt; ‘attachment’,<br>            ‘post_mime_type’ =&gt; ‘image’<br>        );<br>        $attachmentFiles = array();<br>        $images = get_children($args);<br>        foreach ( (array) $images as $attachment_id =&gt; $attachment ):<br>            $temp = wp_get_attachment_url( $attachment_id, $type );<br>            array_push($attachmentFiles,$temp);<br>        endforeach;<br>        return $attachmentFiles;<br> }<br>[/php]</p>
+<p>[php]<br>function attachmentFile($post_id,$type){<br>/<em>$type thumbnail, medium, large, full のいづれか</em>/
+        $args = array(<br>            ‘post_parent’ =&gt; $post_id,<br>            ‘post_type’   =&gt; ‘attachment’,<br>            ‘post_mime_type’ =&gt; ‘image’<br>        );<br>        $attachmentFiles = array();<br>        $images = get_children($args);<br>        foreach ( (array) $images as $attachment_id =&gt; $attachment ):<br>            $temp = wp_get_attachment_url( $attachment_id, $type );<br>            array_push($attachmentFiles,$temp);<br>        endforeach;<br>        return $attachmentFiles;<br> }<br>[/php]</p>
 
     
   </div>

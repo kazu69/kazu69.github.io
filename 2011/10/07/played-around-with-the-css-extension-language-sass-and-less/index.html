@@ -101,14 +101,25 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>大規模なwebアプリケーションを構築する際にCSS自体の管理も煩雑になりがち。ベンダープレフィックスなどの記述自体も面倒になってきたので、それらを解決する一つの方法として『<a href="http://sass-lang.com/" target="_blank" rel="noopener">SASS</a>』と『<a href="http://lesscss.org/" target="_blank" rel="noopener">LESS</a>』を検討してみました。<br><a id="more"></a><br>両者の違いは<a href="http://dxd8.com/archives/217/" target="_blank" rel="noopener">CSS拡張メタ言語「SCSS(Sass)」と「LESS」の比較</a>に細かくまとめたれています。</p>
+      <p>大規模なwebアプリケーションを構築する際にCSS自体の管理も煩雑になりがち。ベンダープレフィックスなどの記述自体も面倒になってきたので、それらを解決する一つの方法として『<a href="http://sass-lang.com/" target="_blank" rel="noopener">SASS</a>』と『<a href="http://lesscss.org/" target="_blank" rel="noopener">LESS</a>』を検討してみました。</p>
+<a id="more"></a>
+<p>両者の違いは<a href="http://dxd8.com/archives/217/" target="_blank" rel="noopener">CSS拡張メタ言語「SCSS(Sass)」と「LESS」の比較</a>に細かくまとめたれています。</p>
 <p><strong>LESSを使ってみた</strong><br>LESSはJavaScriptでコンパイルするので、LESSファイルとコンパイラーのJSを読み込めば使用できる。<br>`</p>
-<p><link rel="stylesheet/less" type="text/css" href="style.less"></p>
-<p><script type="text/javascript" src="less-1.1.3.min.js"></script><br>`</p>
-<p>style.lessに<br>`<br>@color: #4D926F;</p>
-<p>#header {<br>  color: @color;<br>}<br>h2 {<br>  color: @color;<br>}<br>`<br>としてやると</p>
+<link rel="stylesheet/less" type="text/css" href="style.less">
+<script type="text/javascript" src="less-1.1.3.min.js"></script>
+`
+
+<p>style.lessに<br>`
+@color: #4D926F;</p>
+<p>#header {<br>  color: @color;<br>}
+h2 {<br>  color: @color;<br>}
+`
+としてやると</p>
 <p>`</p>
-<p>#header {<br>  color: #4D926F;<br>}<br>h2 {<br>  color: #4D926F;<br>}<br>`<br>とコンパイルされる感じ。<br>Mixinやネストのほか演算、関数も少し使える。</p>
+<p>#header {<br>  color: #4D926F;<br>}
+h2 {<br>  color: #4D926F;<br>}
+`
+とコンパイルされる感じ。<br>Mixinやネストのほか演算、関数も少し使える。</p>
 <p><strong>SASSを使ってみた</strong></p>
 <p>とりあえず、rubyがインストールしてる条件で<br><code>gem install sass</code><br>でSASSをインストール。<br>style.scssファイルに<br><code>$blue: #3bbfce;
 $margin: 16px;

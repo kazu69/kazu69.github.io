@@ -104,6 +104,7 @@ ga('send', 'pageview');
       <p>最近、時間のあるときにすこしだけ<a href="https://www.haskell.org/" target="_blank" rel="noopener">Haskell</a>を触ったりもしていて、<br>Monadなるものに触れた。</p>
 <p>そこで、それっぽいものをJavaScriptで試してみた。</p>
 <a id="more"></a>
+
 <p>確実に俄か感じではあるので、漠然としている理解であるけど。</p>
 <h2 id="Monad-Laws"><a href="#Monad-Laws" class="headerlink" title="Monad Laws"></a>Monad Laws</h2><p>Monadと名乗るにはMonad則を満たさないといけない。<br>Monad則とは</p>
 <ol>
@@ -114,14 +115,19 @@ ga('send', 'pageview');
 <p>mはMonadを指す。<br>(&gt;&gt;=) でMonadから値を取り出す。<br>return はMonadに値を渡す。</p>
 <p>という認識でこの法則を読み取っている。<br>ということで、これを満たすことのできるclassを作成した。</p>
 <script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=monad.class.js"></script>
+
 <p>create(returnと同じ感じ)でMonadをインスタンス化して、<br>bind(&gt;&gt;==と同じ感じ)でMonadに値を渡し、結果を得る。というシンプルなクラス。</p>
 <p>Qunitを使ってMonad則をテストする</p>
 <script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=test.js"></script>
+
 <p>認識が正しければ、Monad則を満たしたので、Monadである。</p>
 <p>いろいろなMonadを試してみる</p>
 <h3 id="Identity-Monad"><a href="#Identity-Monad" class="headerlink" title="Identity Monad"></a>Identity Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=identity.js"></script>
+
 <h3 id="Maybe-Monad"><a href="#Maybe-Monad" class="headerlink" title="Maybe Monad"></a>Maybe Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=maybe.js"></script>
+
 <h3 id="List-Monad"><a href="#List-Monad" class="headerlink" title="List Monad"></a>List Monad</h3><script src="//gist.github.com/kazu69/96344bf338061ca75552.js?file=list.js"></script>
+
 <p>ということで、JavaScriptでためしてデザインパターンという認識をした。</p>
 <p>参考にしたページ<br><a href="https://curiosity-driven.org/monads-in-javascript" target="_blank" rel="noopener">Monads in JavaScript</a><br><a href="http://qiita.com/7shi/items/547b6137d7a3c482fe68" target="_blank" rel="noopener">モナド則がちょっと分かった？</a><br><a href="http://labs.timedia.co.jp/2011/03/monad-you-already-know.html" target="_blank" rel="noopener">モナド: お前はもう知っている</a></p>
 

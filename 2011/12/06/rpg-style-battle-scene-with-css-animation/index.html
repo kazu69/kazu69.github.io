@@ -101,16 +101,21 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>cssのアニメーションにfirefox5から対応したということで、復習してみた。<br><a id="more"></a><br>cssアニメーションプロパティ<br>`<br>アニメーションのキーフレームを示す名前<br>animation-name : name;</p>
+      <p>cssのアニメーションにfirefox5から対応したということで、復習してみた。</p>
+<a id="more"></a>
+<p>cssアニメーションプロパティ<br>`
+アニメーションのキーフレームを示す名前<br>animation-name : name;</p>
 <p>1 回のアニメーションの長さ(秒,ミリ秒)<br>animation-duration :.10s;</p>
 <p>アニメーションの進め方を設定します。これは加速曲線を定義。アニメーションのイージング機能を定義する感じ(ease,linear,ease-in,ease-out,ease-in-out)<br>animation-timing-function: ease-in-out;</p>
 <p>要素が読み込まれてからアニメーション開始までの遅延時間(秒,ミリ秒)<br>animation-delay : 10s;<br>アニメーション完了後に、逆方向のアニメーションを行い、交互にくり返すかの設定<br>animation-direction: normal;</p>
 <p>アニメーション完了後に、実行前や実行後、その両方のスタイルを適用するかを設定<br>animation-fill-mode: forwards;</p>
 <p>アニメーションを一時停止したり、再開したりすることができる。アニメーションの状態を判定できるプロパティ<br>animation-play-state: running;</p>
 <p>アニメーションの繰り返し回数を設定(無限に繰り返す場合はinfinite )<br>animation-iteration-count: 1;*/<br>`</p>
-<p>実際には各プロパティにはvendor prefixが必要。<br>アニメーションは状態毎にイベントを発火するので、<br>`<br>//アニメーション開始イベント<br>e.addEventListener(“animationstart”, listener, false);</p>
+<p>実際には各プロパティにはvendor prefixが必要。<br>アニメーションは状態毎にイベントを発火するので、<br>`
+//アニメーション開始イベント<br>e.addEventListener(“animationstart”, listener, false);</p>
 <p>//アニメーション終了イベント<br>e.addEventListener(“animationend”, listener, false);</p>
-<p>//アニメーションが1周するごとに発生<br>e.addEventListener(“animationiteration”, listener, false);<br>`<br>のように取得可能。<br>こちらもvendor prefixが必要でwebkitAnimationEnd,mozAnimationStartなどとしないといけない。</p>
+<p>//アニメーションが1周するごとに発生<br>e.addEventListener(“animationiteration”, listener, false);<br>`
+のように取得可能。<br>こちらもvendor prefixが必要でwebkitAnimationEnd,mozAnimationStartなどとしないといけない。</p>
 <p>で、簡単に作ったのが以下。ゲーム風の表現も全然可能ですね。</p>
 <iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/NT3v9/8/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 

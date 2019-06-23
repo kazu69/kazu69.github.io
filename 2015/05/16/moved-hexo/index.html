@@ -103,6 +103,7 @@ ga('send', 'pageview');
     
       <p>ブログを長年使ってきたwordpressから重い腰を上げてHexoに移行した。<br>移行にあたり、やったことをメモにしておく。</p>
 <a id="more"></a>
+
 <p><a href="https://www.staticgen.com/" target="_blank" rel="noopener">staticgen.com</a> を見ながら<a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>か<a href="http://gohugo.io/" target="_blank" rel="noopener">Hugo</a>か悩んだが、比較的にwordpressから移行した情報が多いのでHexoにした。</p>
 <p>特にnodeかGoかという理由ではなく、一度Static Generatorに移行できれば、あとは大きく変わらずに渡り歩けるだろうという軽い気持ち。</p>
 <p>Hexoに移行するにあたり行った手順は大きく分けて</p>
@@ -130,10 +131,12 @@ ga('send', 'pageview');
 <p>wordpressの投稿URLはexportしたxmlに<strong>link</strong>タグの値となるので、簡単なスクリプトで<strong>hexo-generator-alias</strong>の設定を追加した。</p>
 <p>xmlのパーサーには<a href="https://github.com/YorickPeterse/oga" target="_blank" rel="noopener">oga</a>を使ってみた。</p>
 <script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=alias.rb"></script>
+
 <p>これで <strong>/blog/CATEGORY/POST_ID/</strong> アクセスで該当の記事にリダイレクトされるようになった。<br>今回は運用をサブドメインにもいこうしたので、URIにblogが重複しているのは気にしない。</p>
 <p>ここまでで、ほぼ完了した感じ。</p>
 <h2 id="画像パスの変換"><a href="#画像パスの変換" class="headerlink" title="画像パスの変換"></a>画像パスの変換</h2><p>残りは画像のパスを修正する。画像ファイルを全てダウンロードし、<code>public/images/</code>へそのまま放り込んだ。<br>あとはパスを以下のスクリプトで変換した。</p>
 <script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=image_replace.rb"></script>
+
 <p><strong>/wp-contentt/uploads/</strong> を <strong>/images/</strong> に変換しているだけ。</p>
 <h2 id="ブログのリダイレクト"><a href="#ブログのリダイレクト" class="headerlink" title="ブログのリダイレクト"></a>ブログのリダイレクト</h2><p>今回はドメインもサブドメインでの運用にかえるので、.htaccessで記事を301リダイレクトする。</p>
 <p>結果としてこのやり方で移行できていないものは、</p>
@@ -147,6 +150,7 @@ ga('send', 'pageview');
 <p>あと、テーマはとりあえず最低限必要なものを自作した。</p>
 <p>package.jsonは以下のようになった。npm scriptsでHexoコマンドを叩いている。</p>
 <script src="//gist.github.com/kazu69/6cea4d5e55992b7b2247.js?file=package.json"></script>
+
 <h2 id="Hexoで運用するためにやったこと"><a href="#Hexoで運用するためにやったこと" class="headerlink" title="Hexoで運用するためにやったこと"></a>Hexoで運用するためにやったこと</h2><p>wordpressから移行して、Hexoで運用するにあたり<a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a>を利用することにした。</p>
 <p>使っていたドメインプロバイダーではGitHub Pagesでの独自ドメインを使えなかった。そこで、CloudFlareだと無料プランでも <a href="https://blog.cloudflare.com/introducing-universal-ssl/" target="_blank" rel="noopener">Universal SSL</a> でも使えるということを見つけたので、ネームサーバーを <a href="https://www.cloudflare.com/" target="_blank" rel="noopener">CloudFlare</a> に移行した。</p>
 <p>CloudFlareに申し込むと、ネームサーバーを指定されるので、ドメインプロバイダーの管理ページでDNSサーバーをCloudFlareに向ける。<br>あとは、ホスト名を書いたCNAMEファイルをドキュメントルートに配置するだけで、独自ドメインでの運用がすんなりとできた。</p>

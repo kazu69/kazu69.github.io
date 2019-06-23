@@ -103,12 +103,14 @@ ga('send', 'pageview');
     
       <p>相変わらず面倒なie確認用環境。最近は<a href="https://www.virtualbox.org/" target="_blank" rel="noopener">virtualbox</a>で準備されてるから便利だ。<br>セットアップ関連の備忘録。</p>
 <a id="more"></a>
+
 <h3 id="ievms"><a href="#ievms" class="headerlink" title="ievms"></a>ievms</h3><p>まず、IE6, IE7, IE8, IE9, IE10, IE11 をXPと7でvmで作成できる<a href="https://github.com/xdissent/ievms" target="_blank" rel="noopener">ievms</a>。</p>
 <p>[shell]</p>
 <h1 id="full-install"><a href="#full-install" class="headerlink" title="full install"></a>full install</h1><p>curl -s <a href="https://raw.github.com/xdissent/ievms/master/ievms.sh" target="_blank" rel="noopener">https://raw.github.com/xdissent/ievms/master/ievms.sh</a> | bash</p>
 <h1 id="specific-version-install"><a href="#specific-version-install" class="headerlink" title="specific version install"></a>specific version install</h1><p>curl -s <a href="https://raw.github.com/xdissent/ievms/master/ievms.sh" target="_blank" rel="noopener">https://raw.github.com/xdissent/ievms/master/ievms.sh</a> | env IEVMS_VERSIONS=&quot;7 9&quot; bash<br>[/shell]</p>
 <p>でインストール完了。ただし、72GBあるんで寝る前に実行するといいかも。<br>あとはvirtualboxで必要なIEを起動するだけ。</p>
-<h3 id="modern-IE"><a href="#modern-IE" class="headerlink" title="modern.IE"></a>modern.IE</h3><p>次に、ms社のプロジェクト<a href="http://www.modern.ie/ja" target="_blank" rel="noopener">modern.IE</a>。<br>こちはOSがwin、mac、linux。vm環境がHyper-V、Virtual PC、VMWare Fusion、parallelsとそろってる。</p>
+<h3 id="modern-IE"><a href="#modern-IE" class="headerlink" title="modern.IE"></a>modern.IE</h3><p>次に、ms社のプロジェクト<a href="http://www.modern.ie/ja" target="_blank" rel="noopener">modern.IE</a>。
+こちはOSがwin、mac、linux。vm環境がHyper-V、Virtual PC、VMWare Fusion、parallelsとそろってる。</p>
 <p>インストールは、SFXまたはRARをダウンロードしてファイルを実行。<br>SFXの場合は</p>
 <p>[shell]<br>chmod +x filename.sfx<br>[/shell]</p>
 <p>で実行権限付与しないといけないっぽい。</p>

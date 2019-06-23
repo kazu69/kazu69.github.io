@@ -101,28 +101,37 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Railsで開発するときにUIの実装時にIE8あたりで困ることないように備忘録としてまとめておく。<br><a id="more"></a></p>
+      <p>Railsで開発するときにUIの実装時にIE8あたりで困ることないように備忘録としてまとめておく。</p>
+<a id="more"></a>
+
 <h4 id="IE9まではファイルの読み込み限界値に気をつける。"><a href="#IE9まではファイルの読み込み限界値に気をつける。" class="headerlink" title="IE9まではファイルの読み込み限界値に気をつける。"></a><strong>IE9まではファイルの読み込み限界値に気をつける。</strong></h4><p>IEだけなぜかCSSが適用されないとき、IEの以下の仕様が原因。<br>IE9までは </p>
 <ul>
-<li>1スタイルシートにルールは4095まで</li>
-<li>1スタイルシートに @importは31個まで</li>
+<li><p>1スタイルシートにルールは4095まで</p>
+</li>
+<li><p>1スタイルシートに @importは31個まで</p>
+</li>
 <li><p>@importの入れ子は4階層まで<br>ちなみにIE10からは、</p>
 </li>
 <li><p>1スタイルシートにルールは65534まで</p>
 </li>
-<li>1ドキュメントにスタイルシートは4095個まで</li>
-<li>@importの入れ子は4095階層まで<br>に変更されてる。<br>詳しくしらべると、asset pipelineがdebug modeのままだとSprocketsがファイルを連結しないため、大量のファイルを読込むことでIEの仕様に引っかかってました。</li>
+<li><p>1ドキュメントにスタイルシートは4095個まで</p>
+</li>
+<li><p>@importの入れ子は4095階層まで<br>に変更されてる。<br>詳しくしらべると、asset pipelineがdebug modeのままだとSprocketsがファイルを連結しないため、大量のファイルを読込むことでIEの仕様に引っかかってました。</p>
+</li>
 </ul>
-<p>回避策として、</p>
-<p><yourappdir>/config/environments/development.rb の設定を変更<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">config.assets.debug = <span class="literal">true</span></span><br></pre></td></tr></table></figure></yourappdir></p>
+<p>回避策として、<br><yourappdir>/config/environments/development.rb の設定を変更</yourappdir></p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">config.assets.debug = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
 <p>してやることで、Sprocketsがファイルを連結するので回避できるかもしれない。</p>
 <hr>
 <h4 id="IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。"><a href="#IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。" class="headerlink" title="IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。"></a><strong>IE9までは1ファイルあたりのcssのセレクター数の限界値に気をつける。</strong></h4><p>ファイル数の上限にあたらなくても、上記の通り１ファイルあたりのセレクターの限界値を超えるとCSSが無視されます。<br>4095ルールが原因の場合は、cssのリファクタリングを行うことや、<br>Asset Pipelineでファイルを別々にプリコンパイルする必要があります。</p>
-<p>別々にプリコンパイルするには</p>
-<p><yourappdir>/config/environments/production.rb の設定を<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">config.assets.precompile += <span class="string">%w( hoge.css fuga.css )</span></span><br></pre></td></tr></table></figure></yourappdir></p>
+<p>別々にプリコンパイルするには<br><yourappdir>/config/environments/production.rb の設定を</yourappdir></p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">config.assets.precompile += <span class="string">%w( hoge.css fuga.css )</span></span><br></pre></td></tr></table></figure>
+
 <p>としてやることで、application.cssのほかにhoge.cssやhuga.cssで指定したファイルをプリコンパイルできます。<br>(hoge.cssやfuga.cssは CSS manifest file です)</p>
 <p>あとは、viewファイルで</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;%= stylesheet_link_tag  <span class="string">"application"</span> %&gt;</span><br><span class="line">&lt;%= stylesheet_link_tag  <span class="string">"hoge"</span> %&gt;</span><br><span class="line">&lt;%= stylesheet_link_tag  <span class="string">"fuga"</span> %&gt;</span><br></pre></td></tr></table></figure>
+
 <p>として、読込みます。</p>
 <p>このほかにも、<a href="http://blesscss.com/" target="_blank" rel="noopener">Bless</a>を使うことで、CSSを分割できます。<br>この場合は@importでcssファイルを読込むようになります。</p>
 <hr>

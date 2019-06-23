@@ -102,13 +102,20 @@ ga('send', 'pageview');
     </div>
     
       <p><a href="http://grunt.com" target="_blank" rel="noopener">Grunt</a> v0.4がリリースされて、しばらく経過したけどやっと機会ができたのでアップグレードしてみた。</p>
-<h2 id="Grunt-0-4-変更点"><a href="#Grunt-0-4-変更点" class="headerlink" title="Grunt 0.4 変更点"></a>Grunt 0.4 変更点</h2><p>ドキュメントまんまなんですが、grunt 0.4で変わったことをざっくりまとめてみた。<br><a id="more"></a></p>
+<h2 id="Grunt-0-4-変更点"><a href="#Grunt-0-4-変更点" class="headerlink" title="Grunt 0.4 変更点"></a>Grunt 0.4 変更点</h2><p>ドキュメントまんまなんですが、grunt 0.4で変わったことをざっくりまとめてみた。</p>
+<a id="more"></a>
+
 <ul>
-<li>node &gt;= 0.8.0 が必須</li>
-<li>0.3系のmoduleは0.4系にアップグレード対応しないといけない</li>
-<li>プロジェクトルートに置かれたpackage.jsonでnpm moduleを管理</li>
-<li>grunt はプロジェクトごとにローカルにインストールするようになった</li>
-<li>grunt-cliのみをグローバルにインストールすればいい。grunt-cliインストールしてgruntコマンドが使用できる。</li>
+<li><p>node &gt;= 0.8.0 が必須</p>
+</li>
+<li><p>0.3系のmoduleは0.4系にアップグレード対応しないといけない</p>
+</li>
+<li><p>プロジェクトルートに置かれたpackage.jsonでnpm moduleを管理</p>
+</li>
+<li><p>grunt はプロジェクトごとにローカルにインストールするようになった</p>
+</li>
+<li><p>grunt-cliのみをグローバルにインストールすればいい。grunt-cliインストールしてgruntコマンドが使用できる。</p>
+</li>
 <li><p>いままで最初から準備されていたコアタスク(init,lint,minなど)はすべてmoduleとなった。</p>
 <blockquote>
 <p>concat → <a href="https://github.com/gruntjs/grunt-contrib-concat" target="_blank" rel="noopener">grunt-contrib-concat plugin</a><br>init → stand-alone <a href="https://github.com/gruntjs/grunt-init" target="_blank" rel="noopener">grunt-init</a> utility<br>lint → <a href="https://github.com/gruntjs/grunt-contrib-jshint" target="_blank" rel="noopener">grunt-contrib-jshint</a> plugin<br>min → <a href="https://github.com/gruntjs/grunt-contrib-uglify" target="_blank" rel="noopener">grunt-contrib-uglify</a> plugin<br>qunit → <a href="https://github.com/gruntjs/grunt-contrib-qunit" target="_blank" rel="noopener">grunt-contrib-qunit</a> plugin<br>server → <a href="https://github.com/gruntjs/grunt-contrib-connect" target="_blank" rel="noopener">grunt-contrib-connect</a> plugin<br>test → <a href="https://github.com/gruntjs/grunt-contrib-nodeunit" target="_blank" rel="noopener">grunt-contrib-nodeunit</a> plugin<br>watch → <a href="https://github.com/gruntjs/grunt-contrib-watch" target="_blank" rel="noopener">grunt-contrib-watch</a> plugin<br>また、moduleとなったので、loadNpmTasksで読込む必要がある。</p>
@@ -124,8 +131,7 @@ ga('send', 'pageview');
 <li><p>alias taskがArray形式に変更</p>
 <blockquote>
 <p>// v0.3.x (old format)<br>grunt.registerTask(‘default’, ‘jshint nodeunit concat’);</p>
-<pre><code>// v0.4.x (new format)
-</code></pre><p>grunt.registerTask(‘default’, [‘jshint’, ‘nodeunit’, ‘concat’]);</p>
+<pre><code>// v0.4.x (new format)</code></pre><p>grunt.registerTask(‘default’, [‘jshint’, ‘nodeunit’, ‘concat’]);</p>
 </blockquote>
 </li>
 <li><p><a href="http://gruntjs.com/upgrading-from-0.3-to-0.4#api" target="_blank" rel="noopener">APIも数多く変更</a>された。</p>
@@ -136,30 +142,39 @@ ga('send', 'pageview');
 <p>つづいて、CLIをグローバルにinstall<br>[shell]<br>$ npm install -g grunt-cli<br>[/shell]</p>
 <p>これではじめてgruntコマンドが使用できます。</p>
 <p>package.jsonを作成する。<br>package.jsonの情報をもとに　プロジェクト毎にnpmのmoduleがインストールされる。<br>moduleのバージョンを固定することでstableな開発環境を維持できる。</p>
-<p>[javascript]<br>{<br>  &quot;name&quot;: &quot;my-project-name&quot;,<br>  &quot;version&quot;: &quot;0.1.0&quot;,<br>  &quot;devDependencies&quot;: {<br>    &quot;grunt&quot;: &quot;~0.4.0&quot;,<br>    &quot;grunt-contrib-jshint&quot;: &quot;~0.1.1&quot;,<br>    &quot;grunt-contrib-nodeunit&quot;: &quot;~0.1.2&quot;<br>  }<br>}<br>[/javascript]</p>
+<p>[javascript]<br>{
+  &quot;name&quot;: &quot;my-project-name&quot;,<br>  &quot;version&quot;: &quot;0.1.0&quot;,<br>  &quot;devDependencies&quot;: {<br>    &quot;grunt&quot;: &quot;<del>0.4.0&quot;,<br>    &quot;grunt-contrib-jshint&quot;: &quot;</del>0.1.1&quot;,<br>    &quot;grunt-contrib-nodeunit&quot;: &quot;~0.1.2&quot;<br>  }<br>}
+[/javascript]</p>
 <p>ほかにもnpmコマンドで作成することもできます。</p>
 <p>[shell]<br>$npm init</p>
 <p>npm init<br>This utility will walk you through creating a package.json file.<br>It only covers the most common items, and tries to guess sane defaults.</p>
 <p>See <code>npm help json</code> for definitive documentation on these fields<br>and exactly what they do.</p>
 <p>Use <code>npm install &amp;lt;pkg&amp;gt; --save</code> afterwards to install a package and<br>save it as a dependency in the package.json file.</p>
 <p>Press ^C at any time to quit.<br>name: (project)<br>version: (0.0.0)<br>description:<br>entry point: (index.js)<br>test command:<br>git repository:<br>keywords:<br>author:<br>license: (BSD)<br>About to write to /Users/project/package.json:</p>
-<p>{<br>  &quot;name&quot;: &quot;project&quot;,<br>  &quot;version&quot;: &quot;0.0.0&quot;,<br>  &quot;description&quot;: &quot;ERROR: No README.md file found!&quot;,<br>  &quot;main&quot;: &quot;index.js&quot;,<br>  &quot;scripts&quot;: {<br>    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;<br>  },<br>  &quot;repository&quot;: &quot;&quot;,<br>  &quot;author&quot;: &quot;&quot;,<br>  &quot;license&quot;: &quot;BSD&quot;<br>}<br> [/shell]</p>
-<p>ほかにも、すでに提供されているテンプレートを使用して作成することも可能。grunt-init-<em>*</em> という形式で配布してあるので探して最適なものを使う。<br>今回はjquery-init-templateをつかってやってみる。</p>
+<p>{
+  &quot;name&quot;: &quot;project&quot;,<br>  &quot;version&quot;: &quot;0.0.0&quot;,<br>  &quot;description&quot;: &quot;ERROR: No README.md file found!&quot;,<br>  &quot;main&quot;: &quot;index.js&quot;,<br>  &quot;scripts&quot;: {<br>    &quot;test&quot;: &quot;echo &amp;quot;Error: no test specified&amp;quot; &amp;&amp; exit 1&quot;<br>  },<br>  &quot;repository&quot;: &quot;&quot;,<br>  &quot;author&quot;: &quot;&quot;,<br>  &quot;license&quot;: &quot;BSD&quot;<br>}
+ [/shell]</p>
+<p>ほかにも、すでに提供されているテンプレートを使用して作成することも可能。grunt-init-*** という形式で配布してあるので探して最適なものを使う。<br>今回はjquery-init-templateをつかってやってみる。</p>
 <p>[shell]</p>
-<h1 id="まずはgrunt-init-moduleをグローバルにインストール"><a href="#まずはgrunt-init-moduleをグローバルにインストール" class="headerlink" title="まずはgrunt-init moduleをグローバルにインストール"></a>まずはgrunt-init moduleをグローバルにインストール</h1><p>$ npm install grunt-init<br>$ git clone git@github.com:gruntjs/grunt-init-jquery.git ~/.grunt-init/jquery</p>
+<h1 id="まずはgrunt-init-moduleをグローバルにインストール"><a href="#まずはgrunt-init-moduleをグローバルにインストール" class="headerlink" title="まずはgrunt-init moduleをグローバルにインストール"></a>まずはgrunt-init moduleをグローバルにインストール</h1><p>$ npm install grunt-init<br>$ git clone <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:gruntjs/grunt-init-jquery.git ~/.grunt-init/jquery</p>
 <p>$ grunt-init jquery<br>Running &quot;init:jquery&quot; (init) task<br>This task will create one or more files in the current directory, based on the<br>environment and the answers to a few questions. Note that answering &quot;?&quot; to any<br>question will show question-specific help and answering &quot;none&quot; to most questions<br>will leave its value blank.</p>
 <p>&quot;jquery&quot; template notes:<br>Project name should not contain &quot;jquery&quot; or &quot;js&quot; and should be a unique ID not<br>already in use at plugins.jquery.com. Project title should be a human-readable<br>title, and doesn’t need to contain the word &quot;jQuery&quot;, although it may. For<br>example, a plugin titled &quot;Awesome Plugin&quot; might have the name &quot;awesome-plugin&quot;.</p>
 <p>For more information, please see the following documentation:</p>
 <p>Naming Your Plugin      <a href="http://plugins.jquery.com/docs/names/" target="_blank" rel="noopener">http://plugins.jquery.com/docs/names/</a><br>Publishing Your Plugin  <a href="http://plugins.jquery.com/docs/publish/" target="_blank" rel="noopener">http://plugins.jquery.com/docs/publish/</a><br>Package Manifest        <a href="http://plugins.jquery.com/docs/package-manifest/" target="_blank" rel="noopener">http://plugins.jquery.com/docs/package-manifest/</a></p>
-<p>Please answer the following:<br>[?] Project name (project)<br>[?] Project title (PROJECT)<br>[?] Description (The best jQuery plugin ever.)<br>[?] Version (0.1.0)<br>[?] Project git repository (git://github.com/project.git)<br>[?] Project homepage (<a href="https://github.com/project" target="_blank" rel="noopener">https://github.com/project</a>)<br>[?] Project issues tracker (<a href="https://github.com/project/issues" target="_blank" rel="noopener">https://github.com/project/issues</a>)<br>[?] Licenses (MIT)<br>[?] Author name (YOUR-NAME)<br>[?] Author email (YOUR-EMAIL)<br>[?] Author url (none)<br>[?] Required jQuery version (*)<br>[?] Do you need to make any changes to the above before continuing? (y/N) </p>
+<p>Please answer the following:<br>[?] Project name (project)<br>[?] Project title (PROJECT)<br>[?] Description (The best jQuery plugin ever.)<br>[?] Version (0.1.0)<br>[?] Project git repository (git://github.com/project.git)<br>[?] Project homepage (<a href="https://github.com/project" target="_blank" rel="noopener">https://github.com/project</a>) 
+[?] Project issues tracker (<a href="https://github.com/project/issues" target="_blank" rel="noopener">https://github.com/project/issues</a>) 
+[?] Licenses (MIT)<br>[?] Author name (YOUR-NAME)<br>[?] Author email (YOUR-EMAIL)<br>[?] Author url (none)<br>[?] Required jQuery version (*)<br>[?] Do you need to make any changes to the above before continuing? (y/N) </p>
 <p>Writing .gitignore…OK<br>Writing .jshintrc…OK<br>Writing CONTRIBUTING.md…OK<br>Writing Gruntfile.js…OK<br>Writing README.md…OK<br>Writing libs/jquery-loader.js…OK<br>Writing libs/jquery/jquery.js…OK<br>Writing libs/qunit/qunit.css…OK<br>Writing libs/qunit/qunit.js…OK<br>Writing src/.jshintrc…OK<br>Writing src/project.js…OK<br>Writing test/.jshintrc…OK<br>Writing test/project.html…OK<br>Writing test/project_test.js…OK<br>Writing LICENSE-MIT…OK<br>Writing package.json…OK<br>Writing project.jquery.json…OK</p>
 <p>Initialized from template &quot;jquery&quot;.<br>You should now install project dependencies with npm install. After that, you<br>may execute project tasks with grunt. For more information about installing<br>and configuring Grunt, please see the Getting Started guide:</p>
 <p><a href="http://gruntjs.com/getting-started" target="_blank" rel="noopener">http://gruntjs.com/getting-started</a></p>
 <p>Done, without errors.<br>[/shell]</p>
 <p>と対話式にセットアップでき、完了すると以下のようになる。</p>
-<p>[shell]<br>.<br>├── CONTRIBUTING.md<br>├── Gruntfile.js<br>├── LICENSE-MIT<br>├── README.md<br>├── project.jquery.json<br>├── libs<br>├── package.json<br>├── src<br>└── test<br>[/shell]</p>
+<p>[shell]<br>.
+├── CONTRIBUTING.md<br>├── Gruntfile.js<br>├── LICENSE-MIT<br>├── README.md<br>├── project.jquery.json<br>├── libs<br>├── package.json<br>├── src<br>└── test<br>[/shell]</p>
 <p>~/.grunt-init/jquery にcloneされているので次回からは grunt-init jquery だけでOK。<br>生成されたpackege.jsonは</p>
-<p>[javascript]<br>{<br>  &quot;name&quot;: &quot;jquery-plugin&quot;,<br>  &quot;version&quot;: &quot;0.0.0-ignored&quot;,<br>  &quot;engines&quot;: {<br>    &quot;node&quot;: &quot;&gt;= 0.8.0&quot;<br>  },<br>  &quot;scripts&quot;: {<br>    &quot;test&quot;: &quot;grunt qunit&quot;<br>  },<br>  &quot;devDependencies&quot;: {<br>    &quot;grunt-contrib-jshint&quot;: &quot;~0.1.1&quot;,<br>    &quot;grunt-contrib-qunit&quot;: &quot;~0.1.1&quot;,<br>    &quot;grunt-contrib-concat&quot;: &quot;~0.1.2&quot;,<br>    &quot;grunt-contrib-uglify&quot;: &quot;~0.1.1&quot;,<br>    &quot;grunt-contrib-watch&quot;: &quot;~0.2.0&quot;,<br>    &quot;grunt-contrib-clean&quot;: &quot;~0.4.0&quot;,<br>    &quot;grunt&quot;: &quot;~0.4.0&quot;<br>  }<br>}<br>[/javascript]</p>
+<p>[javascript]<br>{
+  &quot;name&quot;: &quot;jquery-plugin&quot;,<br>  &quot;version&quot;: &quot;0.0.0-ignored&quot;,<br>  &quot;engines&quot;: {<br>    &quot;node&quot;: &quot;&gt;= 0.8.0&quot;<br>  },<br>  &quot;scripts&quot;: {<br>    &quot;test&quot;: &quot;grunt qunit&quot;<br>  },<br>  &quot;devDependencies&quot;: {<br>    &quot;grunt-contrib-jshint&quot;: &quot;<del>0.1.1&quot;,<br>    &quot;grunt-contrib-qunit&quot;: &quot;</del>0.1.1&quot;,<br>    &quot;grunt-contrib-concat&quot;: &quot;<del>0.1.2&quot;,<br>    &quot;grunt-contrib-uglify&quot;: &quot;</del>0.1.1&quot;,<br>    &quot;grunt-contrib-watch&quot;: &quot;<del>0.2.0&quot;,<br>    &quot;grunt-contrib-clean&quot;: &quot;</del>0.4.0&quot;,<br>    &quot;grunt&quot;: &quot;~0.4.0&quot;<br>  }<br>}
+[/javascript]</p>
 <p>つづいてタスクの内容を記載するGruntfileを作成。<br>アップグレードの場合は変更する。v0.4からはgrunt.js が Gruntfile.js か Gruntfile.coffee のどちらかを使うことになる。</p>
 <p>せっかくなので、coffeeにしてみる。</p>
 <p>[javascript]<br>module.exports = (grunt) -&gt;<br>  grunt.initConfig<br>    slim:<br>      dist:<br>        files:<br>          &quot;index.html&quot;: &quot;index.slim&quot;</p>
@@ -168,15 +183,15 @@ ga('send', 'pageview');
     files: [&amp;quot;*.slim&amp;quot;]
     tasks: [&amp;quot;slim&amp;quot;]
     options:
-      nospawn: true
-</code></pre><p>  grunt.loadNpmTasks &quot;grunt-slim&quot;<br>  grunt.loadNpmTasks &quot;grunt-contrib-watch&quot;<br>  grunt.registerTask &quot;default&quot;, [&quot;slim&quot;]<br>[/javascript]</p>
+      nospawn: true</code></pre><p>  grunt.loadNpmTasks &quot;grunt-slim&quot;<br>  grunt.loadNpmTasks &quot;grunt-contrib-watch&quot;<br>  grunt.registerTask &quot;default&quot;, [&quot;slim&quot;]<br>[/javascript]</p>
 <p>そして、モジュールをインストールする。<br>これはGruntfileの作成と順序逆でも問題なし。</p>
 <p>Gruntfile,package.jsonをプロジェクトrootに配置して、こんな感じ。</p>
 <p>[shell]<br>projectroot<br>├── Gruntfile.coffee<br>├── package.json<br>[/shell]</p>
 <p>npm moduleを取得する。</p>
 <p> [shell]<br>npm install grunt –save-dev<br> [/shell]</p>
 <p>–save-dev オプションでpackege.jsonにdevDependenciesプロパティが追記され、moduleの情報を追加されます。</p>
-<p>[javascript]<br>…<br>  &quot;devDependencies&quot;: {<br>    &quot;grunt-contrib-concat&quot;: &quot;~0.1.2&quot;,<br>    &quot;grunt-contrib-uglify&quot;: &quot;~0.1.1&quot;,<br>    &quot;grunt-contrib-jshint&quot;: &quot;~0.1.1&quot;,<br>    &quot;grunt-contrib-nodeunit&quot;: &quot;~0.1.2&quot;,<br>    &quot;grunt-contrib-watch&quot;: &quot;~0.2.0&quot;,<br>    &quot;grunt&quot;: &quot;~0.4.0&quot;<br>}<br>…<br>[/javascript]</p>
+<p>[javascript]<br>…<br>  &quot;devDependencies&quot;: {<br>    &quot;grunt-contrib-concat&quot;: &quot;<del>0.1.2&quot;,<br>    &quot;grunt-contrib-uglify&quot;: &quot;</del>0.1.1&quot;,<br>    &quot;grunt-contrib-jshint&quot;: &quot;<del>0.1.1&quot;,<br>    &quot;grunt-contrib-nodeunit&quot;: &quot;</del>0.1.2&quot;,<br>    &quot;grunt-contrib-watch&quot;: &quot;<del>0.2.0&quot;,<br>    &quot;grunt&quot;: &quot;</del>0.4.0&quot;<br>}
+…<br>[/javascript]</p>
 <p>あとは、必要に応じてmoduleを追加して、Gruntfileにタスクを追加していけばいい感じですかね。</p>
 <p>これまでグローバルで管理していたmoduleもプロジェクト単位で管理でき、プロジェクト開発者全員で同じ開発環境を容易に構築できるようになってとても便利になった感じがします。</p>
 <p>とりあえず、クライアントサイドの開発が多い、エンジニアやデザイナーは使うといいですよ、Grunt。</p>

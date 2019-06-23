@@ -102,7 +102,9 @@ ga('send', 'pageview');
     </div>
     
       <p>フロントエンド開発時にファイルの変更と同時にブラウザをリロードする<a href="http://livereload.com/" target="_blank" rel="noopener">livereload</a>は便利ですが、<a href="https://github.com/livereload/livereload-extensions" target="_blank" rel="noopener">Browser Extensions</a>にIEがサポートされてなかったりするので残念。</p>
-<p>そこで<a href="https://github.com/shakyShane/browser-sync" target="_blank" rel="noopener">browser-sync</a>を使って、livereloadと同じようにブラウザ同期を行えるっぽいので試した。<br><a id="more"></a></p>
+<p>そこで<a href="https://github.com/shakyShane/browser-sync" target="_blank" rel="noopener">browser-sync</a>を使って、livereloadと同じようにブラウザ同期を行えるっぽいので試した。</p>
+<a id="more"></a>
+
 <p>browser-syncは</p>
 <ul>
 <li>スクロールをブラウザ間で同期</li>
@@ -120,7 +122,7 @@ ga('send', 'pageview');
 <h2 id="設定"><a href="#設定" class="headerlink" title="設定"></a>設定</h2><p>最小の設定でlivereloadできる。<br>Gruntfileにタスクを追加<br>[ruby]<br>browser_sync:<br>  files:<br>    src: [<br>      ‘app/css/*.css’<br>    ]<br>[/ruby]</p>
 <p>[shell]<br>browser-sync  grunt browser_sync<br>Running &quot;browser_sync:files&quot; (browser_sync) task<br>   info  - socket.io started</p>
 <p>All Set Up! Now copy &amp; paste this snippet just before the closing &lt;/body&gt; tag in your website.</p>
-<p>&lt;script src=’<a href="http://192.168.0.5:3000/socket.io/socket.io.js&#39;&gt;&lt;/script&amp;gt" target="_blank" rel="noopener">http://192.168.0.5:3000/socket.io/socket.io.js&#39;&gt;&lt;/script&amp;gt</a>;<br>&lt;script src=’<a href="http://192.168.0.5:3001/browser-sync-client.min.js&#39;&gt;&lt;/script&amp;gt" target="_blank" rel="noopener">http://192.168.0.5:3001/browser-sync-client.min.js&#39;&gt;&lt;/script&amp;gt</a>;</p>
+<p>&lt;script src=’<a href="http://192.168.0.5:3000/socket.io/socket.io.js&#39;&gt;&lt;/script" target="_blank" rel="noopener">http://192.168.0.5:3000/socket.io/socket.io.js&#39;&gt;&lt;/script</a>&gt;<br>&lt;script src=’<a href="http://192.168.0.5:3001/browser-sync-client.min.js&#39;&gt;&lt;/script" target="_blank" rel="noopener">http://192.168.0.5:3001/browser-sync-client.min.js&#39;&gt;&lt;/script</a>&gt;</p>
 <p>Watching 3 files<br>Browser Connected! (Chrome, version: 30.0.1599.101)<br>[/shell]</p>
 <p>指定されたscriptタグを追加することで同期可能になる。<br>hostはbrowser-syncがネットワーク上の利用可能なものを適当に使用する感じっぽい。<br>もちろんhostを指定することも可能で<br>[ruby]<br>browser_sync:<br>  files:<br>    src: [<br>      ‘app/css/*.css’<br>    ]<br>　　options:<br>     host : ‘192.168.0.1’<br>[/ruby]</p>
 <p>また、grunt-watchを利用する場合は</p>

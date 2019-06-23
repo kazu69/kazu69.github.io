@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://blog.chromium.org/2012/06/accelerated-css-filters-landed-in.html" target="_blank" rel="noopener">Chromium 19でcss filter effect1.0に実装した</a>ということだったので試してみたので、メモしました。<br>ちなみに、<a href="https://developer.apple.com/technologies/safari/whats-new.html" target="_blank" rel="noopener">iOS6のSafari</a>でも対応するみたい。<br><a id="more"></a></p>
+      <p><a href="http://blog.chromium.org/2012/06/accelerated-css-filters-landed-in.html" target="_blank" rel="noopener">Chromium 19でcss filter effect1.0に実装した</a>ということだったので試してみたので、メモしました。<br>ちなみに、<a href="https://developer.apple.com/technologies/safari/whats-new.html" target="_blank" rel="noopener">iOS6のSafari</a>でも対応するみたい。</p>
+<a id="more"></a>
+
 <p><a href="https://dvcs.w3.org/hg/FXTF/raw-file/tip/filters/index.html" target="_blank" rel="noopener">css filter</a>はsvgの一部として提供されたのが最初で、CSSで使えるようにW3CのCSSワーキンググループに提案されたもだそうだ。<br>IEはこれとは別に独自仕様でfilterを使えたけど、現在は非推奨っぽいですね。</p>
 <p>フィルター適用はページがレンダリングされて、描画される前にビットマップデータに対して計算を行い、ビットマップデータの上に計算結果のフィルターを表示させるみたい。またフィルターの種類などにより適用されるまでの時間が異なるため、とくにスマートフォンはパフォーマンスを考慮してチューニングしたほうがいいっぽい。ちなみに、ChromeはGPUを使って処理してるっぽい。</p>
 <p>あと、SVGで定義したフィルターも参照できるみたい。</p>
@@ -120,8 +122,8 @@ ga('send', 'pageview');
 
 </li>
 </ul>
-<p>全然関係ないけど、scssでcss-filter書いてると、grayscaleとopacityが<br>[css]<br>/<em> -webkit-filter: grayscale(100%);で定義 </em>/<br>.grayscale{-webkit-filter:#010101}<br>[/css]</p>
-<p>[css]<br>/<em> -webkit-filter:opacity(0.2);で定義 </em>/<br>.opacity{-webkit-filter:1;}<br>[/css]</p>
+<p>全然関係ないけど、scssでcss-filter書いてると、grayscaleとopacityが<br>[css]<br>/* -webkit-filter: grayscale(100%);で定義 */<br>.grayscale{-webkit-filter:#010101}<br>[/css]</p>
+<p>[css]<br>/* -webkit-filter:opacity(0.2);で定義 */<br>.opacity{-webkit-filter:1;}<br>[/css]</p>
 <p>けど、この辺りは<a href="https://github.com/nex3/sass/issues/239" target="_blank" rel="noopener">githubで修正されてる</a>っぽい。js-fiddleのsassのバージョンの問題なのか、次のバージョンで修正されるのかな。</p>
 <p>とはいえ、これが各ブラウザで提供されれば、組み合わせて使うことで<a href="http://instagr.am/" target="_blank" rel="noopener">instagram</a>みたいな画像処理をお手軽に作れるのでいいですね。</p>
 <p>いろいろ詳しくは<a href="http://www.html5rocks.com/en/tutorials/filters/understanding-css/" target="_blank" rel="noopener">HTML5 ROCKS TUTORIALS</a> にありました。</p>

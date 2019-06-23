@@ -103,9 +103,11 @@ ga('send', 'pageview');
     
       <p>css3で追加された機能クエリ<a href="https://www.w3.org/TR/css3-conditional/#at-supports" target="_blank" rel="noopener">@supports</a>を使うことで、将来のcssプロパティで実装しつつ、<br>一昔前のブラウザもサポートする感じで実装することができる。</p>
 <a id="more"></a>
+
 <h2 id="supports-とは"><a href="#supports-とは" class="headerlink" title="@supports とは"></a>@supports とは</h2><p>与えられた条件はユーザーエージェントのCSSでサポートされているかをネイティブメソッドを使ってテストするルール。<br>一部ブラウザでは2012あたりから対応されている機能。</p>
 <p>Progressive Enhancement(プログレッシブ・エンハンスメント)といわれる開発思想において、<br>ブラウザごとにcssプロパティの実装状況が異なるため、開発時に<a href="https://modernizr.com/" target="_blank" rel="noopener">Modernizr</a>などを使ってサポート状況ごとにスタイルの分岐をするという手法はこれまでもあった。</p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.no-cssgradients</span> <span class="selector-class">.header</span> &#123;</span><br><span class="line">    <span class="comment">/* gradients サポートしてない時のスタイル */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.cssgradients</span> <span class="selector-class">.header</span> &#123;</span><br><span class="line">    <span class="comment">/* gradients サポートしている時のスタイル */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>これと同じことをネイティブのみでできるようなる感じなのが@supportsルール。<br>いわばネイティブなModernizrという感じになるだろうか。</p>
 <p>ちなみにブラウザサポート状況は<a href="http://caniuse.com/#search=Feature%20Queries" target="_blank" rel="noopener">http://caniuse.com/#feat=css-featurequeries</a>の通り。IEは未サポートです。</p>
 <h2 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h2><p>例として <strong>disokay: grid</strong> のサポートの有無で試してみる。<br>ちなみに <a href="https://www.w3.org/TR/css3-grid-layout/" target="_blank" rel="noopener">display: grid</a> はその名の通りグリッドレイアウトを行えるプロパティ。</p>
@@ -117,8 +119,7 @@ ga('send', 'pageview');
 <th>setting</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>Chrome(Canary)</td>
 <td>chrome://flags/#enable-experimental-web-platform-features を有効にする</td>
 </tr>
@@ -134,18 +135,19 @@ ga('send', 'pageview');
 <td>WebKit(Nightky build)</td>
 <td>developのexternal featuresからcss grid を有効にする</td>
 </tr>
-</tbody>
-</table>
-<p>以下のコードを実行した時、display: grid のサポートしていれば<strong>背景色が#C00 </strong>のboxがグリッドレイアウトが表示されるはずである。</p>
-<p></p><p data-height="265" data-theme-id="0" data-slug-hash="dpXrEA" data-default-tab="css,result" data-user="kazu69" data-embed-version="2" class="codepen">See the Pen <a href="http://codepen.io/kazu69/pen/dpXrEA/" target="_blank" rel="noopener">@supports example</a> by — (<a href="http://codepen.io/kazu69" target="_blank" rel="noopener">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="noopener">CodePen</a>.</p><p></p>
+</tbody></table>
+<p>以下のコードを実行した時、display: grid のサポートしていれば*<em>背景色が#C00 *</em>のboxがグリッドレイアウトが表示されるはずである。</p>
+<p data-height="265" data-theme-id="0" data-slug-hash="dpXrEA" data-default-tab="css,result" data-user="kazu69" data-embed-version="2" class="codepen">See the Pen <a href="http://codepen.io/kazu69/pen/dpXrEA/" target="_blank" rel="noopener">@supports example</a> by --- (<a href="http://codepen.io/kazu69" target="_blank" rel="noopener">@kazu69</a>) on <a href="http://codepen.io" target="_blank" rel="noopener">CodePen</a>.</p>
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
 <hr>
 <p>実際に使うとしたら以下のような感じ。<br>IEが@supportsを未サポートなのでfallbackしてやる。<br>あとは@supportディレクティブでスタイルを書いておけば良さそう。</p>
-<p>将来的には <strong>@support (true) </strong>な条件になると言う前提で書いておけば、<br>近い未来のcssプロパティに備ることができる。</p>
+<p>将来的には *<em>@support (true) *</em>な条件になると言う前提で書いておけば、<br>近い未来のcssプロパティに備ることができる。</p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* @supportsをサポートしないブラウザ向けのfallback */</span></span><br><span class="line"><span class="selector-class">.not-FUTURE-PROPERTIES</span> &#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 未来のプロパティ未サポートの場合 */</span></span><br><span class="line"><span class="comment">/* 上記のfallbackとまとめられることもある */</span></span><br><span class="line">@<span class="keyword">supports</span> not (FUTURE-PROPERTIES) &#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 未来のプロパティサポートの場合 */</span></span><br><span class="line">@<span class="keyword">supports</span> (FUTURE-PROPERTIES) &#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h2 id="JavaScriptでの代替"><a href="#JavaScriptでの代替" class="headerlink" title="JavaScriptでの代替"></a>JavaScriptでの代替</h2><p>cssのサポートをJavaScriptで検知して何かするとしたら、<strong>CSS.supports()</strong>を使う。<br>今回のように display: grid の場合であるならば、ざっくりだけど</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> isGridSupport = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">window</span>.CSS) &#123;</span><br><span class="line">        <span class="keyword">return</span> CSS.supports(<span class="string">'display'</span>, <span class="string">'grid'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(isGridSupport()) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Support display: grid'</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Not Support display: grid'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>という感じかな。</p>
 <h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>まだまだModernizrの活躍にも期待しつつも、Web APIとしてCSS.supportsの実装が進んでるので、<br>@supportsを使って、近い将来のCSSプロパティに備える時期に来ているのではないだろうか。</p>
 <h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://www.w3.org/TR/css3-conditional/#at-supports" target="_blank" rel="noopener">Feature queries: the ‘@supports’ rule</a><br><a href="https://developer.mozilla.org/ja/docs/Web/CSS/@supports" target="_blank" rel="noopener">@supports</a><br><a href="https://www.w3.org/TR/css3-grid-layout/" target="_blank" rel="noopener">CSS Grid Layout Module Level 1</a><br><a href="https://igalia.github.io/css-grid-layout/enable.html" target="_blank" rel="noopener">Enable CSS Grid Layout</a><br><a href="https://developer.mozilla.org/ja/docs/Web/API/CSS/supports" target="_blank" rel="noopener">CSS.supports()</a></p>

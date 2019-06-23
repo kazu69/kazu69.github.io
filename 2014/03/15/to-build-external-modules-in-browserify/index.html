@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>node.jsで書かれたjavascriptをクライアントサイドでも実行できるようにしてくれる<a href="http://browserify.org/" target="_blank" rel="noopener">Browserify</a>が便利で、<br><a href="https://github.com/jmreidy/grunt-browserify" target="_blank" rel="noopener">grunt-browserify</a>使ってるけど外部モジュールの取り扱いに関していまいち理解できてなかった。<br>なので、改めて簡単にまとめたメモ。<br><a id="more"></a><br>次のような構成</p>
+      <p>node.jsで書かれたjavascriptをクライアントサイドでも実行できるようにしてくれる<a href="http://browserify.org/" target="_blank" rel="noopener">Browserify</a>が便利で、<br><a href="https://github.com/jmreidy/grunt-browserify" target="_blank" rel="noopener">grunt-browserify</a>使ってるけど外部モジュールの取り扱いに関していまいち理解できてなかった。<br>なので、改めて簡単にまとめたメモ。</p>
+<a id="more"></a>
+<p>次のような構成</p>
 <script src="http://gist-it.appspot.com/github/kazu69/browserify-external-bundle-example/blob/master/README.md?slice=23:39"></script>
 
 <p>srcにあるjsファイル群をbuildに吐き出す。外部モジュールとし、node-modulesにあるjQueryをsrcにあるjsファイル群でrequireしてみる。</p>
@@ -115,17 +117,14 @@ ga('send', 'pageview');
 <p>としてrequireできるようになる。</p>
 <p>ここでは<a href="https://github.com/substack/brfs" target="_blank" rel="noopener">brfs</a>を使って、htmlファイルもrequireして、出力できるようにしているので、</p>
 <script src="http://gist-it.appspot.com/github/kazu69/browserify-external-bundle-example/blob/master/src/main.js"></script>
-となっている。
-
-さらに別のファイルのタスクとして
+<p>となっている。</p>
+<p>さらに別のファイルのタスクとして</p>
 <script src="http://gist-it.appspot.com/github/kazu69/browserify-external-bundle-example/blob/master/gruntTasks/browserify.coffee?slice=10:14"></script>
-externalにはファイルのエイリアスが使用できる。(ファイルパスももちろん使用できる)
-
-javascriptファイルは
+<p>externalにはファイルのエイリアスが使用できる。(ファイルパスももちろん使用できる)</p>
+<p>javascriptファイルは</p>
 <script src="http://gist-it.appspot.com/github/kazu69/browserify-external-bundle-example/blob/master/src/app.js"></script>
-としている。
-
-さらにaliasと同じようにshimという設定オブジェクトを使用することも可能。今回はangularjsを使用する。この場合、jQeuryが必要になるので、dependsでjqueryを指定することで、モジュールの依存も解決できる。
+<p>としている。</p>
+<p>さらにaliasと同じようにshimという設定オブジェクトを使用することも可能。今回はangularjsを使用する。この場合、jQeuryが必要になるので、dependsでjqueryを指定することで、モジュールの依存も解決できる。</p>
 <script src="http://gist-it.appspot.com/github/kazu69/browserify-external-bundle-example/blob/master/gruntTasks/browserify.coffee?slice=16:23"></script>
 
 <p>javascriptのファイルでは</p>

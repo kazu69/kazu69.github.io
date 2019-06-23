@@ -103,6 +103,7 @@ ga('send', 'pageview');
     
       <p>普段はChef Soloしか使う機会がないので、Chef Serverを試してみた。<br>ちなみに、Chef12からはClientからServerへのリクエストにおいて、SSL証明書の検証が必要になり安全性がたかまったとか。</p>
 <a id="more"></a>
+
 <p>初めに一度それぞれの名称を整理しておく。</p>
 <ul>
 <li>Chef Server：Clientの管理を行う(host name: chef_server)</li>
@@ -135,8 +136,7 @@ ga('send', 'pageview');
 <script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=create-node.sh"></script>
 
 <p>ここで以下のように</p>
-<pre><code>INFO: HTTP Request Returned 401 Unauthorized: Failed to authenticate as NODENAME. Ensure that your node_name and client key are correct.
-</code></pre><p>など401エラーが発生する場合、多くは証明書の問題っぽい。<br>エラーが出た際は<a href="https://docs.chef.io/errors.html" target="_blank" rel="noopener">https://docs.chef.io/errors.html</a>を一度参考すると良さそう。</p>
+<pre><code>INFO: HTTP Request Returned 401 Unauthorized: Failed to authenticate as NODENAME. Ensure that your node_name and client key are correct.</code></pre><p>など401エラーが発生する場合、多くは証明書の問題っぽい。<br>エラーが出た際は<a href="https://docs.chef.io/errors.html" target="_blank" rel="noopener">https://docs.chef.io/errors.html</a>を一度参考すると良さそう。</p>
 <h2 id="Chef-Client-の情報を取得する"><a href="#Chef-Client-の情報を取得する" class="headerlink" title="Chef Client の情報を取得する"></a>Chef Client の情報を取得する</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=check-chef-client.sh"></script>
 
 <h2 id="WorkstationからChef-ClientにRun-Listを適用"><a href="#WorkstationからChef-ClientにRun-Listを適用" class="headerlink" title="WorkstationからChef ClientにRun Listを適用"></a>WorkstationからChef ClientにRun Listを適用</h2><script src="https://gist.github.com/kazu69/0efcc34d02f5443bf0a8.js?file=add-run-list.sh"></script>

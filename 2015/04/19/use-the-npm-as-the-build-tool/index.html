@@ -103,6 +103,7 @@ ga('send', 'pageview');
     
       <p><a href="http://gruntjs.com/" target="_blank" rel="noopener">Grunt</a>、 <a href="http://gulpjs.com/" target="_blank" rel="noopener">gulp</a>などを使うのではなく、npmをビルドタスクを使うためにちょっとおさらいした。</p>
 <a id="more"></a>
+
 <h2 id="npmのpath"><a href="#npmのpath" class="headerlink" title="npmのpath"></a>npmのpath</h2><p>npmでインストールすると、<br>モジュールは ./node_modules/にインストールされ、<br>node_modules/.bin配下に各パッケージのbinへのシンボリックリンクが作成される。</p>
 <p>これは実際にnpm binを実行するとパスがわかる。</p>
 <p>たとえば、node_modules/jshint/bin/jshint は$(npm bin)/jshintで実行できる。<br>実際にはnpm経由で実行すると、$(npm bin)はPATHは追加されている。</p>
@@ -115,7 +116,7 @@ ga('send', 'pageview');
 <p>つまり、npm run TASKではモジュールのパスに$(npm bin)は必要無い。</p>
 <h2 id="pre、postフック"><a href="#pre、postフック" class="headerlink" title="pre、postフック"></a>pre、postフック</h2><p>npmコマンドにpre、postというprefixをつけることでそのコマンドの前後にフックできる。<br>たとえば、npm testにpre postそれぞれのフックを追加すると、</p>
 <p>npm test を実行すると、 npm run pretest、 npm test, npm run posttest の順番に実行される。</p>
-<h2 id="カスタム引数"><a href="#カスタム引数" class="headerlink" title="カスタム引数"></a>カスタム引数</h2><p>npm@2.0.0 以上では<a href="https://github.com/npm/npm/pull/5518" target="_blank" rel="noopener">実行スクリプトにカスタム引数を渡すことができるようになっている。</a></p>
+<h2 id="カスタム引数"><a href="#カスタム引数" class="headerlink" title="カスタム引数"></a>カスタム引数</h2><p><a href="mailto:npm@2.0.0" target="_blank" rel="noopener">npm@2.0.0</a> 以上では<a href="https://github.com/npm/npm/pull/5518" target="_blank" rel="noopener">実行スクリプトにカスタム引数を渡すことができるようになっている。</a></p>
 <p>「–」で 好きな引数を渡すことができる。<br>たとえば以下のうように</p>
 <script src="https://gist.github.com/kazu69/b62cb4e6d54ab63b1b1e.js?file=option.json"></script>
 

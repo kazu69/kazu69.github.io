@@ -101,26 +101,56 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://blog.jquery.com/2011/11/03/jquery-1-7-released/" target="_blank" rel="noopener">jQuery1.7</a>がリリースされたのですが、今回追加されたevent apiのon()、off()がとても便利で、on()でイベントを登録し、off()でイベントを削除するするということで、これまでより直感的です。<br><a id="more"></a><br>event apiとしてはこれまで、<a href="http://api.jquery.com/bind/" target="_blank" rel="noopener">bind</a>、<a href="http://api.jquery.com/live/" target="_blank" rel="noopener">live</a>、<a href="http://api.jquery.com/delegate/" target="_blank" rel="noopener">delegate</a>が存在していました。今回追加されたon()は、bindやdelegateと置き換わる機能となります。</p>
+      <p><a href="http://blog.jquery.com/2011/11/03/jquery-1-7-released/" target="_blank" rel="noopener">jQuery1.7</a>がリリースされたのですが、今回追加されたevent apiのon()、off()がとても便利で、on()でイベントを登録し、off()でイベントを削除するするということで、これまでより直感的です。</p>
+<a id="more"></a>
+<p>event apiとしてはこれまで、<a href="http://api.jquery.com/bind/" target="_blank" rel="noopener">bind</a>、<a href="http://api.jquery.com/live/" target="_blank" rel="noopener">live</a>、<a href="http://api.jquery.com/delegate/" target="_blank" rel="noopener">delegate</a>が存在していました。今回追加されたon()は、bindやdelegateと置き換わる機能となります。</p>
 <p><code>$(elements).on(events [, selector] [, data], handler);
 $(elements).off(events [, selector] [, data], handler);</code></p>
 <p>例えば使い方としてとしては<br><code>var sayHello = function (event) { alert(&quot;Hello &quot;+event.data.name); }
 $(&quot;button&quot;).on(&quot;click&quot;, { name: &quot;kazu69&quot; }, sayHello);</code></p>
-<p><iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/ubTYU/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe><br>のように、これまでのbindやliveのように使用できる。<br>また、<br><code>var sayHello = function (event) { alert(&quot;Hello &quot;+event.data.name); }
-$(&quot;div&quot;).on(&quot;click&quot;, &#39;span&#39;, { name: &quot;kazu69&quot; }, sayHello);</code></p>
-<p><iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/4kcqH/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe><br>のようにselectorオプションを使うとdelegateのように使用する事もできる(引数の順序が違うけど)<br><code>$(elements).on(events-map [, selector] [, data]);
-$(elements).off(events-map [, selector] [, data]);</code><br>またeventMapを利用する事で複数のイベントを登録する事ができます。<br>たとえば、<br><code>$(&#39;input[type=text]&#39;).on({
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/ubTYU/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+のように、これまでのbindやliveのように使用できる。
+また、
+`
+var sayHello = function (event) { alert("Hello "+event.data.name); }
+$("div").on("click", 'span', { name: "kazu69" }, sayHello);
+`
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/4kcqH/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+のようにselectorオプションを使うとdelegateのように使用する事もできる(引数の順序が違うけど)
+`
+$(elements).on(events-map [, selector] [, data]);
+$(elements).off(events-map [, selector] [, data]);
+`
+またeventMapを利用する事で複数のイベントを登録する事ができます。
+たとえば、
+`
+$('input[type=text]').on({
     focus: function() {
-        $(&#39;div&#39;).empty().append(&#39;focus&#39;);
+        $('div').empty().append('focus');
     },
     blur: function() {
-        $(&#39;div&#39;).empty().append(&#39;blur&#39;);
+        $('div').empty().append('blur');
     }
-});</code></p>
-<p><iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/zkfx5/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe><br>とすると、簡潔にまとめる事も可能です。<br>off()についてもon()とおなじく<br><code>$(&#39;.parent a&#39;).unbind(&#39;click&#39;);
-$(&#39;.parent a&#39;).off(&#39;click&#39;);</code><br>という具合にunbindと置き換える事ができ、<br><code>$(&#39;.parent a&#39;).die(&#39;click&#39;);
-$(&#39;.parent&#39;).off(&#39;click&#39;, &#39;a&#39;);</code><br><code>$(&#39;.parenta&#39;).undelegate(&#39;a&#39;, &#39;click&#39;);
-$(&#39;.parent&#39;).off(&#39;click&#39;, &#39;a&#39;);</code><br>のようにdieやundelegateを置き換える事も可能です。</p>
+});
+`
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/zkfx5/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+とすると、簡潔にまとめる事も可能です。
+off()についてもon()とおなじく
+`
+$('.parent a').unbind('click');
+$('.parent a').off('click');
+`
+という具合にunbindと置き換える事ができ、
+`
+$('.parent a').die('click');
+$('.parent').off('click', 'a');
+`
+`
+$('.parenta').undelegate('a', 'click');
+$('.parent').off('click', 'a');
+`
+のようにdieやundelegateを置き換える事も可能です。
+
 <p>ちなみにこれまでのevent apiも使用できます。<br>でも、これからはon()、off()を使う方がいいですね。</p>
 
     

@@ -101,11 +101,13 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><em>長ーいURLとかを所定のブロックとかに収めたいけど、改行されずに困るじゃないですか。<br>あれの対策です。<br><a id="more"></a><br>Firefox2以下を切り捨てるならば、cssで<br><code>.word-break{
+      <p><em>長ーいURLとかを所定のブロックとかに収めたいけど、改行されずに困るじゃないですか。<br>あれの対策です。</em></p>
+<a id="more"></a>
+<p>Firefox2以下を切り捨てるならば、cssで<br><code>.word-break{
 word-break:break-all;
 word-wrap:break-word;
 display: inline-block;
-}</code><br>で、大体の場合クリアできそう。<br>word-break:break-all で表示範囲に合わせて改行されるのですが、word-break:break-allがないとsafariがテーブルのセル内で折り返してくれないし、display: inline-block;がないとFirefox3系がテーブルのセル内で折り返してくれない。<br>これで大体の場合OKと思うけど、詳しく検証してないので。</em></p>
+}</code><br>で、大体の場合クリアできそう。<br>word-break:break-all で表示範囲に合わせて改行されるのですが、word-break:break-allがないとsafariがテーブルのセル内で折り返してくれないし、display: inline-block;がないとFirefox3系がテーブルのセル内で折り返してくれない。<br>これで大体の場合OKと思うけど、詳しく検証してないので。</p>
 <p>あと、<br><code>overflow:hidden;
 text-overflow:clip;</code><br>とかではみ出した分を「…」とかにするというてもありますね。</p>
 <p>Firefox2以下は何やってもダメっぽいので、overflow:auto;とかjsで回避するとかしかないのかな？<br>そういえば昔、<a href="http://kazu69.net/blog/?p=306" target="_blank" rel="noopener">jQueryでの半角英数の改行に関する記事</a>書いたみたいでした。</p>

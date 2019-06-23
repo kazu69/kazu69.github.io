@@ -103,18 +103,24 @@ ga('send', 'pageview');
     
       <p><a href="https://github.com/tmm1/stackprof" target="_blank" rel="noopener">stackprof</a> を使えばrspecのプロファイリングが出来る戸言うことを知ったので、<br>早速テストでためしてみた。</p>
 <a id="more"></a>
+
 <p>Gemfileに追加して</p>
 <script src="//gist.github.com/kazu69/8628e1ed92533fd61881.js?file=Gemfile"></script>
+
 <p>そしてbundle install。</p>
 <p>around hookでテストの開始前後での時間を計測します。<br>stackprofの設定は環境変数で渡します。</p>
 <p>ということで、いかのようにspec_helper.rbに追加。</p>
 <script src="//gist.github.com/kazu69/8628e1ed92533fd61881.js?file=spec_helper.rb"></script>
+
 <p>そして実行</p>
 <script src="//gist.github.com/kazu69/8628e1ed92533fd61881.js?file=run.sh"></script>
+
 <p>指定したディレクトリにプロフファイリング結果がdumpされる</p>
 <script src="//gist.github.com/kazu69/8628e1ed92533fd61881.js?file=ls.sh"></script>
+
 <p>プロファイル結果を分析</p>
 <script src="//gist.github.com/kazu69/8628e1ed92533fd61881.js?file=profile.sh"></script>
+
 <p>この場合 ActiveSupport::Callbacks#run_callbacks が重そう。</p>
 <p>こんな感じで重い箇所を洗い出して改善していける。</p>
 <p>参考にしたページ<br><a href="http://blog.iempire.ru/2015/10/13/profiling-specs/" target="_blank" rel="noopener">Profiling RSpec examples with Stackprof</a><br><a href="http://spring-mt.hatenablog.com/entry/2015/01/24/112454" target="_blank" rel="noopener">railsアプリでstackprofを使ってボトルネックを探す + JSON::Schema(2.2.1)の高速化</a></p>

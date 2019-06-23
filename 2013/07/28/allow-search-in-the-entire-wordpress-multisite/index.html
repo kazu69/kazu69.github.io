@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Wordpressでマルチサイト化した場合、マルチサイト全体から該当文字列を含む投稿を取得する機能がなかった用なので関数を作成した。<br><a id="more"></a></p>
+      <p>Wordpressでマルチサイト化した場合、マルチサイト全体から該当文字列を含む投稿を取得する機能がなかった用なので関数を作成した。</p>
+<a id="more"></a>
+
 <p>まずは、検索キーワードを取得するためにsearch.phpに<br>[php]<br>// 検索クエリを取得<br>$search_result = get_search_query();<br>// マルチサイト内を検索<br>$search_results = search_multisite($search_result);<br>[/php]</p>
 <p>で、実際に検索を行う関数。</p>
 <p>[php]<br> function search_multisite($query_string) {<br>    // 文字列エンコード<br>    $query_string = esc_attr($query_string);<br>    $search_result = array();</p>
@@ -123,8 +125,7 @@ foreach ( $blogs as $blog ):
 
 endforeach;
 
-return $search_result;
-</code></pre><p>  }<br>[/php]</p>
+return $search_result;</code></pre><p>  }<br>[/php]</p>
 <p>get_blogs_of_user( 1, true); でネットワーク上のブログを取得して<br>switch_to_blog でブログを切り替えて、WP_Queryで検索クエリオブジェクトを渡すことでできました。</p>
 <p>ただ、上記の方法は全てのブログを user_id=1 のユーザーが作成してるときに限られるので、もしこの条件が使えない場合は、ネットワーク上のブログを取得する関数を作成し、</p>
 <p>[php]<br>// ネットワーク上のブログを取得<br>function get_blog_from_network($blog_id, $cache_clear_flag) {<br>  // cacheをクリアする<br>  if(false === $cache_clear_flag) wp_cache_delete(‘get_blog_from_network’);</p>
@@ -138,10 +139,10 @@ return $search_result;
     endforeach;
   endfor;
 endif;
-return $result;
-</code></pre><p>  else:<br>    return $blogs;<br>  endif;<br>}</p>
-<p>// マルチブログの検索<br>function search_multisite($query_string) {<br>  // 文字列エンコード<br>  $query_string = esc_attr($query_string);<br>  $search_result = array();<br>  // ネットワーク上のブログを取得<br>  $blogs = get_blog_from_network();<br>  foreach ( $blogs as $blog ):<br>    // ブログを切り替える<br>    switch_to_blog($blog-&gt;blog_id);<br>    // 切り替えたブログでqueryを実行<br>    $args = array(<br>        ‘s’ =&gt; $query_string<br>    );<br>    $search = new WP_Query($args);<br>    if (intval($search-&gt;found_posts) &gt; 0):<br>      foreach ( $search-&gt;posts as $post ):<br>        // 投稿記事に関連するグローバル変数を設定する<br>        setup_postdata($post);<br>        array_push($search_result, $post);<br>      endforeach;<br>    endif;<br>  endforeach;<br>  restore_current_blog();<br>  return $search_result;<br>}<br>[/php]</p>
-<p>以下の情報が記事ごとに返却されます。<br>[php]<br>array (size=1)<br>  0 =&gt;<br>    object(WP_Post)[4688]<br>      public ‘ID’ =&gt; int 1<br>      public ‘post_author’ =&gt; string ‘1’ (length=1)<br>      public ‘post_date’ =&gt; string ‘2013-07-27 15:34:21’ (length=19)<br>      public ‘post_date_gmt’ =&gt; string ‘2013-07-27 06:34:21’ (length=19)<br>      public ‘post_content’ =&gt; string ‘記事’ (length=12)<br>      public ‘post_title’ =&gt; string ‘タイトル’ (length=3)<br>      public ‘post_excerpt’ =&gt; string ‘’ (length=0)<br>      public ‘post_status’ =&gt; string ‘publish’ (length=7)<br>      public ‘comment_status’ =&gt; string ‘open’ (length=4)<br>      public ‘ping_status’ =&gt; string ‘open’ (length=4)<br>      public ‘post_password’ =&gt; string ‘’ (length=0)<br>      public ‘post_name’ =&gt; string ‘’ (length=27)<br>      public ‘to_ping’ =&gt; string ‘’ (length=0)<br>      public ‘pinged’ =&gt; string ‘’ (length=0)<br>      public ‘post_modified’ =&gt; string ‘2013-07-27 17:28:51’ (length=19)<br>      public ‘post_modified_gmt’ =&gt; string ‘2013-07-27 08:28:51’ (length=19)<br>      public ‘post_content_filtered’ =&gt; string ‘’ (length=0)<br>      public ‘post_parent’ =&gt; int 0<br>      public ‘guid’ =&gt; string ‘<a href="http://localhost/?p=1" target="_blank" rel="noopener">http://localhost/?p=1</a>‘ (length=22)<br>      public ‘menu_order’ =&gt; int 0<br>      public ‘post_type’ =&gt; string ‘post’ (length=4)<br>      public ‘post_mime_type’ =&gt; string ‘’ (length=0)<br>      public ‘comment_count’ =&gt; string ‘0’ (length=1)<br>      public ‘filter’ =&gt; string ‘raw’ (length=3)<br>[/php]</p>
+return $result;</code></pre><p>  else:<br>    return $blogs;<br>  endif;<br>}</p>
+<p>// マルチブログの検索<br>function search_multisite($query_string) {<br>  // 文字列エンコード<br>  $query_string = esc_attr($query_string);<br>  $search_result = array();<br>  // ネットワーク上のブログを取得<br>  $blogs = get_blog_from_network();<br>  foreach ( $blogs as $blog ):<br>    // ブログを切り替える<br>    switch_to_blog($blog-&gt;blog_id);<br>    // 切り替えたブログでqueryを実行<br>    $args = array(<br>        ‘s’ =&gt; $query_string<br>    );<br>    $search = new WP_Query($args);<br>    if (intval($search-&gt;found_posts) &gt; 0):<br>      foreach ( $search-&gt;posts as $post ):<br>        // 投稿記事に関連するグローバル変数を設定する<br>        setup_postdata($post);<br>        array_push($search_result, $post);<br>      endforeach;<br>    endif;<br>  endforeach;<br>  restore_current_blog();<br>  return $search_result;<br>}
+[/php]</p>
+<p>以下の情報が記事ごとに返却されます。<br>[php]<br>array (size=1)<br>  0 =&gt;<br>    object(WP_Post)[4688]<br>      public ‘ID’ =&gt; int 1<br>      public ‘post_author’ =&gt; string ‘1’ (length=1)<br>      public ‘post_date’ =&gt; string ‘2013-07-27 15:34:21’ (length=19)<br>      public ‘post_date_gmt’ =&gt; string ‘2013-07-27 06:34:21’ (length=19)<br>      public ‘post_content’ =&gt; string ‘記事’ (length=12)<br>      public ‘post_title’ =&gt; string ‘タイトル’ (length=3)<br>      public ‘post_excerpt’ =&gt; string ‘’ (length=0)<br>      public ‘post_status’ =&gt; string ‘publish’ (length=7)<br>      public ‘comment_status’ =&gt; string ‘open’ (length=4)<br>      public ‘ping_status’ =&gt; string ‘open’ (length=4)<br>      public ‘post_password’ =&gt; string ‘’ (length=0)<br>      public ‘post_name’ =&gt; string ‘’ (length=27)<br>      public ‘to_ping’ =&gt; string ‘’ (length=0)<br>      public ‘pinged’ =&gt; string ‘’ (length=0)<br>      public ‘post_modified’ =&gt; string ‘2013-07-27 17:28:51’ (length=19)<br>      public ‘post_modified_gmt’ =&gt; string ‘2013-07-27 08:28:51’ (length=19)<br>      public ‘post_content_filtered’ =&gt; string ‘’ (length=0)<br>      public ‘post_parent’ =&gt; int 0<br>      public ‘guid’ =&gt; string ‘<a href="http://localhost/?p=1&#39;" target="_blank" rel="noopener">http://localhost/?p=1&#39;</a> (length=22)<br>      public ‘menu_order’ =&gt; int 0<br>      public ‘post_type’ =&gt; string ‘post’ (length=4)<br>      public ‘post_mime_type’ =&gt; string ‘’ (length=0)<br>      public ‘comment_count’ =&gt; string ‘0’ (length=1)<br>      public ‘filter’ =&gt; string ‘raw’ (length=3)<br>[/php]</p>
 <p>あとは返却されたオブジェクトから必要な情報を取得してページを作成する感じでいいのかな。</p>
 
     

@@ -101,12 +101,16 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>ややこしいし、滅多にない状況だけど忘れないために。<br>JavaScriptのライブラリなどが、RailsのAssets PrecompileでコンパイルしたJavaScriptまたはCSSなどを動的に読込む(requireJSなどで)必要がある場合の対応。<br><a id="more"></a><br>具体的なパターンとしては、</p>
+      <p>ややこしいし、滅多にない状況だけど忘れないために。<br>JavaScriptのライブラリなどが、RailsのAssets PrecompileでコンパイルしたJavaScriptまたはCSSなどを動的に読込む(requireJSなどで)必要がある場合の対応。</p>
+<a id="more"></a>
+<p>具体的なパターンとしては、</p>
 <ul>
 <li>ライブラリ本体が実行時に特定のAssetsファイルをincludeするとき</li>
 <li>ライブラリ本体が相対パスで特定のAssetsファイルをincludeするとき<br>上記の場合、Precompileされたファイルにはanyload-avnov92ns2fd5db7e7290baa07400kcinqhb.cssのようにasset digest値が付与されるため、anyload.cssを読込むと確実に404が返されます。</li>
 </ul>
-<p>[shell]<br>├── app(precompiled)<br>│   ├── assets<br>│        ├── javascrips<br>│        ├── stylesheets<br>├──lib(precompiled)<br>│   ├── assets<br>│        ├── javascrips<br>│        ├── stylesheets<br>│<br>├── vendor(not precompiled)<br>│   ├── components<br>│<br>├── public<br>[/shell]</p>
+<p>[shell]<br>├── app(precompiled)<br>│   ├── assets<br>│        ├── javascrips<br>│        ├── stylesheets<br>├──lib(precompiled)<br>│   ├── assets<br>│        ├── javascrips<br>│        ├── stylesheets<br>│
+├── vendor(not precompiled)<br>│   ├── components<br>│
+├── public<br>[/shell]</p>
 <p>例えばvendor配下のJavaScriptのライブラリはPrecompile対象ではなく、ライブラリが動的に読込むファイルはAssets Precompileの対象(appまたはlib配下)となる状況でした。</p>
 <p>おそらくRailsのAssets Precompileを想定してないJavaScriptライブラリやgemで提供されているJavaScriptライブラリにはありこういう状況があり得そう。</p>
 <p>読込まれるJavaScript,cssをPrecompileしなけりゃいいけど、ライブラリによっては回避できないこともありそうなのでその場合の考えられるの回避方法が</p>

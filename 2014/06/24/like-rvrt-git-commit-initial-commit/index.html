@@ -5,17 +5,17 @@
   
   <title>gitの最初のコミット(initial commit)をrevertしたい | 69log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="gitで最初のコミットをrevertしようと、  としてもだめでした。 まさか、.gitファイルを削除してもう一度最初からかな？などと思いもしたのですが、違いました。">
+  <meta name="description" content="gitで最初のコミットをrevertしようと、  としてもだめでした。まさか、.gitファイルを削除してもう一度最初からかな？などと思いもしたのですが、違いました。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="gitの最初のコミット(initial commit)をrevertしたい">
 <meta property="og:url" content="http://blog.kazu69.net/2014/06/24/like-rvrt-git-commit-initial-commit/index.html">
 <meta property="og:site_name" content="69log">
-<meta property="og:description" content="gitで最初のコミットをrevertしようと、  としてもだめでした。 まさか、.gitファイルを削除してもう一度最初からかな？などと思いもしたのですが、違いました。">
+<meta property="og:description" content="gitで最初のコミットをrevertしようと、  としてもだめでした。まさか、.gitファイルを削除してもう一度最初からかな？などと思いもしたのですが、違いました。">
 <meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-10T16:21:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="gitの最初のコミット(initial commit)をrevertしたい">
-<meta name="twitter:description" content="gitで最初のコミットをrevertしようと、  としてもだめでした。 まさか、.gitファイルを削除してもう一度最初からかな？などと思いもしたのですが、違いました。">
+<meta name="twitter:description" content="gitで最初のコミットをrevertしようと、  としてもだめでした。まさか、.gitファイルを削除してもう一度最初からかな？などと思いもしたのですが、違いました。">
   
     <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
   
@@ -103,12 +103,10 @@ ga('send', 'pageview');
     
       <p>gitで最初のコミットをrevertしようと、</p>
 <script src="https://gist.github.com/kazu69/ab91d0bd5a4eb54716f1.js?file=unable.sh"></script>
-としてもだめでした。
-まさか、.gitファイルを削除してもう一度最初からかな？などと思いもしたのですが、違いました。
+<p>としてもだめでした。<br>まさか、.gitファイルを削除してもう一度最初からかな？などと思いもしたのですが、違いました。</p>
 <a id="more"></a>
 
-ここで少しgitの参照に関して調べた。
-参照自体はhash値で管理されていて、
+<p>ここで少しgitの参照に関して調べた。<br>参照自体はhash値で管理されていて、</p>
 <script src="https://gist.github.com/kazu69/ab91d0bd5a4eb54716f1.js?file=find_git_refs.sh"></script>
 
 <p>に存在している。<br>それぞれにsha1 ハッシュ値があり、この値を更新することで参照先を切替えてるっぽい。<br>ただこの値を直接編集するのは推奨されていないので、 update-refコマンドで更新する。</p>

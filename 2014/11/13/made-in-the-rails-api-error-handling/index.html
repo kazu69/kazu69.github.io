@@ -103,6 +103,7 @@ ga('send', 'pageview');
     
       <p>RailsでAPIを作ったとき、StandardErrorをどのように処理するのがいいのかと考えた。<br>やりたいことは、エラーの内容をjsonで返し、なおかつエラーのstatus codeも返却したいという感じ。</p>
 <a id="more"></a>
+
 <p>エラー内容は普通にrescueしてexception.messageを返してあげるといいが、statusはどうするか。<br>そこでどこかでエラーのリストを保持しているのではないかとで調べると、<a href="https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/exception_wrapper.rb" target="_blank" rel="noopener">ActionDispatch::ExceptionWrapper</a>にあるっぽいことがわかった。</p>
 <p>これを上手こと利用して動的にエラーをレスポンスを生成したらどうだろうかということで、以下のようにしてみた。</p>
 <script src="https://gist.github.com/kazu69/6b6cb71ff77fbb1f40b4.js?file=api_base_controller.rb"></script>

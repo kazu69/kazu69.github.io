@@ -5,17 +5,17 @@
   
   <title>CSP(content security policy)をためしてみる | 69log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="CSP(Content Security Policy))を設定することでXSSやクリックジャッキング、パケットキャプチャなどの攻撃を軽減できるということなので、どんなものなのか試してみた。">
+  <meta name="description" content="CSP(Content Security Policy)を設定することでXSSやクリックジャッキング、パケットキャプチャなどの攻撃を軽減できるということなので、どんなものなのか試してみた。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CSP(content security policy)をためしてみる">
 <meta property="og:url" content="http://blog.kazu69.net/2012/07/11/try-the-csp-content-security-policy/index.html">
 <meta property="og:site_name" content="69log">
-<meta property="og:description" content="CSP(Content Security Policy))を設定することでXSSやクリックジャッキング、パケットキャプチャなどの攻撃を軽減できるということなので、どんなものなのか試してみた。">
+<meta property="og:description" content="CSP(Content Security Policy)を設定することでXSSやクリックジャッキング、パケットキャプチャなどの攻撃を軽減できるということなので、どんなものなのか試してみた。">
 <meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2016-09-17T03:40:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CSP(content security policy)をためしてみる">
-<meta name="twitter:description" content="CSP(Content Security Policy))を設定することでXSSやクリックジャッキング、パケットキャプチャなどの攻撃を軽減できるということなので、どんなものなのか試してみた。">
+<meta name="twitter:description" content="CSP(Content Security Policy)を設定することでXSSやクリックジャッキング、パケットキャプチャなどの攻撃を軽減できるということなので、どんなものなのか試してみた。">
   
     <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
   
@@ -101,8 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="https://developer.mozilla.org/ja/Security/CSP_(Content_Security_Policy" target="_blank" rel="noopener">CSP(Content Security Policy)</a>)を設定することでXSSやクリックジャッキング、パケットキャプチャなどの攻撃を軽減できるということなので、<br>どんなものなのか試してみた。</p>
+      <p><a href="https://developer.mozilla.org/ja/Security/CSP_(Content_Security_Policy)" target="_blank" rel="noopener">CSP(Content Security Policy)</a>を設定することでXSSやクリックジャッキング、パケットキャプチャなどの攻撃を軽減できるということなので、<br>どんなものなのか試してみた。</p>
 <a id="more"></a>
+
 <p>CSPを有効にすると、コンテンツの提供元を制限することで、制作者がリストに登録していない提供元からのコンテンツを読込ませないようにできます。<br>このため悪意のあるコードを実行させないなどの対策がきます。<br>特に設定してない、デフォルト状態では以下のことが制限されます。</p>
 <ul>
 <li>data: URLでのコンテンツの埋込</li>
@@ -123,8 +124,7 @@ ga('send', 'pageview');
 <th>内容</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>default-src</td>
 <td>デフォルトで許可するURIを指定</td>
 </tr>
@@ -184,15 +184,18 @@ ga('send', 'pageview');
 <td>plugin-type</td>
 <td>pdfなど application/octet-streamヘッダーで提供されるもの</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>の提供元を明示的に指定することができる。</p>
 <p>CSPはレスポンスヘッダーに明示的に設定する必要があり、ブラウザはこの情報を見てコンテンツの読込みを決定します。</p>
 <p>FirefoxとChromeで実装済み(IE10でも提供される)ですが、ブラウザに送るヘッダーの仕様が違います。<br>Firefoxは X-Content-Security-Policy、Chromeは X-WebKit-CSP、IE10では X-Content-Security-Policyの予定。</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#encoding: UTF-8</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">'rubygems'</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">'pp'</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">'bundler'</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">'sinatra/base'</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">'erb'</span></span><br><span class="line"></span><br><span class="line">Bundler.<span class="keyword">require</span></span><br><span class="line"></span><br><span class="line">before <span class="keyword">do</span></span><br><span class="line">  <span class="comment"># コンテンツの提供元の特別なクラスを記述するためのキーワード</span></span><br><span class="line">  keyword = <span class="string">'self'</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># デフォルトで設定する提供元</span></span><br><span class="line">  default = <span class="string">'default-src self;'</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 画像と favicon の読み込みに使用される可能性のある提供元を指定</span></span><br><span class="line">  img = <span class="string">'img-src ;'</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># JavaScirpt の正当な提供元を指定します</span></span><br><span class="line">  script = <span class="string">'script-src http://ajax.googleapis.com;'</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># &lt;frame&gt; 要素や &lt;iframe&gt; 要素を使用して読み込まれるフレームコンテンツの正当な提供元を指定</span></span><br><span class="line">  frame = <span class="string">'frame-src ;'</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Firefox</span></span><br><span class="line">  headers <span class="string">'X-Content-Security-Policy'</span> =&gt; <span class="string">'allow '</span> + keyword + default + script + style + img + frame</span><br><span class="line">  <span class="comment"># Chrome</span></span><br><span class="line">  headers <span class="string">'X-WebKit-CSP'</span> =&gt; <span class="string">'allow '</span> + keyword + default + script + style + img + frame</span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">get <span class="string">'/'</span> <span class="keyword">do</span></span><br><span class="line">  erb <span class="symbol">:index</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>また、ポリシーの違反があった場合は、指定したURIにレポートを送ることもできます。<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Content Security Policy 違反を報告するようにブラウザに指示</span></span><br><span class="line">reporturi = <span class="string">'report-uri/report;'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Firefox</span></span><br><span class="line">headers <span class="string">'X-Content-Security-Policy'</span> =&gt; <span class="string">'allow '</span> + keyword + default + script + style + img + frame + reporturi</span><br><span class="line"><span class="comment"># Webkit</span></span><br><span class="line">headers <span class="string">'X-WebKit-CSP'</span> =&gt; <span class="string">'allow '</span> + keyword + default + script + style + img + frame + reporturi</span><br><span class="line"></span><br><span class="line"><span class="comment"># エラーレポート</span></span><br><span class="line"><span class="comment"># とりあえず出力してみる</span></span><br><span class="line">post <span class="string">'/report'</span> <span class="keyword">do</span></span><br><span class="line"> pp request.env[<span class="string">'rack.input'</span>].read.to_s</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
+
+<p>また、ポリシーの違反があった場合は、指定したURIにレポートを送ることもできます。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Content Security Policy 違反を報告するようにブラウザに指示</span></span><br><span class="line">reporturi = <span class="string">'report-uri/report;'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Firefox</span></span><br><span class="line">headers <span class="string">'X-Content-Security-Policy'</span> =&gt; <span class="string">'allow '</span> + keyword + default + script + style + img + frame + reporturi</span><br><span class="line"><span class="comment"># Webkit</span></span><br><span class="line">headers <span class="string">'X-WebKit-CSP'</span> =&gt; <span class="string">'allow '</span> + keyword + default + script + style + img + frame + reporturi</span><br><span class="line"></span><br><span class="line"><span class="comment"># エラーレポート</span></span><br><span class="line"><span class="comment"># とりあえず出力してみる</span></span><br><span class="line">post <span class="string">'/report'</span> <span class="keyword">do</span></span><br><span class="line"> pp request.env[<span class="string">'rack.input'</span>].read.to_s</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
 <p>レポートはjson形式でpostされます。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'&#123;'</span>csp-report<span class="string">':&#123;'</span>request<span class="string">':'</span>GET http:<span class="comment">//127.0.0.1:9393/ HTTP/1.1','blocked-uri':'self','violated-directive':'inline script base restriction','source-file':'http://127.0.0.1:9393/','script-sample':'\    $(function()&#123;\      $('body').appen...','line-number':13&#125;&#125;'</span></span><br></pre></td></tr></table></figure>
+
 <p>という感じなんですが、これを使うとなると既に動いてるサービスとかは変更が大変だ。<br>現在読込んでる外部リソースをリスト化してそれぞれをホワイトリストとして登録するとか。。。</p>
 <p>ただCSP自体は完全な後方互換らしいので、設定しておいてもいいかも。</p>
 <h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><p><a href="https://content-security-policy.com/" target="_blank" rel="noopener">ontent-security-policy.com</a></p>

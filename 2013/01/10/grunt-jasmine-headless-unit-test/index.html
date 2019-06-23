@@ -103,7 +103,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>GruntではHeadlessなユニットテストを行うための <a href="http://qunitjs.com/" target="_blank" rel="noopener">Qunit</a> があります。しかし、個人的にはRSpec風に記述できる Jasmine の方が読みやすいので、<a href="http://pivotal.github.com/jasmine/" target="_blank" rel="noopener">Jasmine</a>でのユニットテスト環境を構築してみました。<br><a id="more"></a></p>
+      <p>GruntではHeadlessなユニットテストを行うための <a href="http://qunitjs.com/" target="_blank" rel="noopener">Qunit</a> があります。しかし、個人的にはRSpec風に記述できる Jasmine の方が読みやすいので、<a href="http://pivotal.github.com/jasmine/" target="_blank" rel="noopener">Jasmine</a>でのユニットテスト環境を構築してみました。</p>
+<a id="more"></a>
+
 <p>まず、<a href="https://github.com/jasmine-contrib/grunt-jasmine-runner" target="_blank" rel="noopener">Grunt Jasmine runner</a> をインストール</p>
 <p>[shell]<br>$ cd /your-project<br>$ npm install grunt<br>$ npm install grunt-jasmine-runner<br>[/shell]</p>
 <p>PhantomJSがない場合はBrewでいれておく</p>
@@ -122,12 +124,14 @@ ga('send', 'pageview');
 <p>という感じで、テストを走らせてみる</p>
 <p>[shell]<br>$ grunt jasmine</p>
 <p>$ Running &quot;jasmine&quot; task<br>Testing jasmine specs via phantom<br>3 specs, 0 failures in 0.012s.<br>[/shell]</p>
-<p>また、ブラウザで実行するときは<br>[js]<br>‘jasmine-server’ : {<br>   // デフォルトのブラウザを自動で開く(デフォルトtrue)<br>   browser :true<br>}<br>[/js]</p>
+<p>また、ブラウザで実行するときは<br>[js]<br>‘jasmine-server’ : {<br>   // デフォルトのブラウザを自動で開く(デフォルトtrue)<br>   browser :true<br>}
+[/js]</p>
 <p>をgrunt fileに追加して</p>
 <p>[shell]<br>$ grunt jasmine-server<br>Running &quot;jasmine-server&quot; task<br>Run your tests at <a href="http://127.0.0.1:8888/_SpecRunner.html" target="_blank" rel="noopener">http://127.0.0.1:8888/_SpecRunner.html</a><br>[/shell]</p>
 <p>で実行できます。</p>
 <p><img src="/images/2013/01/1.png" alt></p>
-<p>watchオプションでファイルの保存を監視をしているなら、タスクに加えておけばテストも自動化できます。<br>[js]<br>watch: {<br>  coffee: {<br>    files: [<br>      ‘path/to/project/*.js’<br>    ],<br>      tasks: ‘clean:js coffee jasmine’<br>    }<br>}<br>[/js]</p>
+<p>watchオプションでファイルの保存を監視をしているなら、タスクに加えておけばテストも自動化できます。<br>[js]<br>watch: {<br>  coffee: {<br>    files: [<br>      ‘path/to/project/*.js’<br>    ],<br>      tasks: ‘clean:js coffee jasmine’<br>    }<br>}
+[/js]</p>
 <p>という感じすれば、ファイル保存の後に、coffeeコンパイルそしてテスト　という感じに自動化されて良さそうですね。</p>
 
     

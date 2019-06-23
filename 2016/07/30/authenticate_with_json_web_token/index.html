@@ -103,6 +103,7 @@ ga('send', 'pageview');
     
       <p>Oauth2やOpenID Connectなどすでに導入されているJWT(JSON Web Token)。<br>今後IoTとかを考えると認証手法としては結構有効な認証方法だということで、改めて眺めてみた。</p>
 <a id="more"></a>
+
 <h2 id="JSON-Web-Token"><a href="#JSON-Web-Token" class="headerlink" title="JSON Web Token"></a>JSON Web Token</h2><p>JSON Web Token(JWT) jot(ジョット)と発音する。<br>JSONを電子署名したurl-safe(URLで使用できない文字が含まれる)なclaimのことを指す。<a href="https://tools.ietf.org/html/rfc7519" target="_blank" rel="noopener">rfc7519</a><br>また同じような言葉もあるので一旦整理する。</p>
 <ul>
 <li>JWS は署名したもの</li>
@@ -113,6 +114,7 @@ ga('send', 'pageview');
 <p><a href="https://jwt.io/" target="_blank" rel="noopener">jwt.io</a>というサービスを使うことでdebugすることができるので、試してみると見ての通り、PAYLOADの内容は見ることができる。</p>
 <p>JWTの形式は</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ HEADER ] . [ PAYLOAD ] . [ SIGNATURE ]</span><br></pre></td></tr></table></figure>
+
 <p>という形で構成され、HEADERとPAYLOADはbase64エンコードされている。</p>
 <hr>
 <p>使い方として、認証時にトークンを発行し、必要に応じて検証することで認証済みとして扱うようにするとか。<br>同じことはSessionを使うことでもできるが、sessionを使う場合との違いは、サーバーが状態(state)を持たないでいいので、<br>token発行ホストと認証ホストが異なっていても問題ない。(まさにステートレス)<br>JWTを使うと、CSRFの攻撃を考えなくて良くなる。</p>
@@ -125,26 +127,34 @@ ga('send', 'pageview');
 <p>上記のがあれば利用できるため、汎用性が高い。</p>
 <p>デバイスによってはjsonを保持しておけば、認証できるという意味ではIoTとかを考慮すると重宝する。<br>クライアント側で永続化はメモリキャッシュでも、DBでもブラウザのLocalStrageも良い。<br>認証が必要な時に、tokenをポストするかhttpヘッダーで送る形となる。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Authorization: bearer &lt;token&gt;</span><br></pre></td></tr></table></figure>
+
 <h2 id="JSON-Web-Token-の中身"><a href="#JSON-Web-Token-の中身" class="headerlink" title="JSON Web Token の中身"></a>JSON Web Token の中身</h2><h3 id="HEADER"><a href="#HEADER" class="headerlink" title="HEADER"></a>HEADER</h3><p>タイプとハッシュアルゴリズムを保持しており、これをBase64している</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"alg"</span>: <span class="string">"HS256"</span>,</span><br><span class="line">  <span class="attr">"typ"</span>: <span class="string">"JWT"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>HMAC SHA-256のJWTを表す。これはBase64で</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Base64.encode64(<span class="string">'&#123;"alg": "HS256", "typ": "JWT"&#125;'</span>)</span><br><span class="line"><span class="comment"># =&gt; eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9</span></span><br></pre></td></tr></table></figure>
+
 <p>となる。</p>
 <h3 id="PAYLOAD"><a href="#PAYLOAD" class="headerlink" title="PAYLOAD"></a>PAYLOAD</h3><p>JWTクレーム。トークンの本体となる部分で、幾つかのクレーム名はあらかじめ予約されている。<br>詳細は<a href="https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-19#section-4" target="_blank" rel="noopener">RFCを参照</a><br>クレーム名はJWT作成者側で自由に作成も出来る。</p>
 <p>例えば以下のようなクレーム</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"sub"</span>: <span class="string">"1234567890"</span>,</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"John Doe"</span>,</span><br><span class="line">  <span class="attr">"admin"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>こちらもBase64で</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Base64.encode64(<span class="string">'&#123;"sub":"1234567890","name":"John Doe","admin":true&#125;'</span>)</span><br><span class="line"><span class="comment"># =&gt; eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9</span></span><br></pre></td></tr></table></figure>
+
 <h3 id="SIGNATURE"><a href="#SIGNATURE" class="headerlink" title="SIGNATURE"></a>SIGNATURE</h3><p>最終パートはSIGNATURE。HEADERとPAYLOADをSecretKeyで署名。</p>
 <p>SecretKeyをsecretとすると、ここまでの結果から署名は</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ</span><br></pre></td></tr></table></figure>
+
 <p>となる。</p>
 <p>最終的な結果としてJWTは</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ</span><br></pre></td></tr></table></figure>
+
 <p>このtokenを使って認証を行うことなる。</p>
 <h3 id="アプリケーションで試してみた"><a href="#アプリケーションで試してみた" class="headerlink" title="アプリケーションで試してみた"></a>アプリケーションで試してみた</h3><p>Expressをつかって簡単なサーバーでJWT認証を試してみる。</p>
 <p><a href="https://github.com/kazu69/jwt-express-example" target="_blank" rel="noopener">jwt-express-example</a> というExpress + MySQLなアプリケーションを作成して試してみる。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dockerコンテナを起動して</span></span><br><span class="line"><span class="comment"># 任意のパスワードでユーザー作成</span></span><br><span class="line">$ curl -X POST http://127.0.0.1:3000/user -d <span class="string">'name=testuser'</span> -d <span class="string">'password=secretpassword'</span></span><br><span class="line">&#123;<span class="string">"id"</span>:2,<span class="string">"name"</span>:<span class="string">"testuser"</span>,<span class="string">"password"</span>:<span class="string">"secretpassword"</span>,<span class="string">"updated_at"</span>:<span class="string">"2016-08-03T14:02:08.000Z"</span>,<span class="string">"created_at"</span>:<span class="string">"2016-08-03T14:02:08.000Z"</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ユーザー認証をパスワードで行う</span></span><br><span class="line">$ curl -X POST http://127.0.0.1:3000/authentication -d <span class="string">'name=testuser'</span> -d <span class="string">'password=secretpassword'</span></span><br><span class="line">&#123;<span class="string">"token"</span>:<span class="string">"CREATED-JSON-WEB-TOKEN"</span>,<span class="string">"message"</span>:<span class="string">"Authentication successfully finished."</span>&#125;%</span><br><span class="line"></span><br><span class="line"><span class="comment"># 別のホストでログインする</span></span><br><span class="line">$ curl -X POST http://127.0.0.1:8000/login -d <span class="string">'access_token=CREATED-JSON-WEB-TOKEN"'</span></span><br><span class="line">&#123;<span class="string">"id"</span>:2,<span class="string">"name"</span>:<span class="string">"testuser"</span>&#125;</span><br></pre></td></tr></table></figure>
+
 <p>という感じになる。</p>
 <h3 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h3><p>ウェブサービスでの認証は複数のドメイン間で行われることが多い。そのため、クロスドメインを考える必要があり、<br>複雑化していくことなる。JWTのような機構を使うことで、サービス提供側はtokenを認証するということだに注力できるため、<br>仕様もシンプルにできる。<br>IoTなデバイスが増える中で、JWTな事案は今後もっと増えてくるんだろうなぁ。</p>
 <h3 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h3><ul>

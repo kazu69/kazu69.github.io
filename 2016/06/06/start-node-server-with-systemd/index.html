@@ -101,9 +101,12 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>nodejsのプロセスバックグラウンドで実行する(デーモン化)する場合、だいたい<a href="https://www.npmjs.com/package/forever" target="_blank" rel="noopener">forever</a>などが選択されると思う。<br>今回は、Fedora、CentOS 7のデーモンとなるsystemdを使ってデーモン化してみた。<br><a id="more"></a></p>
+      <p>nodejsのプロセスバックグラウンドで実行する(デーモン化)する場合、だいたい<a href="https://www.npmjs.com/package/forever" target="_blank" rel="noopener">forever</a>などが選択されると思う。<br>今回は、Fedora、CentOS 7のデーモンとなるsystemdを使ってデーモン化してみた。</p>
+<a id="more"></a>
+
 <p>まずforeverでプロセスをバックグランドで実行させる。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">npm i -g forever</span><br><span class="line">forever start server.js</span><br><span class="line">info:    Forever processing file: server.js</span><br><span class="line"></span><br><span class="line">node]<span class="comment"># forever list</span></span><br><span class="line">info:    Forever processes running</span><br><span class="line">data:        uid  <span class="built_in">command</span>       script    forever pid id logfile                 uptime</span><br><span class="line">data:    [0] OhQD /usr/bin/node server.js 97      102    /root/.forever/OhQD.log 0:0:0:19.532</span><br></pre></td></tr></table></figure>
+
 <p>実際はこのようにforeverを実行する起動ファイルを作成し、自動起動できるようにしないといけない。<br>場合によっては、起動順序やプロセスの依存関係などを考慮しないといけないため、起動スクリプトは複雑になることが考えられる。</p>
 <p>これをsystemdに置き換えることで、</p>
 <ul>
@@ -115,6 +118,7 @@ ga('send', 'pageview');
 <p>さっそく適当なDocker環境でsystemdを使ってnodejsサーバーのデーモン化を試してみた。</p>
 <h2 id="NodeJsサーバー作成"><a href="#NodeJsサーバー作成" class="headerlink" title="NodeJsサーバー作成"></a>NodeJsサーバー作成</h2><p>ミニマムなサーバーを作成</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> hostname = <span class="string">'0.0.0.0'</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">3000</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = http.createServer(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    res.statusCode = <span class="number">200</span>;</span><br><span class="line">    res.setHeader(<span class="string">'Content-Type'</span>, <span class="string">'text/plain'</span>);</span><br><span class="line">    res.end(<span class="string">'Hello World\n'</span>);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.listen(port, hostname, () =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`Server running at http://<span class="subst">$&#123;hostname&#125;</span>:<span class="subst">$&#123;port&#125;</span>/`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
 <h2 id="systemd-の設定ファイル"><a href="#systemd-の設定ファイル" class="headerlink" title="systemd の設定ファイル"></a>systemd の設定ファイル</h2><p>systemdでは起動処理を<strong>Unit</strong>という単位で管理している。<br>Unitには幾つかのタイプ(service, socketやdebviceなど）が存在するが、それらはすべてファイルの拡張子で判別されている。</p>
 <p>設定ファイルにはUnit, Install, Service(serviceであれば)セクションで構成される。</p>
 <p>それぞれの設定項目に関しては<a href="https://www.freedesktop.org/software/systemd/man/systemd.html" target="_blank" rel="noopener">manページ</a>に詳しくあるので、必要そうなものをかいつまんでみる。</p>
@@ -126,8 +130,7 @@ ga('send', 'pageview');
 <th>内容</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>Description</td>
 <td>ユニットの説明</td>
 </tr>
@@ -143,8 +146,7 @@ ga('send', 'pageview');
 <td>Requires/Wants</td>
 <td>依存関係の定義。(順序は関係なく並列起動されるべきサービス)<br>RequiresとWantsの違い。Requiresは依存するサービス起動失敗した時は、サービスの起動を中断とする</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <h3 id="Serviceセクション"><a href="#Serviceセクション" class="headerlink" title="Serviceセクション"></a>Serviceセクション</h3><p>起動サービスの設定</p>
 <table>
 <thead>
@@ -153,8 +155,7 @@ ga('send', 'pageview');
 <th>内容</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>ExecStart</td>
 <td>実行するサービスの起動コマンド</td>
 </tr>
@@ -186,8 +187,7 @@ ga('send', 'pageview');
 <td>StandardOutput,StandardError</td>
 <td>ログ、エラー出力の設定</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <h3 id="Installセクション"><a href="#Installセクション" class="headerlink" title="Installセクション"></a>Installセクション</h3><p>ユニットの自動起動に関する設定。</p>
 <table>
 <thead>
@@ -196,8 +196,7 @@ ga('send', 'pageview');
 <th>内容</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>WantedBy</td>
 <td>systemctl enable でインストールされるとき、 .wants/にシンボリックを作成</td>
 </tr>
@@ -205,34 +204,45 @@ ga('send', 'pageview');
 <td>RequiredBy</td>
 <td>systemctl enable でインストールされるとき、 .requires/にシンボリックを作成</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>wantsとrequiresはの違いは、wantsはUnitの依存関係のユニットが失敗すると起動を中断する。<br>requiresは依存関係のユニットが失敗すると起動を継続する。</p>
 <hr>
 <p>ということで、今回はサービスの起動を行うため<strong>.service</strong>を使う。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Node.js Server</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">WorkingDirectory=/home/node</span><br><span class="line">Type=simple</span><br><span class="line">ExecStart=/usr/bin/node server.js</span><br><span class="line">Restart=always</span><br><span class="line">RestartSec=10</span><br><span class="line">StandardOutput=syslog</span><br><span class="line">StandardError=syslog</span><br><span class="line">SyslogIdentifier=node-server</span><br><span class="line">Environment=NODE_ENV=production PORT=3000</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
 <p>上記を使ってDockerfileを作成。<br>centos7でNodeJs 4.x を入れるのが大変だったので、<a href="https://nodesource.com/" target="_blank" rel="noopener">nodesource</a>からセットアップすることにした。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">FROM centos:7</span><br><span class="line"></span><br><span class="line">RUN yum -y update &amp;&amp; \</span><br><span class="line">    yum -y install epel-release.noarch curl make gcc gcc-c++ tree which &amp;&amp; \</span><br><span class="line">    yum repolist</span><br><span class="line"></span><br><span class="line">RUN curl -sL https://rpm.nodesource.com/setup_4.x | bash - &amp;&amp; \</span><br><span class="line">    yum -y install nodejs</span><br><span class="line"></span><br><span class="line">RUN mkdir /home/node/</span><br><span class="line">ADD server.js /home/node/server.js</span><br><span class="line"></span><br><span class="line">ADD node_server.service /etc/systemd/system/node_server.service</span><br></pre></td></tr></table></figure>
+
 <h2 id="systemdを試してみる"><a href="#systemdを試してみる" class="headerlink" title="systemdを試してみる"></a>systemdを試してみる</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t server .</span><br></pre></td></tr></table></figure>
+
 <p>Dockerコンテナ内でDocker daemonの起動はできないので、privilegedオプションで起動する。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run --privileged -d -p 3000:3000 server:latest /sbin/init</span><br><span class="line">72956dbd3cdf37268a0fa9678922f116e48d1730dd5c69771fa7abffe4affd49</span><br><span class="line">docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                    NAMES</span><br><span class="line">72956dbd3cdf        server:latest       &quot;/sbin/init&quot;        10 seconds ago      Up 9 seconds        0.0.0.0:3000-&gt;3000/tcp   silly_pike</span><br><span class="line"></span><br><span class="line">docker exec -it silly_pike /bin/bash</span><br></pre></td></tr></table></figure>
+
 <p>色々と確認する</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"># 起動unitの確認</span><br><span class="line">systemctl list-units --type=service</span><br><span class="line"></span><br><span class="line">  UNIT                                   LOAD   ACTIVE SUB     DESCRIPTION</span><br><span class="line">  dbus.service                           loaded active running D-Bus System Message Bus</span><br><span class="line">  getty@tty1.service                     loaded active running Getty on tty1</span><br><span class="line">  ldconfig.service                       loaded active exited  Rebuild Dynamic Linker Cache</span><br><span class="line">  systemd-hwdb-update.service            loaded active exited  Rebuild Hardware Database</span><br><span class="line">  systemd-journal-catalog-update.service loaded active exited  Rebuild Journal Catalog</span><br><span class="line">  systemd-journal-flush.service          loaded active exited  Flush Journal to Persistent Storage</span><br><span class="line">  systemd-journald.service               loaded active running Journal Service</span><br><span class="line">  systemd-logind.service                 loaded active running Login Service</span><br><span class="line">  systemd-random-seed.service            loaded active exited  Load/Save Random Seed</span><br><span class="line">● systemd-remount-fs.service             loaded failed failed  Remount Root and Kernel File Systems</span><br><span class="line">  systemd-sysctl.service                 loaded active exited  Apply Kernel Variables</span><br><span class="line">  systemd-tmpfiles-setup-dev.service     loaded active exited  Create Static Device Nodes in /dev</span><br><span class="line">iles and Directoriesetup.service         loaded active exited  Create Volatile</span><br><span class="line">FDevicesd-udev-trigger.service           loaded active exited  udev Coldplug</span><br><span class="line">e Manager-udevd.service                  loaded active running udev Kernel Devic</span><br><span class="line">ed      d-update-done.service            loaded active exited  Update is Complet</span><br><span class="line"> System Boot/Shutdown.service            loaded active exited  Update UTMP about</span><br><span class="line">ons     d-user-sessions.service          loaded active exited  Permit User Sessi</span><br><span class="line">sole    d-vconsole-setup.service         loaded active exited  Setup Virtual Con</span><br><span class="line"></span><br><span class="line">LOAD   = Reflects whether the unit definition was properly loaded.</span><br><span class="line">ACTIVE = The high-level unit activation state, i.e. generalization of SUB.</span><br><span class="line">SUB    = The low-level unit activation state, values depend on unit type.</span><br><span class="line"></span><br><span class="line">o.      d units listed. Pass --all to see loaded but inactive units, to--More--</span><br><span class="line">To show all installed unit files use &apos;systemctl list-unit-files&apos;.</span><br><span class="line"></span><br><span class="line"># 起動の有無に関係なくunitの一覧表示する</span><br><span class="line">systemctl list-unit-files --type=service</span><br><span class="line"></span><br><span class="line">UNIT FILE                              STATE</span><br><span class="line">proc-sys-fs-binfmt_misc.automount      static</span><br><span class="line">dev-hugepages.mount                    static</span><br><span class="line">dev-mqueue.mount                       static</span><br><span class="line">proc-sys-fs-binfmt_misc.mount          static</span><br><span class="line">sys-fs-fuse-connections.mount          static</span><br><span class="line">sys-kernel-config.mount                static</span><br><span class="line">sys-kernel-debug.mount                 static</span><br><span class="line">tmp.mount                              disabled</span><br><span class="line">systemd-ask-password-console.path      static</span><br><span class="line">systemd-ask-password-wall.path         static</span><br><span class="line">autovt@.service                        disabled</span><br><span class="line">blk-availability.service               disabled</span><br><span class="line">console-getty.service                  disabled</span><br><span class="line">console-shell.service                  disabled</span><br><span class="line">container-getty@.service               static</span><br><span class="line">dbus-org.freedesktop.hostname1.service static</span><br><span class="line">dbus-org.freedesktop.locale1.service   static</span><br><span class="line">dbus-org.freedesktop.login1.service    static</span><br><span class="line">dbus-org.freedesktop.machine1.service  static</span><br><span class="line">dbus-org.freedesktop.network1.service  invalid</span><br><span class="line">dbus-org.freedesktop.timedate1.service static</span><br><span class="line">dbus.service                           static</span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
 <p>staticはInstallを持たないので、単体で起動できない(他のUnitに依存)する。<br>enabled/disabled はシステム起動時の自動起動の有効/無効を意味する。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 自動起動を有効にする</span><br><span class="line">systemctl enable node_server.service</span><br><span class="line">Created symlink from /etc/systemd/system/multi-user.target.wants/node_server.service to /etc/systemd/system/node_server.service.</span><br><span class="line"></span><br><span class="line"># 自動起動を無効にする</span><br><span class="line">systemctl disable node_server.service</span><br><span class="line">Removed symlink /etc/systemd/system/multi-user.target.wants/node_server.service.</span><br></pre></td></tr></table></figure>
+
 <p>systemd/system にシンボリックリンクを作ることがわかる。</p>
 <p>自動起動を有効にする</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable node_server.service</span><br><span class="line">Created symlink from /etc/systemd/system/multi-user.target.wants/node.service to /etc/systemd/system/node.service.</span><br><span class="line"></span><br><span class="line">systemctl list-unit-files --type=service | grep node_server.service</span><br><span class="line">node_server.service                    enabled</span><br></pre></td></tr></table></figure>
+
 <p>サービスをスタートする</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start node_server.service</span><br></pre></td></tr></table></figure>
+
 <p>起動を確認する</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">systemctl status node_server.service</span><br><span class="line">● node_server.service - Node.js Server</span><br><span class="line">   Loaded: loaded (/etc/systemd/system/node_server.service; enabled; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Sun 2016-06-06 20:11:11 UTC; 4s ago</span><br><span class="line"> Main PID: 90 (node)</span><br><span class="line">   CGroup: /system.slice/node_server.service</span><br><span class="line">           └─90 /usr/bin/node /home/node/server.js</span><br><span class="line"></span><br><span class="line">Jun 06 20:11:11 5bb4328b5c84 systemd[1]: Started Node.js Server.</span><br><span class="line">Jun 06 20:11:11 5bb4328b5c84 systemd[1]: Starting Node.js Server...</span><br><span class="line">Jun 06 20:11:11 5bb4328b5c84 node-server[90]: Server running at http://0.0.0.0:3000/</span><br></pre></td></tr></table></figure>
+
 <p>アクセス確認する</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl http://$(docker-machine ip dev):3000/</span><br><span class="line">Hello World</span><br></pre></td></tr></table></figure>
+
 <p>.serveceファイルの再読み込み</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br></pre></td></tr></table></figure>
+
 <p>ついでに再起動</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart node_server.service</span><br></pre></td></tr></table></figure>
+
 <h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>起動スクリプトの依存性や順序などは場合によっては複雑化するが、systemdを使うことで設定ファイルに落としこめることは、<br>メリットになるのではないだろうか。<br>ただ、systemdは全体像が大きいため把握できていないが、まだまだ落とし穴も多い様子。<br>iniからsystemdに置き換わっているのは事実なので、さらに使用して理解する必要がありそうだ。</p>
 <h2 id="参考にしたページ"><a href="#参考にしたページ" class="headerlink" title="参考にしたページ"></a>参考にしたページ</h2><ul>
 <li><a href="http://dev.classmethod.jp/cloud/aws/systemd-getting-started/" target="_blank" rel="noopener">systemd超入門</a></li>

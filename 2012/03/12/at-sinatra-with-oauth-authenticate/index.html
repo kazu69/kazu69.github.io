@@ -101,10 +101,14 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Rubyの勉強の一環として、軽量Webフレームワーク<a href="http://www.sinatrarb.com/" target="_blank" rel="noopener">sinatra</a>で、oauth(authenticate)してみた。<br>sinatraを選んだ理由は、とにかくシンプルで軽い。ちょっとしたものしか作らないような自分にはマッチしたフレームワークなきがします。<br><a id="more"></a><br>まずは、sinatraのサイトにある通り<br>`<br>[sourcecode language=”ruby”]</p>
+      <p>Rubyの勉強の一環として、軽量Webフレームワーク<a href="http://www.sinatrarb.com/" target="_blank" rel="noopener">sinatra</a>で、oauth(authenticate)してみた。<br>sinatraを選んだ理由は、とにかくシンプルで軽い。ちょっとしたものしか作らないような自分にはマッチしたフレームワークなきがします。</p>
+<a id="more"></a>
+<p>まずは、sinatraのサイトにある通り<br>`
+[sourcecode language=”ruby”]</p>
 <h1 id="app-rb"><a href="#app-rb" class="headerlink" title="app.rb"></a>app.rb</h1><p>require ‘sinatra’<br>get ‘/‘ do<br>  ‘Hello world!’<br>end<br>[/sourcecode]<br><code>gemをインストールして動かします。</code><br>[sourcecode language=”ruby”]<br>gem install sinatra<br>ruby -rubygems myapp.rb<br>[/sourcecode]<br>`</p>
 <p>という具合に簡単です。</p>
-<p>ルートハンドラやテンプレートにヘルパメソッドを定義できます。<br>`<br>[sourcecode language=”ruby”]<br>helpers do<br>    include Rack::Utils<br>    use Rack::Csrf, :raise =&amp;gt; true</p>
+<p>ルートハンドラやテンプレートにヘルパメソッドを定義できます。<br>`
+[sourcecode language=”ruby”]<br>helpers do<br>    include Rack::Utils<br>    use Rack::Csrf, :raise =&amp;gt; true</p>
 <pre><code>def csrf_token
     Rack::Csrf.csrf_token(env)
 end

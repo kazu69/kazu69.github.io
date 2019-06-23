@@ -103,6 +103,7 @@ ga('send', 'pageview');
     
       <p>ここ最近CSSを扱うことが多かったので、その際にPostprocessorを検討時にcssnextについてまとめた備忘録。</p>
 <a id="more"></a>
+
 <h2 id="JavaScriptの最近の事情"><a href="#JavaScriptの最近の事情" class="headerlink" title="JavaScriptの最近の事情"></a>JavaScriptの最近の事情</h2><p>javascriptではES6でコードを書き、BabelでTransplieするという流れが定着しつつある。<br>これは、これまで必要だったライブラリが不要になり、コードが依存するライブラリを減らすことができ、altJSに頼らないで開発できるという利点からである。</p>
 <p>同じことがCSSでも起きている。まずこれまでCSSを牽引してきた<a href="http://sass-lang.com/" target="_blank" rel="noopener">Sass</a>について。</p>
 <h2 id="Sassの問題点"><a href="#Sassの問題点" class="headerlink" title="Sassの問題点"></a>Sassの問題点</h2><p>最近のCSSの開発にはaltCSSとしてSass,Less,StylusなどのPreprocessorが使用されている。<br>特にSassはJavaScriptで言う所のjQueryに近い存在になり、APIもやや複雑になっている感じがある。</p>
@@ -116,57 +117,125 @@ ga('send', 'pageview');
 <p>基本的にbrowsersオプションを指定しておけば、autoprefixerが<a href="http://caniuse.com/" target="_blank" rel="noopener">caniuse</a>のdatabaseを参照して、個別にfeaturesをenabled、disabledを判断します。(@MoOxのアドバイスをもとに追記)</p>
 <p>もし、個別に機能を制御するならば、各種の変換はpostcssのpluginなので、そのオプションも設定できる。<br>ちなみに、設定ファイルを使う場合は<a href="https://github.com/cssnext/cssnext/issues/73" target="_blank" rel="noopener">.cssnextrcという名前でjsonかyaml形式になりそう</a>。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=.cssnextrc"></script>
+
+
+
+
 <h3 id="Custom-Properties"><a href="#Custom-Properties" class="headerlink" title="Custom Properties"></a>Custom Properties</h3><p>カスタムプロパティ。cssnextでは現状はrootで定義しないといけない</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_properties.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_properties.dest.css"></script>
+
+
+
+
 <h3 id="Calc-Function"><a href="#Calc-Function" class="headerlink" title="Calc Function"></a>Calc Function</h3><p>calc function。様々な単位で複雑な計算ができて便利。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=calc.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=calc.dest.css"></script>
+
+
+
+
 <h3 id="Custom-Media-Queries"><a href="#Custom-Media-Queries" class="headerlink" title="Custom Media Queries"></a>Custom Media Queries</h3><p>media queryにタイプにユーザー定義のプロパティを使えるようになる。<br>これまでは同じ設定を必要に応じていくつも書くことがあったが、とりあえず、プロパティで一元管理できるようになる。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_media_query.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_media_query.dest.css"></script>
+
+
+
+
 <h3 id="Custom-Selectors"><a href="#Custom-Selectors" class="headerlink" title="Custom Selectors"></a>Custom Selectors</h3><p>@custome-selectorルールが使えるようになり、冗長な記述をしなくて済むようになる。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_selectors.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=custom_selectors.dest.css"></script>
+
+
+
+
 <h3 id="Color-Function"><a href="#Color-Function" class="headerlink" title="Color Function"></a>Color Function</h3><p>SassなどのColor Functionのように色を関数で扱うことができるようになる。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=color.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=color.dest.css"></script>
+
+
+
+
 <h3 id="hwd-Hue-Whiteness-Blackness-Function"><a href="#hwd-Hue-Whiteness-Blackness-Function" class="headerlink" title="hwd(Hue-Whiteness-Blackness) Function"></a>hwd(Hue-Whiteness-Blackness) Function</h3><p>色相の関数で扱う。色合いと白色度、黒色度から色相を変換できる。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=hwb.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=hwb.dest.css"></script>
+
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=hwb.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=hwb.dest.css"></script>
+
+
+
+
 <h3 id="Gray-Function"><a href="#Gray-Function" class="headerlink" title="Gray Function"></a>Gray Function</h3><p>グレースケールな色をのみを生成する関数。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=gray.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=gray.dest.css"></script>
+
+
+
+
 <h3 id="Hex-Color"><a href="#Hex-Color" class="headerlink" title="Hex Color"></a>Hex Color</h3><p>アルファチャンネンルを追加した、RRGGBBAA形式でのhex colorが使える。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rrggbbaa.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rrggbbaa.dest.css"></script>
+
+
+
+
 <h3 id="Rebeccapurple"><a href="#Rebeccapurple" class="headerlink" title="Rebeccapurple"></a>Rebeccapurple</h3><p><a href="http://lists.w3.org/Archives/Public/www-style/2014Jun/0312.html" target="_blank" rel="noopener">6歳にして亡くなった、Eric Meyer氏の娘の名前</a>らしい。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rebeccapurple.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rebeccapurple.dest.css"></script>
+
+
+
+
+
 <h3 id="font-variant-プロパティ"><a href="#font-variant-プロパティ" class="headerlink" title="font-variant プロパティ"></a>font-variant プロパティ</h3><p>フォントをsmall capsにする際に使う。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=font_variant.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=font_variant.dest.css"></script>
+
+
+
+
 <h3 id="filter-プロパティ"><a href="#filter-プロパティ" class="headerlink" title="filter プロパティ"></a>filter プロパティ</h3><p>svgのフィルタエフェクトを適用する。これは結構嬉しい。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=filter.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=filter.dest.css"></script>
+
+
+
 <h3 id="Rem-unit"><a href="#Rem-unit" class="headerlink" title="Rem unit"></a>Rem unit</h3><p>rem(root em)をサポートする。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rem.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=rem.dest.css"></script>
+
+
+
+
 <h3 id="Pseudo-Elements"><a href="#Pseudo-Elements" class="headerlink" title="Pseudo Elements"></a>Pseudo Elements</h3><p>擬似要素のサポート。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=pseudo_elements.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=pseudo_elements.dest.css"></script>
+
+
+
+
 <h3 id="Matches"><a href="#Matches" class="headerlink" title="Matches"></a>Matches</h3><p>matches 擬似クラス。冗長になりがちなセレクターを簡潔に表現できるようになる。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=matches.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=matches.dest.css"></script>
+
+
+
+
 <h3 id="Not"><a href="#Not" class="headerlink" title="Not"></a>Not</h3><p>否定擬似クラス。Matchesと同じく、セレクターを簡潔にできるようになる。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=not.src.css"></script>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=not.dest.css"></script>
+
+
+
+
 <h3 id="import"><a href="#import" class="headerlink" title="@import"></a>@import</h3><p>Sassなどと同じように特定のstylesheetをimportする。<br>相対パス、node_modules, web_modulesから読み込みをこなう。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=import.src.css"></script>
+
 <h3 id="with-Gulp"><a href="#with-Gulp" class="headerlink" title="with Gulp"></a>with Gulp</h3><p>gulpでは<a href="https://www.npmjs.com/package/gulp-cssnext" target="_blank" rel="noopener">gulp-cssnext</a>や<a href="https://www.npmjs.com/package/gulp-postcss" target="_blank" rel="noopener">gulp-postcss</a>を使う感じになる。</p>
 <script src="//gist.github.com/kazu69/c38c30b6c018dda033ca.js?file=gulpfile.js"></script>
+
+
 <h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>ということで、今回挙げたようなcssの新しいモジュールはaltCSSで提供されているAPIに影響を受けた感じであるので、記法はともかく機能は大体予想がつく。そのため、学習コストはあまり高くない気がする。</p>
 <p>postcssということでautoprefixerなどがdefaultで機能するので、fallbackなどもあまり意識しないで済みそう。</p>
 <p>CSS標準のマークアップで開発をすることでいいということが大きな利点と思う。</p>

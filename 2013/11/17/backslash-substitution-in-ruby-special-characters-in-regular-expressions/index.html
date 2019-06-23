@@ -5,17 +5,17 @@
   
   <title>rubyで特殊文字を正規表現でバックスラッシュ置換する | 69log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="rubyで特殊文字列\, (, ), [, ], {, }, ., ?, +, *, . を正規表現でバックスラッシュ置換をするメモ。">
+  <meta name="description" content="rubyで特殊文字列, (, ), [, ], {, }, ., ?, +, *, . を正規表現でバックスラッシュ置換をするメモ。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="rubyで特殊文字を正規表現でバックスラッシュ置換する">
 <meta property="og:url" content="http://blog.kazu69.net/2013/11/17/backslash-substitution-in-ruby-special-characters-in-regular-expressions/index.html">
 <meta property="og:site_name" content="69log">
-<meta property="og:description" content="rubyで特殊文字列\, (, ), [, ], {, }, ., ?, +, *, . を正規表現でバックスラッシュ置換をするメモ。">
+<meta property="og:description" content="rubyで特殊文字列, (, ), [, ], {, }, ., ?, +, *, . を正規表現でバックスラッシュ置換をするメモ。">
 <meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2015-05-31T01:52:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="rubyで特殊文字を正規表現でバックスラッシュ置換する">
-<meta name="twitter:description" content="rubyで特殊文字列\, (, ), [, ], {, }, ., ?, +, *, . を正規表現でバックスラッシュ置換をするメモ。">
+<meta name="twitter:description" content="rubyで特殊文字列, (, ), [, ], {, }, ., ?, +, *, . を正規表現でバックスラッシュ置換をするメモ。">
   
     <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
   
@@ -101,13 +101,15 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>rubyで特殊文字列\, (, ), [, ], {, }, ., ?, +, *, . を正規表現でバックスラッシュ置換をするメモ。<br><a id="more"></a></p>
+      <p>rubyで特殊文字列, (, ), [, ], {, }, ., ?, +, *, . を正規表現でバックスラッシュ置換をするメモ。</p>
+<a id="more"></a>
+
 <p>たとえば、特殊文字を正規表現マッチさせる場合<br>[ruby]<br>str = ‘?’<br>‘hogemoge?’ =~ /#{str}/</p>
 <h1 id="RegexpError-target-of-repeat-operator-is-not-specified"><a href="#RegexpError-target-of-repeat-operator-is-not-specified" class="headerlink" title="RegexpError: target of repeat operator is not specified: /?/"></a>RegexpError: target of repeat operator is not specified: /?/</h1><p>str = ‘)’<br>‘hogemoge)’ =~ /#{str}/</p>
 <h1 id="RegexpError-unmatched-close-parenthesis"><a href="#RegexpError-unmatched-close-parenthesis" class="headerlink" title="RegexpError: unmatched close parenthesis: /)/"></a>RegexpError: unmatched close parenthesis: /)/</h1><p>[/ruby]</p>
 <p>という具合にエラーになる。</p>
-<p>[ruby]<br>str = ‘?’<br>str = str.gsub(/\|\?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge?’ =~ /#{str}/</p>
-<h1 id="gt-8"><a href="#gt-8" class="headerlink" title="=&gt; 8"></a>=&gt; 8</h1><p>str = ‘)’<br>str = str.gsub(/\|\?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge)’ =~ /#{str}/</p>
+<p>[ruby]<br>str = ‘?’<br>str = str.gsub(/\|?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge?’ =~ /#{str}/</p>
+<h1 id="gt-8"><a href="#gt-8" class="headerlink" title="=&gt; 8"></a>=&gt; 8</h1><p>str = ‘)’<br>str = str.gsub(/\|?|*|(|)|{|}|[|]|+|./) { |word| &quot;\#{word}&quot; }<br>‘hogemoge)’ =~ /#{str}/</p>
 <h1 id="gt-8-1"><a href="#gt-8-1" class="headerlink" title="=&gt; 8"></a>=&gt; 8</h1><p>[/ruby]</p>
 <p>で解決した。</p>
 

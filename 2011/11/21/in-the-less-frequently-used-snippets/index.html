@@ -101,15 +101,24 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>css拡張メタ言語<a href="http://lesscss.org/" target="_blank" rel="noopener">Less</a>。個人的によく使うスニペットの備忘録。<br><a id="more"></a><br>`<br>/<em>round box</em>/<br>.border-radius (@topLeft: 0,@topRight: 0,@bottomLeft: 0,@bottomRight: 0){<br>    -webkit-border-radius: @arguments;<br>    -moz-border-radius: @arguments;<br>    -mes-border-radius:@arguments;<br>    border-radius: @arguments;<br>}<br>/<em>  useage<br>   .someclass {<br>        .border-radius(3px, 3px, 3px, 3px);<br>    }
-</em>/</p>
-<p>/<em>box shadow</em>/<br>.boxshadow (@x:0,@y:0,@blur:0,@color:#000) {<br>    -webkit-box-shadow:  @arguments;<br>    -moz-box-shadow:  @arguments;<br>    -o-box-shadow:  @arguments;<br>    -ms-box-shadow:  @arguments;<br>    box-shadow:  @arguments;<br>}<br>/<em>  useage<br>   .someclass {<br>        .boxshadow (1px, 1px, 1px, rgba(0, 0, 0, 0.5));<br>    }<br>   .insetclass {<br>        .boxshadow (1px, 1px, 1px, rgba(0, 0, 0, 0.5), inset);<br>    }
-</em>/</p>
-<p>/<em>text shadow</em>/<br>.textshadow (@x:0,@y:0,@blur:0,@color:#000) {<br>    -webkit-text-shadow:  @arguments;<br>    -moz-text-shadow:  @arguments;<br>    -o-text-shadow:  @arguments;<br>    -ms-text-shadow:  @arguments;<br>    text-shadow:  @arguments;<br>}<br>/<em>  useage<br>   .someclass {<br>        .textshadow (1px, 1px, 1px, rgba(0, 0, 0, 0.5));<br>    }
-</em>/</p>
-<p>/<em>background gradient</em>/<br>.background-gradient(@start: #000,@end: #000) {<br>    background: @end;<br>    filter: e(“progid:DXImageTransform.Microsoft.gradient(startColorstr=’”)@start e(“‘, endColorstr=’”) @end e(“‘)”);<br>    background: -webkit-gradient(linear, left top, left bottom, from(@start), to(@end));<br>    background: -moz-linear-gradient(top, @arguments);<br>    background-image: linear-gradient(top, @arguments);<br>    background-image: -o-linear-gradient(top, @arguments);<br>    background-image: -webkit-linear-gradient(top, @arguments);<br>    background-image: -ms-linear-gradient(top, @arguments);<br>}<br>/<em>  useage<br>   .someclass {<br>        .background-gradient(#eee, #fff);<br>    }
-</em>/</p>
-<p>/<em>box center</em>/<br>.box-center {<br>    display: block;<br>    margin: 0 auto;<br>}<br>`</p>
+      <p>css拡張メタ言語<a href="http://lesscss.org/" target="_blank" rel="noopener">Less</a>。個人的によく使うスニペットの備忘録。</p>
+<a id="more"></a>
+<p>`
+/<em>round box</em>/
+.border-radius (@topLeft: 0,@topRight: 0,@bottomLeft: 0,@bottomRight: 0){<br>    -webkit-border-radius: @arguments;<br>    -moz-border-radius: @arguments;<br>    -mes-border-radius:@arguments;<br>    border-radius: @arguments;<br>}
+/*  useage<br>   .someclass {<br>        .border-radius(3px, 3px, 3px, 3px);<br>    }<br>*/</p>
+<p>/<em>box shadow</em>/
+.boxshadow (@x:0,@y:0,@blur:0,@color:#000) {<br>    -webkit-box-shadow:  @arguments;<br>    -moz-box-shadow:  @arguments;<br>    -o-box-shadow:  @arguments;<br>    -ms-box-shadow:  @arguments;<br>    box-shadow:  @arguments;<br>}
+/*  useage<br>   .someclass {<br>        .boxshadow (1px, 1px, 1px, rgba(0, 0, 0, 0.5));<br>    }<br>   .insetclass {<br>        .boxshadow (1px, 1px, 1px, rgba(0, 0, 0, 0.5), inset);<br>    }<br>*/</p>
+<p>/<em>text shadow</em>/
+.textshadow (@x:0,@y:0,@blur:0,@color:#000) {<br>    -webkit-text-shadow:  @arguments;<br>    -moz-text-shadow:  @arguments;<br>    -o-text-shadow:  @arguments;<br>    -ms-text-shadow:  @arguments;<br>    text-shadow:  @arguments;<br>}
+/*  useage<br>   .someclass {<br>        .textshadow (1px, 1px, 1px, rgba(0, 0, 0, 0.5));<br>    }<br>*/</p>
+<p>/<em>background gradient</em>/
+.background-gradient(@start: #000,@end: #000) {<br>    background: @end;<br>    filter: e(“progid:DXImageTransform.Microsoft.gradient(startColorstr=’”)@start e(“‘, endColorstr=’”) @end e(“‘)”);<br>    background: -webkit-gradient(linear, left top, left bottom, from(@start), to(@end));<br>    background: -moz-linear-gradient(top, @arguments);<br>    background-image: linear-gradient(top, @arguments);<br>    background-image: -o-linear-gradient(top, @arguments);<br>    background-image: -webkit-linear-gradient(top, @arguments);<br>    background-image: -ms-linear-gradient(top, @arguments);<br>}
+/*  useage<br>   .someclass {<br>        .background-gradient(#eee, #fff);<br>    }<br>*/</p>
+<p>/<em>box center</em>/
+.box-center {<br>    display: block;<br>    margin: 0 auto;<br>}
+`</p>
 <p>IEのactivexコントロール利用時にLessがパースエラーを起こすので<br><code>/*
 Less escape code : e(&#39;escape this code&#39;)
 */

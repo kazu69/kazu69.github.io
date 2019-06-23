@@ -103,6 +103,7 @@ ga('send', 'pageview');
     
       <p>jQueryをCDNから取得し、jQuery pluginが活躍している場合のbrowserify導入の備忘録</p>
 <a id="more"></a>
+
 <h2 id="CDNのjQueryをrequireする"><a href="#CDNのjQueryをrequireする" class="headerlink" title="CDNのjQueryをrequireする"></a>CDNのjQueryをrequireする</h2><p>CDNを使うことで、browserifyでbundleするファイルサイズは小さくなり、ファイル生成までの時間も短くなるという恩恵がある。</p>
 <p>まず、CDNのjQueryを利用するのに<a href="https://github.com/thlorenz/browserify-shim" target="_blank" rel="noopener">browserify-shim</a>を使う。<br>globalのjQueryを「jquery」というモジュール名でrequireできるようにする。</p>
 <script src="https://gist.github.com/kazu69/6c41e1d411911d15a886.js?file=browserify-shim.json"></script>

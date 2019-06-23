@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Sass3.3 がそろそろリリースっぽいので、追加機能・変更点について<a href="http://davidwalsh.name/future-sass" target="_blank" rel="noopener">うまくまとまった記事</a>があったので、学んでみた。<br>ちなみに、<a href="https://github.com/nex3/sass/issues?direction=desc&amp;labels=v3.3&amp;page=2&amp;sort=created&amp;state=open" target="_blank" rel="noopener">変更点はこちら</a><br><a id="more"></a></p>
+      <p>Sass3.3 がそろそろリリースっぽいので、追加機能・変更点について<a href="http://davidwalsh.name/future-sass" target="_blank" rel="noopener">うまくまとまった記事</a>があったので、学んでみた。<br>ちなみに、<a href="https://github.com/nex3/sass/issues?direction=desc&labels=v3.3&page=2&sort=created&state=open" target="_blank" rel="noopener">変更点はこちら</a></p>
+<a id="more"></a>
+
 <p>実際に動作を確認するにはpreバージョンのsassをインストールします。</p>
 <p>[shell]<br>gem install sass –pre<br>sass –watch source_dir:output_dir<br>[/shell]</p>
 <p>で確認できます。</p>
@@ -119,30 +121,39 @@ ga('send', 'pageview');
 }
 &amp;amp;#{$module}--brother { // invalid in v3.2.x
     color:green;
-}
-</code></pre><p>}<br>[/ruby]</p>
+}</code></pre><p>}
+[/ruby]</p>
 <p>最後のブロックは欲しい結果が得られずにエラーになっていた。</p>
-<p>この場合、<br>[css]<br>.module–element .module<strong>child {<br>  color: orange;<br>}<br>.module–element .module</strong>child {<br>  color: orange;<br>}<br>.module__parent .module–element {<br>  color: yellow;<br>}</p>
-<p>/<em> 以下はエラーで実際に出力されないがv3.3からは修正された </em>/<br>.module–element.module__parent {<br>  color:green<br>}<br>[/css]</p>
+<p>この場合、<br>[css]<br>.module–element .module__child {<br>  color: orange;<br>}
+.module–element .module__child {<br>  color: orange;<br>}
+.module__parent .module–element {<br>  color: yellow;<br>}</p>
+<p>/* 以下はエラーで実際に出力されないがv3.3からは修正された */<br>.module–element.module__parent {<br>  color:green<br>}
+[/css]</p>
 <p>また、<a href="http://bem.info/" target="_blank" rel="noopener">BEM</a>を意識した構造においては</p>
-<p>[ruby]<br>.block {<br>    /<em> Base stuff </em>/<br>      &amp;__child {<br>        /<em> Sub-element of block </em>/<br>      }</p>
+<p>[ruby]<br>.block {<br>    /* Base stuff <em>/
+      &amp;__child {<br>        /</em> Sub-element of block */<br>      }</p>
 <pre><code>&amp;amp;--modifier {
   /* Variation of block */
-}
-</code></pre><p>}<br>[/ruby]</p>
+}</code></pre><p>}
+[/ruby]</p>
 <p>とすることで</p>
 <p>[css]<br>.block { }</p>
 <p>.block__child { }</p>
 <p>.block–modifier { }<br>[/css]</p>
 <p>という具合に出力されるようになる。<br>@content(プレースホルダーセレクタ)をつかった場合などで</p>
 <p>[ruby]<br>@mixin respond-to($media, $ie-class:’ie’) {<br>  @media (#{$media}) { @content; }<br>  .#{$ie-class} &amp; { @content; }<br>}</p>
-<p>@include respond-to(‘min-width: 30em’) {<br>  .container { color: red; }<br>}<br>[/ruby]</p>
+<p>@include respond-to(‘min-width: 30em’) {<br>  .container { color: red; }<br>}
+[/ruby]</p>
 <p>とした場合、これまではエラーになっていたが</p>
-<p>[css]<br>@media (min-width: 30em) {<br>  .container {<br>    color: red;<br>  }<br>}<br>.ie .container {<br>  color: red;<br>}<br>[/css]</p>
+<p>[css]<br>@media (min-width: 30em) {<br>  .container {<br>    color: red;<br>  }<br>}
+.ie .container {<br>  color: red;<br>}
+[/css]</p>
 <p>と出力できるようになる。<br>いままでまどろっこしいパズルをしていた感じから少し解放されそう。</p>
 <p>また、セレクターだけでなく値にも適用できて</p>
-<p>[ruby]<br>.hoge, .huge {<br>  $selector: &amp;;<br>  content: $selector<br>}<br>[/ruby]</p>
-<p>[css]<br>.hoge, .huge {<br>  content: .hoge .huge;<br>}<br>[/css]</p>
+<p>[ruby]<br>.hoge, .huge {<br>  $selector: &amp;;<br>  content: $selector<br>}
+[/ruby]</p>
+<p>[css]<br>.hoge, .huge {<br>  content: .hoge .huge;<br>}
+[/css]</p>
 <p>とかもできます。</p>
 <h2 id="listの-演算子の実装"><a href="#listの-演算子の実装" class="headerlink" title="listの+, - 演算子の実装"></a>listの+, - 演算子の実装</h2><p>リストのでの+演算子はリストへの追加ではなく、文字列連結。<br>-演算子は-をセパレーターにした文字列文字列連結だったのが<br>リストの追加、削除(join(), reduce())のようになる。</p>
 <p>[ruby]<br>$a: red, blue;<br>$b: red, green;</p>
@@ -158,18 +169,20 @@ ga('send', 'pageview');
 <p>[ruby]<br>$data: (<br>        color red,<br>        background blue<br>      );</p>
 <p>@each $pair in $data {<br>    div {<br>    $first-item  : nth($pair, 1);<br>    $second-item : nth($pair, 2);</p>
 <pre><code>#{$first-item}: #{$second-item};
-}
-</code></pre><p>}<br>[/ruby]</p>
+}</code></pre><p>}
+[/ruby]</p>
 <p>などとしていたのですが、v3.3以降では</p>
 <p>[ruby]<br>$data: (<br>        color: red,<br>        background: blue<br>      );<br>[/ruby]</p>
 <p>という感じJSONっぽいkey-valueがわかりやすい形で渡すことができるそうだ。<br>これでデバイスごとの設定などがより容易になりそう。<br>[ruby]<br>$media-types: (phone: ‘(max-width: 480px)’,<br>               tablet-portrait: ‘(max-width: 767px)’,<br>               tablet-landscape-desktop: ‘(min-width: 768px) and (max-width: 979px)’,<br>               large-desktop: ‘(min-width: 1200px)’,<br>               non-retina: ‘screen and (-webkit-max-device-pixel-ratio: 1)’,<br>               retina: ‘screen and (-webkit-min-device-pixel-ratio: 2)’);</p>
 <p>@mixin respond-to($media) {<br>    @if not map-contains($media-types, $media) {<br>      @warn &quot;#{$media} is not a known media type. Using large-desktop instead.&quot;;<br>      $media: large-desktop;<br>    }<br>    @media #{map-get($media-types, $media)} {<br>        @content;<br>    }<br>}</p>
-<p>@include respond-to(phone) {<br>    .foo {<br>        background: blue;<br>    }<br>}<br>[/ruby]</p>
+<p>@include respond-to(phone) {<br>    .foo {<br>        background: blue;<br>    }<br>}
+[/ruby]</p>
 <h2 id="at-root"><a href="#at-root" class="headerlink" title="@at-root"></a>@at-root</h2><p>@at-rootディレクティブを使用することでネストされてるセレクターがrootレベルで出力される。</p>
 <p>たとえば</p>
 <p>[ruby]<br>.foo {<br>  // .foo 内だけど @at-root ディレクティブ内の .bar は rootレベルで出力<br>  @at-root .bar {<br>    color: blue;<br>    }<br>}</p>
 <p>.foo {<br>  // @at-root ディレクティブ内の .bar は rootレベルで出力<br>  // &amp; は 親である .foo を参照<br>  @at-root .bar &amp; {<br>    color: red;<br>  }<br>}</p>
-<p>.foo {<br> // @at-root で root レベルに .foo を追加したのと同じ<br>  @at-root {<br>    .bar {<br>      color: green;<br>     }<br>  }<br>}<br>[/ruby]</p>
+<p>.foo {<br> // @at-root で root レベルに .foo を追加したのと同じ<br>  @at-root {<br>    .bar {<br>      color: green;<br>     }<br>  }<br>}
+[/ruby]</p>
 <p>とすると、それぞれ</p>
 <p>[css]<br>.bar {<br>  color: blue;<br>}</p>
 <p>.bar .foo {<br>  color: red;<br>}</p>
@@ -180,9 +193,16 @@ ga('send', 'pageview');
 <p>[ruby]<br>.foo<br>  color: purple<br>  @at-root #{&amp;}__header<br>    color: orange</p>
 <p>  @at-root #{&amp;}__content<br>    color: black<br>  @at-root #{&amp;}–active<br>    color: green</p>
 <p>[/ruby]</p>
-<p>[css]<br>/<em> 従来なら </em>/</p>
-<p>.foo {<br>  color: purple;<br>}<br>.foo　.foo<strong>header {<br>  color: orange;<br>}<br>.foo　.foo</strong>content {<br>  color: black;<br>}<br>.foo　.foo–active {<br>  color: green;<br>}</p>
-<p>/<em> @at-rootを使用して </em>/<br>.foo {<br>  color: purple;<br>}<br>.foo<strong>header {<br>  color: orange;<br>}<br>.foo</strong>content {<br>  color: black;<br>}<br>.foo–active {<br>  color: green;<br>}<br>[/css]</p>
+<p>[css]<br>/* 従来なら */</p>
+<p>.foo {<br>  color: purple;<br>}
+.foo　.foo__header {<br>  color: orange;<br>}
+.foo　.foo__content {<br>  color: black;<br>}
+.foo　.foo–active {<br>  color: green;<br>}</p>
+<p>/* @at-rootを使用して */<br>.foo {<br>  color: purple;<br>}
+.foo__header {<br>  color: orange;<br>}
+.foo__content {<br>  color: black;<br>}
+.foo–active {<br>  color: green;<br>}
+[/css]</p>
 <p>出力がネストされないので上記のような感じ。<br>冗長な記述しないですみそう。</p>
 <h2 id="モジュールとしてファイルをimport"><a href="#モジュールとしてファイルをimport" class="headerlink" title="モジュールとしてファイルをimport"></a>モジュールとしてファイルをimport</h2><p>v4.0ではimport周りが大幅に変わるらしい。</p>
 <ol>

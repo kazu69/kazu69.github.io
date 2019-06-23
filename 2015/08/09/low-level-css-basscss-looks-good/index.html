@@ -100,11 +100,14 @@ ga('send', 'pageview');
     
       <p>ここ最近結構cssを弄っていたけど、その時に見つけた<a href="http://www.basscss.com/" target="_blank" rel="noopener">Basscss</a>というcss Frameworkが良さそうだった。</p>
 <a id="more"></a>
+
 <p>BasscssはOOCSSの原理に則り設計されている。<br>特徴としては、依存度の小さいImuutableなutility moduleを備えている。<br>依存性が低いので、副作用が少なくなる。<br>また軽量であり、<a href="https://github.com/postcss/postcss" target="_blank" rel="noopener">postCSS</a>を使っているおり、必要なmoduleのみをビルドできる。</p>
 <h2 id="マルチクラスでの実装"><a href="#マルチクラスでの実装" class="headerlink" title="マルチクラスでの実装"></a>マルチクラスでの実装</h2><p><a href="http://www.basscss.com/docs/guides/" target="_blank" rel="noopener">Document</a>にある通りなのだが、マルチクラスで実装している。</p>
 <p>以下のような感じ(<a href="http://www.basscss.com/docs/guides/layout/" target="_blank" rel="noopener">Page Layoutより</a>)</p>
 <script src="//gist.github.com/kazu69/8e71f5307a7a93c9f236.js?file=navigation.html"></script>
+
 <script src="//gist.github.com/kazu69/8e71f5307a7a93c9f236.js?file=3colums.html"></script>
+
 <p>基本的な機能をImuutableなmoduleで実装していくことで、変更に対しても柔軟に対応できる。<br>また、Imuutableなmoduleはシンプルな設計なのでコードの可読性が確保できる。<br>HTML側が複雑になるという懸念もあるが、シングルクラス設計に比べHTML側である程度スタイルが予想できる点では、メリットになるのではないかなと思う。</p>
 <h2 id="依存度が低い"><a href="#依存度が低い" class="headerlink" title="依存度が低い"></a>依存度が低い</h2><p><a href="http://www.basscss.com/stats/" target="_blank" rel="noopener">stats</a> にあるように、依存度が低いことがこのFrameworkの特徴。</p>
 <p>CSSはシングルクラスで設計する場合、どうしても依存性が高くなり、副作用が発生してくる。<br>マルチクラス設計にしてしまうことで、この問題を回避している。<br>サービス運用していくうちに、ネーミングルールと継承のあたりで、CSSは破綻の方に向かっていきがちなので、<br>依存度の低いFrameworkを使用して、基本設計を行うことで解決できるではないかと思う。</p>

@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="https://github.com/bevry/cson" target="_blank" rel="noopener">CSON</a>(CoffeeScript-Object-Notation)や<a href="https://github.com/aseemk/json5" target="_blank" rel="noopener">JSON5</a>(JSON for ES5)を使うと、コメントなど使えて便利そうだった。<br><a id="more"></a><br>CoffeeScript形式のjsonであるCSONやECMAScript5の拡張機能をもつJSONのJSON5を使うと、JSON内にコメントなどがつかえて便利そう。</p>
+      <p><a href="https://github.com/bevry/cson" target="_blank" rel="noopener">CSON</a>(CoffeeScript-Object-Notation)や<a href="https://github.com/aseemk/json5" target="_blank" rel="noopener">JSON5</a>(JSON for ES5)を使うと、コメントなど使えて便利そうだった。</p>
+<a id="more"></a>
+<p>CoffeeScript形式のjsonであるCSONやECMAScript5の拡張機能をもつJSONのJSON5を使うと、JSON内にコメントなどがつかえて便利そう。</p>
 <p>READMEにあるとおり、</p>
 <p>CSONの場合は次のようなcsonファイルについて</p>
 <script src="https://gist.github.com/kazu69/9405825.js?file=data.cson"></script>
@@ -111,9 +113,8 @@ ga('send', 'pageview');
 <script src="https://gist.github.com/kazu69/9405825.js?file=cson.coffee"></script>
 
 <script src="https://gist.github.com/kazu69/9405825.js?file= parser.sh"></script>
-のようにパースできる。
-
-ちなみにcsonからjsonやjsonからcsonへのコンバートもできる
+<p>のようにパースできる。</p>
+<p>ちなみにcsonからjsonやjsonからcsonへのコンバートもできる</p>
 <script src="https://gist.github.com/kazu69/9405825.js?file=convert.sh"></script>
 
 <p>JSON5については</p>
@@ -123,7 +124,8 @@ ga('send', 'pageview');
 <p>jsで以下のような処理をすると</p>
 <script src="https://gist.github.com/kazu69/9405825.js?file=json5.js"></script>
 
-<p><script src="https://gist.github.com/kazu69/9405825.js?file=parser.sh"></script><br>のようにパースできる。</p>
+<script src="https://gist.github.com/kazu69/9405825.js?file=parser.sh"></script>
+<p>のようにパースできる。</p>
 <p>両方ともサーバー側でjsonにparseして配信するほか、Browserifyを使ってクライアント側でparseすることもできる。<br>package.jsonなどもcsonやjson5にすると便利かも。</p>
 <p>ちなみに、json5はnpmでは取得できなかったので、直接node_moduleにcloneして使用しました。<br>ちなみにjsonのミドルウェアとして<a href="https://github.com/visionmedia/eson" target="_blank" rel="noopener">ESON</a>(ExtendedJSON)というのもあるっぽい。</p>
 

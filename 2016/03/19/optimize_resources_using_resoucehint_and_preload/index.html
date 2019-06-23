@@ -107,6 +107,7 @@ ga('send', 'pageview');
     
       <p><a href="https://www.w3.org/TR/resource-hints/" target="_blank" rel="noopener">Resource Hints</a>と<a href="https://www.w3.org/TR/preload/" target="_blank" rel="noopener">Preload</a>を使うことでリソースの取得を最適化できるようなので試してみた。</p>
 <a id="more"></a>
+
 <p>もともとはHTTP2にしてServer Pushを使うことで、予めリソースをサーバー側から送ることができるが、<br>ブラウザのキャッシュのメリットを活用できないんじゃないかということが気になっていた。<br>また、単純にHTTP2対応してもウェブページにはcrossoriginなリソースを多く利用しているので、<br>そのパフォーマンスの問題は解決しないのではないかという疑問があった。</p>
 <p>それらを解決する手段としてResource Hintsなどを使ったPrebrowsingの技術が活用できそう。</p>
 <p>preloadに関しては<a href="https://www.smashingmagazine.com/2016/02/preload-what-is-it-good-for/" target="_blank" rel="noopener">Preload: What Is It Good For?</a>がまとまっているので参考にした。</p>
@@ -120,23 +121,30 @@ ga('send', 'pageview');
 <p>など、多くのウェブアプリケーションでありそうなもので活用できる。</p>
 <h3 id="試してみる"><a href="#試してみる" class="headerlink" title="試してみる"></a>試してみる</h3><p>以下のようなファイルに対してHTTP2をつかってResource Hintsを試してみる。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!doctype html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">class</span>=<span class="string">"no-js"</span> <span class="attr">lang</span>=<span class="string">"ja"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"x-ua-compatible"</span> <span class="attr">content</span>=<span class="string">"ie=edge"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>Sample<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"description"</span> <span class="attr">content</span>=<span class="string">""</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"apple-touch-icon"</span> <span class="attr">href</span>=<span class="string">"apple-touch-icon.png"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- normalize --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css"</span> <span class="attr">integrity</span>=<span class="string">"sha384-+K7c3ujxU/SqpJg+sVdgOemJ3tcpzSGHWv3+1TgPb20j3DmE2srNJo5kVStOVq4k"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- bootstrap --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"</span> <span class="attr">integrity</span>=<span class="string">"sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"</span> <span class="attr">integrity</span>=<span class="string">"sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- font awasome --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"//fortawesome.github.io/Font-Awesome/assets/font-awesome/fonts/fontawesome-webfont.woff2"</span> <span class="attr">as</span>=<span class="string">"font"</span> <span class="attr">type</span>=<span class="string">"font/woff2"</span> <span class="attr">crossorigin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"css/main.css"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--[if lt IE 8]&gt;</span></span><br><span class="line"><span class="comment">            &lt;p class="browserupgrade"&gt;You are using an &lt;strong&gt;outdated&lt;/strong&gt; browser. Please &lt;a href="http://browsehappy.com/"&gt;upgrade your browser&lt;/a&gt; to improve your experience.&lt;/p&gt;</span></span><br><span class="line"><span class="comment">        &lt;![endif]--&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- Add your site or application content here --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>Hello world! This is HTML5 Boilerplate.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- bootstrap --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"</span> <span class="attr">integrity</span>=<span class="string">"sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- modernizr --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"//ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- jQuery --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"//code.jquery.com/jquery-1.12.1.js"</span> <span class="attr">integrity</span>=<span class="string">"sha256-VuhDpmsr9xiKwvTIHfYWCIQ84US9WqZsLfR4P7qF6O8="</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/plugins.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/main.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"//www.google-analytics.com/analytics.js"</span> <span class="attr">async</span> <span class="attr">defer</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>このファイルへのアクセスをChrome Dev ToolのNetwork panelで見てみる</p>
 <p><img src="/images/2016/03/19/default.png" alt></p>
 <p>このような感じ。</p>
 <h3 id="dns-prefetch"><a href="#dns-prefetch" class="headerlink" title="dns-prefetch"></a>dns-prefetch</h3><p>DNSによる名前解決をできるだけ早くおこなうことで、ページ読込み時にかかる名前解決によるコストを下げる。<br><a href="http://caniuse.com/#search=dns-prefetch" target="_blank" rel="noopener">多くのブラウザですでにサポートされている</a>。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//example.com"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>amazon.comでは以下のように活用されている模様。<br><strong>x-dns-prefetch-control</strong> でDNS Prefetch機能をユーザーの意志とは関係なく実装できる。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- from amazon.com --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"x-dns-prefetch-control"</span> <span class="attr">content</span>=<span class="string">"on"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//g-ec2.images-amazon.com"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//ecx.images-amazon.com"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//z-ecx.images-amazon.com"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//z-ak.images-amazon.com"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//completion.amazon.com"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//fls-fe.amazon.co.jp"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//d1y6jrbzotnyjg.cloudfront.net"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>実際に次のようなページを作成して試してみた。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"ja"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"x-dns-prefetch-control"</span> <span class="attr">content</span>=<span class="string">"on"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>DNS-Prefetch<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//:cdnjs.cloudflare.com"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//:maxcdn.bootstrapcdn.com"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//:ajax.aspnetcdn.com"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//:code.jquery.com"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"dns-prefetch"</span> <span class="attr">href</span>=<span class="string">"//:www.google-analytics.com/"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"main.html"</span>&gt;</span>main page<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p><img src="/images/2016/03/19/dns-prefetch.png" alt></p>
 <p>CDNを使っているので名前解決にそこまで時間がかかっていないが、それでも名前解決の時間が短縮されている。</p>
 <h3 id="preconnect"><a href="#preconnect" class="headerlink" title="preconnect"></a>preconnect</h3><p>DNSルックアップ、TCPハンドシェイク、TLSネゴシエーションまでを事前に処理することができる。<br>schemeはhttp, httpsのみが許可されていて、crossorigin属性が定義されている。<br>ちなみに2016/03 現在では<a href="http://caniuse.com/#search=preconnect" target="_blank" rel="noopener">ChromeとFirefoxではサポート</a>されている様子。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preconnect"</span> <span class="attr">href</span>=<span class="string">"//example.com"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preconnect"</span> <span class="attr">href</span>=<span class="string">"//cdn.example.com"</span> <span class="attr">crossorigin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>また、Resource Hintはlinkタグを挿入したらいいということでJavaScriptを使えば簡単に動的に追加もできる。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">preconnect</span>(<span class="params">url</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> hint = <span class="built_in">document</span>.createElement(<span class="string">'link'</span>);</span><br><span class="line">    hint.rel = <span class="string">'preconnect'</span>;</span><br><span class="line">    hint.href = url;</span><br><span class="line">    <span class="built_in">document</span>.head.appendChild(hint);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>実際に遷移前のページとして以下のようなものを使う</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"ja"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Preconnect<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preconnect"</span> <span class="attr">href</span>=<span class="string">"//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preconnect"</span> <span class="attr">href</span>=<span class="string">"//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preconnect"</span> <span class="attr">href</span>=<span class="string">"//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preconnect"</span> <span class="attr">href</span>=<span class="string">"//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preconnect"</span> <span class="attr">href</span>=<span class="string">"//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preconnect"</span> <span class="attr">href</span>=<span class="string">"//ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preconnect"</span> <span class="attr">href</span>=<span class="string">"//code.jquery.com/jquery-1.12.1.js"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preconnect"</span> <span class="attr">href</span>=<span class="string">"//www.google-analytics.com/analytics.js"</span> <span class="attr">crossorigin</span>=<span class="string">"anonymous"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"main.html"</span>&gt;</span>main page<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>Chromeで chrome://net-internals/#dns を見てみると</p>
 <table>
 <thead>
@@ -147,8 +155,7 @@ ga('send', 'pageview');
 <th>Expires</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>ajax.aspnetcdn.com</td>
 <td>IPV4</td>
 <td>68.232.45.201</td>
@@ -173,13 +180,12 @@ ga('send', 'pageview');
 <td>2016-03-09 15:05:55.442 [Expired]</td>
 </tr>
 <tr>
-<td>www.google-analytics.com</td>
+<td><a href="http://www.google-analytics.com" target="_blank" rel="noopener">www.google-analytics.com</a></td>
 <td>IPV4</td>
 <td>216.58.197.206</td>
 <td>2016-03-09 15:05:55.474 [Expired]</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>Chromeで chrome://net-internals/#events でも確認</p>
 <table>
 <thead>
@@ -190,150 +196,176 @@ ga('send', 'pageview');
 <th>Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>534655</td>
 <td>CONNECT_JOB</td>
 <td>pm/ssl/cdnjs.cloudflare.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534656</td>
 <td>CONNECT_JOB</td>
 <td>pm/ssl/cdnjs.cloudflare.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534657</td>
 <td>HOST_RESOLVER_IMPL_JOB</td>
 <td>cdnjs.cloudflare.com</td>
+<td></td>
 </tr>
 <tr>
 <td>534658</td>
 <td>HTTP_STREAM_JOB</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/</a></td>
+<td></td>
 </tr>
 <tr>
 <td>534659</td>
 <td>CONNECT_JOB</td>
 <td>pm/ssl/maxcdn.bootstrapcdn.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534660</td>
 <td>CONNECT_JOB</td>
 <td>pm/ssl/maxcdn.bootstrapcdn.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534661</td>
 <td>HOST_RESOLVER_IMPL_JOB</td>
 <td>maxcdn.bootstrapcdn.com</td>
+<td></td>
 </tr>
 <tr>
 <td>534662</td>
 <td>HTTP_STREAM_JOB</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/</a></td>
+<td></td>
 </tr>
 <tr>
 <td>534663</td>
 <td>HTTP_STREAM_JOB</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/</a></td>
+<td></td>
 </tr>
 <tr>
 <td>534664</td>
 <td>HTTP_STREAM_JOB</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/</a></td>
+<td></td>
 </tr>
 <tr>
 <td>534665</td>
 <td>HTTP_STREAM_JOB</td>
 <td><a href="https://ajax.aspnetcdn.com/" target="_blank" rel="noopener">https://ajax.aspnetcdn.com/</a></td>
+<td></td>
 </tr>
 <tr>
 <td>534666</td>
 <td>CONNECT_JOB</td>
 <td>pm/ssl/ajax.aspnetcdn.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534667</td>
 <td>CONNECT_JOB</td>
 <td>pm/ssl/ajax.aspnetcdn.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534668</td>
 <td>HOST_RESOLVER_IMPL_JOB</td>
 <td>ajax.aspnetcdn.com</td>
+<td></td>
 </tr>
 <tr>
 <td>534669</td>
 <td>HTTP_STREAM_JOB</td>
 <td><a href="https://code.jquery.com/" target="_blank" rel="noopener">https://code.jquery.com/</a></td>
+<td></td>
 </tr>
 <tr>
 <td>534670</td>
 <td>CONNECT_JOB</td>
 <td>pm/ssl/code.jquery.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534671</td>
 <td>CONNECT_JOB</td>
 <td>pm/ssl/code.jquery.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534672</td>
 <td>HOST_RESOLVER_IMPL_JOB</td>
 <td>code.jquery.com</td>
+<td></td>
 </tr>
 <tr>
 <td>534673</td>
 <td>HTTP_STREAM_JOB</td>
 <td><a href="https://www.google-analytics.com/" target="_blank" rel="noopener">https://www.google-analytics.com/</a></td>
+<td></td>
 </tr>
 <tr>
 <td>534674</td>
 <td>CONNECT_JOB</td>
-<td>pm/ssl/www.google-analytics.com:443</td>
+<td>pm/ssl/<a href="http://www.google-analytics.com:443" target="_blank" rel="noopener">www.google-analytics.com:443</a></td>
+<td></td>
 </tr>
 <tr>
 <td>534675</td>
 <td>CONNECT_JOB</td>
-<td>pm/ssl/www.google-analytics.com:443</td>
+<td>pm/ssl/<a href="http://www.google-analytics.com:443" target="_blank" rel="noopener">www.google-analytics.com:443</a></td>
+<td></td>
 </tr>
 <tr>
 <td>534676</td>
 <td>HOST_RESOLVER_IMPL_JOB</td>
-<td>www.google-analytics.com</td>
+<td><a href="http://www.google-analytics.com" target="_blank" rel="noopener">www.google-analytics.com</a></td>
+<td></td>
 </tr>
 <tr>
 <td>534677</td>
 <td>SOCKET</td>
 <td>pm/ssl/ajax.aspnetcdn.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534678</td>
 <td>SOCKET</td>
 <td>pm/ssl/cdnjs.cloudflare.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534679</td>
 <td>SOCKET</td>
 <td>pm/ssl/maxcdn.bootstrapcdn.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534680</td>
 <td>SOCKET</td>
 <td>pm/ssl/code.jquery.com:443</td>
+<td></td>
 </tr>
 <tr>
 <td>534681</td>
 <td>SOCKET</td>
-<td>pm/ssl/www.google-analytics.com:443</td>
+<td>pm/ssl/<a href="http://www.google-analytics.com:443" target="_blank" rel="noopener">www.google-analytics.com:443</a></td>
+<td></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>確かに事前にリクエストしていることがわかる。<br>アクセスしてみる。Google dev toolのNetwork pannelから</p>
 <p><img src="/images/2016/03/19/preconnect.png" alt></p>
 <p>すでにconnectしているまでは完了しており、ダウンロードするだけとなり早い。</p>
 <h3 id="prefetch"><a href="#prefetch" class="headerlink" title="prefetch"></a>prefetch</h3><p>ページを予めダウンロードまでおこない、キャッシュに格納する。<br>リソースのサイズが大きい場合やネットワークが遅い場合などはブラウザはprefetchを行わない。<br>またas属性でリソースを適切なコンテキストを指定でき、これによりブラウザは最適なfetchプロセスでresourceを取得する。</p>
 <p>prefetchは<a href="http://caniuse.com/#search=prefetch" target="_blank" rel="noopener">最近のブラウザではだいたいサポート</a>されてる。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"prefetch"</span> <span class="attr">href</span>=<span class="string">"//example.com/next-page.html"</span> <span class="attr">as</span>=<span class="string">"html"</span> <span class="attr">crossorigin</span>=<span class="string">"use-credentials"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"prefetch"</span> <span class="attr">href</span>=<span class="string">"/library.js"</span> <span class="attr">as</span>=<span class="string">"script"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>こちらもChromeで chrome://net-internals/#events を見てみると</p>
 <table>
 <thead>
@@ -344,89 +376,103 @@ ga('send', 'pageview');
 <th>Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>538454</td>
 <td>URL_REQUEST</td>
 <td><a href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css" target="_blank" rel="noopener">https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538456</td>
 <td>URL_REQUEST</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538458</td>
 <td>URL_REQUEST</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538460</td>
 <td>URL_REQUEST</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538462</td>
 <td>URL_REQUEST</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538464</td>
 <td>URL_REQUEST</td>
 <td><a href="https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js" target="_blank" rel="noopener">https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538466</td>
 <td>URL_REQUEST</td>
 <td><a href="https://code.jquery.com/jquery-1.12.1.js" target="_blank" rel="noopener">https://code.jquery.com/jquery-1.12.1.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538468</td>
 <td>URL_REQUEST</td>
 <td><a href="https://www.google-analytics.com/analytics.js" target="_blank" rel="noopener">https://www.google-analytics.com/analytics.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538470</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css" target="_blank" rel="noopener">https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538471</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538472</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538473</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538474</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538475</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js" target="_blank" rel="noopener">https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538476</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://code.jquery.com/jquery-1.12.1.js" target="_blank" rel="noopener">https://code.jquery.com/jquery-1.12.1.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>538477</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://www.google-analytics.com/analytics.js" target="_blank" rel="noopener">https://www.google-analytics.com/analytics.js</a></td>
+<td></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>リクエストからcacheまで行われている。</p>
 <p>Chrome dev toolのNetwork pannelでもリクエストしていることが見てわかる。</p>
 <p><img src="/images/2016/03/19/prefetch1.png" alt></p>
@@ -434,9 +480,11 @@ ga('send', 'pageview');
 <p><img src="/images/2016/03/19/prefetch2.png" alt></p>
 <h3 id="prerender"><a href="#prerender" class="headerlink" title="prerender"></a>prerender</h3><p>事前にバックグランドで指定リンク先のリソースをダウンロードし、DOM構築、JavaScriptの実行、CSS適用、レイアウトまで行う。<br>Render Processですでにページを構築している感じなるっぽい。(見えないタブでページを描画してしまってる感じ)<br>よって、遷移後はタブが切り替わるのように、ページがすぐに表示されるようになる。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"prerender"</span> <span class="attr">href</span>=<span class="string">"//example.com/next-page.html"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>サポートは2016/03 現在<a href="http://caniuse.com/#feat=link-rel-prerender" target="_blank" rel="noopener">ChromeとEdge、Operaがサポート</a>している。</p>
 <p>こちらも同じ感じのhtmlを準備して試してみる。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"ja"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Prerender<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"prerender"</span> <span class="attr">href</span>=<span class="string">"main.html"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"main.html"</span>&gt;</span>main page<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>こちらは遷移先のページ(prerender.htmlとした)を指定して、試してみる。<br>Chromeで chrome://net-internals/#events を見てみると</p>
 <table>
 <thead>
@@ -447,212 +495,252 @@ ga('send', 'pageview');
 <th>Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>561062</td>
 <td>URL_REQUEST</td>
 <td><a href="https://192.168.99.100:8443/main.html" target="_blank" rel="noopener">https://192.168.99.100:8443/main.html</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561064</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://192.168.99.100:8443/main.html" target="_blank" rel="noopener">https://192.168.99.100:8443/main.html</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561065</td>
 <td>HTTP_STREAM_JOB</td>
 <td><a href="https://192.168.99.100:8443/" target="_blank" rel="noopener">https://192.168.99.100:8443/</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561066</td>
 <td>URL_REQUEST</td>
 <td><a href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css" target="_blank" rel="noopener">https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561068</td>
 <td>URL_REQUEST</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561070</td>
 <td>URL_REQUEST</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561072</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css" target="_blank" rel="noopener">https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561073</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561074</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561075</td>
 <td>URL_REQUEST</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561077</td>
 <td>URL_REQUEST</td>
 <td><a href="https://fortawesome.github.io/Font-Awesome/assets/font-awesome/fonts/fontawesome-webfont.woff2" target="_blank" rel="noopener">https://fortawesome.github.io/Font-Awesome/assets/font-awesome/fonts/fontawesome-webfont.woff2</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561079</td>
 <td>URL_REQUEST</td>
 <td><a href="https://192.168.99.100:8443/css/main.css" target="_blank" rel="noopener">https://192.168.99.100:8443/css/main.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561081</td>
 <td>URL_REQUEST</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561083</td>
 <td>URL_REQUEST</td>
 <td><a href="https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js" target="_blank" rel="noopener">https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561085</td>
 <td>URL_REQUEST</td>
 <td><a href="https://code.jquery.com/jquery-1.12.1.js" target="_blank" rel="noopener">https://code.jquery.com/jquery-1.12.1.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561087</td>
 <td>URL_REQUEST</td>
 <td><a href="https://192.168.99.100:8443/js/plugins.js" target="_blank" rel="noopener">https://192.168.99.100:8443/js/plugins.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561089</td>
 <td>URL_REQUEST</td>
 <td><a href="https://192.168.99.100:8443/js/main.js" target="_blank" rel="noopener">https://192.168.99.100:8443/js/main.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561091</td>
 <td>URL_REQUEST</td>
 <td><a href="https://www.google-analytics.com/analytics.js" target="_blank" rel="noopener">https://www.google-analytics.com/analytics.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561093</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561094</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://fortawesome.github.io/Font-Awesome/assets/font-awesome/fonts/fontawesome-webfont.woff2" target="_blank" rel="noopener">https://fortawesome.github.io/Font-Awesome/assets/font-awesome/fonts/fontawesome-webfont.woff2</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561095</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561096</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js" target="_blank" rel="noopener">https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561097</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://code.jquery.com/jquery-1.12.1.js" target="_blank" rel="noopener">https://code.jquery.com/jquery-1.12.1.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561098</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://www.google-analytics.com/analytics.js" target="_blank" rel="noopener">https://www.google-analytics.com/analytics.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561099</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://192.168.99.100:8443/css/main.css" target="_blank" rel="noopener">https://192.168.99.100:8443/css/main.css</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561100</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://192.168.99.100:8443/js/plugins.js" target="_blank" rel="noopener">https://192.168.99.100:8443/js/plugins.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561101</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://192.168.99.100:8443/js/main.js" target="_blank" rel="noopener">https://192.168.99.100:8443/js/main.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561102</td>
 <td>HTTP_STREAM_JOB</td>
 <td><a href="https://192.168.99.100:8443/" target="_blank" rel="noopener">https://192.168.99.100:8443/</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561103</td>
 <td>HTTP_STREAM_JOB</td>
 <td><a href="https://192.168.99.100:8443/" target="_blank" rel="noopener">https://192.168.99.100:8443/</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561104</td>
 <td>HTTP_STREAM_JOB</td>
 <td><a href="https://192.168.99.100:8443/" target="_blank" rel="noopener">https://192.168.99.100:8443/</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561105</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" target="_blank" rel="noopener">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561106</td>
 <td>URL_REQUEST</td>
 <td><a href="https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js" target="_blank" rel="noopener">https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561108</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js" target="_blank" rel="noopener">https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561109</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js" target="_blank" rel="noopener">https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561110</td>
 <td>URL_REQUEST</td>
 <td><a href="https://code.jquery.com/jquery-1.12.1.js" target="_blank" rel="noopener">https://code.jquery.com/jquery-1.12.1.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561112</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://code.jquery.com/jquery-1.12.1.js" target="_blank" rel="noopener">https://code.jquery.com/jquery-1.12.1.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561113</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://code.jquery.com/jquery-1.12.1.js" target="_blank" rel="noopener">https://code.jquery.com/jquery-1.12.1.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561114</td>
 <td>URL_REQUEST</td>
 <td><a href="https://www.google-analytics.com/analytics.js" target="_blank" rel="noopener">https://www.google-analytics.com/analytics.js</a></td>
+<td></td>
 </tr>
 <tr>
 <td>561116</td>
 <td>DISK_CACHE_ENTRY</td>
 <td><a href="https://www.google-analytics.com/analytics.js" target="_blank" rel="noopener">https://www.google-analytics.com/analytics.js</a></td>
+<td></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p>リクエストされ、cacheもされている。しかし、こちらはChrome dev toolのNetwork pannelでは確認できない。<br>このまま該当ページに遷移する。</p>
 <p><img src="/images/2016/03/19/prerender.png" alt></p>
 <p>予めページの準備が整ってるだけあり、体感的にも早い。</p>
 <h2 id="preload"><a href="#preload" class="headerlink" title="preload"></a>preload</h2><p>こちらはResource Hintsではなく、別の機能としてドキュメントも分けられている。<br>利用するにはResource Hintsと同様にlinkタグを用いる。</p>
-<p><a href="http://blog.chromium.org/2016/03/chrome-50-beta-push-notification.html" target="_blank" rel="noopener">Chrome version 50 からサポートされる様子</a>。<br>2016/03/19 現在はcanaryでは利用できる。</p>
+<p><a href="http://blog.chromium.org/2016/03/chrome-50-beta-push-notification.html" target="_blank" rel="noopener">Chrome version 50 からサポートされる様子</a>。
+2016/03/19 現在はcanaryでは利用できる。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preload"</span> <span class="attr">href</span>=<span class="string">"/assets/font.woff"</span> <span class="attr">as</span>=<span class="string">"font"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preload"</span> <span class="attr">href</span>=<span class="string">"/style/other.css"</span> <span class="attr">as</span>=<span class="string">"style"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preload"</span> <span class="attr">href</span>=<span class="string">"//example.com/resource"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preload"</span> <span class="attr">href</span>=<span class="string">"https://fonts.example.com/font.woff"</span> <span class="attr">as</span>=<span class="string">"font"</span> <span class="attr">crossorigin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>または、HTTP response HeaderにLinkを追加することでも実現できる。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Link: https://example.com/font.woff; rel=preload; as=font</span><br><span class="line">Link: https://example.com/app/script.js; rel=preload; as=script</span><br><span class="line">Link: https://example.com/logo-hires.jpg; rel=preload; as=image</span><br><span class="line">Link: https://fonts.example.com/font.woff; rel=preload; as=font; crossorigin</span><br></pre></td></tr></table></figure>
+
 <p>as属性にはfont、script、style、image、documentなどが利用できる。<br>リソースの種類の詳細は<a href="https://www.w3.org/TR/preload/#widl-HTMLLinkElement-as" target="_blank" rel="noopener">widl-HTMLLinkElement-as</a>から確認出来る</p>
 <h3 id="peloadの特徴"><a href="#peloadの特徴" class="headerlink" title="peloadの特徴"></a>peloadの特徴</h3><ul>
 <li>ページの読込をブロックしない</li>
@@ -666,12 +754,16 @@ ga('send', 'pageview');
 <p>これらを踏まえて、いくつかのパターンでためしてみる。</p>
 <h4 id="動的にlinkタグを追加"><a href="#動的にlinkタグを追加" class="headerlink" title="動的にlinkタグを追加"></a>動的にlinkタグを追加</h4><p>JavaScriptで動的にlinkタグを追加して、任意のタイミングでpreloadする。<br>onloadイベントにてscriptタグを動的に生成することで、ページに適用できる。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addScripts</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">  script.src = <span class="string">'execute.js'</span>;</span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(script);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> link = <span class="built_in">document</span>.createElement(<span class="string">'link'</span>);</span><br><span class="line">link.href = <span class="string">'execute.js'</span>;</span><br><span class="line">link.rel = <span class="string">'preload'</span>;</span><br><span class="line">link.as = <span class="string">'script'</span>;</span><br><span class="line">link.addEventListener(<span class="string">'load'</span>, addScripts, <span class="literal">false</span>);</span><br><span class="line">link.addEventListener(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123; <span class="built_in">console</span>.log(error) &#125;, <span class="literal">false</span>);</span><br><span class="line"><span class="built_in">document</span>.head.appendChild(link);</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+
 <h4 id="ウェブフォントの先読み"><a href="#ウェブフォントの先読み" class="headerlink" title="ウェブフォントの先読み"></a>ウェブフォントの先読み</h4><p>WebフォントをPreloadする。<br>webフォントの問題点として、パフォーマンスがあった。<br>実際にフォントの読込みが遅延することで、ページ全体のパーフォーマンスが低下します。<br>Preloadを利用することで、ブロッキングされないためパフォーマンスが向上する。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preload"</span> <span class="attr">href</span>=<span class="string">"//fonts.googleapis.com/css?family=Montserrat"</span> <span class="attr">as</span>=<span class="string">"font"</span> <span class="attr">crossorigin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <h4 id="バックグランウンドで先読みしてloadのタイミングで適用"><a href="#バックグランウンドで先読みしてloadのタイミングで適用" class="headerlink" title="バックグランウンドで先読みしてloadのタイミングで適用"></a>バックグランウンドで先読みしてloadのタイミングで適用</h4><p>任意のタイミングでPreloadして、Resource取得後にlinkタグのrel属性値をstylesheetに変えることで<br>直接cssを適用できる。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> link = <span class="built_in">document</span>.createElement(<span class="string">"link"</span>);</span><br><span class="line">link.rel = <span class="string">"preload"</span>;</span><br><span class="line">link.as = <span class="string">"style"</span>;</span><br><span class="line">link.href = <span class="string">"css/style.css"</span>;</span><br><span class="line">link.addEventListener(<span class="string">'load'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="keyword">this</span>.rel = <span class="string">'stylesheet'</span> &#125;, <span class="literal">false</span>);</span><br><span class="line">link.addEventListener(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123; <span class="built_in">console</span>.log(error) &#125;, <span class="literal">false</span>);</span><br><span class="line"><span class="built_in">document</span>.head.appendChild(link);</span><br></pre></td></tr></table></figure>
+
 <h4 id="メディアクエリ"><a href="#メディアクエリ" class="headerlink" title="メディアクエリ"></a>メディアクエリ</h4><p>media属性を用いることでレスポンシブにpreloadもできるようになる様子。<br>(現在はまだサポートされていない)<br>デバイスに応じて必要なリソースを取得することでsumartphoneなどでのページ表示のパフォーマンスの改善になりそう。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"preload"</span> <span class="attr">as</span>=<span class="string">"image"</span> <span class="attr">href</span>=<span class="string">"image-max-width.png"</span> <span class="attr">media</span>=<span class="string">"(max-width: 640px)"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <h3 id="HTTP2-Server-Push-との違い"><a href="#HTTP2-Server-Push-との違い" class="headerlink" title="HTTP2 Server Push との違い"></a>HTTP2 Server Push との違い</h3><p>peloadの場合はサードパーティーのresourceも先読みできる。<br>いっぽう、Server Pushではさすがにサードパーティーのresourceを先読みすることは難しい。</p>
 <p>また、preloadの場合はブラウザのキャッシュを有効に活用できるほか、コンテントネゴシエーションも利用できる。<br>これに対してServer Pushは現在のところこれは利用できないため、すでにキャッシュできているResourceも一方的に送ってくる結果になってしまう。<br>h2oではcasper(<a href="https://h2o.examp1e.net/configure/http2_directives.html#http2-casper" target="_blank" rel="noopener">cache-aware server-push</a>)ディレクティブを追加してこのあたりを改善できるようにしよう策定している様子。</p>
 <h3 id="所感"><a href="#所感" class="headerlink" title="所感"></a>所感</h3><p>HTTP2化のほかに、ブラウザキャッシュやサードパーティーのリソースなどを活用できるPrebrowsingも併用することで、<br>webアプリケーションのパフォーマンスの改善が期待できる。<br>とくにスマートフォンなどのマルチなデバイスをサポートしているサービスなどは活用した方が良い。</p>

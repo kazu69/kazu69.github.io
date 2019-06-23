@@ -103,18 +103,23 @@ ga('send', 'pageview');
     
       <p><a href="http://githubengineering.com/subresource-integrity/" target="_blank" rel="noopener">Subresource Integrity</a> という記事をみて、<br>ちょっと興味深かったのでSubresource Integrityについて、軽く見てみた。</p>
 <a id="more"></a>
+
 <h2 id="Subresource-Integrityはどういうものか"><a href="#Subresource-Integrityはどういうものか" class="headerlink" title="Subresource Integrityはどういうものか"></a>Subresource Integrityはどういうものか</h2><p>おそらく、以下のようなもの。<br>ウェブアプリケーションでCDNをつかって、サブリソースを参照することは当たり前になっている。<br>しかし参照先のサブリソースが安全であるという保証はない。<br>もし、CDN経由で参照しているサブリソースが攻撃者により改変された場合、XSSの危険性が生じる。</p>
 <p>これは、サブリソースの整合性をチェックする仕組みを導入することで、危険を回避できる。<br>Subresource Integrityとは、サブリースをSHA256, SHA512などでハッシュ化して、linkタグやscriptタグにintegrity属性として付与することで、整合性を確認できるようにしたもの。<br>もし、integrity属性がある場合は、ブラウザは読み込み時に整合性をチェックして一致した場合にのみロードされる。</p>
 <h2 id="Subresource-Integrityを試す"><a href="#Subresource-Integrityを試す" class="headerlink" title="Subresource Integrityを試す"></a>Subresource Integrityを試す</h2><p><a href="https://developer.mozilla.org/ja/docs/Web/Security/Subresource_Integrity" target="_blank" rel="noopener">MDN Subresource Integrity</a>をみると<br>Chrome v45, Firefox v43 とのことだったので、Chrome Canaryで試した。</p>
 <p>まず適当なファイルをsha256でハッシュ化して、integrity属性の値を生成する。</p>
 <script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=create.sh"></script>
+
 <p>あとはscriptタグなりlinkタグなりにintegrity属性を付与する</p>
 <script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=index.html"></script>
+
 <p>ちなみにscriptタグに付与しているcrossorigin属性は「anonymous」キーワードが指定された場合、<br>リクエストにはcookieやクライアントサイドのSSL証明書、HTTP認証などのユーザ認証情報は利用されなくなるらしい。</p>
 <p>もし、コードが改変され整合性が確認できない場合は</p>
 <script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=faild.js"></script>
+
 <p>また、そのような場合に備えてfallbackを追加しておく</p>
 <script src="//gist.github.com/kazu69/40a6d366181e79fbe703.js?file=fallback.html"></script>
+
 <p>ハッシュ値は<a href="https://www.srihash.org/" target="_blank" rel="noopener">SRI Hash Generator</a>を使うと便利。<br>Wordpressでは<a href="https://wordpress.org/plugins/wp-sri/" target="_blank" rel="noopener">Subresource Integrity (SRI) Manager</a>などが使えそう。</p>
 <p>参考しにたページ<br><a href="http://githubengineering.com/subresource-integrity/" target="_blank" rel="noopener">Subresource Integrity</a><br><a href="https://developer.mozilla.org/ja/docs/Web/Security/Subresource_Integrity" target="_blank" rel="noopener">Subresource Integrity</a><br><a href="https://developer.mozilla.org/ja/docs/Web/HTML/CORS_settings_attributes" target="_blank" rel="noopener">CORS 設定属性</a></p>
 

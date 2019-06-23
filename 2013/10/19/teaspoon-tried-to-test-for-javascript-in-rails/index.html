@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Rails + BackboneのプロジェクトでのJavaScriptのテストに、今までは<a href="https://github.com/bradphelan/jasminerice" target="_blank" rel="noopener">jasminerice</a>などを試したことはあるけど、もっと便利なツールがないか探してみた。<br><a id="more"></a></p>
+      <p>Rails + BackboneのプロジェクトでのJavaScriptのテストに、今までは<a href="https://github.com/bradphelan/jasminerice" target="_blank" rel="noopener">jasminerice</a>などを試したことはあるけど、もっと便利なツールがないか探してみた。</p>
+<a id="more"></a>
+
 <p>候補として出てきたのが</p>
 <ul>
 <li><a href="https://github.com/searls/jasmine-rails" target="_blank" rel="noopener">jasmine-rails (Ruby Gem)</a></li>
@@ -134,12 +136,13 @@ ga('send', 'pageview');
 create  spec/teaspoon_env.rb
 create  spec/javascripts/support
 create  spec/javascripts/fixtures
-create  spec/javascripts/spec_helper.js
-</code></pre><p>+============================================================================+<br>Congratulations! Teaspoon was successfully installed. Documentation and more can<br>be found at: <a href="https://github.com/modeset/teaspoon" target="_blank" rel="noopener">https://github.com/modeset/teaspoon</a></p>
+create  spec/javascripts/spec_helper.js</code></pre><p>+============================================================================+<br>Congratulations! Teaspoon was successfully installed. Documentation and more can<br>be found at: <a href="https://github.com/modeset/teaspoon" target="_blank" rel="noopener">https://github.com/modeset/teaspoon</a></p>
 <p>[/shell]</p>
 <p>これで基本的なファイルなどまとめて設定、作成される。</p>
 <p>teaspoonの設定は initializers/teaspoon.rb で変更できます。<br>基本は以下になっている。<br>[ruby]<br>Teaspoon.setup do |config|<br>  config.mount_at = &quot;/teaspoon&quot;<br>  config.root = nil<br>  config.asset_paths = [&quot;spec/javascripts&quot;, &quot;spec/javascripts/stylesheets&quot;]<br>  config.fixture_path = &quot;spec/javascripts/fixtures&quot;<br>  config.suite do |suite|<br>    suite.matcher = &quot;{spec/javascripts,app/assets}/<em>*/</em>_spec.{js,js.coffee,coffee}&quot;<br>    suite.helper = &quot;spec_helper&quot;<br>    suite.javascripts = [&quot;teaspoon-jasmine&quot;]<br>    suite.stylesheets = [&quot;teaspoon&quot;]<br>    suite.no_coverage = [%r{/lib/ruby/gems/}, %r{/vendor/assets/}, %r{/support/}, %r{/(.+)_helper.}]<br>  end<br>end if defined?(Teaspoon) &amp;&amp; Teaspoon.respond_to?(:setup)<br>[/ruby]</p>
-<p>またTest Runnerの設定は spec/teaspoon_env.rb で行います。<br>基本設定は<br>[ruby]<br>ENV[&quot;RAILS_ROOT&quot;] = File.expand_path(&quot;../../&quot;, <strong>FILE</strong>)<br>require File.expand_path(&quot;../../config/environment&quot;, <strong>FILE</strong>)<br>Teaspoon.setup do |config|</p>
+<p>またTest Runnerの設定は spec/teaspoon_env.rb で行います。<br>基本設定は<br>[ruby]<br>ENV[&quot;RAILS_ROOT&quot;] = File.expand_path(&quot;../../&quot;, <strong>FILE</strong>)
+require File.expand_path(&quot;../../config/environment&quot;, <strong>FILE</strong>)
+Teaspoon.setup do |config|</p>
 <h1 id="Driver-Server"><a href="#Driver-Server" class="headerlink" title="Driver / Server"></a>Driver / Server</h1><p>  config.driver              = &quot;phantomjs&quot; # available: phantomjs, selenium</p>
 <p>  #config.driver              = &quot;selenium&quot;</p>
 <p>  #config.server              = nil # defaults to Rack::Server</p>

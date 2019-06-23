@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>いままでrvmを使っていたけど、rbenvに移行したのでそのときの環境設定のメモを残しておこうと思います。<br><a href="https://github.com/sstephenson/rbenv" target="_blank" rel="noopener">rbenv</a> + <a href="https://github.com/sstephenson/ruby-build" target="_blank" rel="noopener">ruby-build</a> + <a href="https://github.com/jamis/rbenv-gemset" target="_blank" rel="noopener">rbenv-gemset</a> 環境を構築したいと思います。<br><a id="more"></a><br>まず、rubyのバージョン管理をrvmからrbenvに移行しました。<br>まずはrvmを削除。<br>[shell]<br>rvm implode<br>[/shell]</p>
+      <p>いままでrvmを使っていたけど、rbenvに移行したのでそのときの環境設定のメモを残しておこうと思います。<br><a href="https://github.com/sstephenson/rbenv" target="_blank" rel="noopener">rbenv</a> + <a href="https://github.com/sstephenson/ruby-build" target="_blank" rel="noopener">ruby-build</a> + <a href="https://github.com/jamis/rbenv-gemset" target="_blank" rel="noopener">rbenv-gemset</a> 環境を構築したいと思います。</p>
+<a id="more"></a>
+<p>まず、rubyのバージョン管理をrvmからrbenvに移行しました。<br>まずはrvmを削除。<br>[shell]<br>rvm implode<br>[/shell]</p>
 <p>.bash_profileとかにある設定も同じく削除しました。<br>でrbenvのインストール。<br>Homebrewをつかってるので、<br>[shell]<br>brew install rbenv<br>[/shell]<br>githubからcloneするなら<br>[shell]<br>git clone git://github.com/sstephenson/rbenv.git .rbenv<br>[/shell]</p>
 <p>つづいてパスを通します。<br>[shell]<br>echo ‘export PATH=&quot;$HOME/.rbenv/bin:$PATH&quot;’ &gt;&gt; ~/.bash_profile<br>echo ‘eval &quot;$(rbenv init -)&quot;’ &gt;&gt; ~/.bash_profile<br>[/shell]</p>
 <p>続いてRubyのビルドツールruby-buildをいれます。<br>brewを使ってるなら、<br>[shell]<br>brew install ruby-build<br>[/shell]</p>

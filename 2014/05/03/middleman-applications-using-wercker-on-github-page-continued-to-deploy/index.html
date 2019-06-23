@@ -105,6 +105,7 @@ ga('send', 'pageview');
     
       <p>&lt;a href=<a href="http://middlemanapp.com/&quot;&gt;middleman" target="_blank" rel="noopener">http://middlemanapp.com/&quot;&gt;middleman</a>アプリケーションをgithubのmasterブランチにpushするだけでgithub pageを更新できるようにした。</p>
 <a id="more"></a>
+
 <p>middlemanは静的サイトジェネレーターで、ビルドすることで静的サイトを生成できる。<br>生成した静的ページをgithubのgh-pagesブランチにpushすることでwebページとして公開する。</p>
 <p>今回はmasterにプッシュしたあとのビルドからデプロイまでの過程を<a href="https://app.wercker.com/" target="_blank" rel="noopener">wercker</a>を使ってCIした。<br>同様のことは<a href="https://travis-ci.org/" target="_blank" rel="noopener">Travis CI</a>や<a href="https://drone.io/" target="_blank" rel="noopener">drone.io</a>などを使ってもできる。<br>werckerは<a href="https://bitbucket.org/" target="_blank" rel="noopener">Bitbacket</a>や<a href="https://github.com/" target="_blank" rel="noopener">github</a>のプライベートリポジトリでも利用できて、<br>サービスがβ版の間は無料(ただしビルドは25分以内でないといけない)ということで選択した。</p>
 <p>werckerアカウントを作成し、middlemanをgithubリポジトリを同期したら、<br>デプロイターゲットとしてgh_pageを登録していく。</p>
@@ -118,7 +119,7 @@ ga('send', 'pageview');
 </ul>
 <p>これでmasterブランチにpushするとwercker.ymlの指定通りにビルドステップを実行し、<br>自動でデプロイステップも実行するようになる。</p>
 <p>続いて環境変数を設定する。</p>
-<p>Add new variableから<br>Environment variableにGH_REMOTE。テキストエリアに<br><a href="https://{GITHUB-TOKEN}@github.com/{GITHUB-ACCOUNT}/{リポジトリ名}" target="_blank" rel="noopener">https://{GITHUB-TOKEN}@github.com/{GITHUB-ACCOUNT}/{リポジトリ名}</a> を入力。</p>
+<p>Add new variableから<br>Environment variableにGH_REMOTE。テキストエリアに<br>https://{GITHUB-TOKEN}@github.com/{GITHUB-ACCOUNT}/{リポジトリ名} を入力。</p>
 <p><img src="http://cl.ly/image/271h0q1J2m0T/img.jpg" alt></p>
 <p>これで、wercker側の設定は完了。</p>
 <p>あとはwercker.ymlにビルドステップとデプロイステップを記述する。</p>

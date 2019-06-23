@@ -101,7 +101,9 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>Sublime Text 3に乗り換えたけど、Pacakge Controlが使えなかったので、調べてみた。<br><a id="more"></a><br>どうも、Sublime Text 3では Pacakge ControlにはSSL認証が必要になったらしく、そのままでは.sublime-packageを展開できないらしい。<br>そこでgitリポジトリから直接cloneして<a href="https://github.com/wbond/sublime_package_control/tree/python3" target="_blank" rel="noopener">python3ブランチ</a>を使用するみたい。</p>
+      <p>Sublime Text 3に乗り換えたけど、Pacakge Controlが使えなかったので、調べてみた。</p>
+<a id="more"></a>
+<p>どうも、Sublime Text 3では Pacakge ControlにはSSL認証が必要になったらしく、そのままでは.sublime-packageを展開できないらしい。<br>そこでgitリポジトリから直接cloneして<a href="https://github.com/wbond/sublime_package_control/tree/python3" target="_blank" rel="noopener">python3ブランチ</a>を使用するみたい。</p>
 <p>[shell]<br>cd Packages/<br>git clone <a href="https://github.com/wbond/sublime_package_control.git" target="_blank" rel="noopener">https://github.com/wbond/sublime_package_control.git</a> &quot;Package Control&quot;<br>cd &quot;Package Control&quot;<br>git checkout python3<br>[/shell]</p>
 <p>とりあえず、これでPackage Controlが使えました。</p>
 <p>ちなみに自分はDropbox経由でPackageなど管理しているので、関連ディレクトリびシンボリックリンクを作成しました。<br>その辺りもまとめて</p>

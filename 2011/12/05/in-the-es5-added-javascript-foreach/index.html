@@ -101,15 +101,19 @@ ga('send', 'pageview');
       
     </div>
     
-      <p><a href="http://www.ibm.com/developerworks/jp/web/library/wa-ecma262/?cmp=dw&amp;cpb=dwwdv&amp;ct=dwrss&amp;cr=dwrss&amp;ccy=jp&amp;csr=052011" target="_blank" rel="noopener">ECMA-262の第5版(ES5)のまとめ記事</a>見てたらArrayオブジェクトにforEachが追加されてた。<br>ということで、個人的なメモ。<br><a id="more"></a><br><code>array.forEach(callback[, thisObject]);</code><br>配列の各要素にたいしてcallback関数を実行できます。<br>thisObjectは、callbackを実行時にthisとして使用するオブジェクト。</p>
-<p>さらにECMA-262に対応してないブラウザにはprototypeで拡張してやればネイティブのメソッドとして使える。<br>`<br>if (!Array.prototype.forEach)<br>{<br>  Array.prototype.forEach = function(fun /<em>, thisp</em>/)<br>  {<br>    var len = this.length;<br>    if (typeof fun != “function”)<br>      throw new TypeError();</p>
+      <p><a href="http://www.ibm.com/developerworks/jp/web/library/wa-ecma262/?cmp=dw&cpb=dwwdv&ct=dwrss&cr=dwrss&ccy=jp&csr=052011" target="_blank" rel="noopener">ECMA-262の第5版(ES5)のまとめ記事</a>見てたらArrayオブジェクトにforEachが追加されてた。<br>ということで、個人的なメモ。</p>
+<a id="more"></a>
+<p><code>array.forEach(callback[, thisObject]);</code><br>配列の各要素にたいしてcallback関数を実行できます。<br>thisObjectは、callbackを実行時にthisとして使用するオブジェクト。</p>
+<p>さらにECMA-262に対応してないブラウザにはprototypeで拡張してやればネイティブのメソッドとして使える。<br>`
+if (!Array.prototype.forEach)<br>{
+  Array.prototype.forEach = function(fun /<em>, thisp</em>/)<br>  {<br>    var len = this.length;<br>    if (typeof fun != “function”)<br>      throw new TypeError();</p>
 <pre><code>var thisp = arguments[1];
 for (var i = 0; i &lt; len; i++)
 {
   if (i in this)
     fun.call(thisp, this[i], i, this);
-}
-</code></pre><p>  };<br>}<br>`</p>
+}</code></pre><p>  };<br>}
+`</p>
 <p>ということで、サンプル</p>
 <iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/kazu69/jjANQ/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 

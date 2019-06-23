@@ -103,7 +103,9 @@ ga('send', 'pageview');
     
       <p>最近は<a href="http://coffeescript.org/" target="_blank" rel="noopener">CoffeeScript</a>で<a href="http://backbonejs.org/" target="_blank" rel="noopener">Backbone.js</a>を書いてることが多いです。</p>
 <p>MVCっぽいJavaScriptフレームワークはなれてくると、やっぱりいいものですね。</p>
-<p>でも、WebアプリケーションフレームワークによってはRESTスタイルなやり取りできなかったり、JSONでデータのやり取りが困難な場合もあったりなかったり。<br>Backbone.jsをそんな環境下で使うと大変じゃないのかとか思っていたけど、ちゃんと準備されてました。<br><a id="more"></a><br>これ、ドキュメントにも書いてあるんですけどね。</p>
+<p>でも、WebアプリケーションフレームワークによってはRESTスタイルなやり取りできなかったり、JSONでデータのやり取りが困難な場合もあったりなかったり。<br>Backbone.jsをそんな環境下で使うと大変じゃないのかとか思っていたけど、ちゃんと準備されてました。</p>
+<a id="more"></a>
+<p>これ、ドキュメントにも書いてあるんですけどね。</p>
 <p>ModelオブジェクトやCollectionオブジェクトがRESTなAPIで通信できないときは</p>
 <p>[javascript]<br>Backbone.emulateHTTP = true;<br>[/javascript]</p>
 <p>として設定を変えておけば、Put、Deleteに代わってPostで通信してくれます。ちなみに、Ajaxの通信はjQueryのajaxメソッドで行ってます。<br>通信時にheaderにX-HTTP-Override-Methodが追加されて送られます。<br>アプリケーションの側でX-HTTP-Override-MethodがあればRESTなHTTPメソッドと認識し、処理してやればいいということっぽいですね。</p>

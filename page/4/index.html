@@ -74,6 +74,47 @@ ga('send', 'pageview');
     <main role="main" id="main">
       <section>
   
+    <article id="post-using_army_knife_netcat_of_network" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/06/19/using_army_knife_netcat_of_network/">ネットワークのアーミーナイフnetcatを使ってみる</a>
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2016-06-19T11:26:02.000Z" itemprop="datePublished">2016-06-19</time>
+
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/memo/">memo</a>
+  </div>
+
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>サーバーの死活確認やモックレスポンスが欲しい時など、手元で簡単に実現出来るnetcatコマンド。<br>ソフトウェア開発しているときに活用できそうな機能をまとめてみた。<br>netcatはunixだけでなくwindowsでも使える。</p>
+      
+    
+  </div>
+
+  
+
+  
+</article>
+
+
+
+  
     <article id="post-start-node-server-with-systemd" class="article article-type-post" itemscope itemprop="blogPost">
   <header class="article-header">
     
@@ -102,10 +143,10 @@ ga('send', 'pageview');
       
     </div>
     
-      <p>nodejsのプロセスバックグラウンドで実行する(デーモン化)する場合、だいたい<a href="https://www.npmjs.com/package/forever" target="_blank" rel="noopener">forever</a>などが選択されると思う。<br>今回は、Fedora、CentOS 7のデーモンとなるsystemdを使ってデーモン化してみた。<br>
+      <p>nodejsのプロセスバックグラウンドで実行する(デーモン化)する場合、だいたい<a href="https://www.npmjs.com/package/forever" target="_blank" rel="noopener">forever</a>などが選択されると思う。<br>今回は、Fedora、CentOS 7のデーモンとなるsystemdを使ってデーモン化してみた。</p>
       
     
-  </p></div>
+  </div>
 
   
 
@@ -419,49 +460,6 @@ ga('send', 'pageview');
     </div>
     
       <p>運用年数の長いウェブサービスでcssやhtmlのリファクタリングをするにあたって、ビジュアルのRegression test(回帰テスト)が必要となってきたので、導入するにあたりいくつかのツールを眺めてみた。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-examined-mysql-binlog-format" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/01/examined-mysql-binlog-format/">mysqlのバイナリログのフォーマットを調べた</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2015-12-01T10:19:09.000Z" itemprop="datePublished">2015-12-01</time>
-
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/memo/">memo</a>
-  </div>
-
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>とあるアプリケーションをレンタルサーバーに設置しようとした際に、<br><a href="https://mariadb.com/" target="_blank" rel="noopener">MariaDB</a>が以下のようなエラーを吐いていた。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Unsafe statement written to the binary log using statement format</span><br><span class="line">since BINLOG_FORMAT = STATEMENT. Statement is unsafe because it</span><br><span class="line">invokes a trigger or a stored function that inserts into an</span><br><span class="line">AUTO_INCREMENT column. Inserted values cannot be logged correctly.</span><br></pre></td></tr></table></figure>
-<p>バイナリログフォーマットがSTATEMENTだと安全でないのでよろしくないらしい。<br>STATEMENTだと安全でないということはどういうことか。少し試してみた。</p>
       
     
   </div>

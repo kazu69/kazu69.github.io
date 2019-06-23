@@ -106,22 +106,27 @@ ga('send', 'pageview');
     
       <p>なかなか試せなかったログ収集・解析周りのツールを周回遅れで軽く試してみた。<br>Docker 1.8 から<a href="http://docs.docker.com/engine/reference/logging/fluentd/" target="_blank" rel="noopener">Fluentdもlog driver</a>に追加されているので、これを使って簡単なサンプルを構築した。</p>
 <a id="more"></a>
+
 <h2 id="構成"><a href="#構成" class="headerlink" title="構成"></a>構成</h2><p>適当なnodeJSアプリケーションのフロントにnginxを立たせて、<br>収集したログをtd-agentで、Fluentdのログ収集コンテナに24224ポートで転送する。<br>あとはElasticsearch、Kibanaで解析・表示する。</p>
 <p>アプリケーションからのログ転送はDockerのlog-driverオプションを使うので、td-agentの導入を省けた。<br><a href="https://github.com/fluent/fluentd-docker-image" target="_blank" rel="noopener">Fluentd</a>、<a href="https://github.com/dockerfile/elasticsearch" target="_blank" rel="noopener">Elasticsearch</a>、<a href="https://github.com/eliotk/docker-kibana" target="_blank" rel="noopener">Kibana</a>はそれぞれオフィシャルのイメージがあるので、そちらを活用した。<br>Elasticsearchは9200ポート、kibanaは5601ポートを使った。</p>
 <h2 id="ログ収集・解析基盤のセットアップ"><a href="#ログ収集・解析基盤のセットアップ" class="headerlink" title="ログ収集・解析基盤のセットアップ"></a>ログ収集・解析基盤のセットアップ</h2><h3 id="Fluentd"><a href="#Fluentd" class="headerlink" title="Fluentd"></a>Fluentd</h3>
 <script src="https://gist-it.appspot.com/github/kazu69/docker-efk/blob/master/fluentd/Dockerfile"></script>
 
+
 <p>fluentdの設定はログをElasticsearch(9200ポート)に転送している。<br>forwardで転送されてきたログでdockerというタグのついたものを9200ポートで送信している。<br>logstash_formatの設定は出力形式、これがfalseの場合kibanaで解析する際に@timestampフィールドが作成されないようで時系列で集計できない。</p>
 
 <script src="https://gist-it.appspot.com/github/kazu69/docker-efk/blob/master/fluentd/fluent.conf"></script>
+
 
 <h3 id="kibana"><a href="#kibana" class="headerlink" title="kibana"></a>kibana</h3><p>5601ポートでアクセスすることで解析画面を表示できる。<br>これはどちらかというと設定より使い方を習得する方が大変そうな。</p>
 <h2 id="docker-composeのコンテナのヘルスチェック"><a href="#docker-composeのコンテナのヘルスチェック" class="headerlink" title="docker-composeのコンテナのヘルスチェック"></a>docker-composeのコンテナのヘルスチェック</h2><p>docker-composeを使った際に、各コンテナとの疎通確認にncコマンドを使っている。そのため、ほとんどのentrypoint.shファイルの内容がほとんど同じになってしまった。</p>
 
 <script src="https://gist-it.appspot.com/github/kazu69/docker-efk/blob/master/fluentd/entrypoint.sh"></script>
 
+
 <p>コンテナ間の依存を解消する方法がいまいちわかってないのでこのような手法をとったのだが、もっといい方法がありそう。<br><a href="https://github.com/docker/compose/pull/686" target="_blank" rel="noopener">docker-compose issue#686</a>にあるようなので、今後解決されるかも。</p>
 <h2 id="起動してみる"><a href="#起動してみる" class="headerlink" title="起動してみる"></a>起動してみる</h2><script src="//gist.github.com/kazu69/84e383c0dab2e115352c.js?file=exec.sh"></script>
+
 <p>kibanaにアクセスすると</p>
 <p><img src="https://gist.githubusercontent.com/kazu69/84e383c0dab2e115352c/raw/3602e3920c3021754b7a8bda17f8b6505cd49b6d/1.png" alt></p>
 <p>logstash形式のものをフィルタリング</p>

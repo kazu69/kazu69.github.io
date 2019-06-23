@@ -104,12 +104,14 @@ ga('send', 'pageview');
     </div>
     
       <p><img src="/images/2010/04/20100425-01.png" alt="async ga.js"></p>
-<p>昨年末くらいだったと思うけど、Google Analyticsの非同期版のコードが出ていたのですが<br>まだベータテストでした。<br>4月9日に正式に推奨されました。(<a href="http://analytics.blogspot.com/2010/04/making-web-faster.html" target="_blank" rel="noopener">Google Analytics Blog</a>)<br><a id="more"></a><br>違いは、ページの読み込み時に同時に並行で解析用のjavascriptを読み込み、処理するという感じです。<br>(正式にはjsの読み込み時にほかの要素の読み込みをブロックしない)</p>
+<p>昨年末くらいだったと思うけど、Google Analyticsの非同期版のコードが出ていたのですが<br>まだベータテストでした。<br>4月9日に正式に推奨されました。(<a href="http://analytics.blogspot.com/2010/04/making-web-faster.html" target="_blank" rel="noopener">Google Analytics Blog</a>)</p>
+<a id="more"></a>
+<p>違いは、ページの読み込み時に同時に並行で解析用のjavascriptを読み込み、処理するという感じです。<br>(正式にはjsの読み込み時にほかの要素の読み込みをブロックしない)</p>
 <p>で、何が変わるか。</p>
 <ul>
 <li>ページ読み込み速度の向上</li>
 <li>滞在時間が短いユーザーも正確に解析</li>
-<li>クリックのトラッキングの際に影響の会った関数読み込み関する要素の排除<br>とのこと。(<a href="http://www.google.com/support/analytics/bin/answer.py?hl=jp&amp;answer=161379" target="_blank" rel="noopener">Google Analytics 非同期トラッキング コードとは</a>)</li>
+<li>クリックのトラッキングの際に影響の会った関数読み込み関する要素の排除<br>とのこと。(<a href="http://www.google.com/support/analytics/bin/answer.py?hl=jp&answer=161379" target="_blank" rel="noopener">Google Analytics 非同期トラッキング コードとは</a>)</li>
 </ul>
 <p>たぶん、検索結果にページの表示速度も加味するということで解析タグのアップデートも行ったと思います。</p>
 <p>使い方は変わりませんが、設置箇所が今までは&lt;/body&gt;の直前に設置してましたが、新しいトラッキングコードは&lt;head&gt;内に設置します。簡単なので、対応した方がいいすね。</p>
