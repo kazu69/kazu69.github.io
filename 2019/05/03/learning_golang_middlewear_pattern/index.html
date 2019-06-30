@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Golangのmiddlewear実装パターンを学ぶ | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Golangでwebアプリケーションなどを開発するに当たり、リクエストやレスポンスをインターセプトし適宜利用するmiddlewearの実装パターンを読んでみたときのメモ。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golangのmiddlewear実装パターンを学ぶ">
+<meta property="og:url" content="http://blog.kazu69.net/2019/05/03/learning_golang_middlewear_pattern/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="Golangでwebアプリケーションなどを開発するに当たり、リクエストやレスポンスをインターセプトし適宜利用するmiddlewearの実装パターンを読んでみたときのメモ。">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-06-30T14:53:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Golangのmiddlewear実装パターンを学ぶ">
+<meta name="twitter:description" content="Golangでwebアプリケーションなどを開発するに当たり、リクエストやレスポンスをインターセプトし適宜利用するmiddlewearの実装パターンを読んでみたときのメモ。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head></html>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-learning_golang_middlewear_pattern" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Golangのmiddlewear実装パターンを学ぶ
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2019-05-02T18:12:25.000Z" itemprop="datePublished">2019-05-03</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>Golangでwebアプリケーションなどを開発するに当たり、<br>リクエストやレスポンスをインターセプトし適宜利用するmiddlewearの実装パターンを<br>読んでみたときのメモ。</p>
+<a id="more"></a>
+
+<p>今回はHTTPサーバーおよびHTTPクライアントを読んでみた。<br>結果として、標準パッケージのみで比較的容易に実装できる。<br>これはgolangの柔軟な言語仕様なんだろう。<br>golangらしいコーディングの勉強にもなりました。</p>
+<h2 id="http-server-callstack"><a href="#http-server-callstack" class="headerlink" title="http server callstack"></a>http server callstack</h2><p>およそ一般的なechoサーバーの実装は以下のような感じと思われる</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">"fmt"</span></span><br><span class="line">  <span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">handler</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">  fmt.Fprintf(w, <span class="string">"Hello, World"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  http.HandleFunc(<span class="string">"/"</span>, handler)</span><br><span class="line">  http.ListenAndServe(<span class="string">":3000"</span>, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>callstackを見ていくと</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HandleFunc</span><span class="params">(pattern <span class="keyword">string</span>, handler <span class="keyword">func</span>(ResponseWriter, *Request)</span>)</span> &#123;</span><br><span class="line">	DefaultServeMux.HandleFunc(pattern, handler)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>patternに適合したhandlerを登録する。DefaultServeMuxで初期設定で提供されている。<br>ちなみにServeMuxはhttpマルチプレクサになる。</p>
+<p>また、コードコメントに以下のようにある</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Longer patterns take precedence over shorter ones, so that</span><br><span class="line">if there are handlers registered for both &quot;/images/&quot;</span><br><span class="line">and &quot;/images/thumbnails/&quot;, the latter handler will be</span><br><span class="line">called for paths beginning &quot;/images/thumbnails/&quot; and the</span><br><span class="line">former will receive requests for any other paths in the</span><br><span class="line">&quot;/images/&quot; subtree.</span><br></pre></td></tr></table></figure>
+
+<p>パスのパターンマッチはより長いパターンのほうが短いパターンより優先されるとのこと。<br>さらにhandler optionは</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">handler <span class="function"><span class="keyword">func</span><span class="params">(ResponseWriter, *Request)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>ここからわかるようにhandlerはrequest writerとresponseの参照をオプションとする関数である。<br>これを満たせばよい。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">HandleFunc</span><span class="params">(pattern <span class="keyword">string</span>, handler <span class="keyword">func</span>(ResponseWriter, *Request)</span>)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> handler == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(<span class="string">"http: nil handler"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	mux.Handle(pattern, HandlerFunc(handler))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>HandleFuncはServeMuxのHandleをcallすることになる。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ServeMux <span class="keyword">struct</span> &#123;</span><br><span class="line">	mu    sync.RWMutex</span><br><span class="line">	m     <span class="keyword">map</span>[<span class="keyword">string</span>]muxEntry</span><br><span class="line">	es    []muxEntry <span class="comment">// slice of entries sorted from longest to shortest.</span></span><br><span class="line">	hosts <span class="keyword">bool</span>       <span class="comment">// whether any patterns contain hostnames</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">Handle</span><span class="params">(pattern <span class="keyword">string</span>, handler Handler)</span></span> &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    e := muxEntry&#123;h: handler, pattern: pattern&#125;</span><br><span class="line">	mux.m[pattern] = e</span><br><span class="line">	<span class="keyword">if</span> pattern[<span class="built_in">len</span>(pattern)<span class="number">-1</span>] == <span class="string">'/'</span> &#123;</span><br><span class="line">		mux.es = appendSorted(mux.es, e)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>pathにマッチしているhandlerを登録している。</p>
+<p>次はこのhandlerを呼び出すところ。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// net/http/server.go</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ListenAndServe</span><span class="params">(addr <span class="keyword">string</span>, handler Handler)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	server := &amp;Server&#123;Addr: addr, Handler: handler&#125;</span><br><span class="line">	<span class="keyword">return</span> server.ListenAndServe()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(srv *Server)</span> <span class="title">ListenAndServe</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> srv.shuttingDown() &#123;</span><br><span class="line">		<span class="keyword">return</span> ErrServerClosed</span><br><span class="line">	&#125;</span><br><span class="line">	addr := srv.Addr</span><br><span class="line">	<span class="keyword">if</span> addr == <span class="string">""</span> &#123;</span><br><span class="line">		addr = <span class="string">":http"</span></span><br><span class="line">	&#125;</span><br><span class="line">	ln, err := net.Listen(<span class="string">"tcp"</span>, addr)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> srv.Serve(tcpKeepAliveListener&#123;ln.(*net.TCPListener)&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(srv *Server)</span> <span class="title">Serve</span><span class="params">(l net.Listener)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">        c := srv.newConn(rw)</span><br><span class="line">		c.setState(c.rwc, StateNew) <span class="comment">// before Serve can return</span></span><br><span class="line">		<span class="keyword">go</span> c.serve(ctx)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *conn)</span> <span class="title">serve</span><span class="params">(ctx context.Context)</span></span> &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">		<span class="comment">// HTTP cannot have multiple simultaneous active requests.[*]</span></span><br><span class="line">		<span class="comment">// Until the server replies to this request, it can't read another,</span></span><br><span class="line">		<span class="comment">// so we might as well run the handler in this goroutine.</span></span><br><span class="line">		<span class="comment">// [*] Not strictly true: HTTP pipelining. We could let them all process</span></span><br><span class="line">		<span class="comment">// in parallel even if their responses need to be serialized.</span></span><br><span class="line">		<span class="comment">// But we're not going to implement HTTP pipelining because it</span></span><br><span class="line">		<span class="comment">// was never deployed in the wild and the answer is HTTP/2.</span></span><br><span class="line">    serverHandler&#123;c.server&#125;.ServeHTTP(w, w.req)</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(sh serverHandler)</span> <span class="title">ServeHTTP</span><span class="params">(rw ResponseWriter, req *Request)</span></span> &#123;</span><br><span class="line">	handler := sh.srv.Handler</span><br><span class="line">	<span class="keyword">if</span> handler == <span class="literal">nil</span> &#123;</span><br><span class="line">		handler = DefaultServeMux</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> req.RequestURI == <span class="string">"*"</span> &amp;&amp; req.Method == <span class="string">"OPTIONS"</span> &#123;</span><br><span class="line">		handler = globalOptionsHandler&#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	handler.ServeHTTP(rw, req)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最終的にhandlerは<code>ServeHTTP</code>をcallする形になる。</p>
+<p>そしてこのhanderは以下のinterfaceを持っている。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Handler <span class="keyword">interface</span> &#123;</span><br><span class="line">	ServeHTTP(ResponseWriter, *Request)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>これから作成するmiddlewearはこのインターフェイスを満たす関数である必要がある。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Except for reading the body, handlers should not modify the provided Request.</span><br></pre></td></tr></table></figure>
+
+<p>middlewear自体の内部実装の注意点としては、<br>公式のコメントにある通りでRequestBodyをあくまでReadするだけで変更してはならない。</p>
+<p>またServerには<code>Handle</code>と<code>HandleFunc</code>が実装されており、HandleFuncをつかうことでハンドラ関数を登録できることわかる。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Handle</span><span class="params">(pattern <span class="keyword">string</span>, handler Handler)</span></span> &#123; DefaultServeMux.Handle(pattern, handler) &#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HandleFunc</span><span class="params">(pattern <span class="keyword">string</span>, handler <span class="keyword">func</span>(ResponseWriter, *Request)</span>)</span> &#123;</span><br><span class="line">	DefaultServeMux.HandleFunc(pattern, handler)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>このHandleFuncの<code>ServerHTTP</code>は以下のような実装である</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> HandlerFunc <span class="function"><span class="keyword">func</span><span class="params">(ResponseWriter, *Request)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">// <span class="title">ServeHTTP</span> <span class="title">calls</span> <span class="title">f</span><span class="params">(w, r)</span>.</span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(f HandlerFunc)</span> <span class="title">ServeHTTP</span><span class="params">(w ResponseWriter, r *Request)</span></span> &#123;</span><br><span class="line">	f(w, r)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>HandlerFuncをcallする関数になっている。</p>
+<h2 id="middlewearを実装"><a href="#middlewearを実装" class="headerlink" title="middlewearを実装"></a>middlewearを実装</h2><p>ここまで見てきた通りmiddlewearはhandlerで実装されるように設計していくことで、あとは既存の機構で適宜処理される。<br>またmiddlewerはアプリケーションの処理の前後にmiddlewearの処理挟むため、イメージ的に</p>
+<p>[request] –&gt; [middlewear] –&gt; [another middlewear] –&gt;<br>… –&gt; [final] –&gt; [middlewear] –&gt; [another middlewear] –&gt; … –&gt; [response]</p>
+<p>という動作が期待される</p>
+<p>具体的には以下のような感じになってほしいものである。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http.Handle(<span class="string">"/"</span>, middleware1(middleware2(... (finalHandler) ...))</span><br></pre></td></tr></table></figure>
+
+<p>引数として受けた次のmiddlewareを呼び出す前後に何らかの操作を実行し。<br>新しいmiddleware1を返す関数でmiddlewearを実装する必要がある。</p>
+<p>各middleware関数は実装としては以下の形であればよい</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">middleware</span><span class="params">(next http.HandlerFunc)</span> <span class="title">http</span>.<span class="title">HandlerFunc</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> http.HandlerFunc(<span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">		next.ServeHTTP(w, r)</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>HandlerFuncをオプションにとり、HandlerFuncを返す関数である。</p>
+<p>http.HandlerFuncはinterfaceから<code>ServeHTTP</code>を実装しているので最終的にそれをcallする。<br>あとはmiddlewearを複数登録できるようにラッパー関数を作成していく。</p>
+<p>ということで実装してみる。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// add type for middlewear</span></span><br><span class="line"><span class="keyword">type</span> middleware <span class="function"><span class="keyword">func</span><span class="params">(http.HandlerFunc)</span> <span class="title">http</span>.<span class="title">HandlerFunc</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">// <span class="title">add</span> <span class="title">middlewear</span> <span class="title">function</span></span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="title">useMiddlewears</span><span class="params">(middlewares ...middleware)</span> <span class="title">middleware</span></span> &#123;</span><br><span class="line">    <span class="comment">// final handler register function</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(final http.HandlerFunc)</span> <span class="title">http</span>.<span class="title">HandlerFunc</span></span> &#123;</span><br><span class="line">        <span class="comment">// Pass the previous function as an argument</span></span><br><span class="line">		<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">			fn := final</span><br><span class="line">			<span class="keyword">for</span> i := <span class="built_in">len</span>(middlewares) - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i-- &#123;</span><br><span class="line">				fn = middlewares[i](fn)</span><br><span class="line">            &#125;</span><br><span class="line">			fn(w, req)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上記のように<code>mniddlewear</code>というタイプを作成し、middlewearを登録するラッパー関数を作成する。<br>今回は最終的にリクエストを処理する関数を別途登録するデザインとなっている。<br>またリスト内のfinal handlerから順番に登録した順番と逆順で直前の関数に渡すようにすることで、</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http.Handle(<span class="string">"/"</span>, middleware1(middleware2(... (finalHandler) ...))</span><br></pre></td></tr></table></figure>
+
+<p>このパターンを実現できる。<br>最終的に以下のようになった。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"log"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> middleware <span class="function"><span class="keyword">func</span><span class="params">(http.HandlerFunc)</span> <span class="title">http</span>.<span class="title">HandlerFunc</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="title">middlewareA</span><span class="params">(next http.HandlerFunc)</span> <span class="title">http</span>.<span class="title">HandlerFunc</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> http.HandlerFunc(<span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">		log.Println(<span class="string">"Executing middlewareA before handler"</span>)</span><br><span class="line">		next.ServeHTTP(w, r)</span><br><span class="line">		log.Println(<span class="string">"Executing middlewareA after handler"</span>)</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">middlewareB</span><span class="params">(next http.HandlerFunc)</span> <span class="title">http</span>.<span class="title">HandlerFunc</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> http.HandlerFunc(<span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">		log.Println(<span class="string">"Executing middlewareB before handler"</span>)</span><br><span class="line">		next.ServeHTTP(w, r)</span><br><span class="line">		log.Println(<span class="string">"Executing middlewareB after handler"</span>)</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">finalHandler</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">	log.Println(<span class="string">"Executing finalHandler"</span>)</span><br><span class="line">	w.Write([]<span class="keyword">byte</span>(<span class="string">"Done"</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">useMiddlewears</span><span class="params">(middlewares ...middleware)</span> <span class="title">middleware</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(final http.HandlerFunc)</span> <span class="title">http</span>.<span class="title">HandlerFunc</span></span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">			fn := final</span><br><span class="line">			<span class="keyword">for</span> i := <span class="built_in">len</span>(middlewares) - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i-- &#123;</span><br><span class="line">				fn = middlewares[i](fn)</span><br><span class="line">			&#125;</span><br><span class="line">			fn(w, req)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	middlewears := useMiddlewears(middlewareA, middlewareB)</span><br><span class="line">	http.HandleFunc(<span class="string">"/"</span>, middlewears(finalHandler))</span><br><span class="line">	http.ListenAndServe(<span class="string">":3000"</span>, middlewears(finalHandler))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ go run main.go</span><br><span class="line">// $ curl http://localhost:3000/</span><br><span class="line">DONE</span><br><span class="line"></span><br><span class="line">2019/05/02 19:03:56 Executing middlewareA before handler</span><br><span class="line">2019/05/02 19:03:56 Executing middlewareB before handler</span><br><span class="line">2019/05/02 19:03:56 Executing finalHandler</span><br><span class="line">2019/05/02 19:03:56 Executing middlewareB after handler</span><br><span class="line">2019/05/02 19:03:56 Executing middlewareA after handler</span><br></pre></td></tr></table></figure>
+
+<p>ということで期待通りの実装ができた。</p>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Handler <span class="keyword">interface</span> &#123;</span><br><span class="line">	ServeHTTP(ResponseWriter, *Request)</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"><span class="keyword">type</span> HandlerFunc <span class="function"><span class="keyword">func</span><span class="params">(ResponseWriter, *Request)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(f HandlerFunc)</span> <span class="title">ServeHTTP</span><span class="params">(w ResponseWriter, r *Request)</span></span> &#123;</span><br><span class="line">	f(w, r)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>http.Handlerが以下のinterfaceに依存しており、<br>ServeHTTPの実装がhandlerを呼ぶ形になっている。<br>この実装のため非常に効果的にmiddlewearを作成することができる。</p>
+<p>このあたりがgolangは柔軟に設計されていて,interfaceにのみ依存したkたちで<br>実際の実装をしていく感じを体験できるものだと思う。<br>次はhttp.Clientでも同じように見ていければ。</p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4054575508733221" data-ad-slot="9493597992" data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2019/05/03/learning_golang_middlewear_pattern/" class="hatena-bookmark-button" data-hatena-bookmark-title="Golangのmiddlewear実装パターンを学ぶ" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2019/05/03/learning_golang_middlewear_pattern/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2019/04/03/typescript-compiler-relearning/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            Typescript Compiler APIを斜め読み
+          
+        </span>
+        
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2019 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2019/05/03/learning_golang_middlewear_pattern/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
