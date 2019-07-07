@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Golangのhttp clientのmiddlewearの実装パターン | 69log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="以前にためしたGolangのmiddlewear実装パターンを学ぶの続きで、HttpClientでも同じパターンを適用したときのメモ。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golangのhttp clientのmiddlewearの実装パターン">
+<meta property="og:url" content="http://blog.kazu69.net/2019/05/05/learning_golang_middlewear_pattern_for_client/index.html">
+<meta property="og:site_name" content="69log">
+<meta property="og:description" content="以前にためしたGolangのmiddlewear実装パターンを学ぶの続きで、HttpClientでも同じパターンを適用したときのメモ。">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-07-07T09:19:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Golangのhttp clientのmiddlewearの実装パターン">
+<meta name="twitter:description" content="以前にためしたGolangのmiddlewear実装パターンを学ぶの続きで、HttpClientでも同じパターンを適用したときのメモ。">
+  
+    <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-9196861-14', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head></html>
+<body>
+    <header role="header">
+  <div class="header cf">
+    <div class="title-content">
+      <h1>
+        <a href="/">69log</a>
+      </h1>
+      
+        <h2>
+          <a href="/">福岡でwebの仕事をしています</a>
+        </h2>
+      
+    </div>
+
+    <div class="nav-content cf">
+      <nav>
+        
+          <a href="/" class="nav-link nav-home">home</a>
+        
+          <a href="/archives" class="nav-link nav-archives">archives</a>
+        
+        
+          <a href="/atom.xml" title="RSS Feed" class="icon nav-link nav-feed"></a>
+        
+      </nav>
+      <div class="header-search">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://blog.kazu69.net"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main role="main" id="main">
+      <section><article id="post-learning_golang_middlewear_pattern_for_client" class="article article-type-post" itemscope itemprop="blogPost">
+  <header class="article-header">
+    
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Golangのhttp clientのmiddlewearの実装パターン
+    </h1>
+  
+
+    
+    <div class="article-meta clr">
+      <time datetime="2019-05-05T04:21:53.000Z" itemprop="datePublished">2019-05-05</time>
+
+      
+
+    </div>
+  </header>
+
+  <div class="article-entry" itemprop="articleBody">
+    <div class="article-gallery">
+      
+    </div>
+    
+      <p>以前にためした<a href>Golangのmiddlewear実装パターンを学ぶ</a>の続きで、<br>HttpClientでも同じパターンを適用したときのメモ。</p>
+<a id="more"></a>
+
+<p>とてもシンプルなclientの利用事例は以下のようになる。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	client := &amp;http.Client&#123;&#125;</span><br><span class="line">	resp, err := client.Get(<span class="string">"https://example.com"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ますは前回と同じくcallstackを見てみる。</p>
+<h2 id="http-client-callstack"><a href="#http-client-callstack" class="headerlink" title="http client callstack"></a>http client callstack</h2><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// net/http/client.go</span></span><br><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    Transport RoundTripper</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>Client構造体のコードコメントを見ると以下のようにあり</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Transport specifies the mechanism by which individual</span><br><span class="line">HTTP requests are made.</span><br><span class="line">If nil, DefaultTransport is used.</span><br></pre></td></tr></table></figure>
+
+<p>どのメカニズムでtransportするのかは<code>Transport</code>の実装できまる。<br>nilの場合はデフォルトでHTTPが使われる。つまりhttp以外で会話するclientを作成する際も<br>このtransportをサポートしていれば良いってこと。<br>実際はhttp clientのtransportが<code>RoundTripper</code>なので、別のプロトコルの場合はこのRoundTripperを実装することになるのかな。</p>
+<p>話は少しそれるがTransport構造体もざっとみてみると</p>
+<ul>
+<li>Transportは将来の再利用のために接続をキャッシュする<ul>
+<li>CloseIdleConnectionsで管理する</li>
+<li>MaxConnsPerHostで設定可能</li>
+</ul>
+</li>
+<li>Transportはgorutineで再利用可能(スレッドセーフ)</li>
+<li>HTTP URLがHTTP1.1または2を使う<ul>
+<li>HTTP2をサポートしてる</li>
+</ul>
+</li>
+<li>ネットワークエラーのときのみ再接続</li>
+<li>Proxyで特定のURLに対してhttp(s), socketでのproxyができる</li>
+<li>そのほかTCP dialやkeep-aliveもここで扱かわれる</li>
+</ul>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> RoundTripper <span class="keyword">interface</span> &#123;</span><br><span class="line">    RoundTrip(*Request) (*Response, error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>RoundTripper</code>のiterfaceからRoundTrip関数を持ち、実際にこのRoundTripでサーバーとの会話を行う。</p>
+<p>続いて実際にRequestを行っている処理を見てみる。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Client)</span> <span class="title">Get</span><span class="params">(url <span class="keyword">string</span>)</span> <span class="params">(resp *Response, err error)</span></span> &#123;</span><br><span class="line">	req, err := NewRequest(<span class="string">"GET"</span>, url, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> c.Do(req)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Client)</span> <span class="title">Do</span><span class="params">(req *Request)</span> <span class="params">(*Response, error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> c.do(req)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Client)</span> <span class="title">do</span><span class="params">(req *Request)</span> <span class="params">(retres *Response, reterr error)</span></span> &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">		reqs = <span class="built_in">append</span>(reqs, req)</span><br><span class="line">		<span class="keyword">var</span> err error</span><br><span class="line">		<span class="keyword">var</span> didTimeout <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="title">bool</span></span></span><br><span class="line"><span class="function">		<span class="title">if</span> <span class="title">resp</span>, <span class="title">didTimeout</span>, <span class="title">err</span> = <span class="title">c</span>.<span class="title">send</span><span class="params">(req, deadline)</span>; <span class="title">err</span> != <span class="title">nil</span></span> &#123;</span><br><span class="line">			<span class="comment">// c.send() always closes req.Body</span></span><br><span class="line">			reqBodyClosed = <span class="literal">true</span></span><br><span class="line">			<span class="keyword">if</span> !deadline.IsZero() &amp;&amp; didTimeout() &#123;</span><br><span class="line">				err = &amp;httpError&#123;</span><br><span class="line">					<span class="comment">// <span class="doctag">TODO:</span> early in cycle: s/Client.Timeout exceeded/timeout or context cancelation/</span></span><br><span class="line">					err:     err.Error() + <span class="string">" (Client.Timeout exceeded while awaiting headers)"</span>,</span><br><span class="line">					timeout: <span class="literal">true</span>,</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, uerr(err)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Client)</span> <span class="title">send</span><span class="params">(req *Request, deadline time.Time)</span> <span class="params">(resp *Response, didTimeout <span class="keyword">func</span>()</span> <span class="title">bool</span>, <span class="title">err</span> <span class="title">error</span>)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> c.Jar != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> _, cookie := <span class="keyword">range</span> c.Jar.Cookies(req.URL) &#123;</span><br><span class="line">			req.AddCookie(cookie)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	resp, didTimeout, err = send(req, c.transport(), deadline)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, didTimeout, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> c.Jar != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> rc := resp.Cookies(); <span class="built_in">len</span>(rc) &gt; <span class="number">0</span> &#123;</span><br><span class="line">			c.Jar.SetCookies(req.URL, rc)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> resp, <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// send issues an HTTP request.</span></span><br><span class="line"><span class="comment">// Caller should close resp.Body when done reading from it.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">send</span><span class="params">(ireq *Request, rt RoundTripper, deadline time.Time)</span> <span class="params">(resp *Response, didTimeout <span class="keyword">func</span>()</span> <span class="title">bool</span>, <span class="title">err</span> <span class="title">error</span>)</span> &#123;</span><br><span class="line">	req := ireq <span class="comment">// req is either the original request, or a modified fork</span></span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">	resp, err = rt.RoundTrip(req)</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> resp, <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ということで、最終的に<code>RoundTripper</code>の<code>RoundTrip</code>をcallすることになる。</p>
+<p>これからclientのmiddlewearはRoundTripを実装するRoundTripperであれば良い。</p>
+<p>ちなみにTransportのRoundtripの実装を見ると</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// roundTrip implements a RoundTripper over HTTP.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Transport)</span> <span class="title">roundTrip</span><span class="params">(req *Request)</span> <span class="params">(*Response, error)</span></span> &#123;</span><br><span class="line">		...</span><br><span class="line">		<span class="comment">// Get the cached or newly-created connection to either the</span></span><br><span class="line">		<span class="comment">// host (for http or https), the http proxy, or the http proxy</span></span><br><span class="line">		<span class="comment">// pre-CONNECTed to https server. In any case, we'll be ready</span></span><br><span class="line">		<span class="comment">// to send it requests.</span></span><br><span class="line">		pconn, err := t.getConn(treq, cm)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			t.setReqCanceler(req, <span class="literal">nil</span>)</span><br><span class="line">			req.closeBody()</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">var</span> resp *Response</span><br><span class="line">		<span class="keyword">if</span> pconn.alt != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="comment">// HTTP/2 path.</span></span><br><span class="line">			t.decHostConnCount(cm.key()) <span class="comment">// don't count cached http2 conns toward conns per host</span></span><br><span class="line">			t.setReqCanceler(req, <span class="literal">nil</span>)   <span class="comment">// not cancelable with CancelRequest</span></span><br><span class="line">			resp, err = pconn.alt.RoundTrip(req)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			resp, err = pconn.roundTrip(treq)</span><br><span class="line">		&#125;</span><br><span class="line">		...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>optionのroundTripperである<code>pconn.alt</code>がある場合はhttp2などが利用される。<br>また<code>getConn</code>をみると既にidleなconnectionがある場合はそちらを利用する設計なのがわかる。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// getConn dials and creates a new persistConn to the target as</span></span><br><span class="line"><span class="comment">// specified in the connectMethod. This includes doing a proxy CONNECT</span></span><br><span class="line"><span class="comment">// and/or setting up TLS.  If this doesn't return an error, the persistConn</span></span><br><span class="line"><span class="comment">// is ready to write requests to.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Transport)</span> <span class="title">getConn</span><span class="params">(treq *transportRequest, cm connectMethod)</span> <span class="params">(*persistConn, error)</span></span> &#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">if</span> pc, idleSince := t.getIdleConn(cm); pc != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> trace != <span class="literal">nil</span> &amp;&amp; trace.GotConn != <span class="literal">nil</span> &#123;</span><br><span class="line">			trace.GotConn(pc.gotIdleConnTrace(idleSince))</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// set request canceler to some non-nil function so we</span></span><br><span class="line">		<span class="comment">// can detect whether it was cleared between now and when</span></span><br><span class="line">		<span class="comment">// we enter roundTrip</span></span><br><span class="line">		t.setReqCanceler(req, <span class="function"><span class="keyword">func</span><span class="params">(error)</span></span> &#123;&#125;)</span><br><span class="line">		<span class="keyword">return</span> pc, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		pc, err := t.dialConn(ctx, cm)</span><br><span class="line">		dialc &lt;- dialRes&#123;pc, err&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	idleConnCh := t.getIdleConnCh(cm)</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="middlewearの実装"><a href="#middlewearの実装" class="headerlink" title="middlewearの実装"></a>middlewearの実装</h2><p>ここまでの結果から実際の具体的な実装をしていく。<br>middlewearは<code>http.RoundTripper</code>をオプションにとり<code>http.RoundTripper</code>を返す関数であればよい。<br>またhttp.Serrverのmiddlewearを実装下のrと同じく、clientのmiddlewear関数もhttp.Requestを受け、http.Responseを返す関数をオプションとする関数を返す必要がある。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">adapter</span><span class="params">(next http.RoundTripper)</span> <span class="title">http</span>.<span class="title">RoundTripper</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> RoundTripperFunc(<span class="function"><span class="keyword">func</span><span class="params">(r *http.Request)</span> <span class="params">(*http.Response, error)</span></span> &#123;</span><br><span class="line">		<span class="keyword">return</span> next.RoundTrip(r)</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>またこれらの関数をClient構造体のTransportメンバーに渡せるようにする関数を作成する必要がある。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">func useAdapters(adapters ...adapter) adapter &#123;</span><br><span class="line">	return func(final http.RoundTripper) http.RoundTripper &#123;</span><br><span class="line">		fn := final</span><br><span class="line">		for i := len(adapters) - 1; i &gt;= 0; i-- &#123;</span><br><span class="line">			fn = adapters[i](fn)</span><br><span class="line">		&#125;</span><br><span class="line">		return fn</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>のようにすることでhttp.clientのmiddlewearでmiddlewearを利用できるようになる。<br>この実装を見ても、serverのmiddlewearと同じ実装出ることがわかる。</p>
+<p>実際のコードは以下</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> adapter <span class="function"><span class="keyword">func</span><span class="params">(http.RoundTripper)</span> <span class="title">http</span>.<span class="title">RoundTripper</span></span></span><br><span class="line"><span class="function"><span class="title">type</span> <span class="title">RoundTripperFunc</span> <span class="title">func</span><span class="params">(*http.Request)</span> <span class="params">(*http.Response, error)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(f RoundTripperFunc)</span> <span class="title">RoundTrip</span><span class="params">(r *http.Request)</span> <span class="params">(res *http.Response, err error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> f(r)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">adapterA</span><span class="params">(next http.RoundTripper)</span> <span class="title">http</span>.<span class="title">RoundTripper</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> RoundTripperFunc(<span class="function"><span class="keyword">func</span><span class="params">(r *http.Request)</span> <span class="params">(*http.Response, error)</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"Executing adapterA before adapter"</span>)</span><br><span class="line">		res, err := next.RoundTrip(r)</span><br><span class="line">		fmt.Println(<span class="string">"Executing adapterA after adapter"</span>)</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> res, err</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">adapterB</span><span class="params">(next http.RoundTripper)</span> <span class="title">http</span>.<span class="title">RoundTripper</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> RoundTripperFunc(<span class="function"><span class="keyword">func</span><span class="params">(r *http.Request)</span> <span class="params">(*http.Response, error)</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"Executing adapterB before adapter"</span>)</span><br><span class="line">		res, err := next.RoundTrip(r)</span><br><span class="line">		fmt.Println(<span class="string">"Executing adapterB after adapter"</span>)</span><br><span class="line">		<span class="keyword">return</span> res, err</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">useAdapters</span><span class="params">(adapters ...adapter)</span> <span class="title">adapter</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(final http.RoundTripper)</span> <span class="title">http</span>.<span class="title">RoundTripper</span></span> &#123;</span><br><span class="line">		fn := final</span><br><span class="line">		<span class="keyword">for</span> i := <span class="built_in">len</span>(adapters) - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i-- &#123;</span><br><span class="line">			fn = adapters[i](fn)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> fn</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	adapters := useAdapters(adapterA, adapterB)</span><br><span class="line">	client := &amp;http.Client&#123;</span><br><span class="line">		Transport: adapters(http.DefaultTransport),</span><br><span class="line">	&#125;</span><br><span class="line">	resp, err := client.Get(<span class="string">"https://example.com"</span>)</span><br><span class="line">	fmt.Println(<span class="string">"RES: %s, Log: %s"</span>, resp, err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>golangのhttp server, clientともに同じ設計でmiddleweaerの実装があ可能な設計が取られており、<br>またclientはtransporterの実装によりプロトコルを変更・拡張することができる。<br>柔軟な設計はgolangでアプリケーションを作成するにあたっても良い手本となりそう。</p>
+
+    
+  </div>
+
+  
+    <footer class="article-footer">
+
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4054575508733221" data-ad-slot="9493597992" data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
+
+
+        </aside>
+      
+
+      <div class="share_content">
+  <div class="hatena_sharebox">
+    
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2019/05/05/learning_golang_middlewear_pattern_for_client/" class="hatena-bookmark-button" data-hatena-bookmark-title="Golangのhttp clientのmiddlewearの実装パターン" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    
+  </div>
+  
+    <div class="addthis addthis_toolbox addthis_default_style">
+      
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+      
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
+    </div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
+
+      
+        <a href="http://blog.kazu69.net/2019/05/05/learning_golang_middlewear_pattern_for_client/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
+    
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2019/05/03/learning_golang_middlewear_pattern/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            Golangのmiddlewear実装パターンを学ぶ
+          
+        </span>
+        
+      </a>
+    
+  </div>
+</nav>
+
+  
+</article>
+
+
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+      
+    </main>
+    <footer id="footer" role="contentinfo">
+  
+  <div class="footer-cotent">
+    <small>&copy; 2019 kazu69</small>
+    <span class="generator">Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+  </div>
+</footer>
+    
+<script>
+  var disqus_shortname = '69log';
+  
+  var disqus_url = 'http://blog.kazu69.net/2019/05/05/learning_golang_middlewear_pattern_for_client/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+</body>
+</html>
