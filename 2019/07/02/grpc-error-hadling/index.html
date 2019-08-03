@@ -3,18 +3,19 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>Archives | 69log</title>
+  <title>Golangでのgrpcエラーハンドリング | 69log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="福岡でwebの仕事をしています">
-<meta property="og:type" content="website">
-<meta property="og:title" content="69log">
-<meta property="og:url" content="http://blog.kazu69.net/archives/index.html">
+  <meta name="description" content="gRPCのエラーの扱い方gRPCでのエラーに関してgolangではどう向き合うべきなのか知るべくひとまず知識をまとめた。 golangでのerrorハンドリングgolangではerrorをどのように取扱うのがよりよいのかというのがしばしば話題になることがある。golang自体がシンプルなゆえに、考慮することが多い。  エラーの種類 stack trace メッセージ ステータス errorの伝搬">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golangでのgrpcエラーハンドリング">
+<meta property="og:url" content="http://blog.kazu69.net/2019/07/02/grpc-error-hadling/index.html">
 <meta property="og:site_name" content="69log">
-<meta property="og:description" content="福岡でwebの仕事をしています">
+<meta property="og:description" content="gRPCのエラーの扱い方gRPCでのエラーに関してgolangではどう向き合うべきなのか知るべくひとまず知識をまとめた。 golangでのerrorハンドリングgolangではerrorをどのように取扱うのがよりよいのかというのがしばしば話題になることがある。golang自体がシンプルなゆえに、考慮することが多い。  エラーの種類 stack trace メッセージ ステータス errorの伝搬">
 <meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-08-03T01:02:53.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="69log">
-<meta name="twitter:description" content="福岡でwebの仕事をしています">
+<meta name="twitter:title" content="Golangでのgrpcエラーハンドリング">
+<meta name="twitter:description" content="gRPCのエラーの扱い方gRPCでのエラーに関してgolangではどう向き合うべきなのか知るべくひとまず知識をまとめた。 golangでのerrorハンドリングgolangではerrorをどのように取扱うのがよりよいのかというのがしばしば話題になることがある。golang自体がシンプルなゆえに、考慮することが多い。  エラーの種類 stack trace メッセージ ステータス errorの伝搬">
   
     <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
   
@@ -72,15 +73,13 @@ ga('send', 'pageview');
 </header>
 
     <main role="main" id="main">
-      <section>
-  
-    <article id="post-grpc-error-hadling" class="article article-type-post" itemscope itemprop="blogPost">
+      <section><article id="post-grpc-error-hadling" class="article article-type-post" itemscope itemprop="blogPost">
   <header class="article-header">
     
       
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/02/grpc-error-hadling/">Golangでのgrpcエラーハンドリング</a>
+    <h1 class="article-title" itemprop="name">
+      Golangでのgrpcエラーハンドリング
     </h1>
   
 
@@ -131,356 +130,83 @@ ga('send', 'pageview');
   </div>
 
   
+    <footer class="article-footer">
 
-  
-</article>
+      
+        <aside class="google-adsence">
+          
+<!-- Google Adsence -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4054575508733221" data-ad-slot="9493597992" data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Adsence -->
 
 
+        </aside>
+      
 
-  
-    <article id="post-learning_golang_middlewear_pattern_for_client" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
+      <div class="share_content">
+  <div class="hatena_sharebox">
     
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/05/learning_golang_middlewear_pattern_for_client/">Golangのhttp clientのmiddlewearの実装パターン</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2019-05-05T04:21:53.000Z" itemprop="datePublished">2019-05-05</time>
-
-      
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>以前にためした<a href>Golangのmiddlewear実装パターンを学ぶ</a>の続きで、<br>HttpClientでも同じパターンを適用したときのメモ。</p>
-      
+      <a href="http://b.hatena.ne.jp/entry/blog.kazu69.net/2019/07/02/grpc-error-hadling/" class="hatena-bookmark-button" data-hatena-bookmark-title="Golangでのgrpcエラーハンドリング" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a><script src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
     
   </div>
-
   
-
-  
-</article>
-
-
-
-  
-    <article id="post-learning_golang_middlewear_pattern" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
+    <div class="addthis addthis_toolbox addthis_default_style">
       
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/03/learning_golang_middlewear_pattern/">Golangのmiddlewear実装パターンを学ぶ</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2019-05-02T18:12:25.000Z" itemprop="datePublished">2019-05-03</time>
-
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
       
-
+      
+        <a class="addthis_button_tweet"></a>
+      
+      
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+      
+      
+      <!-- <a class="addthis_counter addthis_pill_style"></a> -->
     </div>
-  </header>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-55a4f49a45ced975"></script>
+  
+</div>
 
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
       
-    </div>
+        <a href="http://blog.kazu69.net/2019/07/02/grpc-error-hadling/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  
+
+  
     
-      <p>Golangでwebアプリケーションなどを開発するに当たり、<br>リクエストやレスポンスをインターセプトし適宜利用するmiddlewearの実装パターンを<br>読んでみたときのメモ。</p>
-      
+<nav id="article-nav">
+  <div class="article-nav">
+    
+    
+      <a href="/2019/05/05/learning_golang_middlewear_pattern_for_client/" id="article-nav-older" class="article-nav-link article-nav-link-older">
+        <span class="article-nav-caption">Older - </span>
+        <span class="article-nav-title">
+          
+            Golangのhttp clientのmiddlewearの実装パターン
+          
+        </span>
+        
+      </a>
     
   </div>
-
-  
+</nav>
 
   
 </article>
 
 
-
-  
-    <article id="post-typescript-compiler-relearning" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/typescript-compiler-relearning/">Typescript Compiler APIを斜め読み</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2019-04-02T16:25:12.000Z" itemprop="datePublished">2019-04-03</time>
-
-      
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p><a href="https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API" target="_blank" rel="noopener">TypeScript Compiler API</a>を利用して独自のAST変換機構を試すために調べたメモ。</p>
-      
-    
+<section class="comments" id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
   </div>
+</section>
 
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-learning-graphql" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/21/learning-graphql/">GraphQLについて再入門</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2019-02-20T15:12:25.000Z" itemprop="datePublished">2019-02-21</time>
-
-      
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>知ったつもりだったけど、いざとなると知らないこと多かったので<br>もう少しだけ突っ込んで入門したときの走り書き。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-multiprocess_multithread_processing_of_nodejs" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/29/multiprocess_multithread_processing_of_nodejs/">Node.js child_process, cluster, worker_thredsを確認した</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2019-01-29T14:34:21.000Z" itemprop="datePublished">2019-01-29</time>
-
-      
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>Node.jsにおけるいわゆる並行処理に関して再確認。<br>Node.jsは一般的にシングルスレッド、非同期IOとして認識されている。<br>これは言語としてマルチスレッドによる複雑性を排除した処理を選択した経緯があるらしい。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-try-react-hook-api" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/01/try-react-hook-api/">React Hooks api を眺める</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2018-12-01T13:43:12.000Z" itemprop="datePublished">2018-12-01</time>
-
-      
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>React Conf 2018 にて <a href="https://reactjs.org/docs/hooks-reference.html" target="_blank" rel="noopener">Hooks API</a>が発表された。<br>ざっと触った時のメモ。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-react_melo_and_react_lazy_supported" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/28/react_melo_and_react_lazy_supported/">React v16.6で追加されたReact.memoとReact.lazyを眺める</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2018-10-28T09:33:28.000Z" itemprop="datePublished">2018-10-28</time>
-
-      
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>React v16.6で<a href="https://reactjs.org/docs/react-api.html#reactmemo" target="_blank" rel="noopener">React.memo</a>と<a href="https://reactjs.org/docs/code-splitting.html#reactlazy" target="_blank" rel="noopener">React.lazy</a>というAPIが機能が追加されていた。</p>
-<p>該当の変更は以下を参照</p>
-<ul>
-<li><a href="https://github.com/facebook/react/pull/13748" target="_blank" rel="noopener">React.memo()</a></li>
-<li><a href="https://github.com/facebook/react/pull/13885" target="_blank" rel="noopener">React.lazy()</a></li>
-</ul>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-react-hoc-with-typescript" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/22/react-hoc-with-typescript/">React HOC(Higher-order component)をTypeScriptで使う</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2018-09-22T02:32:13.000Z" itemprop="datePublished">2018-09-22</time>
-
-      
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>ReactのComponentのリファクタリングなどの際に、HOC(Higher-order component)で<br>コンポーネントを拡張することがあるが、TypeScriptでの実装をするにあたりお試しした備忘録。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-    <article id="post-reaffirming-typescript-react-pattern" class="article article-type-post" itemscope itemprop="blogPost">
-  <header class="article-header">
-    
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/13/reaffirming-typescript-react-pattern/">Typescript React Patternを再確認</a>
-    </h1>
-  
-
-    
-    <div class="article-meta clr">
-      <time datetime="2018-09-13T06:58:25.000Z" itemprop="datePublished">2018-09-13</time>
-
-      
-
-    </div>
-  </header>
-
-  <div class="article-entry" itemprop="articleBody">
-    <div class="article-gallery">
-      
-    </div>
-    
-      <p>TypescriptでのReactアプリケーション開発において、<br>パターン的なものを一旦個人的な備忘録としてまとめておく。<br>登録・削除機能のみの簡単なアプリを作ることにする。</p>
-      
-    
-  </div>
-
-  
-
-  
-</article>
-
-
-
-  
-  
-    <nav class="pager" id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="page-number" href="/archives/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/28/">28</a><a class="extend next" rel="next" href="/archives/page/2/">Next &raquo;</a>
-    </nav>
-  
 </section>
       
     </main>
@@ -495,11 +221,13 @@ ga('send', 'pageview');
 <script>
   var disqus_shortname = '69log';
   
+  var disqus_url = 'http://blog.kazu69.net/2019/07/02/grpc-error-hadling/';
+  
   (function(){
     var dsq = document.createElement('script');
     dsq.type = 'text/javascript';
     dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
   })();
 </script>
