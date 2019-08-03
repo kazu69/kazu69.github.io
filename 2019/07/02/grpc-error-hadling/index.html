@@ -5,17 +5,17 @@
   
   <title>Golangでのgrpcエラーハンドリング | 69log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="gRPCのエラーの扱い方gRPCでのエラーに関してgolangではどう向き合うべきなのか知るべくひとまず知識をまとめた。 golangでのerrorハンドリングgolangではerrorをどのように取扱うのがよりよいのかというのがしばしば話題になることがある。golang自体がシンプルなゆえに、考慮することが多い。  エラーの種類 stack trace メッセージ ステータス errorの伝搬">
+  <meta name="description" content="gRPCのエラーの扱い方gRPCでのエラーに関してgolangではどう向き合うべきなのか知るべくひとまず知識をまとめた。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Golangでのgrpcエラーハンドリング">
 <meta property="og:url" content="http://blog.kazu69.net/2019/07/02/grpc-error-hadling/index.html">
 <meta property="og:site_name" content="69log">
-<meta property="og:description" content="gRPCのエラーの扱い方gRPCでのエラーに関してgolangではどう向き合うべきなのか知るべくひとまず知識をまとめた。 golangでのerrorハンドリングgolangではerrorをどのように取扱うのがよりよいのかというのがしばしば話題になることがある。golang自体がシンプルなゆえに、考慮することが多い。  エラーの種類 stack trace メッセージ ステータス errorの伝搬">
+<meta property="og:description" content="gRPCのエラーの扱い方gRPCでのエラーに関してgolangではどう向き合うべきなのか知るべくひとまず知識をまとめた。">
 <meta property="og:locale" content="ja">
-<meta property="og:updated_time" content="2019-08-03T01:02:53.000Z">
+<meta property="og:updated_time" content="2019-08-03T01:05:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Golangでのgrpcエラーハンドリング">
-<meta name="twitter:description" content="gRPCのエラーの扱い方gRPCでのエラーに関してgolangではどう向き合うべきなのか知るべくひとまず知識をまとめた。 golangでのerrorハンドリングgolangではerrorをどのように取扱うのがよりよいのかというのがしばしば話題になることがある。golang自体がシンプルなゆえに、考慮することが多い。  エラーの種類 stack trace メッセージ ステータス errorの伝搬">
+<meta name="twitter:description" content="gRPCのエラーの扱い方gRPCでのエラーに関してgolangではどう向き合うべきなのか知るべくひとまず知識をまとめた。">
   
     <link rel="alternative" href="/atom.xml" title="69log" type="application/atom+xml">
   
@@ -98,6 +98,8 @@ ga('send', 'pageview');
     </div>
     
       <h2 id="gRPCのエラーの扱い方"><a href="#gRPCのエラーの扱い方" class="headerlink" title="gRPCのエラーの扱い方"></a>gRPCのエラーの扱い方</h2><p>gRPCでのエラーに関してgolangではどう向き合うべきなのか知るべくひとまず知識をまとめた。</p>
+<a id="more"></a>
+
 <h2 id="golangでのerrorハンドリング"><a href="#golangでのerrorハンドリング" class="headerlink" title="golangでのerrorハンドリング"></a>golangでのerrorハンドリング</h2><p>golangではerrorをどのように取扱うのがよりよいのかというのがしばしば話題になることがある。<br>golang自体がシンプルなゆえに、考慮することが多い。</p>
 <ul>
 <li>エラーの種類</li>
